@@ -1,7 +1,0 @@
-spring:
-  application:
-    name: @artifactId@
-
-  profiles:
-    active: @profiles.active@
-

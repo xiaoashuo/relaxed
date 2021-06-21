@@ -15,7 +15,6 @@
 <!--        <module>relaxed-codegen</module>-->
 <!--        <module>relaxed-business</module>-->
 <!--        <module>relaxed-controller</module>-->
-        <module>relaxed-samples</module>
         <module>relaxed-extends</module>
         <module>relaxed-starters</module>
         <module>relaxed-dependencies</module>
@@ -43,7 +42,7 @@
     </licenses>
 
     <properties>
-        <reversion>1.0.0</reversion>
+        <reversion>1.0.0-SNAPSHOT</reversion>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <spring-boot.version>2.2.13.RELEASE</spring-boot.version>
