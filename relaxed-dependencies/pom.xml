@@ -175,12 +175,12 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>releaseId</id>
+            <url>http://49.234.128.78/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
         <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <id>releaseId</id>
+            <url>http://49.234.128.78/nexus/content/repositories/releases/</url>
         </repository>
     </distributionManagement>
     <build>

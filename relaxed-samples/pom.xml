@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <modules>
-      <module>relaxed-samples-jsch</module>
+      <module>relaxed-samples-base</module>
     </modules>
 
 
