@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+
+    <groupId>com.lovecyy</groupId>
+    <artifactId>relaxed</artifactId>
+    <version>${reversion}</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>relaxed-common</module>
+<!--        <module>relaxed-codegen</module>-->
+<!--        <module>relaxed-business</module>-->
+<!--        <module>relaxed-controller</module>-->
+        <module>relaxed-samples</module>
+        <module>relaxed-extends</module>
+        <module>relaxed-starters</module>
+        <module>relaxed-dependencies</module>
+    </modules>
+
+    <name>relaxed</name>
+    <description>项目基本脚手架</description>
+    <url>https://github.com/xiaoashuo/relaxed</url>
+
+    <developers>
+        <developer>
+            <name>yakir</name>
+            <email>yakir@foxmail.com</email>
+        </developer>
+    </developers>
+
+
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <reversion>1.0.0</reversion>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-dependencies</artifactId>
+                <version>${reversion}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+<!--            <dependency>-->
+<!--                <groupId>com.lovecyy</groupId>-->
+<!--                <artifactId>relaxed-spring-boot-starter-easyexcel</artifactId>-->
+<!--                <version>${reversion}</version>-->
+<!--            </dependency>-->
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <!--重要 如果不设置resource 会导致application.yaml中的@@找不到pom文件中的配置-->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>static/report/**</exclude>
+                    <exclude>**/*.woff</exclude>
+                    <exclude>**/*.woff2</exclude>
+                    <exclude>**/*.ttf</exclude>
+                    <exclude>**/*.ico</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>static/report/**</include>
+                    <include>**/*.woff</include>
+                    <include>**/*.woff2</include>
+                    <include>**/*.ttf</include>
+                    <include>**/*.ico</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>io.spring.javaformat</groupId>
+                <artifactId>spring-javaformat-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <inherited>true</inherited>
+                        <goals>
+                            <goal>validate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+    </build>
+
+    <!--环境变量-->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <profiles.active>dev</profiles.active>
+            </properties>
+            <activation>
+                <!-- 默认环境 -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <profiles.active>test</profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profiles.active>prod</profiles.active>
+            </properties>
+        </profile>
+
+    </profiles>
+
+
+
+</project>
