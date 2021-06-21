@@ -9,7 +9,7 @@
          <version>${reversion}</version>
     </parent>
 
-    <artifactId>relaxed-samples-jsch</artifactId>
+    <artifactId>relaxed-samples-base</artifactId>
 
     <properties>
 
