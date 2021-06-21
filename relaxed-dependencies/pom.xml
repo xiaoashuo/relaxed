@@ -186,18 +186,7 @@
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>build-info</goal>
-                                <goal>repackage</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
+
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>flatten-maven-plugin</artifactId>
@@ -252,6 +241,7 @@
         <plugin>
             <groupId>io.spring.javaformat</groupId>
             <artifactId>spring-javaformat-maven-plugin</artifactId>
+            <version>${spring-javaformat-checkstyle.version}</version>
             <executions>
                 <execution>
                     <phase>validate</phase>

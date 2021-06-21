@@ -46,6 +46,10 @@
         <reversion>1.0.0</reversion>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <spring-boot.version>2.2.13.RELEASE</spring-boot.version>
+        <spring-javaformat-checkstyle.version>0.0.27</spring-javaformat-checkstyle.version>
+        <flatten-maven-plugin.version>1.2.5</flatten-maven-plugin.version>
+
     </properties>
 
     <dependencyManagement>
@@ -103,10 +107,28 @@
                 </includes>
             </resource>
         </resources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>build-info</goal>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>io.spring.javaformat</groupId>
                 <artifactId>spring-javaformat-maven-plugin</artifactId>
+                <version>${spring-javaformat-checkstyle.version}</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -120,6 +142,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
+                <version>${flatten-maven-plugin.version}</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>
