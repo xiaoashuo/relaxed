@@ -2,13 +2,14 @@ package com.relaxed.common.conf.exception;
 
 import com.relaxed.common.core.constants.GlobalConstants;
 import com.relaxed.common.core.exception.BusinessException;
+import com.relaxed.common.core.exception.handler.GlobalExceptionHandler;
 import com.relaxed.common.core.result.R;
 import com.relaxed.common.core.result.SysResultCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -20,23 +21,26 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.xml.bind.ValidationException;
+import java.nio.file.AccessDeniedException;
 
 /**
- * 全局异常处理器
+ * 全局异常处理
  *
- * @author Yakir
+ * @author Hccake
  */
 @Slf4j
-@RequiredArgsConstructor
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandlerResolver {
+
+	private final GlobalExceptionHandler globalExceptionHandler;
 
 	@Value("${spring.profiles.active:prod}")
 	private String profile;
 
-	public final static String PROD_ERR_MSG = "系统异常，请联系管理员";
+	public static final String PROD_ERR_MSG = "系统异常，请联系管理员";
 
-	public final static String NLP_MSG = "空指针异常!";
+	public static final String NLP_MSG = "空指针异常!";
 
 	/**
 	 * 全局异常捕获
@@ -47,7 +51,7 @@ public class GlobalExceptionHandlerResolver {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public R<String> handleGlobalException(Exception e) {
 		log.error("全局异常信息 ex={}", e.getMessage(), e);
-		;
+		globalExceptionHandler.handle(e);
 		// 当为生产环境, 不适合把具体的异常信息展示给用户, 比如数据库异常信息.
 		String errorMsg = GlobalConstants.ENV_PROD.equals(profile) ? PROD_ERR_MSG
 				: (e instanceof NullPointerException ? NLP_MSG : e.getLocalizedMessage());
@@ -63,6 +67,7 @@ public class GlobalExceptionHandlerResolver {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public R<String> handleMethodArgumentTypeMismatchException(Exception e) {
 		log.error("请求入参异常 ex={}", e.getMessage());
+		globalExceptionHandler.handle(e);
 		return R.failed(SysResultCode.BAD_REQUEST,
 				GlobalConstants.ENV_PROD.equals(profile) ? PROD_ERR_MSG : e.getMessage());
 	}
@@ -74,6 +79,7 @@ public class GlobalExceptionHandlerResolver {
 	@ExceptionHandler({ HttpMediaTypeNotSupportedException.class, HttpRequestMethodNotSupportedException.class })
 	public R<String> requestNotSupportedException(Exception e) {
 		log.error("请求方式异常 ex={}", e.getMessage());
+		globalExceptionHandler.handle(e);
 		return R.failed(SysResultCode.BAD_REQUEST, e.getLocalizedMessage());
 	}
 
@@ -86,6 +92,7 @@ public class GlobalExceptionHandlerResolver {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public R<String> handleIllegalArgumentException(IllegalArgumentException e) {
 		log.error("非法数据输入 ex={}", e.getMessage());
+		globalExceptionHandler.handle(e);
 		return R.failed(SysResultCode.BAD_REQUEST, e.getMessage());
 	}
 
@@ -110,6 +117,7 @@ public class GlobalExceptionHandlerResolver {
 				: "未获取到错误信息!";
 
 		log.error("参数绑定异常,ex = {}", errorMsg);
+		globalExceptionHandler.handle(exception);
 		return R.failed(SysResultCode.BAD_REQUEST, errorMsg);
 	}
 
@@ -122,6 +130,7 @@ public class GlobalExceptionHandlerResolver {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public R<String> handleValidationException(Exception e) {
 		log.error("参数绑定异常 ex={}", e.getMessage());
+		globalExceptionHandler.handle(e);
 		return R.failed(SysResultCode.BAD_REQUEST, e.getLocalizedMessage());
 	}
 
@@ -132,8 +141,9 @@ public class GlobalExceptionHandlerResolver {
 	 */
 	@ExceptionHandler(BusinessException.class)
 	@ResponseStatus(HttpStatus.OK)
-	public R<String> handleBusinessException(BusinessException e) {
+	public R<String> handleBallCatException(BusinessException e) {
 		log.error("业务异常信息 ex={}", e.getMessage());
+		globalExceptionHandler.handle(e);
 		return R.failed(e.getCode(), e.getMessage());
 	}
 
