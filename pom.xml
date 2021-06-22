@@ -42,10 +42,12 @@
     </licenses>
 
     <properties>
-        <reversion>1.0.0-SNAPSHOT</reversion>
+        <reversion>1.0.1-SNAPSHOT</reversion>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <spring-boot.version>2.2.13.RELEASE</spring-boot.version>
+
+        <maven-compiler-plugin.verison>3.8.0</maven-compiler-plugin.verison>
+        <spring-boot.version>2.4.3</spring-boot.version>
         <lombok.version>1.18.20</lombok.version>
         <spring-javaformat-checkstyle.version>0.0.27</spring-javaformat-checkstyle.version>
         <flatten-maven-plugin.version>1.2.5</flatten-maven-plugin.version>
@@ -168,10 +170,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>${maven-compiler-plugin.verison}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                     <!-- 参考注解处理器 http://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html-->
                     <annotationProcessorPaths>
                         <path>

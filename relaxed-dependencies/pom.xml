@@ -9,8 +9,8 @@
 
     <packaging>pom</packaging>
     <properties>
-        <reversion>1.0.0-SNAPSHOT</reversion>
-        <spring-boot.version>2.2.13.RELEASE</spring-boot.version>
+        <reversion>1.0.1-SNAPSHOT</reversion>
+        <spring-boot.version>2.4.3</spring-boot.version>
         <spring-javaformat-checkstyle.version>0.0.27</spring-javaformat-checkstyle.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
         <lombok.version>1.18.20</lombok.version>
