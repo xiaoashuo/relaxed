@@ -15,6 +15,7 @@
     <modules>
         <module>relaxed-common-core</module>
         <module>relaxed-common-conf</module>
+        <module>relaxed-common-desensitize</module>
     </modules>
 
 
