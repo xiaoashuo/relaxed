@@ -9,7 +9,7 @@
 
     <packaging>pom</packaging>
     <properties>
-        <reversion>1.0.1-SNAPSHOT</reversion>
+        <reversion>1.0.0-SNAPSHOT</reversion>
         <spring-boot.version>2.4.3</spring-boot.version>
         <spring-javaformat-checkstyle.version>0.0.27</spring-javaformat-checkstyle.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
@@ -146,11 +146,11 @@
                 <artifactId>mapstruct</artifactId>
                 <version>${mapstruct.version}</version>
             </dependency>
-                        <dependency>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${mapstruct.version}</version>
-                        </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
 
 
             <dependency>

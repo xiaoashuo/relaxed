@@ -42,7 +42,7 @@
     </licenses>
 
     <properties>
-        <reversion>1.0.1-SNAPSHOT</reversion>
+        <reversion>1.0.0-SNAPSHOT</reversion>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
 
