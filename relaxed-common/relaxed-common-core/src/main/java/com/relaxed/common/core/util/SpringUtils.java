@@ -3,6 +3,7 @@ package com.relaxed.common.core.util;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -73,6 +74,17 @@ public class SpringUtils implements ApplicationContextAware {
 
 	public static ApplicationContext getContext() {
 		return context;
+	}
+
+	/**
+	 * 发布事件
+	 * @param event
+	 */
+	public static void publishEvent(ApplicationEvent event) {
+		if (context == null) {
+			return;
+		}
+		context.publishEvent(event);
 	}
 
 }
