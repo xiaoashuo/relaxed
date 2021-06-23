@@ -51,6 +51,11 @@
                 <artifactId>relaxed-common-conf</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-datasource</artifactId>
+                <version>${reversion}</version>
+            </dependency>
 
 <!--            <dependency>-->
 <!--                <groupId>com.lovecyy</groupId>-->
