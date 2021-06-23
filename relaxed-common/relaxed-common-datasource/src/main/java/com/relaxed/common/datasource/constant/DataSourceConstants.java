@@ -27,7 +27,7 @@ public interface DataSourceConstants {
 	/**
 	 * 数据源名称
 	 */
-	String DS_NAME = "db_name";
+	String DS_NAME = "name";
 
 	/**
 	 * 默认驱动
