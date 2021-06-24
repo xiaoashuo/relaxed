@@ -18,8 +18,7 @@ package com.relaxed.common.datasource.config;
 
 import com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import com.relaxed.common.datasource.constant.DataSourceConstants;
-import com.relaxed.common.datasource.toolkit.DynamicDataSourceHelper;
+import com.relaxed.common.datasource.provider.PropertyProvider;
 import org.jasypt.encryption.StringEncryptor;
 
 import java.sql.ResultSet;
@@ -36,14 +35,23 @@ import java.util.Map;
  */
 public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvider {
 
+	/**
+	 * 默认数据源（master）
+	 */
+	private final static String DS_MASTER = "master";
+
 	private final DataSourceProperties properties;
 
 	private final StringEncryptor stringEncryptor;
 
-	public JdbcDynamicDataSourceProvider(StringEncryptor stringEncryptor, DataSourceProperties properties) {
+	private final PropertyProvider propertyProvider;
+
+	public JdbcDynamicDataSourceProvider(StringEncryptor stringEncryptor, DataSourceProperties properties,
+			PropertyProvider propertyProvider) {
 		super(properties.getDriverClassName(), properties.getUrl(), properties.getUsername(), properties.getPassword());
 		this.stringEncryptor = stringEncryptor;
 		this.properties = properties;
+		this.propertyProvider = propertyProvider;
 	}
 
 	/**
@@ -55,29 +63,23 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
 	@Override
 	protected Map<String, DataSourceProperty> executeStmt(Statement statement) throws SQLException {
 		ResultSet rs = statement.executeQuery(properties.getQueryDsSql());
-
 		Map<String, DataSourceProperty> map = new HashMap<>(8);
+		DataSourceProperties.ResultSetKey rsk = properties.getRsk();
+
 		while (rs.next()) {
-			String name = rs.getString(DataSourceConstants.DS_NAME);
-			String username = rs.getString(DataSourceConstants.DS_USER_NAME);
-			String password = rs.getString(DataSourceConstants.DS_USER_PWD);
-			String url = rs.getString(DataSourceConstants.DS_JDBC_URL);
-			DataSourceProperty property = new DataSourceProperty();
-			property.setPoolName(name);
-			property.setDriverClassName(DataSourceConstants.DS_DRIVER);
-			property.setUsername(username);
-			property.setPassword(stringEncryptor.decrypt(password));
-			property.setUrl(url);
+			String name = rs.getString(rsk.getName());
+			String username = rs.getString(rsk.getUsername());
+			String password = rs.getString(rsk.getPassword());
+			String url = rs.getString(rsk.getUrl());
+			DataSourceProperty property = propertyProvider.prodDataSourceProperty(name, url, username,
+					stringEncryptor.decrypt(password));
 			map.put(name, property);
 		}
 
 		// 添加默认主数据源
-		DataSourceProperty property = new DataSourceProperty();
-		property.setUsername(properties.getUsername());
-		property.setPassword(properties.getPassword());
-		property.setUrl(properties.getUrl());
-		property.setDriverClassName(DataSourceConstants.DS_DRIVER);
-		map.put(DataSourceConstants.DS_MASTER, property);
+		DataSourceProperty property = propertyProvider.prodDataSourceProperty(DS_MASTER, properties.getUrl(),
+				properties.getUsername(), properties.getPassword());
+		map.put(DS_MASTER, property);
 		return map;
 	}
 

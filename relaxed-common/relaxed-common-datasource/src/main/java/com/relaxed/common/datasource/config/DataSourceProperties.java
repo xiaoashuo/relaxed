@@ -18,6 +18,7 @@ package com.relaxed.common.datasource.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * @author lengleng
@@ -39,18 +40,52 @@ public class DataSourceProperties {
 	private String password;
 
 	/**
-	 * jdbcurl
+	 * jdbc url
 	 */
 	private String url;
 
 	/**
 	 * 驱动类型
 	 */
-	private String driverClassName;
+	private String driverClassName = "com.mysql.cj.jdbc.Driver";
 
 	/**
 	 * 查询数据源的SQL
 	 */
 	private String queryDsSql = "select * from gen_datasource_conf where del_flag = 0";
+
+	/**
+	 * 结果集属性列
+	 */
+	@NestedConfigurationProperty
+	private ResultSetKey rsk = new ResultSetKey();
+
+	/**
+	 * 结果集属性 数据库对应列名称
+	 */
+	@Data
+	class ResultSetKey {
+
+		/**
+		 * db name key
+		 */
+		private String name = "name";
+
+		/**
+		 * db url key
+		 */
+		private String url = "url";
+
+		/**
+		 * db username key
+		 */
+		private String username = "username";
+
+		/**
+		 * db password key
+		 */
+		private String password = "password";
+
+	}
 
 }

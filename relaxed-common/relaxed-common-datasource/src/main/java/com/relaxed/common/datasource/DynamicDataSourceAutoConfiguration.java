@@ -16,14 +16,14 @@
 
 package com.relaxed.common.datasource;
 
-import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.relaxed.common.datasource.config.DataSourceProperties;
-import com.relaxed.common.datasource.config.DsRequestProcessor;
 import com.relaxed.common.datasource.config.JdbcDynamicDataSourceProvider;
-import com.relaxed.common.datasource.toolkit.DynamicDataSourceHelper;
+import com.relaxed.common.datasource.provider.DefaultPropertyProvider;
+import com.relaxed.common.datasource.provider.PropertyProvider;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -42,8 +42,18 @@ public class DynamicDataSourceAutoConfiguration {
 
 	@Bean
 	public DynamicDataSourceProvider dynamicDataSourceProvider(StringEncryptor stringEncryptor,
-			DataSourceProperties properties) {
-		return new JdbcDynamicDataSourceProvider(stringEncryptor, properties);
+			DataSourceProperties properties, PropertyProvider propertyProvider) {
+		return new JdbcDynamicDataSourceProvider(stringEncryptor, properties, propertyProvider);
+	}
+
+	/**
+	 * 数据源属性提供者 可以自定义实现 设置连接池属性等等
+	 * @return
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public PropertyProvider propertyProvider() {
+		return new DefaultPropertyProvider();
 	}
 
 }

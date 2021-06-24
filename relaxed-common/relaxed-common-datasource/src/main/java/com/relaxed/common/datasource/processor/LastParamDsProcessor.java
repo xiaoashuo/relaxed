@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.relaxed.common.datasource.config;
+package com.relaxed.common.datasource.processor;
 
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import org.aopalliance.intercept.MethodInvocation;

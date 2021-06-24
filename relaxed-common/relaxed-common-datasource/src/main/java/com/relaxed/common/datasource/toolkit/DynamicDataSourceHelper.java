@@ -3,8 +3,7 @@ package com.relaxed.common.datasource.toolkit;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
-import com.relaxed.common.datasource.constant.DataSourceConstants;
+import com.relaxed.common.datasource.provider.PropertyProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
@@ -42,6 +41,8 @@ public class DynamicDataSourceHelper {
 	 */
 	@Resource(type = DataSource.class)
 	private DynamicRoutingDataSource dynamicRoutingDataSource;
+
+	private final PropertyProvider propertyProvider;
 
 	/**
 	 * 加密明文密码
@@ -106,12 +107,7 @@ public class DynamicDataSourceHelper {
 	 * @return 数据源配置
 	 */
 	public DataSourceProperty prodDataSourceProperty(String dsName, String url, String username, String password) {
-		DataSourceProperty dataSourceProperty = new DataSourceProperty();
-		dataSourceProperty.setPoolName(dsName);
-		dataSourceProperty.setUrl(url);
-		dataSourceProperty.setUsername(username);
-		dataSourceProperty.setPassword(password);
-		return dataSourceProperty;
+		return propertyProvider.prodDataSourceProperty(dsName, url, username, password);
 	}
 
 }
