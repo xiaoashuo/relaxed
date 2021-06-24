@@ -1,6 +1,5 @@
-package com.relaxed.common.conf.config.web;
+package com.relaxed.common.conf.web;
 
-import com.relaxed.common.conf.config.web.relover.PageParamArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

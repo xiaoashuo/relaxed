@@ -1,4 +1,4 @@
-package com.relaxed.common.conf.config.web.relover;
+package com.relaxed.common.conf.web;
 
 import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.core.domain.PageParam;
