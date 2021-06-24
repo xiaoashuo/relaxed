@@ -64,7 +64,7 @@ public class DataSourceProperties {
 	 * 结果集属性 数据库对应列名称
 	 */
 	@Data
-	class ResultSetKey {
+	public static class ResultSetKey {
 
 		/**
 		 * db name key
