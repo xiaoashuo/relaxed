@@ -2,6 +2,7 @@ package com.relaxed.common.conf.mybatis;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
@@ -40,7 +41,7 @@ public class MybatisPlusConfig {
 	 * @return FillMetaObjectHandle
 	 */
 	@Bean
-	@ConditionalOnMissingBean(FillMetaObjectHandle.class)
+	@ConditionalOnMissingBean(MetaObjectHandler.class)
 	public FillMetaObjectHandle fillMetaObjectHandle() {
 		return new FillMetaObjectHandle();
 	}
