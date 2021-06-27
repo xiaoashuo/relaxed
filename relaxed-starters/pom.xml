@@ -18,6 +18,7 @@
          <module>relaxed-spring-boot-starter-mail</module>
          <module>relaxed-spring-boot-starter-job</module>
          <module>relaxed-spring-boot-starter-log</module>
+         <module>relaxed-spring-boot-starter-xss</module>
     </modules>
 
 

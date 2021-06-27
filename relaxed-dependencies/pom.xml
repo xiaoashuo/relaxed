@@ -25,6 +25,7 @@
         <itext-font-asian.version>7.1.13</itext-font-asian.version>
         <itext-html-pdf.version>3.0.2</itext-html-pdf.version>
         <velocity.version>1.7</velocity.version>
+        <jsoup.version>1.13.1</jsoup.version>
         <!-- 跳过测试 -->
         <skipTests>true</skipTests>
     </properties>
@@ -99,6 +100,11 @@
                 <artifactId>relaxed-spring-boot-starter-log</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-spring-boot-starter-xss</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--mybatis plus extension,包含了mybatis plus core-->
             <dependency>
                 <groupId>com.baomidou</groupId>
@@ -157,6 +163,11 @@
                 <version>${mapstruct.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.jcraft</groupId>
