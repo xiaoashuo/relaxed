@@ -5,6 +5,8 @@ import com.sun.istack.internal.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 
@@ -20,7 +22,8 @@ import java.util.List;
  * @Version 1.0
  */
 @Slf4j
-public abstract class AbstractQueueThread<T> extends Thread implements InitializingBean {
+public abstract class AbstractQueueThread<T> extends Thread
+		implements InitializingBean, ApplicationListener<ContextClosedEvent> {
 
 	/**
 	 * 默认缓存数据数量
@@ -85,8 +88,12 @@ public abstract class AbstractQueueThread<T> extends Thread implements Initializ
 				// 填充数据
 				fillList(list);
 				// 处理数据
-				process(list);
-
+				if (isRunning()) {
+					process(list);
+				}
+				else {
+					shutdownHandler(list);
+				}
 			}
 			catch (Throwable ex) {
 				errorHandle(ex, list);
@@ -153,10 +160,35 @@ public abstract class AbstractQueueThread<T> extends Thread implements Initializ
 		log.error("{} 线程处理数据出现异常, 数据 {}", getClass().getSimpleName(), list, ex);
 	}
 
+	/**
+	 * 执行过此方法紧接着就会卸载bean
+	 * @param list 当前数据
+	 */
+	public void shutdownHandler(List<T> list) {
+		try {
+			log.error("{} 类 线程: {} 被关闭. 数据:{}", this.getClass().getSimpleName(), getId(), JSONUtil.toJsonStr(list));
+		}
+		catch (Throwable e) {
+			log.error("{} 类 线程: {} 被关闭. 数据:{}", this.getClass().getSimpleName(), getId(), list);
+
+		}
+	}
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		setName(getClass().getSimpleName());
 		this.start();
+	}
+
+	/**
+	 * spring 销毁bean时 会发出一个应用关闭事件
+	 * @see org.springframework.context.support.AbstractApplicationContext close
+	 * @param contextClosedEvent
+	 */
+	@Override
+	public void onApplicationEvent(ContextClosedEvent contextClosedEvent) {
+		log.warn("{} 类的线程开始关闭! id: {} ", getClass().getSimpleName(), getId());
+		this.interrupt();
 	}
 
 	/**
