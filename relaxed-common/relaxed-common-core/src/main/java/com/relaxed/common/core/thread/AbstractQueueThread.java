@@ -2,7 +2,6 @@ package com.relaxed.common.core.thread;
 
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
@@ -113,7 +112,7 @@ public abstract class AbstractQueueThread<T> extends Thread
 					// 记录时间
 					timestamp = System.currentTimeMillis();
 				}
-				fillData(list, e);
+				processData(list, e);
 			}
 
 			// 无法继续运行 或 已有数据且超过设定的等待时间
@@ -130,7 +129,7 @@ public abstract class AbstractQueueThread<T> extends Thread
 	 * @param list
 	 * @param e
 	 */
-	private void fillData(List<T> list, T e) {
+	private void processData(List<T> list, T e) {
 		list.add(e);
 	}
 
