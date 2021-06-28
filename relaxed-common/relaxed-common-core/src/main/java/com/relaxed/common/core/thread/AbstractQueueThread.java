@@ -1,7 +1,6 @@
 package com.relaxed.common.core.thread;
 
 import cn.hutool.json.JSONUtil;
-import com.sun.istack.internal.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -10,7 +9,7 @@ import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.PreDestroy;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
