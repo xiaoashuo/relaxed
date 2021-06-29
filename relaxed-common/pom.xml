@@ -17,6 +17,8 @@
         <module>relaxed-common-conf</module>
         <module>relaxed-common-desensitize</module>
         <module>relaxed-common-datasource</module>
+        <module>relaxed-common-datascope</module>
+        <module>relaxed-common-tenant</module>
     </modules>
 
 
