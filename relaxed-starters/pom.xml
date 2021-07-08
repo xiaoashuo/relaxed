@@ -19,6 +19,7 @@
          <module>relaxed-spring-boot-starter-job</module>
          <module>relaxed-spring-boot-starter-log</module>
          <module>relaxed-spring-boot-starter-xss</module>
+         <module>relaxed-spring-boot-starter-swagger</module>
     </modules>
 
 

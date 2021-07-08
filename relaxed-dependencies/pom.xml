@@ -26,6 +26,7 @@
         <itext-html-pdf.version>3.0.2</itext-html-pdf.version>
         <velocity.version>1.7</velocity.version>
         <jsoup.version>1.13.1</jsoup.version>
+        <springfox.version>3.0.0</springfox.version>
         <!-- 跳过测试 -->
         <skipTests>true</skipTests>
     </properties>
@@ -105,6 +106,11 @@
                 <artifactId>relaxed-spring-boot-starter-xss</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-spring-boot-starter-swagger</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--mybatis plus extension,包含了mybatis plus core-->
             <dependency>
                 <groupId>com.baomidou</groupId>
@@ -178,6 +184,12 @@
                 <groupId>com.xuxueli</groupId>
                 <artifactId>xxl-job-core</artifactId>
                 <version>${xxl-job.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${springfox.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
