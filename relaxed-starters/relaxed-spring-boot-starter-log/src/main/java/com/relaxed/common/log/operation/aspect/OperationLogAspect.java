@@ -1,5 +1,6 @@
 package com.relaxed.common.log.operation.aspect;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONUtil;
@@ -46,9 +47,15 @@ public class OperationLogAspect {
 
 	private final ApplicationEventPublisher publisher;
 
-	private final List<Class<?>> ignoredParamClasses = Arrays.asList(ServletRequest.class, ServletResponse.class,
-			MultipartFile.class);
-
+	private final List<Class<?>> ignoredParamClasses = CollectionUtil.newArrayList(ServletRequest.class,
+			ServletResponse.class, MultipartFile.class);
+	/**
+	 * 添加忽略记录的参数类型
+	 * @param clazz 参数类型
+	 */
+	public void addIgnoredParamClass(Class<?> clazz) {
+		ignoredParamClasses.add(clazz);
+	}
 	/**
 	 * 匹配带有 Log注解的 以及任何返回值类型持有Log的公共方法
 	 * @param joinPoint
