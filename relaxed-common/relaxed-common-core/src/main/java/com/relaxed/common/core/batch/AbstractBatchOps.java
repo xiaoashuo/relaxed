@@ -14,6 +14,7 @@ import org.springframework.util.StopWatch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -143,7 +144,7 @@ public abstract class AbstractBatchOps {
 	 * 获取线程执行器
 	 * @return
 	 */
-	protected abstract ThreadPoolExecutor executor();
+	protected abstract Executor executor();
 
 	/**
 	 * 无返回值异步
