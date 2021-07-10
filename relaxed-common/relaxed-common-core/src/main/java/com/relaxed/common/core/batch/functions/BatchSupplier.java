@@ -13,10 +13,10 @@ public interface BatchSupplier<R> {
 
 	/**
 	 * 数据提供者
-	 * @param startNum
-	 * @param total
+	 * @param currentStepPosition
+	 * @param size
 	 * @return
 	 */
-	List<R> apply(int startNum, int total);
+	List<R> apply(int currentStepPosition, int size);
 
 }
