@@ -1,6 +1,10 @@
 package com.relaxed.extend.mybatis.plus.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.injector.methods.InsertBatchSomeColumn;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,5 +24,7 @@ public interface ExtendMapper<T> extends BaseMapper<T> {
 	 * @author lingting 2020-08-26 22:11
 	 */
 	int insertBatchSomeColumn(@Param("collection") Collection<T> list);
+
+
 
 }

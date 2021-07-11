@@ -8,7 +8,11 @@ import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.relaxed.extend.mybatis.plus.injector.CustomSqlInjector;
+import com.relaxed.extend.mybatis.plus.methods.InsertBatch;
 import com.relaxed.extend.mybatis.plus.methods.InsertBatchSomeColumnByCollection;
+import com.relaxed.extend.mybatis.plus.methods.InsertIgnoreBatch;
+import com.relaxed.extend.mybatis.plus.methods.ReplaceBatch;
+import net.sf.jsqlparser.statement.replace.Replace;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -56,6 +60,9 @@ public class MybatisPlusConfig {
 		List<AbstractMethod> list = new ArrayList<>();
 		// 对于只在更新时进行填充的字段不做插入处理
 		list.add(new InsertBatchSomeColumnByCollection(t -> t.getFieldFill() != FieldFill.UPDATE));
+		list.add(new InsertBatch());
+		list.add(new InsertIgnoreBatch());
+		list.add(new ReplaceBatch());
 		return new CustomSqlInjector(list);
 	}
 
