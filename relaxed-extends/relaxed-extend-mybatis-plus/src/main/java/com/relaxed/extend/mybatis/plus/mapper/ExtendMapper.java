@@ -10,6 +10,8 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
 
+import static com.baomidou.mybatisplus.core.toolkit.Constants.COLLECTION;
+
 /**
  * 所有的 Mapper接口 都需要继承当前接口 如果想自己定义其他的全局方法， 您的全局 BaseMapper 需要继承当前接口
  *
@@ -25,6 +27,11 @@ public interface ExtendMapper<T> extends BaseMapper<T> {
 	 */
 	int insertBatchSomeColumn(@Param("collection") Collection<T> list);
 
-
+	/**
+	 * list insert
+	 * @param list
+	 * @return
+	 */
+	int insertBatch(@Param(COLLECTION) Collection<T> list);
 
 }
