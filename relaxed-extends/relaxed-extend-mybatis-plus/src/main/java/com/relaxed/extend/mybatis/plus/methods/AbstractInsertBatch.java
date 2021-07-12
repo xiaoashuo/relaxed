@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.sql.SqlScriptUtils;
+import com.relaxed.extend.mybatis.plus.toolkit.ExtendConstants;
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
@@ -68,7 +69,7 @@ public abstract class AbstractInsertBatch extends AbstractMethod {
 	protected String prepareValuesSqlForMysqlBatch(TableInfo tableInfo) {
 		List<TableFieldInfo> fieldList = tableInfo.getFieldList();
 		StringBuilder valueSql = new StringBuilder();
-		valueSql.append("<foreach collection=\"" + COLLECTION + "\" item=\"" + ENTITY
+		valueSql.append("<foreach collection=\"" + ExtendConstants.COLLECTION + "\" item=\"" + ENTITY
 				+ "\" index=\"index\"  separator=\",\" >");
 		String valueList = tableInfo.getKeyInsertSqlProperty(ENTITY_DOT, true) + fieldList.stream()
 				.map(AbstractInsertBatch::getInsertSqlPropertyMaybeIf).collect(Collectors.joining(NEWLINE));

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.injector.methods.InsertBatchSomeColumn;
+import com.relaxed.extend.mybatis.plus.toolkit.ExtendConstants;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
@@ -32,6 +33,6 @@ public interface ExtendMapper<T> extends BaseMapper<T> {
 	 * @param list
 	 * @return
 	 */
-	int insertBatch(@Param(COLLECTION) Collection<T> list);
+	int insertBatch(@Param(ExtendConstants.COLLECTION) Collection<T> list);
 
 }
