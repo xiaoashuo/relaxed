@@ -1,5 +1,6 @@
 package com.relaxed.common.core.exception;
 
+import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.core.result.ResultCode;
 import lombok.Getter;
 
@@ -38,5 +39,14 @@ public class BusinessException extends RuntimeException {
 		this.code = code;
 		this.message = message;
 	}
+
+	public BusinessException(ResultCode resultCode, Throwable e,Object... args) {
+		this(resultCode.getCode(), StrUtil.format(resultCode.getMessage(), args), e);
+	}
+
+	public BusinessException(int code, String messageTemplate,Object... args) {
+		this(code,StrUtil.format(messageTemplate, args));
+	}
+
 
 }
