@@ -72,7 +72,14 @@ public abstract class AbstractBatchOps {
 						() -> process(currentStepPosition, batchGroup, batchSupplier, batchConsumer)));
 			}
 			else {
-				process(currentStepPosition, batchGroup, batchSupplier, batchConsumer);
+				try {
+					process(currentStepPosition, batchGroup, batchSupplier, batchConsumer);
+				}
+				catch (Exception throwable) {
+					BatchExceptionParam batchExceptionParam = BatchExceptionParam.of(taskName, currentStepPosition,
+							batchGroup, throwable);
+					errorHandler.accept(batchExceptionParam);
+				}
 			}
 		}
 		// 异步任务时候 同步等待执行完成
