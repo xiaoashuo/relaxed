@@ -40,13 +40,12 @@ public class BusinessException extends RuntimeException {
 		this.message = message;
 	}
 
-	public BusinessException(ResultCode resultCode, Throwable e,Object... args) {
+	public BusinessException(ResultCode resultCode, Throwable e, Object... args) {
 		this(resultCode.getCode(), StrUtil.format(resultCode.getMessage(), args), e);
 	}
 
-	public BusinessException(int code, String messageTemplate,Object... args) {
-		this(code,StrUtil.format(messageTemplate, args));
+	public BusinessException(int code, String messageTemplate, Object... args) {
+		this(code, StrUtil.format(messageTemplate, args));
 	}
-
 
 }
