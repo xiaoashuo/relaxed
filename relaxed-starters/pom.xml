@@ -20,6 +20,7 @@
          <module>relaxed-spring-boot-starter-log</module>
          <module>relaxed-spring-boot-starter-xss</module>
          <module>relaxed-spring-boot-starter-swagger</module>
+         <module>relaxed-spring-boot-starter-cache</module>
     </modules>
 
 
