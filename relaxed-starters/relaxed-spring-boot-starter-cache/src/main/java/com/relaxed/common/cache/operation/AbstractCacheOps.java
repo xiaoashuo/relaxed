@@ -12,27 +12,27 @@ import org.aspectj.lang.ProceedingJoinPoint;
  */
 public abstract class AbstractCacheOps implements CacheOps {
 
-    protected AbstractCacheOps(ProceedingJoinPoint joinPoint) {
-        this.joinPoint = joinPoint;
-    }
+	protected AbstractCacheOps(ProceedingJoinPoint joinPoint) {
+		this.joinPoint = joinPoint;
+	}
 
-    private final ProceedingJoinPoint joinPoint;
+	private final ProceedingJoinPoint joinPoint;
 
-    /**
-     * 织入方法
-     * @return ProceedingJoinPoint
-     */
-    public ProceedingJoinPoint joinPoint() {
-        return joinPoint;
-    }
+	/**
+	 * 织入方法
+	 * @return ProceedingJoinPoint
+	 */
+	public ProceedingJoinPoint joinPoint() {
+		return joinPoint;
+	}
 
+	/**
+	 * 检查缓存数据是否是空值
+	 * @param cacheData
+	 * @return
+	 */
+	public boolean nullValue(Object cacheData) {
+		return CachePropertiesHolder.nullValue().equals(cacheData);
+	}
 
-    /**
-     * 检查缓存数据是否是空值
-     * @param cacheData
-     * @return
-     */
-    public boolean nullValue(Object cacheData) {
-        return CachePropertiesHolder.nullValue().equals(cacheData);
-    }
 }

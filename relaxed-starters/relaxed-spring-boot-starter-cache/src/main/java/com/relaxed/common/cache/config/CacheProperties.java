@@ -11,49 +11,37 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @Version 1.0
  */
 @Data
-@ConfigurationProperties(prefix = "relaxed.redis")
+@ConfigurationProperties(prefix = "relaxed.cache")
 public class CacheProperties {
-    /**
-     * 通用的key前缀
-     */
-    private String keyPrefix = "";
-    /**
-     * redis锁 后缀
-     */
-    private String lockKeySuffix = "locked";
 
-    /**
-     * 默认分隔符
-     */
-    private String delimiter = ":";
+	/**
+	 * 通用的key前缀
+	 */
+	private String keyPrefix = "";
 
-    /**
-     * 空值标识
-     */
-    private String nullValue = "N_V";
+	/**
+	 * redis锁 后缀
+	 */
+	private String lockKeySuffix = "locked";
 
-    /**
-     * 默认超时时间(s)
-     */
-    private long expireTime = 86400L;
+	/**
+	 * 默认分隔符
+	 */
+	private String delimiter = ":";
 
-    /**
-     * 锁的超时时间(ms)
-     */
-    private long lockedTimeOut = 1000L;
+	/**
+	 * 空值标识
+	 */
+	private String nullValue = "N_V";
 
+	/**
+	 * 默认超时时间(s)
+	 */
+	private long expireTime = 86400L;
 
-
-    /**
-     * redis 特有数据
-     */
-    @Data
-    public static class Redis{
-
-    }
-
-
-
-
+	/**
+	 * 锁的超时时间(ms)
+	 */
+	private long lockedTimeOut = 1000L;
 
 }

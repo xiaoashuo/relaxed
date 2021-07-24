@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 /**
  * @author Yakir
  * @Topic Cached
- * @Description 利用Aop, 在方法调用前先查询缓存 若缓存中没有数据，则调用方法本身，并将方法返回值放置入缓存中 分布式锁 获取 可以自行替换 缓存实现
+ * @Description 利用Aop, 在方法执行后执行缓存删除操作
  * @date 2021/7/23 16:22
  * @Version 1.0
  */
@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @MetaCacheAnnotation
-public @interface Cached {
+public @interface CacheDel {
 
 	/**
 	 * cache key 前缀
@@ -24,7 +24,7 @@ public @interface Cached {
 	String prefix() default "";
 
 	/**
-	 * key name support SpEL 常量文本必须''包裹
+	 * key name support SpEL
 	 * @return
 	 */
 	String key() default "";
@@ -46,11 +46,5 @@ public @interface Cached {
 	 * @return
 	 */
 	String condition() default "";
-
-	/**
-	 * 超时时间(S) ttl = 0 使用全局配置值 ttl < 0 : 不超时 ttl > 0 : 使用此超时间
-	 * @return long
-	 */
-	long ttl() default 0;
 
 }

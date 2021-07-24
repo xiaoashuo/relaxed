@@ -9,14 +9,15 @@ import java.lang.reflect.Method;
  * @date 2021/7/23 17:38
  * @Version 1.0
  */
-@FunctionalInterface
 public interface KeyGenerator {
-    /**
-     * key 生成器
-     * @param target 目标对象
-     * @param method 方法
-     * @param params 参数
-     * @return
-     */
-    Object generate(Object target, Method method,Object... params);
+
+	/**
+	 * key 生成器
+	 * @param target 目标对象
+	 * @param method 方法
+	 * @param params 参数
+	 * @return
+	 */
+	String generate(Object target, Method method, Object... params);
+
 }

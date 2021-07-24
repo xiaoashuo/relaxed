@@ -111,6 +111,11 @@
                 <artifactId>relaxed-spring-boot-starter-swagger</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-spring-boot-starter-cache</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--mybatis plus extension,包含了mybatis plus core-->
             <dependency>
                 <groupId>com.baomidou</groupId>
