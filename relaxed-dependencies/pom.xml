@@ -16,7 +16,9 @@
         <lombok.version>1.18.20</lombok.version>
         <hutool.version>5.6.6</hutool.version>
         <xxl-job.version>2.2.0</xxl-job.version>
+        <mybatis.version>3.5.5</mybatis.version>
         <mybatis-plus.version>3.4.2</mybatis-plus.version>
+        <jsqlparse.version>4.0</jsqlparse.version>
         <dynamic-datasource.version>3.3.1</dynamic-datasource.version>
         <jasypt.version>2.1.0</jasypt.version>
         <jsch.version>0.1.54</jsch.version>
@@ -59,6 +61,11 @@
                 <version>${reversion}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-datascope</artifactId>
+                <version>${reversion}</version>
+            </dependency>
 <!--            <dependency>-->
 <!--                <groupId>com.lovecyy</groupId>-->
 <!--                <artifactId>relaxed-business-core</artifactId>-->
@@ -147,6 +154,17 @@
                 <artifactId>jasypt-spring-boot-starter</artifactId>
                 <version>${jasypt.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jsqlparser</groupId>
+                <artifactId>jsqlparser</artifactId>
+                <version>${jsqlparse.version}</version>
+            </dependency>
+
             <!-- HU TOOL 工具包-->
             <dependency>
                 <groupId>cn.hutool</groupId>
