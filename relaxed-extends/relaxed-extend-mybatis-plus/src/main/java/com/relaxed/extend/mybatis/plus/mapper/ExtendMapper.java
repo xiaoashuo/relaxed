@@ -2,7 +2,6 @@ package com.relaxed.extend.mybatis.plus.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-import com.baomidou.mybatisplus.extension.injector.methods.InsertBatchSomeColumn;
 import com.relaxed.extend.mybatis.plus.toolkit.ExtendConstants;
 import org.apache.ibatis.annotations.Param;
 
