@@ -138,12 +138,6 @@ public abstract class AbstractBatchOps {
 	 */
 	protected abstract Executor executor();
 
-	private CompletableFuture<Void> runAsync(Integer currentStepPosition, String taskName, BatchGroup batchGroup,
-			BatchSupplier batchSupplier, BatchConsumer batchConsumer) {
-		return runAsync(currentStepPosition, taskName, batchGroup,
-				() -> process(currentStepPosition, batchGroup, batchSupplier, batchConsumer));
-	}
-
 	/**
 	 * 无返回值异步
 	 * @param currentStepPosition
