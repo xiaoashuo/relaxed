@@ -68,14 +68,100 @@ public abstract class SqlParser {
 		return sql;
 	}
 
+	/**
+	 * 插入操作
+	 * @author yakir
+	 * @date 2021/7/26 21:20
+	 * @param insert
+	 * @param schemaName
+	 * @return java.lang.String
+	 */
 	protected String doInsert(Insert insert, String schemaName) {
 		// 是否设置库名
 		Table table = insert.getTable();
 		table.setSchemaName(schemaName);
 		insert.setTable(table);
+		Select select = insert.getSelect();
+		if (select != null) {
+			doSelect(select, schemaName);
+		}
 		return insert.toString();
 	}
 
+	/**
+	 * 查询解析器
+	 * @author yakir
+	 * @date 2021/7/26 21:19
+	 * @param select
+	 * @param schemeName
+	 * @return java.lang.String
+	 */
+	protected String doSelect(Select select, String schemeName) {
+		processPlainSelect((PlainSelect) select.getSelectBody());
+		StringBuilder buffer = new StringBuilder();
+		ExpressionDeParser expressionDeParser = new ExpressionDeParser();
+		SQLParserSelect parser = new SQLParserSelect(expressionDeParser, buffer);
+		parser.setSchemaName(schemeName);
+		expressionDeParser.setSelectVisitor(parser);
+		expressionDeParser.setBuffer(buffer);
+		select.getSelectBody().accept(parser);
+
+		return buffer.toString();
+	}
+
+	/**
+	 * 更新操作
+	 * @author yakir
+	 * @date 2021/7/26 21:20
+	 * @param update
+	 * @param schemaName
+	 * @return java.lang.String
+	 */
+	protected String doUpdate(Update update, String schemaName) {
+
+		// 追加库名
+		StringBuilder buffer = new StringBuilder();
+		Table tb = update.getTable();
+		tb.setSchemaName(schemaName);
+		update.setTable(tb);
+		// 处理from
+		FromItem fromItem = update.getFromItem();
+		if (fromItem != null) {
+			Table tf = (Table) fromItem;
+			tf.setSchemaName(schemaName);
+		}
+		// 处理join
+		List<Join> joins = update.getJoins();
+		if (joins != null && joins.size() > 0) {
+			for (Object object : joins) {
+				Join t = (Join) object;
+				Table rightItem = (Table) t.getRightItem();
+				rightItem.setSchemaName(schemaName);
+			}
+		}
+		List<Join> startJoins = update.getStartJoins();
+		if (startJoins != null && startJoins.size() > 0) {
+			for (Join startJoin : startJoins) {
+				Table rightItem = (Table) startJoin.getRightItem();
+				rightItem.setSchemaName(schemaName);
+			}
+		}
+		ExpressionDeParser expressionDeParser = new ExpressionDeParser();
+		UpdateDeParser p = new UpdateDeParser(expressionDeParser, null, buffer);
+		expressionDeParser.setBuffer(buffer);
+		p.deParse(update);
+
+		return update.toString();
+	}
+
+	/**
+	 * 删除操作
+	 * @author yakir
+	 * @date 2021/7/26 21:20
+	 * @param delete
+	 * @param schemaName
+	 * @return java.lang.String
+	 */
 	protected String doDelete(Delete delete, String schemaName) {
 		// 设置库名
 		Table t = delete.getTable();
@@ -147,44 +233,7 @@ public abstract class SqlParser {
 		}
 	}
 
-	protected String doUpdate(Update update, String schemaName) {
-
-		// 追加库名
-		StringBuilder buffer = new StringBuilder();
-		Table tb = update.getTable();
-		tb.setSchemaName(schemaName);
-		update.setTable(tb);
-		// 处理from
-		FromItem fromItem = update.getFromItem();
-		if (fromItem != null) {
-			Table tf = (Table) fromItem;
-			tf.setSchemaName(schemaName);
-		}
-		// 处理join
-		List<Join> joins = update.getJoins();
-		if (joins != null && joins.size() > 0) {
-			for (Object object : joins) {
-				Join t = (Join) object;
-				Table rightItem = (Table) t.getRightItem();
-				rightItem.setSchemaName(schemaName);
-			}
-		}
-		List<Join> startJoins = update.getStartJoins();
-		if (startJoins != null && startJoins.size() > 0) {
-			for (Join startJoin : startJoins) {
-				Table rightItem = (Table) startJoin.getRightItem();
-				rightItem.setSchemaName(schemaName);
-			}
-		}
-		ExpressionDeParser expressionDeParser = new ExpressionDeParser();
-		UpdateDeParser p = new UpdateDeParser(expressionDeParser, null, buffer);
-		expressionDeParser.setBuffer(buffer);
-		p.deParse(update);
-
-		return update.toString();
-	}
-
-	protected class SQLParserSelect extends SelectDeParser {
+	protected static class SQLParserSelect extends SelectDeParser {
 
 		private String schemaName;
 
@@ -215,19 +264,6 @@ public abstract class SqlParser {
 			}
 		}
 
-	}
-
-	protected String doSelect(Select select, String schemeName) {
-		processPlainSelect((PlainSelect) select.getSelectBody());
-		StringBuilder buffer = new StringBuilder();
-		ExpressionDeParser expressionDeParser = new ExpressionDeParser();
-		SQLParserSelect parser = new SQLParserSelect(expressionDeParser, buffer);
-		parser.setSchemaName(schemeName);
-		expressionDeParser.setSelectVisitor(parser);
-		expressionDeParser.setBuffer(buffer);
-		select.getSelectBody().accept(parser);
-
-		return buffer.toString();
 	}
 
 	/**

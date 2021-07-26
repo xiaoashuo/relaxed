@@ -33,6 +33,9 @@ public class TenantInterceptorTest {
 		// String insertResult = SqlParser.processSql(insertSql, "db1");
 		// System.out.println(insertResult);
 		//
+		String insertSql = "insert into user  select * from address ";
+		String insertResult = defaultSqlParser.processSql(insertSql, "db1");
+		System.out.println(insertResult);
 		// String updateSql="update user u left join address a on u.id=a.user_id set
 		// u.username=3 where u.id in (1,2)";
 		// String updateResult = SqlParser.processSql(updateSql, "db1");
@@ -47,9 +50,9 @@ public class TenantInterceptorTest {
 		// from user)";
 		// String deleteResult = SqlParser.processSql(deleteSql, "db1");
 		// System.out.println(deleteResult);
-		String deleteSql = "delete from user where u.id=a.user_id ";
-		String deleteResult = defaultSqlParser.processSql(deleteSql, "db1");
-		System.out.println(deleteResult);
+		// String deleteSql = "delete from user where u.id=a.user_id ";
+		// String deleteResult = defaultSqlParser.processSql(deleteSql, "db1");
+		// System.out.println(deleteResult);
 	}
 
 }
