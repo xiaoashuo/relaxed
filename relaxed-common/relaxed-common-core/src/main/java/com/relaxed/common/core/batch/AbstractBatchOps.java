@@ -68,8 +68,8 @@ public abstract class AbstractBatchOps {
 			// 起始处理值
 			int currentStepPosition = computeStartPos(i, size);
 			if (async) {
-				completableFutures.add(runAsync(currentStepPosition, taskName, batchGroup,
-						() -> process(currentStepPosition, batchGroup, batchSupplier, batchConsumer)));
+				completableFutures
+						.add(runAsync(currentStepPosition, taskName, batchGroup, batchSupplier, batchConsumer));
 			}
 			else {
 				try {
@@ -137,6 +137,21 @@ public abstract class AbstractBatchOps {
 	 * @return
 	 */
 	protected abstract Executor executor();
+
+	/**
+	 * 无返回值异步
+	 * @param currentStepPosition
+	 * @param taskName
+	 * @param batchGroup
+	 * @param batchSupplier
+	 * @param batchConsumer
+	 * @return
+	 */
+	private CompletableFuture<Void> runAsync(Integer currentStepPosition, String taskName, BatchGroup batchGroup,
+			BatchSupplier batchSupplier, BatchConsumer batchConsumer) {
+		return runAsync(currentStepPosition, taskName, batchGroup,
+				() -> process(currentStepPosition, batchGroup, batchSupplier, batchConsumer));
+	}
 
 	/**
 	 * 无返回值异步
