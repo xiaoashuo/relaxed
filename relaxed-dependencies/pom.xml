@@ -44,26 +44,34 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
+            <!--核心模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-core</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--配置模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-conf</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--多数据源-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-datasource</artifactId>
                 <version>${reversion}</version>
             </dependency>
-
+            <!--数据域-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-datascope</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <!--多租户 独立数据库 多schema-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-tenant</artifactId>
                 <version>${reversion}</version>
             </dependency>
 <!--            <dependency>-->
@@ -71,53 +79,56 @@
 <!--                <artifactId>relaxed-business-core</artifactId>-->
 <!--                <version>${reversion}</version>-->
 <!--            </dependency>-->
-
+            <!--扩展mybatis plus-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-extend-mybatis-plus</artifactId>
                 <version>${reversion}</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>com.lovecyy</groupId>-->
-<!--                <artifactId>relaxed-spring-boot-starter-swagger</artifactId>-->
-<!--                <version>${reversion}</version>-->
-<!--            </dependency>-->
 
+            <!--sftp客户端-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-sftp</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--ding talk-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-dingtalk</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--分布式调度任务xxl-job-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-job</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--邮件发送-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-mail</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--日志记录-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-log</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--xss 过滤-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-xss</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--swagger 接口文档 -->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-swagger</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--缓存模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-cache</artifactId>
@@ -149,16 +160,19 @@
                 <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
                 <version>${dynamic-datasource.version}</version>
             </dependency>
+            <!--jasypt加密模块-->
             <dependency>
                 <groupId>com.github.ulisesbocchio</groupId>
                 <artifactId>jasypt-spring-boot-starter</artifactId>
                 <version>${jasypt.version}</version>
             </dependency>
+            <!--mybatis-->
             <dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>${mybatis.version}</version>
             </dependency>
+            <!--Sql 解释器-->
             <dependency>
                 <groupId>com.github.jsqlparser</groupId>
                 <artifactId>jsqlparser</artifactId>
@@ -176,11 +190,13 @@
                 <artifactId>hutool-core</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
+            <!--模板引擎-->
             <dependency>
                 <groupId>org.apache.velocity</groupId>
                 <artifactId>velocity</artifactId>
                 <version>${velocity.version}</version>
             </dependency>
+            <!--map struct-->
             <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
@@ -191,24 +207,25 @@
                 <artifactId>mapstruct-processor</artifactId>
                 <version>${mapstruct.version}</version>
             </dependency>
-
+            <!--html 元素解析器-->
             <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
                 <version>${jsoup.version}</version>
             </dependency>
-
+            <!--shell sftp.. 工具-->
             <dependency>
                 <groupId>com.jcraft</groupId>
                 <artifactId>jsch</artifactId>
                 <version>${jsch.version}</version>
             </dependency>
+            <!--分布式任务-->
             <dependency>
                 <groupId>com.xuxueli</groupId>
                 <artifactId>xxl-job-core</artifactId>
                 <version>${xxl-job.version}</version>
             </dependency>
-
+           <!--swagger 及其相关模块-->
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-boot-starter</artifactId>
