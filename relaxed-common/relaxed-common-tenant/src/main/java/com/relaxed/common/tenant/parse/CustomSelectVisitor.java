@@ -1,12 +1,8 @@
 package com.relaxed.common.tenant.parse;
 
 import com.relaxed.common.tenant.handler.Tenant;
-import com.relaxed.common.tenant.handler.table.DataScope;
-import com.relaxed.common.tenant.holder.TenantHolder;
 import com.relaxed.common.tenant.utils.ExpressionUtil;
 import net.sf.jsqlparser.expression.*;
-import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
-import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.util.deparser.GroupByDeParser;
@@ -15,8 +11,6 @@ import net.sf.jsqlparser.util.deparser.OrderByDeParser;
 import net.sf.jsqlparser.util.deparser.SelectDeParser;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Yakir
@@ -150,13 +144,13 @@ public class CustomSelectVisitor extends SelectDeParser {
 			getBuffer().append(" WHERE ");
 			if (whereExpression != null) {
 				Table fromItem = (Table) plainSelect.getFromItem();
-				whereExpression = ExpressionUtil.injectExpression(whereExpression, fromItem, tenant);
+				whereExpression = ExpressionUtil.injectExpression(whereExpression, fromItem, getTenant());
 			}
 			whereExpression.accept(super.getExpressionVisitor());
 		}
 		else {
-			whereExpression = ExpressionUtil.processNoWhereExpression((Table) plainSelect.getFromItem(), tenant,
-					buffer);
+			whereExpression = ExpressionUtil.processNoWhereExpression((Table) plainSelect.getFromItem(), getTenant(),
+					getBuffer());
 			if (whereExpression != null) {
 				whereExpression.accept(super.getExpressionVisitor());
 			}

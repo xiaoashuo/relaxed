@@ -1,26 +1,17 @@
 package com.relaxed.common.tenant.parse;
 
 import com.relaxed.common.tenant.handler.Tenant;
-import com.relaxed.common.tenant.handler.table.DataScope;
-import com.relaxed.common.tenant.holder.TenantHolder;
 import com.relaxed.common.tenant.utils.ExpressionUtil;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.Parenthesis;
-import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
-import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.schema.Table;
-import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
-import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.WithItem;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.deparser.*;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Yakir
@@ -63,17 +54,8 @@ public class CustomStatementDeParser extends StatementDeParser {
 		expressionDeParser.setBuffer(getBuffer());
 
 		Expression whereExpression = update.getWhere();
-		if (whereExpression == null) {
-			whereExpression = ExpressionUtil.processNoWhereExpression(update.getTable(), getTenant(), getBuffer());
-			if (whereExpression != null) {
-				whereExpression.accept(expressionDeParser);
-			}
-		}
-		else {
-			Table table = update.getTable();
-			whereExpression = ExpressionUtil.injectExpression(whereExpression, table, getTenant());
-		}
-		update.setWhere(whereExpression);
+		update.setWhere(processWhereExpression(whereExpression, update.getTable(), expressionDeParser, getBuffer(),
+				getTenant()));
 		UpdateDeParser updateDeParser = new UpdateDeParser(expressionDeParser, parser, getBuffer());
 		updateDeParser.deParse(update);
 	}
@@ -89,20 +71,9 @@ public class CustomStatementDeParser extends StatementDeParser {
 		parser.setExpressionVisitor(expressionDeParser);
 		expressionDeParser.setSelectVisitor(parser);
 		expressionDeParser.setBuffer(getBuffer());
-
 		Expression whereExpression = delete.getWhere();
-		if (whereExpression == null) {
-			// 若开启字段匹配
-			whereExpression = ExpressionUtil.processNoWhereExpression(delete.getTable(), getTenant(), getBuffer());
-			if (whereExpression != null) {
-				whereExpression.accept(expressionDeParser);
-			}
-		}
-		else {
-			Table table = delete.getTable();
-			whereExpression = ExpressionUtil.injectExpression(whereExpression, table, getTenant());
-		}
-		delete.setWhere(whereExpression);
+		delete.setWhere(processWhereExpression(whereExpression, delete.getTable(), expressionDeParser, getBuffer(),
+				getTenant()));
 		DeleteDeParser deleteDeParser = new DeleteDeParser(expressionDeParser, getBuffer());
 		deleteDeParser.deParse(delete);
 	}
@@ -128,6 +99,33 @@ public class CustomStatementDeParser extends StatementDeParser {
 		}
 		select.getSelectBody().accept(parser);
 
+	}
+
+	/**
+	 * 处理where 表达式
+	 * @author yakir
+	 * @date 2021/7/27 20:06
+	 * @param whereExpression
+	 * @param table
+	 * @param expressionDeParser
+	 * @param builder
+	 * @param tenant
+	 * @return net.sf.jsqlparser.expression.Expression
+	 */
+	protected Expression processWhereExpression(Expression whereExpression, Table table,
+			ExpressionDeParser expressionDeParser, StringBuilder builder, Tenant tenant) {
+
+		if (whereExpression == null) {
+			// 若开启字段匹配
+			whereExpression = ExpressionUtil.processNoWhereExpression(table, tenant, builder);
+			if (whereExpression != null) {
+				whereExpression.accept(expressionDeParser);
+			}
+		}
+		else {
+			whereExpression = ExpressionUtil.injectExpression(whereExpression, table, getTenant());
+		}
+		return whereExpression;
 	}
 
 	public Tenant getTenant() {
