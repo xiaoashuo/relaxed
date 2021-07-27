@@ -52,16 +52,11 @@ public class TenantInterceptorTest {
 		}
 
 		@Override
-		public List<String> getIgnoreSchemas() {
-			return null;
-		}
-
-		@Override
 		public boolean ignore(String schemaName) {
 			if (schemaName == null || "".equals(schemaName)) {
 				return true;
 			}
-			return getIgnoreSchemas().contains(schemaName);
+			return false;
 		}
 
 		@Override
@@ -91,7 +86,7 @@ public class TenantInterceptorTest {
 			@Override
 			public Collection<String> getTableNames() {
 				Set<String> tableNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-				tableNames.addAll(Arrays.asList("user", "address", "t_bat"));
+				tableNames.addAll(Arrays.asList("t_user", "address", "t_bat"));
 				return tableNames;
 			}
 
@@ -111,7 +106,9 @@ public class TenantInterceptorTest {
 		tenant.setSchemaName("db1");
 		tenant.setTable(true);
 		tenant.setDataScopes(dataScopes);
-		String sql = "select * from user u left join address a on u.id=a.user_id where  u.id in (select id from t_bat tb )";
+		// String sql = "select * from user u left join address a on u.id=a.user_id where
+		// u.id in (select id from t_bat tb )";
+		String sql = "SELECT u.id, u.tenant_id, u.username FROM t_user u ";
 		// String sql="select * from user u left join address a on u.id=a.user_id where
 		// u.id in (1,2 )";
 		// String sql="select (select id from user) info,* from user u left join address a
