@@ -1,18 +1,20 @@
 package com.relaxed.common.tenant.interceptor;
 
-import com.relaxed.common.tenant.exception.TenantException;
-import com.relaxed.common.tenant.handler.TenantHandle;
-import com.relaxed.common.tenant.manage.DataSchemaManage;
+import com.relaxed.common.tenant.handler.Tenant;
+import com.relaxed.common.tenant.handler.schema.DataSchemaHandler;
+import com.relaxed.common.tenant.handler.table.DataScope;
+import com.relaxed.common.tenant.handler.table.DataTableHandler;
 import com.relaxed.common.tenant.parse.SqlParser;
 import com.relaxed.common.tenant.utils.PluginUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.*;
+import org.springframework.util.StringUtils;
 
 import java.sql.Connection;
+import java.util.List;
 
 /**
  * @author Yakir
@@ -27,22 +29,22 @@ import java.sql.Connection;
 		@Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
 public class TenantInterceptor implements Interceptor {
 
-	private final TenantHandle tenantHandle;
+	private final DataSchemaHandler dataSchemaHandler;
 
-	private final DataSchemaManage dataSchemaManage;
+	private final DataTableHandler dataTableHandler;
 
 	private final SqlParser sqlParser;
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
-		if (!tenantHandle.enable()) {
+		boolean enableSchema = dataSchemaHandler.enable();
+		boolean enableTable = dataTableHandler.enable();
+		// schema 与 表字段都不开启 跳过
+		if (!enableSchema && !enableTable) {
 			return invocation.proceed();
 		}
-		String currentSchema = tenantHandle.getCurrentSchema();
-		// 包含则忽略当前schema
-		if (dataSchemaManage.ignore(currentSchema)) {
-			return invocation.proceed();
-		}
+		Tenant tenant = new Tenant();
+		String currentSchema = dataSchemaHandler.getCurrentSchema();
 		// 验证通过执行sql语句替换
 		Object target = invocation.getTarget();
 		StatementHandler sh = (StatementHandler) target;
@@ -51,20 +53,35 @@ public class TenantInterceptor implements Interceptor {
 		// mapper 方法全路径
 		String mappedStatementId = ms.getId();
 		// 忽略指定方法
-		if (dataSchemaManage.ignoreMethod(mappedStatementId)) {
-			return invocation.proceed();
+		if (!enableSchema || !StringUtils.hasText(currentSchema) || dataSchemaHandler.ignore(currentSchema)
+				|| dataSchemaHandler.ignoreMethod(mappedStatementId)) {
+			tenant.setSchema(false);
 		}
-		// 验证所有schema 里面是否包含指定schema 不包含抛出异常
-		if (!dataSchemaManage.validSchema(currentSchema)) {
-			throw new TenantException("current schema not valid.");
+		else {
+			// 填充租户
+			tenant.setSchema(true);
+			tenant.setSchemaName(currentSchema);
+		}
+		// 是否忽略租户列处理
+		if (!enableTable || dataTableHandler.ignore(mappedStatementId)) {
+			tenant.setTable(false);
+		}
+		else {
+			tenant.setTable(true);
+			List<DataScope> dataScopes = dataTableHandler.filterDataScopes(mappedStatementId);
+			// 再次判断数据域是否为空 为空 则变更为未开启状态
+			if (dataScopes == null || dataScopes.isEmpty()) {
+				tenant.setTable(false);
+			}
+			else {
+				tenant.setDataScopes(dataScopes);
+			}
 		}
 		// 验证通过执行sql语句替换
 		PluginUtils.MPBoundSql mpBs = mpSh.mPBoundSql();
-		SqlCommandType sct = ms.getSqlCommandType();
 		// 原始sql语句
 		String originalSql = mpBs.sql();
-		String replaceSql = sqlParser.processSql(originalSql, currentSchema);
-		mpBs.sql(replaceSql);
+		mpBs.sql(sqlParser.processSql(originalSql, tenant));
 		return invocation.proceed();
 	}
 

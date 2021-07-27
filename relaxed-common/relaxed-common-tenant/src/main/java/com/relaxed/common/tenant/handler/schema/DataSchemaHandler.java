@@ -1,15 +1,23 @@
-package com.relaxed.common.tenant.manage;
+package com.relaxed.common.tenant.handler.schema;
 
 import java.util.List;
 
 /**
  * @author Yakir
- * @Topic DataSourceMannage
- * @Description
+ * @Topic DataSchemaManage
+ * @Description 针对数据库的
  * @date 2021/7/26 16:23
  * @Version 1.0
  */
-public interface DataSchemaManage {
+public interface DataSchemaHandler {
+
+	/**
+	 * 是否开启schema 多租户
+	 * @author yakir
+	 * @date 2021/7/27 18:01
+	 * @return boolean
+	 */
+	boolean enable();
 
 	/**
 	 * 获取当前系统所有的数据库标识
@@ -46,12 +54,9 @@ public interface DataSchemaManage {
 	boolean ignoreMethod(String mapperId);
 
 	/**
-	 * 验证当前schema 是否在所有schema 内
-	 * @author yakir
-	 * @date 2021/7/26 17:08
-	 * @param schemaName
-	 * @return boolean
+	 * 提供数据库Schema 若指定schema 则返回对应名称 若使用当前数据库的 则返回null
+	 * @return
 	 */
-	boolean validSchema(String schemaName);
+	String getCurrentSchema();
 
 }
