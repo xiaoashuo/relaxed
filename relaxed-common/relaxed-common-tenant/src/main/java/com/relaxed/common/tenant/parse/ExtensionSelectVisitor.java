@@ -1,6 +1,6 @@
 package com.relaxed.common.tenant.parse;
 
-import com.relaxed.common.tenant.handler.Tenant;
+import com.relaxed.common.tenant.core.Tenant;
 import com.relaxed.common.tenant.utils.ExpressionUtil;
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.schema.Table;
@@ -19,11 +19,11 @@ import java.util.Iterator;
  * @date 2021/7/27 13:10
  * @Version 1.0
  */
-public class CustomSelectVisitor extends SelectDeParser {
+public class ExtensionSelectVisitor extends SelectDeParser {
 
 	private Tenant tenant;
 
-	public CustomSelectVisitor(ExpressionVisitor expressionVisitor, StringBuilder buffer) {
+	public ExtensionSelectVisitor(ExpressionVisitor expressionVisitor, StringBuilder buffer) {
 		super(expressionVisitor, buffer);
 	}
 
@@ -149,7 +149,7 @@ public class CustomSelectVisitor extends SelectDeParser {
 			whereExpression.accept(super.getExpressionVisitor());
 		}
 		else {
-			whereExpression = ExpressionUtil.processNoWhereExpression((Table) plainSelect.getFromItem(), getTenant(),
+			whereExpression = ExpressionUtil.injectExpressionNoWhere((Table) plainSelect.getFromItem(), getTenant(),
 					getBuffer());
 			if (whereExpression != null) {
 				whereExpression.accept(super.getExpressionVisitor());

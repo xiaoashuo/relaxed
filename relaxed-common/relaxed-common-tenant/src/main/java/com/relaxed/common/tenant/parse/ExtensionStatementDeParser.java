@@ -1,6 +1,6 @@
 package com.relaxed.common.tenant.parse;
 
-import com.relaxed.common.tenant.handler.Tenant;
+import com.relaxed.common.tenant.core.Tenant;
 import com.relaxed.common.tenant.utils.ExpressionUtil;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Table;
@@ -20,11 +20,11 @@ import java.util.Iterator;
  * @date 2021/7/27 12:55
  * @Version 1.0
  */
-public class CustomStatementDeParser extends StatementDeParser {
+public class ExtensionStatementDeParser extends StatementDeParser {
 
 	private Tenant tenant;
 
-	public CustomStatementDeParser(StringBuilder buffer, Tenant tenant) {
+	public ExtensionStatementDeParser(StringBuilder buffer, Tenant tenant) {
 		super(buffer);
 		this.tenant = tenant;
 	}
@@ -32,8 +32,8 @@ public class CustomStatementDeParser extends StatementDeParser {
 	@Override
 	public void visit(Insert insert) {
 		ExpressionUtil.fillTableSchema(insert, getTenant());
-		CustomExpressionDeParser expressionDeParser = new CustomExpressionDeParser();
-		CustomSelectVisitor parser = new CustomSelectVisitor(expressionDeParser, getBuffer());
+		ExtensionExpressionDeParser expressionDeParser = new ExtensionExpressionDeParser();
+		ExtensionSelectVisitor parser = new ExtensionSelectVisitor(expressionDeParser, getBuffer());
 		parser.setTenant(getTenant());
 		parser.setBuffer(getBuffer());
 		expressionDeParser.setSelectVisitor(parser);
@@ -46,8 +46,8 @@ public class CustomStatementDeParser extends StatementDeParser {
 	@Override
 	public void visit(Update update) {
 		ExpressionUtil.fillTableSchema(update, getTenant());
-		CustomExpressionDeParser expressionDeParser = new CustomExpressionDeParser();
-		CustomSelectVisitor parser = new CustomSelectVisitor(expressionDeParser, getBuffer());
+		ExtensionExpressionDeParser expressionDeParser = new ExtensionExpressionDeParser();
+		ExtensionSelectVisitor parser = new ExtensionSelectVisitor(expressionDeParser, getBuffer());
 		parser.setTenant(getTenant());
 		parser.setBuffer(getBuffer());
 		expressionDeParser.setSelectVisitor(parser);
@@ -64,8 +64,8 @@ public class CustomStatementDeParser extends StatementDeParser {
 	public void visit(Delete delete) {
 		// 填充schema
 		ExpressionUtil.fillTableSchema(delete, getTenant());
-		CustomExpressionDeParser expressionDeParser = new CustomExpressionDeParser();
-		CustomSelectVisitor parser = new CustomSelectVisitor(expressionDeParser, getBuffer());
+		ExtensionExpressionDeParser expressionDeParser = new ExtensionExpressionDeParser();
+		ExtensionSelectVisitor parser = new ExtensionSelectVisitor(expressionDeParser, getBuffer());
 		parser.setTenant(getTenant());
 		parser.setBuffer(getBuffer());
 		parser.setExpressionVisitor(expressionDeParser);
@@ -81,8 +81,8 @@ public class CustomStatementDeParser extends StatementDeParser {
 	@Override
 	public void visit(Select select) {
 
-		CustomExpressionDeParser expressionDeParser = new CustomExpressionDeParser();
-		CustomSelectVisitor parser = new CustomSelectVisitor(expressionDeParser, getBuffer());
+		ExtensionExpressionDeParser expressionDeParser = new ExtensionExpressionDeParser();
+		ExtensionSelectVisitor parser = new ExtensionSelectVisitor(expressionDeParser, getBuffer());
 		parser.setTenant(getTenant());
 		parser.setExpressionVisitor(expressionDeParser);
 		expressionDeParser.setSelectVisitor(parser);
@@ -117,7 +117,7 @@ public class CustomStatementDeParser extends StatementDeParser {
 
 		if (whereExpression == null) {
 			// 若开启字段匹配
-			whereExpression = ExpressionUtil.processNoWhereExpression(table, tenant, builder);
+			whereExpression = ExpressionUtil.injectExpressionNoWhere(table, tenant, builder);
 			if (whereExpression != null) {
 				whereExpression.accept(expressionDeParser);
 			}

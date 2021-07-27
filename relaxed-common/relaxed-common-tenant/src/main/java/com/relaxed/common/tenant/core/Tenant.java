@@ -1,6 +1,6 @@
-package com.relaxed.common.tenant.handler;
+package com.relaxed.common.tenant.core;
 
-import com.relaxed.common.tenant.handler.table.DataScope;
+import com.relaxed.common.tenant.core.table.DataScope;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

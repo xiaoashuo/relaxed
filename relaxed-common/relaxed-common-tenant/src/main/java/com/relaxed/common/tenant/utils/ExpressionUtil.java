@@ -1,7 +1,7 @@
 package com.relaxed.common.tenant.utils;
 
-import com.relaxed.common.tenant.handler.Tenant;
-import com.relaxed.common.tenant.handler.table.DataScope;
+import com.relaxed.common.tenant.core.Tenant;
+import com.relaxed.common.tenant.core.table.DataScope;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Parenthesis;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
@@ -87,10 +87,10 @@ public class ExpressionUtil {
 	 * @param builder
 	 * @return
 	 */
-	public static Expression processNoWhereExpression(Table table, Tenant tenant, StringBuilder builder) {
+	public static Expression injectExpressionNoWhere(Table table, Tenant tenant, StringBuilder builder) {
 		if (tenant.isTable()) {
 			builder.append(" WHERE ");
-			return ExpressionUtil.injectExpressionNoWhere(table, tenant);
+			return injectExpressionNoWhere(table, tenant);
 		}
 		return null;
 	}

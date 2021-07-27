@@ -1,9 +1,9 @@
 package com.relaxed.common.tenant.interceptor;
 
-import com.relaxed.common.tenant.handler.Tenant;
-import com.relaxed.common.tenant.handler.schema.DataSchemaHandler;
-import com.relaxed.common.tenant.handler.table.DataScope;
-import com.relaxed.common.tenant.handler.table.DataTableHandler;
+import com.relaxed.common.tenant.core.Tenant;
+import com.relaxed.common.tenant.core.schema.SchemaHandler;
+import com.relaxed.common.tenant.core.table.DataScope;
+import com.relaxed.common.tenant.core.table.TableHandler;
 import com.relaxed.common.tenant.parse.SqlParser;
 import com.relaxed.common.tenant.utils.PluginUtils;
 import lombok.RequiredArgsConstructor;
@@ -29,22 +29,22 @@ import java.util.List;
 		@Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
 public class TenantInterceptor implements Interceptor {
 
-	private final DataSchemaHandler dataSchemaHandler;
+	private final SchemaHandler schemaHandler;
 
-	private final DataTableHandler dataTableHandler;
+	private final TableHandler tableHandler;
 
 	private final SqlParser sqlParser;
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
-		boolean enableSchema = dataSchemaHandler.enable();
-		boolean enableTable = dataTableHandler.enable();
+		boolean enableSchema = schemaHandler.enable();
+		boolean enableTable = tableHandler.enable();
 		// schema 与 表字段都不开启 跳过
 		if (!enableSchema && !enableTable) {
 			return invocation.proceed();
 		}
 		Tenant tenant = new Tenant();
-		String currentSchema = dataSchemaHandler.getCurrentSchema();
+		String currentSchema = schemaHandler.getCurrentSchema();
 		// 验证通过执行sql语句替换
 		Object target = invocation.getTarget();
 		StatementHandler sh = (StatementHandler) target;
@@ -53,8 +53,8 @@ public class TenantInterceptor implements Interceptor {
 		// mapper 方法全路径
 		String mappedStatementId = ms.getId();
 		// 忽略指定方法
-		if (!enableSchema || !StringUtils.hasText(currentSchema) || dataSchemaHandler.ignore(currentSchema)
-				|| dataSchemaHandler.ignoreMethod(mappedStatementId)) {
+		if (!enableSchema || !StringUtils.hasText(currentSchema) || schemaHandler.ignore(currentSchema)
+				|| schemaHandler.ignoreMethod(mappedStatementId)) {
 			tenant.setSchema(false);
 		}
 		else {
@@ -63,12 +63,12 @@ public class TenantInterceptor implements Interceptor {
 			tenant.setSchemaName(currentSchema);
 		}
 		// 是否忽略租户列处理
-		if (!enableTable || dataTableHandler.ignore(mappedStatementId)) {
+		if (!enableTable || tableHandler.ignore(mappedStatementId)) {
 			tenant.setTable(false);
 		}
 		else {
 			tenant.setTable(true);
-			List<DataScope> dataScopes = dataTableHandler.filterDataScopes(mappedStatementId);
+			List<DataScope> dataScopes = tableHandler.filterDataScopes(mappedStatementId);
 			// 再次判断数据域是否为空 为空 则变更为未开启状态
 			if (dataScopes == null || dataScopes.isEmpty()) {
 				tenant.setTable(false);

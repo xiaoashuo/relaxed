@@ -1,15 +1,15 @@
-package com.relaxed.common.tenant.handler.schema;
+package com.relaxed.common.tenant.core.schema;
 
 import java.util.List;
 
 /**
  * @author Yakir
- * @Topic DataSchemaManage
+ * @Topic SchemaHandler
  * @Description 针对数据库的
  * @date 2021/7/26 16:23
  * @Version 1.0
  */
-public interface DataSchemaHandler {
+public interface SchemaHandler {
 
 	/**
 	 * 是否开启schema 多租户

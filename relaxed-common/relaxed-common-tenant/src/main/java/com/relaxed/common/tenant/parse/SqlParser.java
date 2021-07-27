@@ -1,17 +1,11 @@
 package com.relaxed.common.tenant.parse;
 
 import com.relaxed.common.tenant.exception.TenantException;
-import com.relaxed.common.tenant.handler.Tenant;
+import com.relaxed.common.tenant.core.Tenant;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.schema.Column;
-import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.delete.Delete;
-import net.sf.jsqlparser.statement.insert.Insert;
-import net.sf.jsqlparser.statement.select.*;
-import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.deparser.StatementDeParser;
 
 /**

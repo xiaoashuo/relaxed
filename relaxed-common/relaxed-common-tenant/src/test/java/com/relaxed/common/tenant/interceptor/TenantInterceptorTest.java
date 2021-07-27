@@ -1,26 +1,19 @@
 package com.relaxed.common.tenant.interceptor;
 
-import com.relaxed.common.tenant.handler.Tenant;
-import com.relaxed.common.tenant.handler.schema.DataSchemaHandler;
-import com.relaxed.common.tenant.handler.table.DataScope;
+import com.relaxed.common.tenant.core.Tenant;
+import com.relaxed.common.tenant.core.schema.SchemaHandler;
+import com.relaxed.common.tenant.core.table.DataScope;
 import com.relaxed.common.tenant.parse.DefaultSqlParser;
-import com.relaxed.common.tenant.parse.SqlParser;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.InExpression;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
-import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.insert.Insert;
-import net.sf.jsqlparser.statement.select.Select;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Yakir
@@ -32,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TenantInterceptorTest {
 
-	public class DefaultDataSchemaHandler implements DataSchemaHandler {
+	public class DefaultSchemaHandler implements SchemaHandler {
 
 		List<String> schemas = new ArrayList<String>() {
 			{
@@ -79,7 +72,7 @@ public class TenantInterceptorTest {
 			final String columnId = "order_id";
 
 			@Override
-			public String getTenantId() {
+			public String getResource() {
 				return columnId;
 			}
 

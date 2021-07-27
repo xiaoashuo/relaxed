@@ -1,4 +1,4 @@
-package com.relaxed.common.tenant.handler.table;
+package com.relaxed.common.tenant.core.table;
 
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
@@ -15,12 +15,12 @@ import java.util.Collection;
 public interface DataScope {
 
 	/**
-	 * 租户列 id
+	 * 资源标识
 	 * @author yakir
 	 * @date 2021/7/27 9:53
 	 * @return java.lang.String
 	 */
-	String getTenantId();
+	String getResource();
 
 	/**
 	 * 该资源相关的所有表，推荐使用 Set 类型。 <br/>

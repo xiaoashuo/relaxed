@@ -1,15 +1,15 @@
-package com.relaxed.common.tenant.handler.table;
+package com.relaxed.common.tenant.core.table;
 
 import java.util.List;
 
 /**
  * @author Yakir
- * @Topic DataTableManage
+ * @Topic TableHandler
  * @Description 针对数据表 的指定租户字段
  * @date 2021/7/27 9:54
  * @Version 1.0
  */
-public interface DataTableHandler {
+public interface TableHandler {
 
 	/**
 	 * 是否开启字段多租户
