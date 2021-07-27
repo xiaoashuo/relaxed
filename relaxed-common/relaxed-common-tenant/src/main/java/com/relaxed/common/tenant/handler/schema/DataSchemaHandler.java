@@ -28,14 +28,6 @@ public interface DataSchemaHandler {
 	List<String> getAllSchemas();
 
 	/**
-	 * 得到所有忽略的schemas 不需要多租户处理的
-	 * @author yakir
-	 * @date 2021/7/26 16:58
-	 * @return java.util.List<java.lang.String>
-	 */
-	List<String> getIgnoreSchemas();
-
-	/**
 	 * 是否忽略当前schema
 	 * @author yakir
 	 * @date 2021/7/26 16:52

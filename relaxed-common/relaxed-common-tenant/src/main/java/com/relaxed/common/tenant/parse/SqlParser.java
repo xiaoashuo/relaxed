@@ -25,7 +25,6 @@ import net.sf.jsqlparser.util.deparser.StatementDeParser;
 public abstract class SqlParser {
 
 	public String processSql(String originalSql, Object obj) {
-		log.info("original sql {}", originalSql);
 		try {
 			Statement stmt = CCJSqlParserUtil.parse(originalSql);
 			return processStatement(stmt, obj, originalSql);
