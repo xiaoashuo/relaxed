@@ -20,14 +20,6 @@ public interface SchemaHandler {
 	boolean enable();
 
 	/**
-	 * 获取当前系统所有的数据库标识
-	 * @author yakir
-	 * @date 2021/7/26 16:47
-	 * @return java.util.List<java.lang.String>
-	 */
-	List<String> getAllSchemas();
-
-	/**
 	 * 是否忽略当前schema
 	 * @author yakir
 	 * @date 2021/7/26 16:52

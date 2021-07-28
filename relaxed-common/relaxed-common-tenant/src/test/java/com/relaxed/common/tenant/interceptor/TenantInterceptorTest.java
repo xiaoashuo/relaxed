@@ -40,11 +40,6 @@ public class TenantInterceptorTest {
 		}
 
 		@Override
-		public List<String> getAllSchemas() {
-			return schemas;
-		}
-
-		@Override
 		public boolean ignore(String schemaName) {
 			if (schemaName == null || "".equals(schemaName)) {
 				return true;
@@ -91,9 +86,33 @@ public class TenantInterceptorTest {
 				return new InExpression(column, expressionList);
 			}
 		};
+		// 数据域
+		DataScope dataScope1 = new DataScope() {
+			final String columnId = "address_id";
 
+			@Override
+			public String getResource() {
+				return columnId;
+			}
+
+			@Override
+			public Collection<String> getTableNames() {
+				Set<String> tableNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+				tableNames.addAll(Arrays.asList("t_user", "address", "t_bat"));
+				return tableNames;
+			}
+
+			@Override
+			public Expression getExpression(String tableName, Alias tableAlias) {
+				Column column = new Column(tableAlias == null ? columnId : tableAlias.getName() + "." + columnId);
+				ExpressionList expressionList = new ExpressionList();
+				expressionList.setExpressions(Arrays.asList(new StringValue("1"), new StringValue("2")));
+				return new InExpression(column, expressionList);
+			}
+		};
 		List<DataScope> dataScopes = new ArrayList<>();
 		dataScopes.add(dataScope);
+		dataScopes.add(dataScope1);
 		Tenant tenant = new Tenant();
 		tenant.setSchema(true);
 		tenant.setSchemaName("db1");
@@ -101,11 +120,11 @@ public class TenantInterceptorTest {
 		tenant.setDataScopes(dataScopes);
 		// String sql = "select * from user u left join address a on u.id=a.user_id where
 		// u.id in (select id from t_bat tb )";
-		String sql = "SELECT u.id, u.tenant_id, u.username FROM t_user u ";
-		// String sql="select * from user u left join address a on u.id=a.user_id where
+		// String sql = "SELECT u.id, u.tenant_id, u.username FROM t_user u ";
+		// String sql="select * from t_user u left join address a on u.id=a.user_id where
 		// u.id in (1,2 )";
-		// String sql="select (select id from user) info,* from user u left join address a
-		// on u.id=a.user_id where u.id in (select id from t_bat tb )";
+		String sql = "select (select id from user) info,* from t_user u left join address a "
+				+ "on u.id=a.user_id where u.id in (select id from t_bat tb )";
 		String result = defaultSqlParser.processSql(sql, tenant);
 
 		// String insertSql="insert into user values(1,2)";
