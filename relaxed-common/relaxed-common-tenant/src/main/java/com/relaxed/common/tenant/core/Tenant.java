@@ -20,7 +20,7 @@ public class Tenant {
 	/**
 	 * 是否处理schema true 处理 false 不处理
 	 */
-	private boolean schema = false;
+	private boolean schema;
 
 	/**
 	 * schema name 名称 对应schema 控制
@@ -30,7 +30,7 @@ public class Tenant {
 	/**
 	 * 是否处理字段 true 处理 false 不处理
 	 */
-	private boolean table = false;
+	private boolean table;
 
 	/**
 	 * 数据列表 对应table 控制

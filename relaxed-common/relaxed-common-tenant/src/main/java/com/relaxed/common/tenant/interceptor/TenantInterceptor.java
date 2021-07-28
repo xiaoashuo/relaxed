@@ -44,7 +44,7 @@ public class TenantInterceptor implements Interceptor {
 			return invocation.proceed();
 		}
 		Tenant tenant = new Tenant();
-		String currentSchema = schemaHandler.getCurrentSchema();
+
 		// 验证通过执行sql语句替换
 		Object target = invocation.getTarget();
 		StatementHandler sh = (StatementHandler) target;
@@ -52,15 +52,21 @@ public class TenantInterceptor implements Interceptor {
 		MappedStatement ms = mpSh.mappedStatement();
 		// mapper 方法全路径
 		String mappedStatementId = ms.getId();
-		// 忽略指定方法
-		if (!enableSchema || !StringUtils.hasText(currentSchema) || schemaHandler.ignore(currentSchema)
-				|| schemaHandler.ignoreMethod(mappedStatementId)) {
-			tenant.setSchema(false);
+		if (enableSchema) {
+			String currentSchema = schemaHandler.getCurrentSchema();
+			// 忽略指定方法
+			if (!StringUtils.hasText(currentSchema) || schemaHandler.ignore(currentSchema)
+					|| schemaHandler.ignoreMethod(mappedStatementId)) {
+				tenant.setSchema(false);
+			}
+			else {
+				// 填充租户
+				tenant.setSchema(true);
+				tenant.setSchemaName(currentSchema);
+			}
 		}
 		else {
-			// 填充租户
-			tenant.setSchema(true);
-			tenant.setSchemaName(currentSchema);
+			tenant.setSchema(false);
 		}
 		// 是否忽略租户列处理
 		if (!enableTable || tableHandler.ignore(mappedStatementId)) {

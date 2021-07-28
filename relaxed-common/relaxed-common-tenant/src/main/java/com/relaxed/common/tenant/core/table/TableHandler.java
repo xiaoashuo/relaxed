@@ -34,9 +34,9 @@ public interface TableHandler {
 
 	/**
 	 * 忽略数据权限处理
-	 * @param mapperId mapper 全路径
+	 * @param mappedStatementId mapper 全路径
 	 * @return true 忽略 false 处理数据权限
 	 */
-	boolean ignore(String mapperId);
+	boolean ignore(String mappedStatementId);
 
 }
