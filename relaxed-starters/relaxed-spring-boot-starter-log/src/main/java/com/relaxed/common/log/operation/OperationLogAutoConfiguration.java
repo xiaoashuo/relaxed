@@ -34,8 +34,9 @@ public class OperationLogAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnBean(OperationLogHandler.class)
-	public OperationLogAspect operationLogAspect(ApplicationEventPublisher publisher) {
-		return new OperationLogAspect(publisher);
+	public OperationLogAspect operationLogAspect(ApplicationEventPublisher publisher,
+			OperationLogHandler operationLogHandler) {
+		return new OperationLogAspect(publisher, operationLogHandler);
 	}
 
 }

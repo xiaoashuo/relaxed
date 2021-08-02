@@ -1,6 +1,6 @@
 package com.relaxed.common.log.operation.event;
 
-import com.relaxed.common.log.operation.model.OperationLogDTO;
+import com.relaxed.common.log.operation.model.OperationLogInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,6 +15,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class OperationLogEvent {
 
-	private final OperationLogDTO operationLogDTO;
+	private final OperationLogInfo operationLogInfo;
 
 }

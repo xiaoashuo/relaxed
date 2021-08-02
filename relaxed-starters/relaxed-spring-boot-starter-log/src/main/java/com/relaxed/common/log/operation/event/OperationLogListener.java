@@ -24,7 +24,7 @@ public class OperationLogListener {
 	@Order
 	@EventListener(OperationLogEvent.class)
 	public void saveSysLog(OperationLogEvent event) {
-		operationLogHandler.saveLog(event.getOperationLogDTO());
+		operationLogHandler.saveLog(event.getOperationLogInfo());
 	}
 
 }
