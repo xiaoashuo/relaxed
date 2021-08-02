@@ -9,6 +9,7 @@ import org.apache.commons.pool2.BasePooledObjectFactory;
 
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.springframework.util.StringUtils;
 
 /**
  * sftp factory
@@ -39,7 +40,13 @@ public class SftpFactory extends BasePooledObjectFactory<AbstractSftp> {
 			JSch jSch = new JSch();
 			Session session = jSch.getSession(sftpProperties.getUsername(), sftpProperties.getHost(),
 					sftpProperties.getPort());
-			session.setPassword(sftpProperties.getPassword());
+			if (StringUtils.hasText(sftpProperties.getPrivateKey())) {
+				// 私钥有文本 走私钥
+				jSch.addIdentity(sftpProperties.getPrivateKey(), sftpProperties.getPassPhrase());
+			}
+			else {
+				session.setPassword(sftpProperties.getPassword());
+			}
 			session.setConfig("StrictHostKeyChecking", sftpProperties.getStrictHostKeyChecking());
 			session.connect(sftpProperties.getSessionConnectTimeout());
 			ChannelSftp channel = (ChannelSftp) session.openChannel(CHANNEL_TYPE);

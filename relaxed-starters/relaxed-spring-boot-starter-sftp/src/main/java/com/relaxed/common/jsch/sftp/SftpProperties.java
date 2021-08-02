@@ -38,6 +38,16 @@ public class SftpProperties {
 	private String password;
 
 	/**
+	 * 私钥
+	 */
+	private String privateKey;
+
+	/**
+	 * 私钥对应 密码短语
+	 */
+	private String passPhrase;
+
+	/**
 	 * 严格检查
 	 */
 	private String strictHostKeyChecking = "no";
