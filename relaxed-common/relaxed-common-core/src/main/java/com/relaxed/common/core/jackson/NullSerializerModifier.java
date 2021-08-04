@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
+import com.fasterxml.jackson.databind.util.Annotations;
+import com.relaxed.common.core.jackson.annotations.IgnoreNullSerializer;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,6 +28,12 @@ public class NullSerializerModifier extends BeanSerializerModifier {
 	@Override
 	public List<BeanPropertyWriter> changeProperties(SerializationConfig config, BeanDescription beanDesc,
 			List<BeanPropertyWriter> beanProperties) {
+		Annotations classAnnotations = beanDesc.getClassAnnotations();
+		// 不会出现空指针 因为若beanDesc无注解 则会赋值一个NoAnnotations 默认实现
+		if (classAnnotations.has(IgnoreNullSerializer.class)) {
+			return beanProperties;
+		}
+
 		// 循环所有的beanPropertyWriter
 		for (BeanPropertyWriter writer : beanProperties) {
 			if (isStringType(writer)) {
