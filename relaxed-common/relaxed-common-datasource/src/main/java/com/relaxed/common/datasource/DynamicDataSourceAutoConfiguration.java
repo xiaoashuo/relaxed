@@ -41,6 +41,7 @@ import org.springframework.context.annotation.Configuration;
 public class DynamicDataSourceAutoConfiguration {
 
 	@Bean
+	@ConditionalOnMissingBean
 	public DynamicDataSourceProvider dynamicDataSourceProvider(StringEncryptor stringEncryptor,
 			DataSourceProperties properties, PropertyProvider propertyProvider) {
 		return new JdbcDynamicDataSourceProvider(stringEncryptor, properties, propertyProvider);
