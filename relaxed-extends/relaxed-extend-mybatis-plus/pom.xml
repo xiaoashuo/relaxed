@@ -16,6 +16,10 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.lovecyy</groupId>
+            <artifactId>relaxed-common-model</artifactId>
+        </dependency>
         <!-- mybatis-plus -->
         <dependency>
             <groupId>com.baomidou</groupId>

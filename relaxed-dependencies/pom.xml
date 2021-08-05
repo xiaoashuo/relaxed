@@ -46,6 +46,12 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!--model 模块-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-model</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--核心模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>

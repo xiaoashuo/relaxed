@@ -1,9 +1,10 @@
 package com.relaxed.common.conf.web;
 
 import cn.hutool.core.util.StrUtil;
-import com.relaxed.common.core.domain.PageParam;
 import com.relaxed.common.core.exception.SqlCheckedException;
-import com.relaxed.common.core.result.BaseResultCode;
+import com.relaxed.common.model.result.BaseResultCode;
+
+import com.relaxed.common.model.domain.PageParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;

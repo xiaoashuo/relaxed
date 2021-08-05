@@ -1,7 +1,7 @@
 package com.relaxed.common.core.exception;
 
 import cn.hutool.core.util.StrUtil;
-import com.relaxed.common.core.result.ResultCode;
+import com.relaxed.common.model.result.ResultCode;
 import lombok.Getter;
 
 /**

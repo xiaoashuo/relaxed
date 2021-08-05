@@ -1,4 +1,4 @@
-package com.relaxed.common.core.result;
+package com.relaxed.common.model.result;
 
 /**
  * @author Hccake

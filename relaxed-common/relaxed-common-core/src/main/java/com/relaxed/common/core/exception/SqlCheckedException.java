@@ -1,6 +1,6 @@
 package com.relaxed.common.core.exception;
 
-import com.relaxed.common.core.result.SysResultCode;
+import com.relaxed.common.model.result.SysResultCode;
 
 /**
  * @author Hccake

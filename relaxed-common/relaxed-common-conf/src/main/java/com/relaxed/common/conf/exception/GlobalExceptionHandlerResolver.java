@@ -3,8 +3,8 @@ package com.relaxed.common.conf.exception;
 import com.relaxed.common.core.constants.GlobalConstants;
 import com.relaxed.common.core.exception.BusinessException;
 import com.relaxed.common.core.exception.handler.GlobalExceptionHandler;
-import com.relaxed.common.core.result.R;
-import com.relaxed.common.core.result.SysResultCode;
+import com.relaxed.common.model.result.R;
+import com.relaxed.common.model.result.SysResultCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.xml.bind.ValidationException;
-import java.nio.file.AccessDeniedException;
 
 /**
  * 全局异常处理

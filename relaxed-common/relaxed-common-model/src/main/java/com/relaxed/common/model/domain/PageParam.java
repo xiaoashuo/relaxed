@@ -1,4 +1,4 @@
-package com.relaxed.common.core.domain;
+package com.relaxed.common.model.domain;
 
 import lombok.Data;
 import lombok.Getter;

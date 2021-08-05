@@ -22,6 +22,7 @@
          <module>relaxed-spring-boot-starter-swagger</module>
          <module>relaxed-spring-boot-starter-cache</module>
          <module>relaxed-spring-boot-starter-easyexcel</module>
+         <module>relaxed-spring-boot-starter-sms</module>
     </modules>
 
 
