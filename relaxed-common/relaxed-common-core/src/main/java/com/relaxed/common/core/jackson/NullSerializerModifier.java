@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import com.fasterxml.jackson.databind.util.Annotations;
 import com.relaxed.common.core.jackson.annotations.IgnoreNullSerializer;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -29,22 +30,43 @@ public class NullSerializerModifier extends BeanSerializerModifier {
 	public List<BeanPropertyWriter> changeProperties(SerializationConfig config, BeanDescription beanDesc,
 			List<BeanPropertyWriter> beanProperties) {
 		Annotations classAnnotations = beanDesc.getClassAnnotations();
-		// 不会出现空指针 因为若beanDesc无注解 则会赋值一个NoAnnotations 默认实现
-		if (classAnnotations.has(IgnoreNullSerializer.class)) {
+
+		IgnoreNullSerializer ignoreNullSerializer = classAnnotations.get(IgnoreNullSerializer.class);
+		/// 若用户未指定注解 则所有都赋予默认空序列化器
+		if (ignoreNullSerializer == null) {
+			// 循环所有的beanPropertyWriter
+			for (BeanPropertyWriter writer : beanProperties) {
+				if (isStringType(writer)) {
+					// null 字符串转空
+					writer.assignNullSerializer(this.nullStringJsonSerializer);
+				}
+				else if (isArrayType(writer)) {
+					// null array 或 list，set则注册nullSerializer
+					writer.assignNullSerializer(this.nullArrayJsonSerializer);
+				}
+				else if (isMapType(writer)) {
+					// null Map 转 '{}'
+					writer.assignNullSerializer(this.nullMapJsonSerializer);
+				}
+			}
 			return beanProperties;
 		}
-
+		IgnoreNullSerializer.Include value = ignoreNullSerializer.value();
+		// 忽略所有 则所有都不赋予空序列化器
+		if (IgnoreNullSerializer.Include.ALL.equals(value)) {
+			return beanProperties;
+		}
 		// 循环所有的beanPropertyWriter
 		for (BeanPropertyWriter writer : beanProperties) {
-			if (isStringType(writer)) {
+			if (!IgnoreNullSerializer.Include.STRING.equals(value) && isStringType(writer)) {
 				// null 字符串转空
 				writer.assignNullSerializer(this.nullStringJsonSerializer);
 			}
-			else if (isArrayType(writer)) {
+			else if (!IgnoreNullSerializer.Include.ARRAY.equals(value) && isArrayType(writer)) {
 				// null array 或 list，set则注册nullSerializer
 				writer.assignNullSerializer(this.nullArrayJsonSerializer);
 			}
-			else if (isMapType(writer)) {
+			else if (!IgnoreNullSerializer.Include.MAP.equals(value) && isMapType(writer)) {
 				// null Map 转 '{}'
 				writer.assignNullSerializer(this.nullMapJsonSerializer);
 			}

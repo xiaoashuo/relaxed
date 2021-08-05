@@ -17,4 +17,18 @@ import java.lang.annotation.*;
 @Inherited
 public @interface IgnoreNullSerializer {
 
+	/**
+	 * 默认忽略全部
+	 */
+	IgnoreNullSerializer.Include value() default IgnoreNullSerializer.Include.ALL;
+
+	public static enum Include {
+
+		ALL, STRING, ARRAY, MAP,;
+
+		Include() {
+		}
+
+	}
+
 }
