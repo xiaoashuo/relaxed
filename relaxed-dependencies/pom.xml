@@ -64,6 +64,12 @@
                 <artifactId>relaxed-common-conf</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--脱敏模块-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-desensitize</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--多数据源-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
