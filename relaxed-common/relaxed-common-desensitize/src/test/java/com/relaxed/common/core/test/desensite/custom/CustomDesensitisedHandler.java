@@ -1,4 +1,4 @@
-package com.hccake.common.core.test.desensite.custom;
+package com.relaxed.common.core.test.desensite.custom;
 
 import com.relaxed.common.desensitize.handler.DesensitizationHandler;
 

@@ -1,4 +1,4 @@
-package com.hccake.common.core.test.desensite;
+package com.relaxed.common.core.test.desensite;
 
 import cn.hutool.core.lang.Assert;
 import com.fasterxml.jackson.core.JsonProcessingException;

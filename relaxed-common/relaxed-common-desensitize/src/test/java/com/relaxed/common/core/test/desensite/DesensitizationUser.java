@@ -1,11 +1,11 @@
-package com.hccake.common.core.test.desensite;
+package com.relaxed.common.core.test.desensite;
 
+import com.relaxed.common.core.test.desensite.custom.CustomerDesensitize;
 import com.relaxed.common.desensitize.json.annotation.JsonRegexDesensitize;
 import com.relaxed.common.desensitize.json.annotation.JsonSimpleDesensitize;
 import com.relaxed.common.desensitize.json.annotation.JsonSlideDesensitize;
 import com.relaxed.common.desensitize.enums.RegexDesensitizationTypeEnum;
 import com.relaxed.common.desensitize.enums.SlideDesensitizationTypeEnum;
-import com.hccake.common.core.test.desensite.custom.CustomerDesensitize;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

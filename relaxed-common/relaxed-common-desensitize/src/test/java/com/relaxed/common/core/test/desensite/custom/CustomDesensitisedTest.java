@@ -1,4 +1,4 @@
-package com.hccake.common.core.test.desensite.custom;
+package com.relaxed.common.core.test.desensite.custom;
 
 import cn.hutool.core.lang.Assert;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.relaxed.common.desensitize.AnnotationHandlerHolder;
 import com.relaxed.common.desensitize.DesensitizationHandlerHolder;
 import com.relaxed.common.desensitize.json.JsonSerializerModifier;
-import com.hccake.common.core.test.desensite.DesensitizationUser;
+import com.relaxed.common.core.test.desensite.DesensitizationUser;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
