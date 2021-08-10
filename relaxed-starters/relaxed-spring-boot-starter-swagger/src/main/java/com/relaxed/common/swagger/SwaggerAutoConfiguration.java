@@ -1,6 +1,7 @@
 package com.relaxed.common.swagger;
 
 import com.relaxed.common.swagger.constant.SwaggerConstants;
+import com.relaxed.common.swagger.property.SecuritySchemaEnum;
 import com.relaxed.common.swagger.property.SwaggerProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -53,26 +54,38 @@ public class SwaggerAutoConfiguration {
 	private List<SecurityScheme> securitySchema() {
 		SwaggerProperties.Authorization authorizationProps = swaggerProperties.getAuthorization();
 
-		List<AuthorizationScope> authorizationScopeList = authorizationProps.getAuthorizationScopeList().stream()
-				.map(scope -> new AuthorizationScope(scope.getScope(), scope.getDescription()))
-				.collect(Collectors.toList());
-
-		String tokenUrl = authorizationProps.getTokenUrl();
-
 		DocumentationType documentationType = swaggerProperties.getDocumentationType().getType();
-		SecurityScheme securityScheme;
-		if (documentationType.equals(DocumentationType.SWAGGER_2)) {
-			// swagger2 OAuth2
-			List<GrantType> grantTypes = Collections.singletonList(new ResourceOwnerPasswordCredentialsGrant(tokenUrl));
-			securityScheme = new OAuth(authorizationProps.getName(), authorizationScopeList, grantTypes);
-		}
-		else {
-			// Swagger3 Oauth2
-			securityScheme = OAuth2Scheme.OAUTH2_PASSWORD_FLOW_BUILDER.name(authorizationProps.getName())
-					.tokenUrl(tokenUrl).scopes(authorizationScopeList).build();
+		SecuritySchemaEnum schema = authorizationProps.getSchema();
+		String name = authorizationProps.getName();
+		List<SecurityScheme> securitySchemes = new ArrayList<>();
+		switch (schema) {
+		case OATH2:
+
+			List<AuthorizationScope> authorizationScopeList = authorizationProps.getAuthorizationScopeList().stream()
+					.map(scope -> new AuthorizationScope(scope.getScope(), scope.getDescription()))
+					.collect(Collectors.toList());
+			String tokenUrl = authorizationProps.getOauth2().getTokenUrl();
+			SecurityScheme securityScheme;
+			if (documentationType.equals(DocumentationType.SWAGGER_2)) {
+				// swagger2 OAuth2
+				List<GrantType> grantTypes = Collections
+						.singletonList(new ResourceOwnerPasswordCredentialsGrant(tokenUrl));
+				securityScheme = new OAuth(name, authorizationScopeList, grantTypes);
+			}
+			else {
+				// Swagger3 Oauth2
+				securityScheme = OAuth2Scheme.OAUTH2_PASSWORD_FLOW_BUILDER.name(name).tokenUrl(tokenUrl)
+						.scopes(authorizationScopeList).build();
+			}
+			securitySchemes = Collections.singletonList(securityScheme);
+			break;
+		case API_KEY:
+			SwaggerProperties.Authorization.ApiKey apiKey = authorizationProps.getApiKey();
+			securitySchemes = Collections.singletonList(new ApiKey(name, name, apiKey.getIn()));
+			break;
 		}
 
-		return Collections.singletonList(securityScheme);
+		return securitySchemes;
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package com.relaxed.common.swagger.property;
 
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -124,7 +125,12 @@ public class SwaggerProperties {
 	public static class Authorization {
 
 		/**
-		 * 鉴权策略ID，需要和SecurityReferences ID保持一致
+		 * schema type
+		 */
+		private SecuritySchemaEnum schema = SecuritySchemaEnum.OATH2;
+
+		/**
+		 * 鉴权策略ID，需要和SecurityReferences ID保持一致 不然授权参数不在全局请求中生效
 		 */
 		private String name = "";
 
@@ -139,9 +145,43 @@ public class SwaggerProperties {
 		private List<AuthorizationScope> authorizationScopeList = new ArrayList<>();
 
 		/**
-		 * token请求地址，如需开启OAuth2 password 类型登陆则必传此参数
+		 * API KEY SCHEMA
 		 */
-		private String tokenUrl = "";
+		private ApiKey apiKey = new ApiKey();
+
+		/**
+		 * OAUTH2 SCHEMA
+		 */
+		private Oauth2 oauth2 = new Oauth2();
+
+		/**
+		 * params name=> 标签值 与 SecurityReferences ID 一致 key name=>请求的key in=> 请求放在位置 此处
+		 * name key name 使用Authorization=>name
+		 */
+		@Data
+		@NoArgsConstructor
+		public static class ApiKey {
+
+			/**
+			 * key can be "header", "query" or "cookie"
+			 */
+			private String in = SecurityScheme.In.HEADER.toString();
+
+		}
+
+		/**
+		 * oauth 2
+		 */
+		@Data
+		@NoArgsConstructor
+		public static class Oauth2 {
+
+			/**
+			 * token请求地址，如需开启OAuth2 password 类型登陆则必传此参数
+			 */
+			private String tokenUrl = "";
+
+		}
 
 	}
 
