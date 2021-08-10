@@ -17,6 +17,11 @@
             <groupId>com.lovecyy</groupId>
             <artifactId>relaxed-common-core</artifactId>
         </dependency>
+        <!--升级1.5.20 版本 会产生类型转换报错 https://blog.csdn.net/weixin_42312133/article/details/112714480-->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-models</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
