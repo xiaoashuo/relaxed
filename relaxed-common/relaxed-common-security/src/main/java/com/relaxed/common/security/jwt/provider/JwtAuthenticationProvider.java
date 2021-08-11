@@ -1,0 +1,103 @@
+package com.relaxed.common.security.jwt.provider;
+
+import com.relaxed.common.security.jwt.core.JwtAuthenticationToken;
+import com.relaxed.common.security.jwt.core.JwtTokenService;
+import com.relaxed.common.security.jwt.core.JwtUserDetailService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.SpringSecurityMessageSource;
+import org.springframework.security.core.token.TokenService;
+import org.springframework.security.core.userdetails.UserCache;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsChecker;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.cache.NullUserCache;
+import org.springframework.util.Assert;
+
+/**
+ * @author Yakir
+ * @Topic JwtAuthenticationProvider
+ * @Description
+ * @date 2021/8/11 21:12
+ * @Version 1.0
+ */
+@Slf4j
+@RequiredArgsConstructor
+public class JwtAuthenticationProvider implements AuthenticationProvider {
+    private final JwtUserDetailService jwtUserDetailService;
+    private final JwtTokenService tokenService;
+    protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
+    private UserCache userCache = new NullUserCache();
+ ;
+
+    @Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        Assert.isInstanceOf(JwtAuthenticationToken.class, authentication,
+                () -> this.messages.getMessage("AbstractUserDetailsAuthenticationProvider.onlySupports",
+                        "Only JwtAuthenticationToken is supported"));
+        JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authentication;
+        String token = jwtAuthenticationToken.getToken();
+
+        String username =  determineUsername(token);
+        boolean cacheWasUsed = true;
+        UserDetails user = this.userCache.getUserFromCache(username);
+        if (user == null) {
+            cacheWasUsed = false;
+            try {
+                user = retrieveUser(username);
+                //进行token认正
+            }
+            catch (UsernameNotFoundException ex) {
+                log.debug("Failed to find user '" + username + "'");
+                throw new BadCredentialsException(this.messages
+                        .getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+            }
+            Assert.notNull(user, "retrieveUser returned null - a violation of the interface contract");
+        }
+
+
+        if (!cacheWasUsed) {
+            this.userCache.putUserInCache(user);
+        }
+
+        return createSuccessAuthentication(token, user);
+
+    }
+
+    protected Authentication createSuccessAuthentication(String token,
+                                                         UserDetails user) {
+        // Ensure we return the original credentials the user supplied,
+        // so subsequent attempts are successful even with encoded passwords.
+        // Also ensure we return the original getDetails(), so that future
+        // authentication events after cache expiry contain the details
+        JwtAuthenticationToken jwtAuthenticationToken= new JwtAuthenticationToken(user,token,user.getAuthorities());
+        log.debug("Authenticated user");
+        return jwtAuthenticationToken;
+    }
+    UserDetails retrieveUser(String username)
+            throws AuthenticationException{
+        return jwtUserDetailService.loadUserByUsername(username);
+
+    }
+
+    private String determineUsername(String  token) {
+        return (token == null) ? "NONE_PROVIDED" : tokenService.getSubject(token);
+    }
+    @Override
+    public boolean supports(Class<?> authentication) {
+        return (JwtAuthenticationToken.class.isAssignableFrom(authentication));
+    }
+
+
+    public void setMessageSource(MessageSource messageSource) {
+        this.messages = new MessageSourceAccessor(messageSource);
+    }
+}
