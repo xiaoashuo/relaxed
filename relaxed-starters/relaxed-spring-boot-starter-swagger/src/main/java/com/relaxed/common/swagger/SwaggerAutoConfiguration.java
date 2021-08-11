@@ -14,6 +14,7 @@ import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.OperationContext;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 
@@ -93,8 +94,21 @@ public class SwaggerAutoConfiguration {
 	 * @return SecurityContext
 	 */
 	private List<SecurityContext> securityContext() {
-		SecurityContext securityContext = SecurityContext.builder().securityReferences(defaultAuth()).build();
+		SecurityContext securityContext = SecurityContext.builder().securityReferences(defaultAuth())
+				.operationSelector(this::selector).build();
 		return Collections.singletonList(securityContext);
+	}
+
+	/**
+	 * 配置开启鉴权的url
+	 * @param operationContext
+	 * @return
+	 */
+	private boolean selector(OperationContext operationContext) {
+		String url = operationContext.requestMappingPattern();
+		// 这里可以写URL过滤规则
+		SwaggerProperties.Authorization authorization = swaggerProperties.getAuthorization();
+		return url.matches(authorization.getAuthRegex());
 	}
 
 	/**
