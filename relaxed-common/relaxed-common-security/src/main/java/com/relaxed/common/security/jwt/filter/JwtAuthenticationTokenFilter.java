@@ -22,6 +22,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Yakir
@@ -44,6 +46,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
 	private AuthenticationFailureHandler failureHandler;
 
+	private List<RequestMatcher> ignoreRequest;
+
 	private RequestMatcher requiresAuthenticationRequestMatcher = new RequestHeaderRequestMatcher(
 			Constants.AUTHORIZATION);
 
@@ -51,7 +55,13 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
+		// 若不带 请求认证头 则直接放行
 		if (!requiresAuthentication(request, response)) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+		// 若带请求认证头 则判断是否在忽略列表 存在则 跳过
+		if (ignoreRequest(request)) {
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -120,7 +130,27 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 	}
 
 	protected AuthenticationFailureHandler getFailureHandler() {
+
 		return this.failureHandler;
+	}
+
+	/**
+	 * 当前过滤器 是否忽略请求
+	 * @author yakir
+	 * @date 2021/8/17 18:28
+	 * @param request
+	 * @return boolean
+	 */
+	protected boolean ignoreRequest(HttpServletRequest request) {
+		if (ignoreRequest == null) {
+			return false;
+		}
+		for (RequestMatcher permissiveMatcher : ignoreRequest) {
+			if (permissiveMatcher.matches(request)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

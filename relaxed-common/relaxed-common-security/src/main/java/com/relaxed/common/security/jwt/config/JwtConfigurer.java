@@ -12,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.*;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -19,7 +20,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author Yakir
@@ -48,8 +51,11 @@ public class JwtConfigurer<T extends JwtConfigurer<T, B>, B extends HttpSecurity
 
 	private final JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
+	private List<RequestMatcher> ignoreRequest;
+
 	public JwtConfigurer() {
 		this.realmName(JWT_REALM);
+		ignoreRequest = new ArrayList<>();
 		this.jwtAuthenticationTokenFilter = new JwtAuthenticationTokenFilter();
 		this.authenticationEntryPoint = jwtAuthenticationEntryPoint;
 		this.authenticationConverter = new JwtAuthenticationConverter();
@@ -87,6 +93,13 @@ public class JwtConfigurer<T extends JwtConfigurer<T, B>, B extends HttpSecurity
 		return this;
 	}
 
+	public JwtConfigurer<T, B> ignoreRequest(List<String> ignoreRequest) {
+		for (String url : ignoreRequest) {
+			this.ignoreRequest.add(new AntPathRequestMatcher(url));
+		}
+		return this;
+	}
+
 	@Override
 	public void configure(B http) throws Exception {
 		AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
@@ -95,6 +108,7 @@ public class JwtConfigurer<T extends JwtConfigurer<T, B>, B extends HttpSecurity
 		jwtAuthenticationTokenFilter.setAuthenticationConverter(authenticationConverter);
 		jwtAuthenticationTokenFilter.setAuthenticationSuccessHandler(successHandler);
 		jwtAuthenticationTokenFilter.setAuthenticationFailureHandler(failureHandler);
+		jwtAuthenticationTokenFilter.setIgnoreRequest(ignoreRequest);
 		// 将filter放到logoutFilter之前
 		JwtAuthenticationTokenFilter filter = this.postProcess(jwtAuthenticationTokenFilter);
 		http.addFilterBefore(filter, LogoutFilter.class);
