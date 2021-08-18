@@ -27,8 +27,10 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.BeanFactoryAnnotationUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.lang.Nullable;
@@ -44,10 +46,11 @@ import java.util.function.Supplier;
 /**
  * @author Yakir
  * @Topic CacheAspect
- * @Description
+ * @Description 为保证缓存更新无异常，该切面优先级必须高于事务切面
  * @date 2021/7/24 12:28
  * @Version 1.0
  */
+@Order(Ordered.LOWEST_PRECEDENCE - 1)
 @RequiredArgsConstructor
 @Slf4j
 @Aspect
