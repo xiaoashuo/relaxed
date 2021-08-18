@@ -34,6 +34,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 	public JwtAuthenticationToken(String token) {
 		super(null);
 		this.token = token;
+		super.setAuthenticated(false);
 	}
 
 	public JwtAuthenticationToken(UserDetails principal, String token,
@@ -41,6 +42,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 		super(authorities);
 		this.principal = principal;
 		this.token = token;
+		super.setAuthenticated(true);
 	}
 
 	@Override
@@ -56,11 +58,17 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 	@Override
 	public void setDetails(Object details) {
 		super.setDetails(details);
-		super.setAuthenticated(true);
+
 	}
 
 	public String getToken() {
 		return token;
+	}
+
+	@Override
+	public void eraseCredentials() {
+		super.eraseCredentials();
+		this.credentials = null;
 	}
 
 }

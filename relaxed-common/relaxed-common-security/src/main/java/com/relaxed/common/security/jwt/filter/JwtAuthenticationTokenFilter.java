@@ -48,8 +48,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
 	private List<RequestMatcher> ignoreRequest;
 
-	private RequestMatcher requiresAuthenticationRequestMatcher = new RequestHeaderRequestMatcher(
-			Constants.AUTHORIZATION);
+	private RequestMatcher requiresAuthenticationRequestMatcher;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -130,8 +129,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 	}
 
 	protected AuthenticationFailureHandler getFailureHandler() {
-
 		return this.failureHandler;
+	}
+
+	public void setRequiresAuthenticationRequestMatcher(RequestMatcher requiresAuthenticationRequestMatcher) {
+		this.requiresAuthenticationRequestMatcher = requiresAuthenticationRequestMatcher;
 	}
 
 	/**

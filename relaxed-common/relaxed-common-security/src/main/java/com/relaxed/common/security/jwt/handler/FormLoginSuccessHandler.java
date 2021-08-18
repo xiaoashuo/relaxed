@@ -1,5 +1,8 @@
 package com.relaxed.common.security.jwt.handler;
 
+import cn.hutool.json.JSONUtil;
+import com.relaxed.common.core.util.ServletUtils;
+import com.relaxed.common.model.result.R;
 import com.relaxed.common.security.jwt.core.Constants;
 import com.relaxed.common.security.jwt.core.JwtTokenService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Yakir
@@ -26,11 +31,16 @@ public class FormLoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	private final JwtTokenService jwtTokenService;
 
+	private static final String ACCESS_TOKEN = "access_token";
+
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
 			Authentication authentication) {
 		String token = jwtTokenService.generateToken((UserDetails) authentication.getPrincipal());
 		httpServletResponse.setHeader(Constants.AUTHORIZATION, token);
+		Map<String, String> maps = new HashMap<>();
+		maps.put(ACCESS_TOKEN, token);
+		ServletUtils.renderString(httpServletResponse, JSONUtil.toJsonStr(R.ok(maps)));
 	}
 
 }

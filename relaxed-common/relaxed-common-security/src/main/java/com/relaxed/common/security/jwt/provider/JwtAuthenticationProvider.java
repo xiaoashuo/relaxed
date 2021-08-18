@@ -11,6 +11,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.SpringSecurityMessageSource;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.core.userdetails.cache.NullUserCache;
 import org.springframework.util.Assert;
@@ -34,6 +36,8 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
 	private UserCache userCache = new NullUserCache();
+
+	private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -82,7 +86,8 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 		// so subsequent attempts are successful even with encoded passwords.
 		// Also ensure we return the original getDetails(), so that future
 		// authentication events after cache expiry contain the details
-		JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(user, token, user.getAuthorities());
+		JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(user, token,
+				this.authoritiesMapper.mapAuthorities(user.getAuthorities()));
 		log.debug("Authenticated user");
 		return jwtAuthenticationToken;
 	}
@@ -103,6 +108,10 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
 	public void setMessageSource(MessageSource messageSource) {
 		this.messages = new MessageSourceAccessor(messageSource);
+	}
+
+	public void setAuthoritiesMapper(GrantedAuthoritiesMapper authoritiesMapper) {
+		this.authoritiesMapper = authoritiesMapper;
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.relaxed.common.security.jwt.config;
 
+import com.relaxed.common.security.jwt.core.Constants;
 import com.relaxed.common.security.jwt.filter.JwtAuthenticationEntryPoint;
 import com.relaxed.common.security.jwt.filter.JwtAuthenticationConverter;
 import com.relaxed.common.security.jwt.filter.JwtAuthenticationTokenFilter;
@@ -53,18 +54,17 @@ public class JwtConfigurer<T extends JwtConfigurer<T, B>, B extends HttpSecurity
 
 	private List<RequestMatcher> ignoreRequest;
 
+	private RequestMatcher requestMatcher;
+
 	public JwtConfigurer() {
 		this.realmName(JWT_REALM);
 		ignoreRequest = new ArrayList<>();
 		this.jwtAuthenticationTokenFilter = new JwtAuthenticationTokenFilter();
 		this.authenticationEntryPoint = jwtAuthenticationEntryPoint;
 		this.authenticationConverter = new JwtAuthenticationConverter();
-		this.failureHandler = (httpServletRequest, httpServletResponse, e) -> {
-
-		};
-		this.successHandler = (httpServletRequest, httpServletResponse, authentication) -> {
-
-		};
+		this.failureHandler = new NoOpAuthenticationFailureHandler();
+		this.successHandler = new NoOpAuthenticationSuccessHandler();
+		requestMatcher = new RequestHeaderRequestMatcher(Constants.AUTHORIZATION);
 	}
 
 	public JwtConfigurer<T, B> realmName(String realmName) {
@@ -93,6 +93,11 @@ public class JwtConfigurer<T extends JwtConfigurer<T, B>, B extends HttpSecurity
 		return this;
 	}
 
+	public JwtConfigurer<T, B> requestMatcher(RequestMatcher requestMatcher) {
+		this.requestMatcher = requestMatcher;
+		return this;
+	}
+
 	public JwtConfigurer<T, B> ignoreRequest(List<String> ignoreRequest) {
 		for (String url : ignoreRequest) {
 			this.ignoreRequest.add(new AntPathRequestMatcher(url));
@@ -108,10 +113,31 @@ public class JwtConfigurer<T extends JwtConfigurer<T, B>, B extends HttpSecurity
 		jwtAuthenticationTokenFilter.setAuthenticationConverter(authenticationConverter);
 		jwtAuthenticationTokenFilter.setAuthenticationSuccessHandler(successHandler);
 		jwtAuthenticationTokenFilter.setAuthenticationFailureHandler(failureHandler);
+		jwtAuthenticationTokenFilter.setRequiresAuthenticationRequestMatcher(requestMatcher);
 		jwtAuthenticationTokenFilter.setIgnoreRequest(ignoreRequest);
+
 		// 将filter放到logoutFilter之前
 		JwtAuthenticationTokenFilter filter = this.postProcess(jwtAuthenticationTokenFilter);
 		http.addFilterBefore(filter, LogoutFilter.class);
+
+	}
+
+	private static class NoOpAuthenticationFailureHandler implements AuthenticationFailureHandler {
+
+		@Override
+		public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+				AuthenticationException exception) throws IOException, ServletException {
+		}
+
+	}
+
+	private static class NoOpAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
+		@Override
+		public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+				Authentication authentication) throws IOException, ServletException {
+
+		}
 
 	}
 

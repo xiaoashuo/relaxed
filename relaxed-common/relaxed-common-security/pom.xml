@@ -24,6 +24,10 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.lovecyy</groupId>
+            <artifactId>relaxed-common-core</artifactId>
+        </dependency>
 
 
         <!-- ... other dependency elements ... -->
