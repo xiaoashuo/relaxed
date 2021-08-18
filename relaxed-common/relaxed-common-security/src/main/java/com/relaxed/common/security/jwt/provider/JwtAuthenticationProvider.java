@@ -114,4 +114,8 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 		this.authoritiesMapper = authoritiesMapper;
 	}
 
+	public void setUserCache(UserCache userCache) {
+		this.userCache = userCache;
+	}
+
 }
