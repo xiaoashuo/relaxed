@@ -12,7 +12,7 @@ import java.util.List;
  * @date 2020/6/11 14:56
  */
 @Data
-@ConfigurationProperties(prefix = "snif.log.access")
+@ConfigurationProperties(prefix = "relaxed.log.access")
 public class AccessLogProperties {
 
 	/**
