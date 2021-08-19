@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * @author Yakir
  * @Topic JwtAuthenticationTokenFilter
- * @Description
+ * @Description 过滤器顺序在FilterComparator类中定义
  * @date 2021/8/11 20:34
  * @Version 1.0
  */
