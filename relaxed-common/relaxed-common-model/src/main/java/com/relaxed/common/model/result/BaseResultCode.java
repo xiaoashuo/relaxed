@@ -19,7 +19,11 @@ public enum BaseResultCode implements ResultCode {
 	/**
 	 * 恶意请求
 	 */
-	MALICIOUS_REQUEST(90005, "Malicious Request"),;
+	MALICIOUS_REQUEST(90005, "Malicious Request"),
+	/**
+	 * 重复执行
+	 */
+	REPEATED_EXECUTE(90007, "Repeated execute"),;
 
 	private final Integer code;
 

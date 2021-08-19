@@ -3,6 +3,7 @@ package com.relaxed.common.cache.core;
 import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.cache.config.CachePropertiesHolder;
 import com.relaxed.common.cache.model.MetaAnnotationInfo;
+import com.relaxed.common.core.util.SpELUtil;
 import lombok.Data;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.expression.BeanFactoryResolver;

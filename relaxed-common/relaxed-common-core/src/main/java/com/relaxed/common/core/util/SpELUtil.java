@@ -1,16 +1,16 @@
-package com.relaxed.common.cache.core;
+package com.relaxed.common.core.util;
 
-import org.springframework.context.expression.AnnotatedElementKey;
-import org.springframework.context.expression.CachedExpressionEvaluator;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
-import org.springframework.expression.*;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ParseException;
+import org.springframework.expression.ParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 
 /**
  * @author Yakir
@@ -97,10 +97,10 @@ public class SpELUtil {
 	 * @return
 	 */
 	public static EvaluationContext getSpElContext(Object target, Method method, Object[] args) {
-		CacheEvaluationContext cacheEvaluationContext = new CacheEvaluationContext(target, method, args,
+		StandardEvaluationContext standardEvaluationContext = new MethodBasedEvaluationContext(target, method, args,
 				getParameterNameDiscoverer());
 
-		return cacheEvaluationContext;
+		return standardEvaluationContext;
 	}
 
 	/**
@@ -112,15 +112,6 @@ public class SpELUtil {
 
 	private static ParameterNameDiscoverer getParameterNameDiscoverer() {
 		return PARAMETER_NAME_DISCOVERER;
-	}
-
-	public static class CacheEvaluationContext extends MethodBasedEvaluationContext {
-
-		public CacheEvaluationContext(Object rootObject, Method method, Object[] arguments,
-				ParameterNameDiscoverer parameterNameDiscoverer) {
-			super(rootObject, method, arguments, parameterNameDiscoverer);
-		}
-
 	}
 
 }

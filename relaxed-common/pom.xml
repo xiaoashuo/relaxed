@@ -21,6 +21,7 @@
         <module>relaxed-common-datascope</module>
         <module>relaxed-common-tenant</module>
         <module>relaxed-common-security</module>
+        <module>relaxed-common-idempotent</module>
     </modules>
 
 
