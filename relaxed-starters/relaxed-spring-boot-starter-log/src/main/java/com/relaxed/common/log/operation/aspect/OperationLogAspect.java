@@ -1,8 +1,6 @@
 package com.relaxed.common.log.operation.aspect;
 
 import com.relaxed.common.log.operation.annotation.Log;
-import com.relaxed.common.log.operation.event.OperationLogEvent;
-import com.relaxed.common.log.operation.model.OperationLogInfo;
 import com.relaxed.common.log.operation.service.OperationLogHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +8,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.core.annotation.Order;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
@@ -26,13 +22,10 @@ import java.lang.reflect.Method;
  */
 @Slf4j
 @Aspect
-@Order(0)
 @RequiredArgsConstructor
-public class OperationLogAspect {
+public class OperationLogAspect<T> {
 
-	private final ApplicationEventPublisher publisher;
-
-	private final OperationLogHandler operationLogHandler;
+	private final OperationLogHandler<T> operationLogHandler;
 
 	/**
 	 * 匹配带有 Log注解的 以及任何返回值类型持有Log的公共方法
@@ -54,6 +47,7 @@ public class OperationLogAspect {
 		Log log = AnnotatedElementUtils.findMergedAnnotation(method, Log.class);
 		// 获取操作日志 DTO
 		Assert.notNull(log, "operationLogging annotation must not be null!");
+		T operationLog = operationLogHandler.buildLog(log, joinPoint);
 		Throwable throwable = null;
 		try {
 			return joinPoint.proceed();
@@ -63,13 +57,20 @@ public class OperationLogAspect {
 			throw throwable;
 		}
 		finally {
+			handleLog(joinPoint, startTime, operationLog, throwable);
+		}
+	}
+
+	private void handleLog(ProceedingJoinPoint joinPoint, long startTime, T operationLog, Throwable throwable) {
+		try {
 			// 结束时间
-			long executionTime = System.currentTimeMillis() - startTime;
-			// 构造 Info 对象
-			OperationLogInfo operationLogInfo = operationLogHandler.createOperationLog(log, joinPoint, executionTime,
-					throwable);
-			// 发布事件
-			publisher.publishEvent(new OperationLogEvent(operationLogInfo));
+			long endTime = System.currentTimeMillis();
+			// 处理操作日志
+			operationLogHandler.handleLog(
+					operationLogHandler.fillExecutionInfo(operationLog, joinPoint, startTime, endTime, throwable));
+		}
+		catch (Exception e) {
+			log.error("记录操作日志异常：{}", operationLog);
 		}
 	}
 
