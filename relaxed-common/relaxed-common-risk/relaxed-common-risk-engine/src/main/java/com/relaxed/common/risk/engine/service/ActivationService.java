@@ -1,6 +1,7 @@
 package com.relaxed.common.risk.engine.service;
 
 import com.relaxed.common.risk.engine.model.dto.ActivationDTO;
+import com.relaxed.common.risk.engine.model.qo.ActivationQO;
 import com.relaxed.common.risk.engine.model.vo.ActivationVO;
 import com.relaxed.common.risk.engine.model.entity.Activation;
 import com.relaxed.extend.mybatis.plus.service.ExtendService;

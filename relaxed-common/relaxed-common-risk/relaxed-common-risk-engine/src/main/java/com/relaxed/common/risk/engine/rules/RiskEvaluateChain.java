@@ -1,5 +1,7 @@
 package com.relaxed.common.risk.engine.rules;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -9,7 +11,7 @@ import java.util.List;
 /**
  * @author Yakir
  * @Topic RiskEvaluateChain
- * @Description
+ * @Description 风控评估链
  * @date 2021/8/29 17:18
  * @Version 1.0
  */
@@ -71,6 +73,55 @@ public class RiskEvaluateChain {
 			this.position = i;
 		}
 		return true;
+	}
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	@Data
+	public static class Builder {
+
+		private List<RiskEvaluate> riskEvaluates = new ArrayList<>();
+
+		private Builder() {
+		}
+
+		/**
+		 * 添加风控评估控件
+		 * @author yakir
+		 * @date 2021/8/30 9:39
+		 * @param riskEvaluate
+		 * @return com.relaxed.common.risk.engine.rules.RiskEvaluateChain.Builder
+		 */
+		public Builder riskEvaluate(RiskEvaluate riskEvaluate) {
+			this.riskEvaluates.add(riskEvaluate);
+			return this;
+		}
+
+		/**
+		 * 指定位置添加风控评估控件
+		 * @author yakir
+		 * @date 2021/8/30 9:39
+		 * @param index
+		 * @param riskEvaluate
+		 * @return com.relaxed.common.risk.engine.rules.RiskEvaluateChain.Builder
+		 */
+		public Builder riskEvaluate(Integer index, RiskEvaluate riskEvaluate) {
+			this.riskEvaluates.add(index, riskEvaluate);
+			return this;
+		}
+
+		/**
+		 * 构建风控评估链
+		 * @author yakir
+		 * @date 2021/8/30 9:40
+		 * @return com.relaxed.common.risk.engine.rules.RiskEvaluateChain
+		 */
+		public RiskEvaluateChain build() {
+			return new RiskEvaluateChain(this.riskEvaluates);
+		}
+
 	}
 
 }

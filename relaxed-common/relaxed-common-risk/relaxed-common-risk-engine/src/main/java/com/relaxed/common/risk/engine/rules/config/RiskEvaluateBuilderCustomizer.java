@@ -17,8 +17,8 @@ public interface RiskEvaluateBuilderCustomizer {
 	 * 填充过滤器链
 	 * @author yakir
 	 * @date 2021/8/29 18:07
-	 * @param riskEvaluateChain
+	 * @param riskEvaluateChainBuilder
 	 */
-	void customize(RiskEvaluateChain riskEvaluateChain);
+	void customize(RiskEvaluateChain.Builder riskEvaluateChainBuilder);
 
 }

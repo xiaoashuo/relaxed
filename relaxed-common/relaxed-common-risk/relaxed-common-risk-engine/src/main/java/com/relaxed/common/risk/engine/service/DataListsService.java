@@ -1,6 +1,7 @@
 package com.relaxed.common.risk.engine.service;
 
 import com.relaxed.common.risk.engine.model.dto.DataListsDTO;
+import com.relaxed.common.risk.engine.model.qo.DataListsQO;
 import com.relaxed.common.risk.engine.model.vo.DataListsVO;
 import com.relaxed.common.risk.engine.model.entity.DataLists;
 import com.relaxed.extend.mybatis.plus.service.ExtendService;

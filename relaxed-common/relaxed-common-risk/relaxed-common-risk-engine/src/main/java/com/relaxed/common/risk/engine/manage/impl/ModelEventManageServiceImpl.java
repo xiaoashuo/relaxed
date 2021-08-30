@@ -1,5 +1,8 @@
 package com.relaxed.common.risk.engine.manage.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.mongodb.client.model.Filters;
+import com.relaxed.common.risk.engine.enums.FieldType;
 import com.relaxed.common.risk.engine.manage.ModelManageService;
 import com.relaxed.common.risk.engine.manage.ModelEventManageService;
 import com.relaxed.common.risk.engine.model.vo.ModelVO;
@@ -7,11 +10,18 @@ import com.relaxed.common.risk.engine.mongdb.MongoDbService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Yakir
@@ -31,7 +41,7 @@ public class ModelEventManageServiceImpl implements ModelEventManageService {
 
 	@Override
 	public boolean save(Long modelId, String jsonString, String attachJson, boolean isAllowDuplicate) {
-		String key = "entity_" + modelId;
+		String key = getCollectionName(modelId);
 		// 存储文档
 		Document doc = Document.parse(jsonString);
 		Document attach = Document.parse(attachJson);
@@ -53,6 +63,151 @@ public class ModelEventManageServiceImpl implements ModelEventManageService {
 		mongoDbService.insert(key, doc);
 
 		return true;
+	}
+
+	@Override
+	public Long count(Long modelId, String searchFieldName, Object searchFieldVal, String refDateFieldName,
+			Date beginDate, Date refDateFieldVal) {
+		String collectionName = getCollectionName(modelId);
+		Query query = Query.query(new Criteria(searchFieldName).is(searchFieldVal).and(refDateFieldName).gte(beginDate)
+				.lte(refDateFieldVal));
+		return mongoDbService.count(collectionName, query);
+	}
+
+	@Override
+	public Long distinctCount(Long modelId, String searchFieldName, Object searchFieldVal, String refDateFieldName,
+			Date beginDate, Date refDateFieldVal, String functionFieldName) {
+		String collectionName = getCollectionName(modelId);
+		Query query = Query.query(new Criteria(searchFieldName).is(searchFieldVal))
+				.addCriteria(new Criteria(refDateFieldName).gte(beginDate).lte(refDateFieldVal));
+		return mongoDbService.distinctCount(collectionName, query, functionFieldName);
+	}
+
+	@Override
+	public BigDecimal sum(Long modelId, String searchFieldName, Object searchFieldVal, String refDateFieldName,
+			Date beginDate, Date refDateFieldVal, String functionFieldName) {
+		String collectionName = getCollectionName(modelId);
+		List<AggregationOperation> operations = new ArrayList<>();
+		Criteria criteriaDefinition = Criteria.where(searchFieldName).is(searchFieldVal);
+		criteriaDefinition.and(refDateFieldName).gte(beginDate).lte(refDateFieldVal);
+		operations.add(Aggregation.match(criteriaDefinition));
+		operations.add(Aggregation.group("_id").sum(functionFieldName).as("sum"));
+		Aggregation aggregation = Aggregation.newAggregation(operations);
+		AggregationResults<Document> aggregationResults = mongoDbService.aggregate(collectionName, aggregation);
+		Optional<Document> first = aggregationResults.getMappedResults().stream().findFirst();
+		if (first.isPresent()) {
+			Document document = first.get();
+			Object sum = document.get("sum");
+			return new BigDecimal(sum.toString());
+		}
+
+		return BigDecimal.ZERO;
+	}
+
+	@Override
+	public BigDecimal average(Long modelId, String searchFieldName, Object searchFieldVal, String refDateFieldName,
+			Date beginDate, Date refDateFieldVal, String functionFieldName) {
+		String collectionName = getCollectionName(modelId);
+		List<AggregationOperation> operations = new ArrayList<>();
+		Criteria criteriaDefinition = Criteria.where(searchFieldName).is(searchFieldVal);
+		criteriaDefinition.and(refDateFieldName).gte(beginDate).lte(refDateFieldVal);
+		operations.add(Aggregation.match(criteriaDefinition));
+		operations.add(Aggregation.group("_id").avg(functionFieldName).as("avg"));
+		Aggregation aggregation = Aggregation.newAggregation(operations);
+		AggregationResults<Document> aggregationResults = mongoDbService.aggregate(collectionName, aggregation);
+		Optional<Document> first = aggregationResults.getMappedResults().stream().findFirst();
+		if (first.isPresent()) {
+			Document document = first.get();
+			Object sum = document.get("avg");
+			return new BigDecimal(sum.toString());
+		}
+
+		return BigDecimal.ZERO;
+
+	}
+
+	@Override
+	public BigDecimal max(Long modelId, String searchFieldName, Object searchFieldVal, String refDateFieldName,
+			Date beginDate, Date refDateFieldVal, String functionFieldName) {
+		String collectionName = getCollectionName(modelId);
+		List<AggregationOperation> operations = new ArrayList<>();
+		Criteria criteriaDefinition = Criteria.where(searchFieldName).is(searchFieldVal);
+		criteriaDefinition.and(refDateFieldName).gte(beginDate).lte(refDateFieldVal);
+		operations.add(Aggregation.match(criteriaDefinition));
+		operations.add(Aggregation.group("_id").max(functionFieldName).as("max"));
+		Aggregation aggregation = Aggregation.newAggregation(operations);
+		AggregationResults<Document> aggregationResults = mongoDbService.aggregate(collectionName, aggregation);
+		Optional<Document> first = aggregationResults.getMappedResults().stream().findFirst();
+		if (first.isPresent()) {
+			Document document = first.get();
+			Object sum = document.get("max");
+			return new BigDecimal(sum.toString());
+		}
+		return BigDecimal.ZERO;
+	}
+
+	@Override
+	public BigDecimal min(Long modelId, String searchFieldName, Object searchFieldVal, String refDateFieldName,
+			Date beginDate, Date refDateFieldVal, String functionFieldName) {
+		String collectionName = getCollectionName(modelId);
+		List<AggregationOperation> operations = new ArrayList<>();
+		Criteria criteriaDefinition = Criteria.where(searchFieldName).is(searchFieldVal);
+		criteriaDefinition.and(refDateFieldName).gte(beginDate).lte(refDateFieldVal);
+		operations.add(Aggregation.match(criteriaDefinition));
+		operations.add(Aggregation.group("_id").max(functionFieldName).as("min"));
+		Aggregation aggregation = Aggregation.newAggregation(operations);
+		AggregationResults<Document> aggregationResults = mongoDbService.aggregate(collectionName, aggregation);
+		Optional<Document> first = aggregationResults.getMappedResults().stream().findFirst();
+		if (first.isPresent()) {
+			Document document = first.get();
+			Object sum = document.get("min");
+			return new BigDecimal(sum.toString());
+		}
+		return BigDecimal.ZERO;
+	}
+
+	@Override
+	public BigDecimal median(Long modelId, String searchFieldName, Object searchFieldVal, String refDateFieldName,
+			Date beginDate, Date refDateFieldVal, String functionFieldName) {
+		String collectionName = getCollectionName(modelId);
+		List<AggregationOperation> operations = new ArrayList<>();
+		Criteria criteriaDefinition = Criteria.where(searchFieldName).is(searchFieldVal);
+		criteriaDefinition.and(refDateFieldName).gte(beginDate).lte(refDateFieldVal);
+		operations.add(Aggregation.match(criteriaDefinition));
+		operations.add(Aggregation.sort(Sort.by(Sort.Direction.ASC, functionFieldName)));
+		Aggregation aggregation = Aggregation.newAggregation(operations);
+		AggregationResults<Document> aggregationResults = mongoDbService.aggregate(collectionName, aggregation);
+		List<Document> mappedResults = aggregationResults.getMappedResults();
+		if (CollectionUtil.isEmpty(mappedResults)) {
+			return BigDecimal.ZERO;
+		}
+		BigDecimal median;
+		int mod = mappedResults.size() % 2;
+		if (mod == 1) {
+			// 奇数
+			Document document = mappedResults.get(mod);
+			median = new BigDecimal(document.get(functionFieldName).toString());
+
+		}
+		else {
+			// 偶数
+			Document document = mappedResults.get(mod);
+			median = new BigDecimal(document.get(functionFieldName).toString());
+			document = mappedResults.get(mod - 1);
+			BigDecimal tmp = new BigDecimal(document.get(functionFieldName).toString());
+			median = median.add(tmp).divide(new BigDecimal(2), 2, 4);
+		}
+		return median;
+	}
+
+	@Override
+	public BigDecimal sd(Long modelId, String searchFieldName, Object searchFieldVal, String refDateFieldName,
+			Date beginDate, Date refDateFieldVal, String functionFieldName, FieldType functionFieldType) {
+		return null;
+	}
+
+	private String getCollectionName(Long modelId) {
+		return "entity_" + modelId;
 	}
 
 }

@@ -17,13 +17,14 @@ import java.util.List;
 public class RiskEvaluateTest {
 
 	public static void main(String[] args) {
-		List<RiskEvaluate> riskEvaluates = new ArrayList<>();
-		riskEvaluates.add(new AbstractionRiskEvaluate());
-		riskEvaluates.add(new ActivationRiskEvaluate());
-		riskEvaluates.add(new AdaptationRiskEvaluate());
-		RiskEvaluateChain riskEvaluateChain = new RiskEvaluateChain(riskEvaluates);
-		boolean b = riskEvaluateChain.eval(new EvaluateContext(), new EvaluateReport());
-		System.out.println(b);
+		// List<RiskEvaluate> riskEvaluates = new ArrayList<>();
+		// riskEvaluates.add(new AbstractionRiskEvaluate());
+		// riskEvaluates.add(new ActivationRiskEvaluate());
+		// riskEvaluates.add(new AdaptationRiskEvaluate());
+		// RiskEvaluateChain riskEvaluateChain = new RiskEvaluateChain(riskEvaluates);
+		// boolean b = riskEvaluateChain.eval(new EvaluateContext(), new
+		// EvaluateReport());
+		// System.out.println(b);
 
 	}
 

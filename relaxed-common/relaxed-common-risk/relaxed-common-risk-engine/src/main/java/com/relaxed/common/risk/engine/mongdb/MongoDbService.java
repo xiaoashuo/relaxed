@@ -1,9 +1,14 @@
 package com.relaxed.common.risk.engine.mongdb;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -43,6 +48,17 @@ public interface MongoDbService {
 	long count(String collectionName, Query query);
 
 	/**
+	 * 去重
+	 * @author yakir
+	 * @date 2021/8/30 17:27
+	 * @param collectionName
+	 * @param query
+	 * @param fieldName
+	 * @return long
+	 */
+	long distinctCount(String collectionName, Query query, String fieldName);
+
+	/**
 	 * 插入文档到指定集合
 	 * @author yakir
 	 * @date 2021/8/29 16:27
@@ -51,5 +67,15 @@ public interface MongoDbService {
 	 * @return T
 	 */
 	<T> T insert(String collectionName, T obj);
+
+	/**
+	 * 聚合查询
+	 * @author yakir
+	 * @date 2021/8/30 18:15
+	 * @param collectionName
+	 * @param aggregation
+	 * @return org.springframework.data.mongodb.core.aggregation.AggregationResults<org.bson.Document>
+	 */
+	AggregationResults<Document> aggregate(String collectionName, Aggregation aggregation);
 
 }

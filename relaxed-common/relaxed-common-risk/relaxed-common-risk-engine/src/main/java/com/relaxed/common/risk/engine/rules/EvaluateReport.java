@@ -1,5 +1,6 @@
 package com.relaxed.common.risk.engine.rules;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,6 +17,11 @@ import java.util.Map;
  */
 @Data
 public class EvaluateReport implements Serializable {
+
+	/**
+	 * 信息描述
+	 */
+	private String msg;
 
 	/**
 	 * 评估报告 扩展参数 记录各接阶段评估数据
@@ -39,6 +45,14 @@ public class EvaluateReport implements Serializable {
 	 */
 	public void putEvaluateMap(String key, Map<String, Object> evaluateMap) {
 		evaluateDataMap.put(key, evaluateMap);
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+
+	public void setMsg(String msgTemplate, Object... params) {
+		this.msg = StrUtil.format(msgTemplate, params);
 	}
 
 }
