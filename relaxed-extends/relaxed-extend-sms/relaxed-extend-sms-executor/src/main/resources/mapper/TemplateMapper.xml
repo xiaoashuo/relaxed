@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.relaxed.extend.sms.executor.mapper.TemplateMapper">
+  <resultMap id="templateMap" type="com.relaxed.extend.sms.executor.model.entity.Template">
+                  <id property="id" column="id"/>
+                        <result property="name" column="name"/>
+                        <result property="code" column="code"/>
+                        <result property="content" column="content"/>
+                        <result property="type" column="type"/>
+                        <result property="remark" column="remark"/>
+                        <result property="createTime" column="create_time"/>
+                        <result property="createUser" column="create_user"/>
+                        <result property="updateTime" column="update_time"/>
+                        <result property="updateUser" column="update_user"/>
+                        <result property="isDelete" column="is_delete"/>
+            </resultMap>
+ 
+	<sql id="Base_Column_List">
+		id,        
+		name,        
+		code,        
+		content,        
+		type,        
+		remark,        
+		create_time,        
+		create_user,        
+		update_time,        
+		update_user,        
+		is_delete        
+	</sql>
+
+	<sql id="Base_Alias_Column_List">
+		t.id,        
+		t.name,        
+		t.code,        
+		t.content,        
+		t.type,        
+		t.remark,        
+		t.create_time,        
+		t.create_user,        
+		t.update_time,        
+		t.update_user,        
+		t.is_delete        
+	</sql>
+</mapper>

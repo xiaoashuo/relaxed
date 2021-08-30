@@ -1,5 +1,9 @@
 package com.relaxed.extend.sms.sdk;
 
+import com.relaxed.common.model.result.R;
+import com.relaxed.extend.sms.sdk.dto.SmsParam;
+import com.relaxed.extend.sms.sdk.dto.SmsResult;
+
 /**
  * @author Yakir
  * @Topic SmsSender
@@ -7,7 +11,7 @@ package com.relaxed.extend.sms.sdk;
  * @date 2021/8/3 17:42
  * @Version 1.0
  */
-public interface SmsSender<T, R> {
+public interface SmsSender {
 
 	/**
 	 * 发送单条短信
@@ -16,6 +20,6 @@ public interface SmsSender<T, R> {
 	 * @param smsParam
 	 * @return R
 	 */
-	R send(T smsParam);
+	SmsResult send(SmsParam smsParam);
 
 }

@@ -9,12 +9,24 @@
         <artifactId>relaxed-extend-sms</artifactId>
         <version>${reversion}</version>
     </parent>
-    <artifactId>relaxed-extend-sms-sdk</artifactId>
+    <artifactId>relaxed-extend-sms-executor</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.lovecyy</groupId>
-            <artifactId>relaxed-common-core</artifactId>
+            <artifactId>relaxed-common-conf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lovecyy</groupId>
+            <artifactId>relaxed-extend-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lovecyy</groupId>
+            <artifactId>relaxed-extend-mybatis-plus</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

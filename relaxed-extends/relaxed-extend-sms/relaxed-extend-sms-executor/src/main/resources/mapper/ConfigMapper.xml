@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.relaxed.extend.sms.executor.mapper.ConfigMapper">
+  <resultMap id="configMap" type="com.relaxed.extend.sms.executor.model.entity.Config">
+                  <id property="id" column="id"/>
+                        <result property="name" column="name"/>
+                        <result property="platform" column="platform"/>
+                        <result property="domain" column="domain"/>
+                        <result property="accessKeyId" column="access_key_id"/>
+                        <result property="accessKeySecret" column="access_key_secret"/>
+                        <result property="other" column="other"/>
+                        <result property="isActive" column="is_active"/>
+                        <result property="isEnable" column="is_enable"/>
+                        <result property="remark" column="remark"/>
+                        <result property="level" column="level"/>
+                        <result property="channelType" column="channel_type"/>
+                        <result property="createTime" column="create_time"/>
+                        <result property="createUser" column="create_user"/>
+                        <result property="updateTime" column="update_time"/>
+                        <result property="updateUser" column="update_user"/>
+                        <result property="isDelete" column="is_delete"/>
+            </resultMap>
+ 
+	<sql id="Base_Column_List">
+		id,        
+		name,        
+		platform,        
+		domain,        
+		access_key_id,        
+		access_key_secret,        
+		other,        
+		is_active,        
+		is_enable,        
+		remark,        
+		level,        
+		channel_type,        
+		create_time,        
+		create_user,        
+		update_time,        
+		update_user,        
+		is_delete        
+	</sql>
+
+	<sql id="Base_Alias_Column_List">
+		c.id,        
+		c.name,        
+		c.platform,        
+		c.domain,        
+		c.access_key_id,        
+		c.access_key_secret,        
+		c.other,        
+		c.is_active,        
+		c.is_enable,        
+		c.remark,        
+		c.level,        
+		c.channel_type,        
+		c.create_time,        
+		c.create_user,        
+		c.update_time,        
+		c.update_user,        
+		c.is_delete        
+	</sql>
+</mapper>

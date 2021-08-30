@@ -2,18 +2,16 @@ package com.relaxed.common.cache.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.relaxed.common.cache.core.CacheAspect;
-import com.relaxed.common.cache.lock.CacheManage;
-import com.relaxed.common.cache.lock.RedisCacheManage;
 import com.relaxed.common.cache.serialize.CacheSerializer;
 import com.relaxed.common.cache.serialize.JacksonSerializer;
 import com.relaxed.common.cache.serialize.PrefixStringRedisSerializer;
+import com.relaxed.extend.cache.CacheManage;
+import com.relaxed.extend.cache.RedisCacheManage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 

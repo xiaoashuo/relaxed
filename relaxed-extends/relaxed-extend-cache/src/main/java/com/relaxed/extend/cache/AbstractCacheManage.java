@@ -1,6 +1,4 @@
-package com.relaxed.common.cache.lock;
-
-import java.util.concurrent.TimeUnit;
+package com.relaxed.extend.cache;
 
 /**
  * @author Yakir

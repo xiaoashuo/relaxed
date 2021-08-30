@@ -108,6 +108,12 @@
                 <artifactId>relaxed-extend-mybatis-plus</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--扩展 cache-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-extend-cache</artifactId>
+                <version>${reversion}</version>
+            </dependency>
 
             <!--sftp客户端-->
             <dependency>
@@ -149,6 +155,11 @@
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-models</artifactId>
+                <version>${swagger-models.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
                 <version>${swagger-models.version}</version>
             </dependency>
             <dependency>

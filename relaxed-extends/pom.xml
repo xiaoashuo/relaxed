@@ -15,6 +15,7 @@
     <modules>
         <module>relaxed-extend-mybatis-plus</module>
         <module>relaxed-extend-sms</module>
+        <module>relaxed-extend-cache</module>
     </modules>
 
 

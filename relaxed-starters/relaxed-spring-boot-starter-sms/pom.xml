@@ -12,8 +12,6 @@
     <artifactId>relaxed-spring-boot-starter-sms</artifactId>
 
 
-
-
     <dependencies>
 
         <dependency>

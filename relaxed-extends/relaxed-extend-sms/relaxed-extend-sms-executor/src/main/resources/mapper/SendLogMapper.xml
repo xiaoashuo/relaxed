@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.relaxed.extend.sms.executor.mapper.SendLogMapper">
+  <resultMap id="sendLogMap" type="com.relaxed.extend.sms.executor.model.entity.SendLog">
+                  <id property="id" column="id"/>
+                        <result property="configId" column="config_id"/>
+                        <result property="configPlatform" column="config_platform"/>
+                        <result property="configName" column="config_name"/>
+                        <result property="template" column="template"/>
+                        <result property="signature" column="signature"/>
+                        <result property="mobile" column="mobile"/>
+                        <result property="request" column="request"/>
+                        <result property="response" column="response"/>
+                        <result property="error" column="error"/>
+                        <result property="useTime" column="use_time"/>
+                        <result property="status" column="status"/>
+                        <result property="apiLogId" column="api_log_id"/>
+                        <result property="remark" column="remark"/>
+                        <result property="createTime" column="create_time"/>
+                        <result property="createUser" column="create_user"/>
+                        <result property="updateTime" column="update_time"/>
+                        <result property="updateUser" column="update_user"/>
+                        <result property="isDelete" column="is_delete"/>
+            </resultMap>
+ 
+	<sql id="Base_Column_List">
+		id,        
+		config_id,        
+		config_platform,        
+		config_name,        
+		template,        
+		signature,        
+		mobile,        
+		request,        
+		response,        
+		error,        
+		use_time,        
+		status,        
+		api_log_id,        
+		remark,        
+		create_time,        
+		create_user,        
+		update_time,        
+		update_user,        
+		is_delete        
+	</sql>
+
+	<sql id="Base_Alias_Column_List">
+		sl.id,        
+		sl.config_id,        
+		sl.config_platform,        
+		sl.config_name,        
+		sl.template,        
+		sl.signature,        
+		sl.mobile,        
+		sl.request,        
+		sl.response,        
+		sl.error,        
+		sl.use_time,        
+		sl.status,        
+		sl.api_log_id,        
+		sl.remark,        
+		sl.create_time,        
+		sl.create_user,        
+		sl.update_time,        
+		sl.update_user,        
+		sl.is_delete        
+	</sql>
+</mapper>

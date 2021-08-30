@@ -16,5 +16,6 @@
     <modules>
         <module>relaxed-extend-sms-api</module>
         <module>relaxed-extend-sms-sdk</module>
+        <module>relaxed-extend-sms-executor</module>
     </modules>
 </project>

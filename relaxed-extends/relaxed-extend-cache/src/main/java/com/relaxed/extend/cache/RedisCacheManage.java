@@ -1,11 +1,11 @@
-package com.relaxed.common.cache.lock;
+package com.relaxed.extend.cache;
 
-import com.relaxed.common.cache.config.CachePropertiesHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -45,6 +45,12 @@ public class RedisCacheManage extends AbstractCacheManage {
 		return redisTemplate.delete(key);
 	}
 
+
+	@Override
+	public StringRedisTemplate getOperator() {
+		return redisTemplate;
+	}
+
 	/**
 	 * 上锁
 	 * @param key 锁key
@@ -53,7 +59,7 @@ public class RedisCacheManage extends AbstractCacheManage {
 	 */
 	@Override
 	public Boolean lock(String key, String requestId) {
-		return lock(key, requestId, CachePropertiesHolder.lockedTimeOut());
+		return lock(key, requestId, 1000L);
 	}
 
 	/**
@@ -67,6 +73,32 @@ public class RedisCacheManage extends AbstractCacheManage {
 	public Boolean lock(String key, String requestId, Long ttl) {
 		log.trace("lock: {key:{}, clientId:{}}", key, requestId);
 		return redisTemplate.opsForValue().setIfAbsent(key, requestId, ttl, TimeUnit.SECONDS);
+	}
+
+	@Override
+	public Boolean lock(String key, String requestId, Long ttl, long timeout) {
+		long startTime = System.currentTimeMillis();
+		Boolean token;
+		do {
+			token = lock(key, requestId, ttl);
+			if (!token) {
+				// 当前时间-开始时间 是否大于超时时间之前50s
+				if ((System.currentTimeMillis() - startTime) > (timeout - 50)) {
+					break;
+				}
+				try {
+					// try 50 per sec
+					Thread.sleep(50);
+				}
+				catch (InterruptedException e) {
+					log.error("lock获取线程终端异常", e);
+					return false;
+				}
+			}
+		}
+		while (!token);
+
+		return token;
 	}
 
 	/**

@@ -5,7 +5,6 @@ import com.relaxed.common.cache.annotation.CacheDel;
 import com.relaxed.common.cache.annotation.CachePut;
 import com.relaxed.common.cache.annotation.MetaCacheAnnotation;
 import com.relaxed.common.cache.config.CachePropertiesHolder;
-import com.relaxed.common.cache.lock.CacheManage;
 import com.relaxed.common.cache.model.CachedDelInfo;
 import com.relaxed.common.cache.model.CachedInfo;
 import com.relaxed.common.cache.model.CachedPutInfo;
@@ -15,6 +14,7 @@ import com.relaxed.common.cache.operation.CachePutOps;
 import com.relaxed.common.cache.operation.CachedOps;
 import com.relaxed.common.cache.operation.functions.VoidMethod;
 import com.relaxed.common.cache.serialize.CacheSerializer;
+import com.relaxed.extend.cache.CacheManage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -22,18 +22,11 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.annotation.BeanFactoryAnnotationUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
@@ -179,7 +172,7 @@ public class CacheAspect {
 		Object dbData = null;
 		// 尝试获取锁，只允许一个线程更新缓存
 		String reqId = UUID.randomUUID().toString();
-		if (cacheManage.lock(ops.lockKey(), reqId)) {
+		if (cacheManage.lock(ops.lockKey(), reqId, CachePropertiesHolder.lockedTimeOut())) {
 			// 有可能其他线程已经更新缓存，这里再次判断缓存是否为空
 			cacheData = cacheQuery.get();
 			if (cacheData == null) {
