@@ -1,8 +1,12 @@
 package com.relaxed.common.risk.engine.rules.config;
 
+import com.relaxed.common.risk.engine.config.EngineProperties;
 import com.relaxed.common.risk.engine.rules.RiskEvaluateChain;
 import com.relaxed.common.risk.engine.rules.extractor.FieldExtractor;
 import com.relaxed.common.risk.engine.rules.extractor.SimpleFieldExtractor;
+import com.relaxed.common.risk.engine.rules.machine.Estimator;
+import com.relaxed.common.risk.engine.rules.machine.EstimatorHolder;
+import com.relaxed.common.risk.engine.rules.machine.impl.TensorDnnEstimator;
 import com.relaxed.common.risk.engine.rules.script.RuleScriptHandler;
 import com.relaxed.common.risk.engine.rules.script.groovy.GroovyScriptHandler;
 import com.relaxed.common.risk.engine.rules.statistics.AggregateExecutor;
@@ -111,6 +115,34 @@ public class RiskEvaluateConfiguration {
 	@ConditionalOnMissingBean
 	public AggregateFunctionProvider aggregateFunctionProvider() {
 		return new SimpleAggregateFunctionProvider();
+	}
+
+	/**
+	 * 机器学习类型持有者
+	 * @author yakir
+	 * @date 2021/8/31 9:48
+	 * @return com.relaxed.common.risk.engine.rules.machine.EstimatorHolder
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public EstimatorHolder estimatorHolder(List<Estimator> estimators) {
+		EstimatorHolder estimatorHolder = new EstimatorHolder();
+		for (Estimator estimator : estimators) {
+			estimatorHolder.put(estimator);
+		}
+		return estimatorHolder;
+	}
+
+	/**
+	 * TensorFlow 机器学习
+	 * @author yakir
+	 * @date 2021/8/31 10:34
+	 * @return com.relaxed.common.risk.engine.rules.machine.Estimator
+	 */
+	@ConditionalOnMissingBean
+	@Bean
+	public Estimator tensorDnnEstimator() {
+		return new TensorDnnEstimator(EngineProperties.getMachineWorkDir());
 	}
 
 }

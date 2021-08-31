@@ -36,7 +36,11 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
         </dependency>
-
+        <!--机器学习-->
+        <dependency>
+            <groupId>org.tensorflow</groupId>
+            <artifactId>tensorflow</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-cache</artifactId>

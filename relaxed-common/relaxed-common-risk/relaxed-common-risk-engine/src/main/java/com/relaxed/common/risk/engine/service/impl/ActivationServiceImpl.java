@@ -20,6 +20,8 @@ import com.relaxed.extend.mybatis.plus.toolkit.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 业务层实现
@@ -41,6 +43,12 @@ public class ActivationServiceImpl extends ExtendServiceImpl<ActivationMapper, A
 		this.baseMapper.selectPage(page, wrapper);
 		IPage<ActivationVO> voPage = page.convert(ActivationConverter.INSTANCE::poToVo);
 		return new PageResult<>(voPage.getRecords(), voPage.getTotal());
+	}
+
+	@Override
+	public List<ActivationVO> listByModelId(Long modelId) {
+		List<Activation> activations = baseMapper.listByModelId(modelId);
+		return ActivationConverter.INSTANCE.poToVOs(activations);
 	}
 
 }

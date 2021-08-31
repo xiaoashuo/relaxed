@@ -5,9 +5,12 @@ import com.relaxed.common.risk.engine.cache.LocalCache;
 import com.relaxed.common.risk.engine.core.distributor.EventDistributor;
 import com.relaxed.common.risk.engine.core.distributor.RedisDistributor;
 import com.relaxed.common.risk.engine.core.handler.DefaultFieldValidateHandler;
+import com.relaxed.common.risk.engine.core.handler.DefaultRiskReportHandler;
 import com.relaxed.common.risk.engine.core.handler.FieldValidateHandler;
+import com.relaxed.common.risk.engine.core.handler.RiskReportHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -21,6 +24,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
  */
 @RequiredArgsConstructor
 @Configuration(proxyBeanMethods = false)
+@EnableConfigurationProperties(value = { EngineProperties.class })
 public class RiskEngineConfiguration {
 
 	/**
@@ -58,6 +62,18 @@ public class RiskEngineConfiguration {
 	@ConditionalOnMissingBean
 	public FieldValidateHandler fieldValidateHandler() {
 		return new DefaultFieldValidateHandler();
+	}
+
+	/**
+	 * 风控评估报告处理器
+	 * @author yakir
+	 * @date 2021/8/31 15:23
+	 * @return com.relaxed.common.risk.engine.core.handler.RiskReportHandler
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public RiskReportHandler riskReportHandler() {
+		return new DefaultRiskReportHandler();
 	}
 
 }

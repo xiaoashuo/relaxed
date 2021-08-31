@@ -10,6 +10,14 @@ package com.relaxed.common.risk.engine.rules;
 public interface RiskEvaluate {
 
 	/**
+	 * 风控评估名称
+	 * @author yakir
+	 * @date 2021/8/31 14:46
+	 * @return java.lang.String
+	 */
+	String getName();
+
+	/**
 	 * 风控评估
 	 * @author yakir
 	 * @date 2021/8/29 17:14

@@ -20,6 +20,8 @@ import com.relaxed.extend.mybatis.plus.toolkit.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 业务层实现
@@ -40,6 +42,18 @@ public class DataListsServiceImpl extends ExtendServiceImpl<DataListsMapper, Dat
 		this.baseMapper.selectPage(page, wrapper);
 		IPage<DataListsVO> voPage = page.convert(DataListsConverter.INSTANCE::poToVo);
 		return new PageResult<>(voPage.getRecords(), voPage.getTotal());
+	}
+
+	@Override
+	public List<DataListsVO> list(List<Long> modelIds, Integer status) {
+		List<DataLists> list = baseMapper.list(modelIds, status);
+		return DataListsConverter.INSTANCE.poToVOs(list);
+	}
+
+	@Override
+	public List<DataListsVO> list(Long modelId, Integer status) {
+		List<DataLists> list = baseMapper.list(modelId, status);
+		return DataListsConverter.INSTANCE.poToVOs(list);
 	}
 
 }

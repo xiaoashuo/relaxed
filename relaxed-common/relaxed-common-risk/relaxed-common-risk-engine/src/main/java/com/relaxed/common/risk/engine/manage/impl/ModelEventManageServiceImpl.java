@@ -7,6 +7,7 @@ import com.relaxed.common.risk.engine.manage.ModelManageService;
 import com.relaxed.common.risk.engine.manage.ModelEventManageService;
 import com.relaxed.common.risk.engine.model.vo.ModelVO;
 import com.relaxed.common.risk.engine.mongdb.MongoDbService;
+import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
@@ -201,8 +202,24 @@ public class ModelEventManageServiceImpl implements ModelEventManageService {
 	}
 
 	@Override
+	public BigDecimal deviation(AggregateParam aggregateParam) {
+		BigDecimal avg = average(aggregateParam.getModelId(), aggregateParam.getSearchFieldName(),
+				aggregateParam.getSearchFieldVal(), aggregateParam.getRefDateFieldName(), aggregateParam.getBeginDate(),
+				aggregateParam.getRefDateFieldVal(), aggregateParam.getFunctionFieldName());
+		Object functionFieldVal = aggregateParam.getFunctionFieldVal();
+		BigDecimal deviationVal = new BigDecimal(functionFieldVal.toString()).subtract(avg);
+		BigDecimal deviationRate = deviationVal.multiply(new BigDecimal(100)).divide(avg, 2, 4);
+		return deviationRate;
+	}
+
+	@Override
 	public BigDecimal sd(Long modelId, String searchFieldName, Object searchFieldVal, String refDateFieldName,
 			Date beginDate, Date refDateFieldVal, String functionFieldName, FieldType functionFieldType) {
+		return null;
+	}
+
+	@Override
+	public BigDecimal variance(AggregateParam aggregateParam) {
 		return null;
 	}
 

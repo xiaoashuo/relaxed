@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.risk.engine.enums.AbstractionEnum;
 import com.relaxed.common.risk.engine.enums.FieldType;
 import com.relaxed.common.risk.engine.manage.AbstractionManageService;
+import com.relaxed.common.risk.engine.manage.DataListManageService;
 import com.relaxed.common.risk.engine.manage.FieldManageService;
 import com.relaxed.common.risk.engine.model.vo.AbstractionVO;
 import com.relaxed.common.risk.engine.model.vo.FieldVO;
@@ -58,10 +59,15 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 
 	private final AggregateInvoker aggregateInvoker;
 
+	private final DataListManageService dataListManageService;
+
+	@Override
+	public String getName() {
+		return ABSTRACTIONS;
+	}
+
 	@Override
 	public boolean doEval(EvaluateContext evaluateContext, EvaluateReport evaluateReport) {
-		long start = System.currentTimeMillis();
-		log.info("特征风险评估,开始时间{}", start);
 		Map<String, Object> extParam = new HashMap<>();
 		ModelVO modelVo = evaluateContext.getModelVo();
 		Map eventJson = evaluateContext.getEventJson();
@@ -92,8 +98,7 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 			// 规则脚本
 			String ruleScript = abstractionVO.getRuleScript();
 			// 获取预加载的黑/白名单集合
-			// TODO 黑白名单加载
-			Map<String, Object> blackWhiteMap = new HashMap<>();
+			Map<String, Object> blackWhiteMap = dataListManageService.getDataListMap(modelVo.getId());
 			boolean match = checkAbstractionScript(ruleScript, eventJson, blackWhiteMap);
 			if (!match) {
 				// 脚本检查不通过 过滤该特征
@@ -145,8 +150,6 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 			extParam.put(abstractionVO.getName(), executeResult);
 		}
 		evaluateReport.putEvaluateMap(ABSTRACTIONS, extParam);
-		long end = System.currentTimeMillis();
-		log.info("特征风险评估,结束时间{},耗时{} ms", end, end - start);
 		return true;
 	}
 

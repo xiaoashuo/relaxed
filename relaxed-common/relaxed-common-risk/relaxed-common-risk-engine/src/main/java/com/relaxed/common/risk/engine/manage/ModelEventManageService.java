@@ -1,6 +1,7 @@
 package com.relaxed.common.risk.engine.manage;
 
 import com.relaxed.common.risk.engine.enums.FieldType;
+import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParam;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -153,5 +154,23 @@ public interface ModelEventManageService {
 	 */
 	BigDecimal median(Long modelId, String searchFieldName, Object searchFieldVal, String refDateFieldName,
 			Date beginDate, Date refDateFieldVal, String functionFieldName);
+
+	/**
+	 * 偏离率计算
+	 * @author yakir
+	 * @date 2021/8/31 9:16
+	 * @param aggregateParam
+	 * @return java.math.BigDecimal
+	 */
+	BigDecimal deviation(AggregateParam aggregateParam);
+
+	/**
+	 * 计算方差
+	 * @author yakir
+	 * @date 2021/8/31 9:19
+	 * @param aggregateParam
+	 * @return java.math.BigDecimal
+	 */
+	BigDecimal variance(AggregateParam aggregateParam);
 
 }

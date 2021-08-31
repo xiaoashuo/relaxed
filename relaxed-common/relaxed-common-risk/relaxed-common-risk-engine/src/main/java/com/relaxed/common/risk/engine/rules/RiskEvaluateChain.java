@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Yakir
@@ -67,7 +68,15 @@ public class RiskEvaluateChain {
 	private boolean doEval(EvaluateContext evaluateContext, EvaluateReport evaluateReport) {
 		for (int i = 0; i < this.riskEvaluates.size(); i++) {
 			RiskEvaluate riskEvaluate = this.riskEvaluates.get(i);
-			if (!riskEvaluate.doEval(evaluateContext, evaluateReport)) {
+			String name = riskEvaluate.getName();
+			long start = System.currentTimeMillis();
+			log.info("{}风险评估,开始时间{}", name, start);
+			boolean result = riskEvaluate.doEval(evaluateContext, evaluateReport);
+			long end = System.currentTimeMillis();
+			long time = end - start;
+			log.info("{}风险评估,结束时间{},耗时{} ms", name, end, time);
+			evaluateReport.putPhaseTime(name, time);
+			if (!result) {
 				return false;
 			}
 			this.position = i;

@@ -30,6 +30,14 @@ public enum SubscribeEnum {
 	 * 特征处理
 	 */
 	PUB_SUB_ABSTRACTION_CHANNEL("relaxed:channel:abstraction", "发布订阅特征处理"),
+	/**
+	 * 规则处理
+	 */
+	PUB_SUB_RULE_CHANNEL("relaxed:channel:rule", "发布订阅规则"),
+	/**
+	 * 数据列表channel
+	 */
+	PUB_SUB_DATALIST_CHANNEL("relaxed:channel:data:list", "发布订阅数据列表"),
 	// /**
 	// * 黑名单数据列表
 	// */

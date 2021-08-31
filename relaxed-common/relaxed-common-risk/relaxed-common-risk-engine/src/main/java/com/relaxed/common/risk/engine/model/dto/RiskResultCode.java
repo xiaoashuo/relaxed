@@ -26,7 +26,17 @@ public enum RiskResultCode implements ResultCode {
 	/**
 	 * 字段验证未通过
 	 */
-	FIELD_VALID_NOT_PASSED(20003, "字段验证未通过"),;
+	FIELD_VALID_NOT_PASSED(20003, "字段验证未通过"),
+	/**
+	 * 风控评估未通过
+	 */
+	RISK_EVAL_NOT_PASSED(20004, "风控评估未通过"),
+	/**
+	 * 风控评估报告过期
+	 */
+	RISK_EVAL_EXPIRED(20005, "风控评估报告已过期"),
+
+	;
 
 	private final Integer code;
 

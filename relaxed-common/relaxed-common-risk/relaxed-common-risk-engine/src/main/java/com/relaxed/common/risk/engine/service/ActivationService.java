@@ -9,6 +9,8 @@ import com.relaxed.extend.mybatis.plus.service.ExtendService;
 import com.relaxed.common.model.domain.PageParam;
 import com.relaxed.common.model.domain.PageResult;
 
+import java.util.List;
+
 /**
  * <p>
  * 业务层
@@ -26,5 +28,14 @@ public interface ActivationService extends ExtendService<Activation> {
 	 * @return {@link PageResult<ActivationVO>}
 	 */
 	PageResult<ActivationVO> selectByPage(PageParam pageParam, ActivationQO activationQO);
+
+	/**
+	 * 根据modelID查询
+	 * @author yakir
+	 * @date 2021/8/31 10:51
+	 * @param modelId
+	 * @return java.util.List<com.relaxed.common.risk.engine.model.vo.ActivationVO>
+	 */
+	List<ActivationVO> listByModelId(Long modelId);
 
 }

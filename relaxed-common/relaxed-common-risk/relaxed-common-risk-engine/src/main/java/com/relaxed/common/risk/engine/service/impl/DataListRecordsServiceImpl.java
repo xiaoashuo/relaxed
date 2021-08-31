@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.relaxed.common.risk.engine.model.converter.DataListRecordsConverter;
+import com.relaxed.common.risk.engine.model.converter.DataListsConverter;
 import com.relaxed.common.risk.engine.model.qo.DataListRecordsQO;
 import com.relaxed.extend.mybatis.plus.service.impl.ExtendServiceImpl;
 
@@ -19,6 +20,8 @@ import com.relaxed.common.model.domain.PageResult;
 import com.relaxed.extend.mybatis.plus.toolkit.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -41,6 +44,12 @@ public class DataListRecordsServiceImpl extends ExtendServiceImpl<DataListRecord
 		this.baseMapper.selectPage(page, wrapper);
 		IPage<DataListRecordsVO> voPage = page.convert(DataListRecordsConverter.INSTANCE::poToVo);
 		return new PageResult<>(voPage.getRecords(), voPage.getTotal());
+	}
+
+	@Override
+	public List<DataListRecordsVO> listDataRecord(Long dataListId) {
+		List<DataListRecords> dataListRecords = baseMapper.listDataRecord(dataListId);
+		return DataListRecordsConverter.INSTANCE.poToVOs(dataListRecords);
 	}
 
 }

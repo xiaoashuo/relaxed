@@ -9,6 +9,8 @@ import com.relaxed.extend.mybatis.plus.service.ExtendService;
 import com.relaxed.common.model.domain.PageParam;
 import com.relaxed.common.model.domain.PageResult;
 
+import java.util.List;
+
 /**
  * <p>
  * 业务层
@@ -26,5 +28,25 @@ public interface DataListsService extends ExtendService<DataLists> {
 	 * @return {@link PageResult<DataListsVO>}
 	 */
 	PageResult<DataListsVO> selectByPage(PageParam pageParam, DataListsQO dataListsQO);
+
+	/**
+	 * 根据modelIds 查询黑白名单列表
+	 * @author yakir
+	 * @date 2021/8/31 15:52
+	 * @param modelIds
+	 * @param status
+	 * @return java.util.List<com.relaxed.common.risk.engine.model.vo.DataListsVO>
+	 */
+	List<DataListsVO> list(List<Long> modelIds, Integer status);
+
+	/**
+	 * 根据id查询 数据列表
+	 * @author yakir
+	 * @date 2021/8/31 16:31
+	 * @param modelId
+	 * @param status
+	 * @return java.util.List<com.relaxed.common.risk.engine.model.vo.DataListsVO>
+	 */
+	List<DataListsVO> list(Long modelId, Integer status);
 
 }
