@@ -49,6 +49,16 @@ public interface PluginService {
 	Class<?> getType();
 
 	/**
+	 * 元数据
+	 * @author yakir
+	 * @date 2021/8/31 18:28
+	 * @return java.lang.String
+	 */
+	default String getMeta() {
+		return null;
+	}
+
+	/**
 	 * 处理字段方法
 	 * @author yakir
 	 * @date 2021/8/29 14:25
