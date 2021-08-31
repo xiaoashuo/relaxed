@@ -41,6 +41,14 @@ public interface PluginService {
 	String desc();
 
 	/**
+	 * 结果类型
+	 * @author yakir
+	 * @date 2021/8/31 17:50
+	 * @return java.lang.Class<?>
+	 */
+	Class<?> getType();
+
+	/**
 	 * 处理字段方法
 	 * @author yakir
 	 * @date 2021/8/29 14:25
