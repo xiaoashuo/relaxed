@@ -13,6 +13,8 @@ import com.relaxed.common.risk.engine.rules.machine.EstimatorHolder;
 import com.relaxed.common.risk.engine.rules.script.ScriptResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +26,7 @@ import java.util.Map;
  * @date 2021/8/29 17:45
  * @Version 1.0
  */
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class AdaptationRiskEvaluate extends AbstractRiskEvaluate {

@@ -1,6 +1,8 @@
 package com.relaxed.common.risk.engine.rules.config;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.relaxed.common.risk.engine.config.EngineProperties;
+import com.relaxed.common.risk.engine.rules.RiskEvaluate;
 import com.relaxed.common.risk.engine.rules.RiskEvaluateChain;
 import com.relaxed.common.risk.engine.rules.extractor.FieldExtractor;
 import com.relaxed.common.risk.engine.rules.extractor.SimpleFieldExtractor;
@@ -30,6 +32,7 @@ import java.util.List;
  * @date 2021/8/29 18:05
  * @Version 1.0
  */
+
 @Configuration(proxyBeanMethods = false)
 public class RiskEvaluateConfiguration {
 
@@ -41,10 +44,17 @@ public class RiskEvaluateConfiguration {
 	 * @return com.relaxed.common.risk.engine.rules.RiskEvaluateChain
 	 */
 	@Bean
-	@Scope("prototype")
 	@ConditionalOnMissingBean
-	public RiskEvaluateChain riskEvaluateChain(@Nullable List<RiskEvaluateBuilderCustomizer> customizerList) {
+	public RiskEvaluateChain riskEvaluateChain(@Nullable List<RiskEvaluateBuilderCustomizer> customizerList,
+			List<RiskEvaluate> riskEvaluates) {
 		RiskEvaluateChain.Builder riskEvaluateChainBuilder = RiskEvaluateChain.builder();
+		// load system eval
+		if (CollectionUtil.isNotEmpty(riskEvaluates)) {
+			for (RiskEvaluate riskEvaluate : riskEvaluates) {
+				riskEvaluateChainBuilder.riskEvaluate(riskEvaluate);
+			}
+		}
+		// load user defined
 		for (RiskEvaluateBuilderCustomizer riskEvaluateBuilderCustomizer : customizerList) {
 			riskEvaluateBuilderCustomizer.customize(riskEvaluateChainBuilder);
 		}

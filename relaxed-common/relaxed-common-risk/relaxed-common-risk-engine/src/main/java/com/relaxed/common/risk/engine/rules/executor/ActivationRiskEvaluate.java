@@ -23,6 +23,8 @@ import com.relaxed.common.risk.engine.utils.ScoreUtil;
 import com.sun.org.apache.bcel.internal.generic.NEW;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ import java.util.Map;
  * @date 2021/8/29 17:47
  * @Version 1.0
  */
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class ActivationRiskEvaluate extends AbstractRiskEvaluate {

@@ -33,10 +33,9 @@ public class PluginManager {
 	private static class SingletonHolder {
 
 		private static final Map<String, PluginService> pluginServiceMap = SpringFactoriesLoader
-				.loadFactories(PluginService.class, null).stream().sorted(Comparator.comparing(PluginService::getOrder))
+				.loadFactories(PluginService.class, null).stream()
+				.sorted(Comparator.comparing(e -> e.pluginMeta().getOrder()))
 				.collect(Collectors.toMap(PluginService::pluginName, e -> e, (oldValue, newValue) -> newValue));
-
-		;
 
 	}
 

@@ -1,13 +1,11 @@
 package com.relaxed.common.risk.engine.rules;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Yakir
@@ -19,12 +17,7 @@ import java.util.Map;
 @Slf4j
 public class RiskEvaluateChain {
 
-	private int position = -1;
-
 	private List<RiskEvaluate> riskEvaluates = new ArrayList<>();
-
-	public RiskEvaluateChain() {
-	}
 
 	public RiskEvaluateChain(List<RiskEvaluate> riskEvaluates) {
 		this.riskEvaluates = riskEvaluates;
@@ -79,7 +72,6 @@ public class RiskEvaluateChain {
 			if (!result) {
 				return false;
 			}
-			this.position = i;
 		}
 		return true;
 	}
