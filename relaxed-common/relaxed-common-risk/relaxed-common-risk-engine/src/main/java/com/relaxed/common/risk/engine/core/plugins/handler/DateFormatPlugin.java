@@ -1,5 +1,7 @@
 package com.relaxed.common.risk.engine.core.plugins.handler;
 
+import com.relaxed.common.risk.engine.core.plugins.PluginEnum;
+import com.relaxed.common.risk.engine.core.plugins.PluginMeta;
 import com.relaxed.common.risk.engine.core.plugins.PluginService;
 import com.relaxed.common.risk.engine.model.vo.PreItemVO;
 
@@ -17,18 +19,8 @@ import java.util.Map;
 public class DateFormatPlugin implements PluginService {
 
 	@Override
-	public Integer getOrder() {
-		return 7;
-	}
-
-	@Override
-	public Class<?> getType() {
-		return String.class;
-	}
-
-	@Override
-	public String desc() {
-		return "日期格式化插件";
+	public PluginMeta pluginMeta() {
+		return PluginEnum.DATE_FORMAT_PLUGIN;
 	}
 
 	@Override

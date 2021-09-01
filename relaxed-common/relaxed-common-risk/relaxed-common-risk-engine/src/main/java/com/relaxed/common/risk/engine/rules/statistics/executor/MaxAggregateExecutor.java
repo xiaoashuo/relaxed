@@ -1,7 +1,7 @@
 package com.relaxed.common.risk.engine.rules.statistics.executor;
 
 import com.relaxed.common.risk.engine.manage.ModelEventManageService;
-import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParam;
+import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateEnum;
 import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.math.BigDecimal;
  */
 @Component
 @RequiredArgsConstructor
-public class MaxAggregateExecutor extends AbstractAggregateExecutor<BigDecimal> {
+public class MaxAggregateExecutor extends AbstractAggregateExecutor<AggregateParamBO, BigDecimal> {
 
 	private final ModelEventManageService modelEventManageService;
 
@@ -28,10 +28,11 @@ public class MaxAggregateExecutor extends AbstractAggregateExecutor<BigDecimal> 
 	}
 
 	@Override
-	public BigDecimal execute(AggregateParam aggregateParam) {
-		return modelEventManageService.max(aggregateParam.getModelId(), aggregateParam.getSearchFieldName(),
-				aggregateParam.getSearchFieldVal(), aggregateParam.getRefDateFieldName(), aggregateParam.getBeginDate(),
-				aggregateParam.getRefDateFieldVal(), aggregateParam.getFunctionFieldName());
+	public BigDecimal execute(AggregateParamBO aggregateParamBO) {
+		return modelEventManageService.max(aggregateParamBO.getModelId(), aggregateParamBO.getSearchFieldName(),
+				aggregateParamBO.getSearchFieldVal(), aggregateParamBO.getRefDateFieldName(),
+				aggregateParamBO.getBeginDate(), aggregateParamBO.getRefDateFieldVal(),
+				aggregateParamBO.getFunctionFieldName());
 
 	}
 

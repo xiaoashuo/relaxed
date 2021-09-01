@@ -1,17 +1,15 @@
 package com.relaxed.common.risk.engine.manage.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.mongodb.client.model.Filters;
 import com.relaxed.common.risk.engine.enums.FieldType;
 import com.relaxed.common.risk.engine.manage.ModelManageService;
 import com.relaxed.common.risk.engine.manage.ModelEventManageService;
 import com.relaxed.common.risk.engine.model.vo.ModelVO;
 import com.relaxed.common.risk.engine.mongdb.MongoDbService;
-import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParam;
+import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -202,11 +200,12 @@ public class ModelEventManageServiceImpl implements ModelEventManageService {
 	}
 
 	@Override
-	public BigDecimal deviation(AggregateParam aggregateParam) {
-		BigDecimal avg = average(aggregateParam.getModelId(), aggregateParam.getSearchFieldName(),
-				aggregateParam.getSearchFieldVal(), aggregateParam.getRefDateFieldName(), aggregateParam.getBeginDate(),
-				aggregateParam.getRefDateFieldVal(), aggregateParam.getFunctionFieldName());
-		Object functionFieldVal = aggregateParam.getFunctionFieldVal();
+	public BigDecimal deviation(AggregateParamBO aggregateParamBO) {
+		BigDecimal avg = average(aggregateParamBO.getModelId(), aggregateParamBO.getSearchFieldName(),
+				aggregateParamBO.getSearchFieldVal(), aggregateParamBO.getRefDateFieldName(),
+				aggregateParamBO.getBeginDate(), aggregateParamBO.getRefDateFieldVal(),
+				aggregateParamBO.getFunctionFieldName());
+		Object functionFieldVal = aggregateParamBO.getFunctionFieldVal();
 		BigDecimal deviationVal = new BigDecimal(functionFieldVal.toString()).subtract(avg);
 		BigDecimal deviationRate = deviationVal.multiply(new BigDecimal(100)).divide(avg, 2, 4);
 		return deviationRate;
@@ -219,7 +218,7 @@ public class ModelEventManageServiceImpl implements ModelEventManageService {
 	}
 
 	@Override
-	public BigDecimal variance(AggregateParam aggregateParam) {
+	public BigDecimal variance(AggregateParamBO aggregateParamBO) {
 		return null;
 	}
 

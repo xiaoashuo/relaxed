@@ -2,6 +2,8 @@ package com.relaxed.common.risk.engine.core.plugins.handler;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import com.relaxed.common.risk.engine.core.plugins.PluginEnum;
+import com.relaxed.common.risk.engine.core.plugins.PluginMeta;
 import com.relaxed.common.risk.engine.core.plugins.PluginService;
 import com.relaxed.common.risk.engine.model.vo.PreItemVO;
 
@@ -19,18 +21,8 @@ import java.util.stream.Collectors;
 public class FieldMergePlugin implements PluginService {
 
 	@Override
-	public Integer getOrder() {
-		return 3;
-	}
-
-	@Override
-	public String desc() {
-		return "字段合并";
-	}
-
-	@Override
-	public Class<?> getType() {
-		return String.class;
+	public PluginMeta pluginMeta() {
+		return PluginEnum.FIELD_MERGE_PLUGIN;
 	}
 
 	@Override

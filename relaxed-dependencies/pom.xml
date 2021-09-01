@@ -34,6 +34,7 @@
         <swagger-models.version>1.5.21</swagger-models.version>
         <groovy.version>2.4.6</groovy.version>
         <tensorflow.version>1.15.0</tensorflow.version>
+        <ip2region.version>1.7.2</ip2region.version>
         <!-- 跳过测试 -->
         <skipTests>true</skipTests>
     </properties>
@@ -59,6 +60,12 @@
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-core</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <!--IP模块-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-ip</artifactId>
                 <version>${reversion}</version>
             </dependency>
             <!--配置模块-->
@@ -101,6 +108,12 @@
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-security</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <!--risk engine-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-risk-engine</artifactId>
                 <version>${reversion}</version>
             </dependency>
 
@@ -218,6 +231,12 @@
                 <groupId>com.github.jsqlparser</groupId>
                 <artifactId>jsqlparser</artifactId>
                 <version>${jsqlparse.version}</version>
+            </dependency>
+            <!--IP 地址转换-->
+            <dependency>
+                <groupId>org.lionsoul</groupId>
+                <artifactId>ip2region</artifactId>
+                <version>${ip2region.version}</version>
             </dependency>
             <!--groovy 脚本依赖-->
             <dependency>

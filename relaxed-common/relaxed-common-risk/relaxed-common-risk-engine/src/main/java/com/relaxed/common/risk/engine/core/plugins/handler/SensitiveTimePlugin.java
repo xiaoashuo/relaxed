@@ -2,6 +2,8 @@ package com.relaxed.common.risk.engine.core.plugins.handler;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.unit.DataUnit;
+import com.relaxed.common.risk.engine.core.plugins.PluginEnum;
+import com.relaxed.common.risk.engine.core.plugins.PluginMeta;
 import com.relaxed.common.risk.engine.core.plugins.PluginService;
 import com.relaxed.common.risk.engine.model.vo.PreItemVO;
 
@@ -20,18 +22,8 @@ import java.util.Map;
 public class SensitiveTimePlugin implements PluginService {
 
 	@Override
-	public Integer getOrder() {
-		return 6;
-	}
-
-	@Override
-	public String desc() {
-		return "敏感时间段(小时)";
-	}
-
-	@Override
-	public Class<?> getType() {
-		return String.class;
+	public PluginMeta pluginMeta() {
+		return PluginEnum.SENSITIVE_TIME_PLUGIN;
 	}
 
 	@Override

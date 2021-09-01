@@ -2,7 +2,7 @@ package com.relaxed.common.risk.engine.rules.statistics.executor;
 
 import com.relaxed.common.risk.engine.manage.ModelEventManageService;
 import com.relaxed.common.risk.engine.rules.statistics.AggregateExecutor;
-import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParam;
+import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateEnum;
 import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
-public class DistinctCountAggregateExecutor implements AggregateExecutor<Long> {
+public class DistinctCountAggregateExecutor implements AggregateExecutor<AggregateParamBO, Long> {
 
 	private final ModelEventManageService modelEventManageService;
 
@@ -27,10 +27,11 @@ public class DistinctCountAggregateExecutor implements AggregateExecutor<Long> {
 	}
 
 	@Override
-	public Long execute(AggregateParam aggregateParam) {
-		return modelEventManageService.distinctCount(aggregateParam.getModelId(), aggregateParam.getSearchFieldName(),
-				aggregateParam.getSearchFieldVal(), aggregateParam.getRefDateFieldName(), aggregateParam.getBeginDate(),
-				aggregateParam.getRefDateFieldVal(), aggregateParam.getFunctionFieldName());
+	public Long execute(AggregateParamBO aggregateParamBO) {
+		return modelEventManageService.distinctCount(aggregateParamBO.getModelId(),
+				aggregateParamBO.getSearchFieldName(), aggregateParamBO.getSearchFieldVal(),
+				aggregateParamBO.getRefDateFieldName(), aggregateParamBO.getBeginDate(),
+				aggregateParamBO.getRefDateFieldVal(), aggregateParamBO.getFunctionFieldName());
 	}
 
 }

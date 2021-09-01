@@ -1,8 +1,10 @@
 package com.relaxed.common.risk.engine.rules.statistics.invoker;
 
+import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.statistics.AggregateExecutor;
 import com.relaxed.common.risk.engine.rules.statistics.AggregateInvoker;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParam;
+import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateResult;
 import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
 import com.relaxed.common.risk.engine.rules.statistics.executor.AggregateExecutorDiscover;
@@ -21,8 +23,9 @@ public class SimpleAggregateInvoker implements AggregateInvoker {
 	private final AggregateExecutorDiscover aggregateExecutorDiscover;
 
 	@Override
-	public <T extends AggregateParam> T convert(T aggregateParam) {
-		return aggregateParam;
+	public <T extends AggregateParam> T buildContext(EvaluateContext evaluateContext,
+			AggregateParamBO aggregateParamBO) {
+		return (T) aggregateParamBO;
 	}
 
 	@Override

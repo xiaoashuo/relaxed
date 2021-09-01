@@ -1,13 +1,11 @@
 package com.relaxed.common.risk.engine.rules.statistics.executor;
 
 import com.relaxed.common.risk.engine.manage.ModelEventManageService;
-import com.relaxed.common.risk.engine.rules.statistics.AggregateExecutor;
-import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParam;
+import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateEnum;
 import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Yakir
@@ -18,7 +16,7 @@ import org.springframework.stereotype.Service;
  */
 @Component
 @RequiredArgsConstructor
-public class CountAggregateExecutor extends AbstractAggregateExecutor<Long> {
+public class CountAggregateExecutor extends AbstractAggregateExecutor<AggregateParamBO, Long> {
 
 	private final ModelEventManageService modelEventManageService;
 
@@ -28,10 +26,10 @@ public class CountAggregateExecutor extends AbstractAggregateExecutor<Long> {
 	}
 
 	@Override
-	public Long execute(AggregateParam aggregateParam) {
-		return modelEventManageService.count(aggregateParam.getModelId(), aggregateParam.getSearchFieldName(),
-				aggregateParam.getSearchFieldVal(), aggregateParam.getRefDateFieldName(), aggregateParam.getBeginDate(),
-				aggregateParam.getRefDateFieldVal());
+	public Long execute(AggregateParamBO aggregateParamBO) {
+		return modelEventManageService.count(aggregateParamBO.getModelId(), aggregateParamBO.getSearchFieldName(),
+				aggregateParamBO.getSearchFieldVal(), aggregateParamBO.getRefDateFieldName(),
+				aggregateParamBO.getBeginDate(), aggregateParamBO.getRefDateFieldVal());
 
 	}
 

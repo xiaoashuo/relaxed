@@ -27,6 +27,16 @@ public class EngineProperties {
 	 */
 	private static String machineWorkDir;
 
+	/**
+	 * ip local path
+	 */
+	private static String ipRegionDb;
+
+	/**
+	 * mobile path
+	 */
+	private static String mobilePath;
+
 	public static boolean getMachineLearning() {
 		return machineLearning;
 	}
@@ -41,6 +51,22 @@ public class EngineProperties {
 
 	public void setMachineLearning(Boolean machineLearning) {
 		EngineProperties.machineLearning = machineLearning;
+	}
+
+	public static String getIpRegionDb() {
+		return ipRegionDb;
+	}
+
+	public void setIpRegionDb(String ipRegionDb) {
+		EngineProperties.ipRegionDb = ipRegionDb;
+	}
+
+	public static String getMobilePath() {
+		return mobilePath;
+	}
+
+	public void setMobilePath(String mobilePath) {
+		EngineProperties.mobilePath = mobilePath;
 	}
 
 	public static String getMachineWorkDir() {

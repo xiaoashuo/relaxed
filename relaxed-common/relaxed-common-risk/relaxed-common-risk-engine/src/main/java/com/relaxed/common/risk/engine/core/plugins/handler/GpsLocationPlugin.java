@@ -4,6 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.relaxed.common.risk.engine.core.plugins.PluginEnum;
+import com.relaxed.common.risk.engine.core.plugins.PluginMeta;
 import com.relaxed.common.risk.engine.core.plugins.PluginService;
 import com.relaxed.common.risk.engine.model.entity.Location;
 import com.relaxed.common.risk.engine.model.vo.PreItemVO;
@@ -24,18 +26,8 @@ import java.util.Map;
 public class GpsLocationPlugin implements PluginService {
 
 	@Override
-	public Integer getOrder() {
-		return 2;
-	}
-
-	@Override
-	public String desc() {
-		return "GPS转换成地址";
-	}
-
-	@Override
-	public Class<?> getType() {
-		return Location.class;
+	public PluginMeta pluginMeta() {
+		return PluginEnum.GPS_LOCATION_PLUGIN;
 	}
 
 	@Override

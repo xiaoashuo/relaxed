@@ -19,7 +19,7 @@ import com.relaxed.common.risk.engine.rules.extractor.FieldExtractor;
 import com.relaxed.common.risk.engine.rules.script.RuleScriptHandler;
 import com.relaxed.common.risk.engine.rules.script.ScriptResult;
 import com.relaxed.common.risk.engine.rules.statistics.AggregateInvoker;
-import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParam;
+import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateResult;
 import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
 import com.relaxed.common.risk.engine.rules.statistics.provider.AggregateFunctionProvider;
@@ -139,13 +139,13 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 			// 执行聚合操作 by 聚合类型
 			AggregateFunction aggregateFunction = aggregateFunctionProvider.provide(aggregateType);
 			// 构建参数BO
-			AggregateParam aggregateBo = new AggregateParam().setModelId(modelVo.getId())
+			AggregateParamBO aggregateBo = new AggregateParamBO().setModelId(modelVo.getId())
 					.setSearchFieldName(searchFieldName).setSearchFieldVal(searchFieldVal)
 					.setRefDateFieldName(refDateFieldName).setRefDateFieldVal(refDate).setBeginDate(beginDate)
 					.setFunctionFieldName(functionFieldName).setFunctionFieldVal(functionFieldVal)
 					.setFunctionFieldType(fieldType);
 			AggregateResult aggregateResult = aggregateInvoker.invoke(aggregateFunction,
-					aggregateInvoker.convert(aggregateBo));
+					aggregateInvoker.buildContext(evaluateContext, aggregateBo));
 			Object executeResult = aggregateResult.getExecuteResult();
 			extParam.put(abstractionVO.getName(), executeResult);
 		}

@@ -23,6 +23,7 @@
         <module>relaxed-common-security</module>
         <module>relaxed-common-idempotent</module>
         <module>relaxed-common-risk</module>
+        <module>relaxed-common-ip</module>
     </modules>
 
 

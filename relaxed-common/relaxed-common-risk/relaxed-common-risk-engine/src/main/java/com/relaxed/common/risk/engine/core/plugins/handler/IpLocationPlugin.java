@@ -1,0 +1,60 @@
+package com.relaxed.common.risk.engine.core.plugins.handler;
+
+import cn.hutool.core.util.StrUtil;
+import com.relaxed.common.ip.Ip2RegionSearcher;
+import com.relaxed.common.ip.IpSearcher;
+import com.relaxed.common.risk.engine.core.plugins.PluginEnum;
+import com.relaxed.common.risk.engine.core.plugins.PluginMeta;
+import com.relaxed.common.risk.engine.core.plugins.PluginService;
+import com.relaxed.common.risk.engine.model.entity.Location;
+import com.relaxed.common.risk.engine.model.vo.PreItemVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.lionsoul.ip2region.DataBlock;
+import org.lionsoul.ip2region.Util;
+
+import java.util.Map;
+
+/**
+ * @author Yakir
+ * @Topic IpLocationPlugin
+ * @Description IpLocationPlugin
+ * @date 2021/8/29 14:29
+ * @Version 1.0
+ */
+@Slf4j
+@RequiredArgsConstructor
+public class IpLocationPlugin implements PluginService {
+
+	private final IpSearcher ipSearcher;
+
+	@Override
+	public PluginMeta pluginMeta() {
+		return PluginEnum.IP_LOCATION_PLUGIN;
+	}
+
+	@Override
+	public Object handle(PreItemVO preItemVO, Map<String, Object> jsonInfo, String[] sourceFields) {
+		Location location;
+		String ip = jsonInfo.get(sourceFields[0]).toString();
+		if (!Util.isIpAddress(ip)) {
+			return null;
+		}
+		try {
+			DataBlock block = ipSearcher.getDelegate().memorySearch(ip);
+			String[] detail = block.getRegion().split("\\|");
+			location = new Location();
+			location.setCountry(detail[0]);
+			location.setRegion(detail[1]);
+			location.setProvince(detail[2]);
+			location.setCity(detail[3]);
+			location.setAddress(detail[4]);
+		}
+		catch (Exception e) {
+			location = new Location();
+			log.error("ip2region error", e);
+		}
+		return location;
+	}
+
+}

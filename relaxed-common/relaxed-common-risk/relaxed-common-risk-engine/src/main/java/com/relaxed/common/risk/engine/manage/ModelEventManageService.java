@@ -1,7 +1,7 @@
 package com.relaxed.common.risk.engine.manage;
 
 import com.relaxed.common.risk.engine.enums.FieldType;
-import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParam;
+import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -159,18 +159,18 @@ public interface ModelEventManageService {
 	 * 偏离率计算
 	 * @author yakir
 	 * @date 2021/8/31 9:16
-	 * @param aggregateParam
+	 * @param aggregateParamBO
 	 * @return java.math.BigDecimal
 	 */
-	BigDecimal deviation(AggregateParam aggregateParam);
+	BigDecimal deviation(AggregateParamBO aggregateParamBO);
 
 	/**
 	 * 计算方差
 	 * @author yakir
 	 * @date 2021/8/31 9:19
-	 * @param aggregateParam
+	 * @param aggregateParamBO
 	 * @return java.math.BigDecimal
 	 */
-	BigDecimal variance(AggregateParam aggregateParam);
+	BigDecimal variance(AggregateParamBO aggregateParamBO);
 
 }
