@@ -1,11 +1,11 @@
 package com.relaxed.common.cache.core;
 
+import com.relaxed.common.cache.CacheOperator;
 import com.relaxed.common.cache.annotation.Cached;
 import com.relaxed.common.cache.annotation.CacheDel;
 import com.relaxed.common.cache.annotation.CachePut;
 import com.relaxed.common.cache.annotation.MetaCacheAnnotation;
 import com.relaxed.common.cache.config.CachePropertiesHolder;
-import com.relaxed.common.cache.lock.CacheManage;
 import com.relaxed.common.cache.model.CachedDelInfo;
 import com.relaxed.common.cache.model.CachedInfo;
 import com.relaxed.common.cache.model.CachedPutInfo;
@@ -22,18 +22,11 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.annotation.BeanFactoryAnnotationUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
@@ -58,7 +51,7 @@ public class CacheAspect {
 
 	private final ApplicationContext applicationContext;
 
-	private final CacheManage cacheManage;
+	private final CacheOperator<String> cacheOperator;
 
 	private final CacheSerializer cacheSerializer;
 
@@ -93,9 +86,9 @@ public class CacheAspect {
 			String key = generateKey(cacheExpressionEvaluator, cachedInfo);
 			// redis 分布式锁的 key
 			String lockKey = key + CachePropertiesHolder.lockKeySuffix();
-			Supplier<String> cacheQuery = () -> cacheManage.get(key);
+			Supplier<String> cacheQuery = () -> cacheOperator.get(key);
 			// 失效时间控制
-			Consumer<Object> cachePut = prodCachePutFunction(cacheManage, key, cachedAnnotation.ttl());
+			Consumer<Object> cachePut = prodCachePutFunction(cacheOperator, key, cachedAnnotation.ttl());
 			return cached(new CachedOps(point, lockKey, cacheQuery, cachePut, method.getGenericReturnType()));
 
 		}
@@ -107,7 +100,7 @@ public class CacheAspect {
 			// 缓存key
 			String key = generateKey(cacheExpressionEvaluator, cachedInfo);
 			// 失效时间控制
-			Consumer<Object> cachePut = prodCachePutFunction(cacheManage, key, cachePutAnnotation.ttl());
+			Consumer<Object> cachePut = prodCachePutFunction(cacheOperator, key, cachePutAnnotation.ttl());
 			return cachePut(new CachePutOps(point, cachePut));
 
 		}
@@ -117,7 +110,7 @@ public class CacheAspect {
 					cacheDelAnnotation.suffix(), cacheDelAnnotation.keyGenerator(), cacheDelAnnotation.condition());
 			// 缓存key
 			String key = generateKey(cacheExpressionEvaluator, cachedInfo);
-			VoidMethod cacheDel = () -> cacheManage.delete(key);
+			VoidMethod cacheDel = () -> cacheOperator.remove(key);
 			return cacheDel(new CacheDelOps(point, cacheDel));
 		}
 
@@ -179,7 +172,7 @@ public class CacheAspect {
 		Object dbData = null;
 		// 尝试获取锁，只允许一个线程更新缓存
 		String reqId = UUID.randomUUID().toString();
-		if (cacheManage.lock(ops.lockKey(), reqId)) {
+		if (cacheOperator.lock(ops.lockKey(), reqId)) {
 			// 有可能其他线程已经更新缓存，这里再次判断缓存是否为空
 			cacheData = cacheQuery.get();
 			if (cacheData == null) {
@@ -191,7 +184,7 @@ public class CacheAspect {
 				ops.cachePut().accept(cacheData);
 			}
 			// 解锁
-			cacheManage.releaseLock(ops.lockKey(), reqId);
+			cacheOperator.releaseLock(ops.lockKey(), reqId);
 			// 返回数据
 			return dbData;
 		}
@@ -206,17 +199,16 @@ public class CacheAspect {
 		return cacheSerializer.deserialize(cacheData, dataClazz);
 	}
 
-	private Consumer<Object> prodCachePutFunction(CacheManage cacheManage, String key, long ttl) {
+	private Consumer<Object> prodCachePutFunction(CacheOperator cacheOperator, String key, long ttl) {
 		Consumer<Object> cachePut;
 		if (ttl < 0) {
-			cachePut = value -> cacheManage.set(key, (String) value);
+			cachePut = value -> cacheOperator.set(key, value);
 		}
 		else if (ttl == 0) {
-			cachePut = value -> cacheManage.set(key, (String) value, CachePropertiesHolder.expireTime(),
-					TimeUnit.SECONDS);
+			cachePut = value -> cacheOperator.set(key, value, CachePropertiesHolder.expireTime(), TimeUnit.SECONDS);
 		}
 		else {
-			cachePut = value -> cacheManage.set(key, (String) value, ttl, TimeUnit.SECONDS);
+			cachePut = value -> cacheOperator.set(key, value, ttl, TimeUnit.SECONDS);
 		}
 		return cachePut;
 	}

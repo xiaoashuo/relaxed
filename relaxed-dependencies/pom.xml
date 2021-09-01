@@ -110,6 +110,12 @@
                 <artifactId>relaxed-common-security</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--cache-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-cache</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--risk engine-->
             <dependency>
                 <groupId>com.lovecyy</groupId>

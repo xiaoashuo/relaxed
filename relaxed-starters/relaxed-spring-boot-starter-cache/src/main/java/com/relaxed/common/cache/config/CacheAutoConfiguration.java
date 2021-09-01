@@ -1,19 +1,17 @@
 package com.relaxed.common.cache.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.relaxed.common.cache.CacheOperator;
 import com.relaxed.common.cache.core.CacheAspect;
-import com.relaxed.common.cache.lock.CacheManage;
-import com.relaxed.common.cache.lock.RedisCacheManage;
+import com.relaxed.common.cache.operator.StringRedisCacheOperator;
 import com.relaxed.common.cache.serialize.CacheSerializer;
 import com.relaxed.common.cache.serialize.JacksonSerializer;
 import com.relaxed.common.cache.serialize.PrefixStringRedisSerializer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
@@ -65,31 +63,25 @@ public class CacheAutoConfiguration {
 		return template;
 	}
 
-	/**
-	 * 初始化CacheLock
-	 * @param stringRedisTemplate 默认使用字符串类型操作，后续扩展
-	 * @return CacheLock
-	 */
 	@Bean
 	@ConditionalOnMissingBean
-	public CacheManage cacheLock(StringRedisTemplate stringRedisTemplate) {
-		RedisCacheManage redisCacheLock = new RedisCacheManage();
-		redisCacheLock.setStringRedisTemplate(stringRedisTemplate);
-		return redisCacheLock;
+	public CacheOperator<String> cacheOperator(StringRedisTemplate stringRedisTemplate) {
+		StringRedisCacheOperator stringRedisCacheOperator = new StringRedisCacheOperator(stringRedisTemplate);
+		return stringRedisCacheOperator;
 	}
 
 	/**
 	 * 缓存注解操作切面</br>
 	 * 必须在CacheManage初始化之后使用
 	 * @param applicationContext 缓存管理
-	 * @param cacheManage 缓存管理
+	 * @param cacheOperator 缓存管理
 	 * @param cacheSerializer 缓存序列化器
 	 * @return CacheStringAspect 缓存注解操作切面
 	 */
 	@Bean
-	public CacheAspect cacheStringAspect(ApplicationContext applicationContext, CacheManage cacheManage,
+	public CacheAspect cacheStringAspect(ApplicationContext applicationContext, CacheOperator cacheOperator,
 			CacheSerializer cacheSerializer) {
-		return new CacheAspect(applicationContext, cacheManage, cacheSerializer);
+		return new CacheAspect(applicationContext, cacheOperator, cacheSerializer);
 	}
 
 }

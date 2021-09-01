@@ -26,6 +26,10 @@
         </dependency>
         <dependency>
             <groupId>com.lovecyy</groupId>
+            <artifactId>relaxed-common-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lovecyy</groupId>
             <artifactId>relaxed-extend-mybatis-plus</artifactId>
         </dependency>
         <dependency>

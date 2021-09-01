@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.relaxed.common.cache.lock.CacheManage;
+import com.relaxed.common.cache.CacheOperator;
 import com.relaxed.common.model.result.R;
 import com.relaxed.common.risk.engine.config.EngineProperties;
 import com.relaxed.common.risk.engine.core.handler.RiskReportHandler;
@@ -22,6 +22,7 @@ import com.relaxed.common.risk.engine.rules.RiskEvaluateChain;
 import com.relaxed.common.risk.engine.service.RiskAnalysisEngineService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -50,7 +51,7 @@ public class RiskAnalysisEngineServiceImpl implements RiskAnalysisEngineService 
 
 	private final RiskEvaluateChain riskEvaluateChain;
 
-	private final CacheManage cacheManage;
+	private final CacheOperator<String> cacheManage;
 
 	private final RiskReportHandler riskReportHandler;
 

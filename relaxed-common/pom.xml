@@ -24,6 +24,7 @@
         <module>relaxed-common-idempotent</module>
         <module>relaxed-common-risk</module>
         <module>relaxed-common-ip</module>
+        <module>relaxed-common-cache</module>
     </modules>
 
 
