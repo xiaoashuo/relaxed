@@ -25,6 +25,8 @@
         <module>relaxed-common-risk</module>
         <module>relaxed-common-ip</module>
         <module>relaxed-common-cache</module>
+        <module>relaxed-common-config</module>
+        <module>relaxed-common-util</module>
     </modules>
 
 
