@@ -1,10 +1,11 @@
 package com.relaxed.common.config;
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.CacheObj;
+import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.lang.Dict;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Yakir
@@ -15,47 +16,57 @@ import java.util.Set;
  */
 public class LocalMemoryConfig implements Config<String, Object> {
 
-	/**
-	 * 系统配置的Map缓存
-	 */
-	private static final Dict CONFIG_CONTAINER = Dict.create();
+	private final TimedCache<String, Object> cache;
+
+	public LocalMemoryConfig() {
+		this.cache = CacheUtil.newTimedCache(Integer.MAX_VALUE);
+		cache.schedulePrune(1);
+	}
 
 	@Override
 	public void initConfig(Map<String, Object> configs) {
 		if (configs == null || configs.size() == 0) {
 			return;
 		}
-		CONFIG_CONTAINER.putAll(configs);
+		for (Map.Entry<String, Object> entry : configs.entrySet()) {
+			cache.put(entry.getKey(), entry.getValue());
+		}
 	}
 
 	@Override
 	public Map<String, Object> getAllConfigs() {
-		return CONFIG_CONTAINER;
+		Map<String, Object> configs = new HashMap<>();
+		Iterator<CacheObj<String, Object>> cacheObjIterator = cache.cacheObjIterator();
+		while (cacheObjIterator.hasNext()) {
+			CacheObj<String, Object> next = cacheObjIterator.next();
+			configs.put(next.getKey(), next.getValue());
+		}
+		return configs;
 	}
 
 	@Override
 	public Set<String> getAllConfigKeys() {
-		return CONFIG_CONTAINER.keySet();
+		return cache.keySet();
 	}
 
 	@Override
 	public void put(String key, Object val) {
-		CONFIG_CONTAINER.put(key, val);
+		cache.put(key, val);
 	}
 
 	@Override
 	public void del(String key) {
-		CONFIG_CONTAINER.remove(key);
+		cache.remove(key);
 	}
 
 	@Override
 	public Object get(String key) {
-		return CONFIG_CONTAINER.get(key);
+		return cache.get(key);
 	}
 
 	@Override
 	public Object get(String key, Object defaultValue) {
-		return Optional.ofNullable(CONFIG_CONTAINER.get(key)).orElseGet(() -> defaultValue);
+		return Optional.ofNullable(cache.get(key)).orElseGet(() -> defaultValue);
 	}
 
 }
