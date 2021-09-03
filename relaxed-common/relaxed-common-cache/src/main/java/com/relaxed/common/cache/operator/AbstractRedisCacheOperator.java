@@ -65,12 +65,15 @@ public class AbstractRedisCacheOperator<T> implements CacheOperator<T> {
 
 	@Override
 	public boolean lock(String key, T requestId) {
-		return false;
+		return lock(key, requestId, -1L);
 	}
 
 	@Override
 	public boolean lock(String key, T requestId, Long ttl) {
 		log.trace("lock: {key:{}, clientId:{}}", key, requestId);
+		if (ttl < 0) {
+			return redisTemplate.opsForValue().setIfAbsent(key, requestId);
+		}
 		return redisTemplate.opsForValue().setIfAbsent(key, requestId, ttl, TimeUnit.SECONDS);
 
 	}

@@ -172,7 +172,7 @@ public class CacheAspect {
 		Object dbData = null;
 		// 尝试获取锁，只允许一个线程更新缓存
 		String reqId = UUID.randomUUID().toString();
-		if (cacheOperator.lock(ops.lockKey(), reqId)) {
+		if (cacheOperator.lock(ops.lockKey(), reqId, CachePropertiesHolder.lockedTimeOut())) {
 			// 有可能其他线程已经更新缓存，这里再次判断缓存是否为空
 			cacheData = cacheQuery.get();
 			if (cacheData == null) {
