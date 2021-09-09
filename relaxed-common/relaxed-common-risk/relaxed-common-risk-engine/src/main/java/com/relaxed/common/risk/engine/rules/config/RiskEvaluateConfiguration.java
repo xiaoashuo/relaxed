@@ -9,6 +9,8 @@ import com.relaxed.common.risk.engine.rules.extractor.SimpleFieldExtractor;
 import com.relaxed.common.risk.engine.rules.machine.Estimator;
 import com.relaxed.common.risk.engine.rules.machine.EstimatorHolder;
 import com.relaxed.common.risk.engine.rules.machine.impl.TensorDnnEstimator;
+import com.relaxed.common.risk.engine.rules.score.DefaultRiskScoreHandle;
+import com.relaxed.common.risk.engine.rules.score.RiskScoreHandler;
 import com.relaxed.common.risk.engine.rules.script.RuleScriptHandler;
 import com.relaxed.common.risk.engine.rules.script.groovy.GroovyScriptHandler;
 import com.relaxed.common.risk.engine.rules.statistics.AggregateExecutor;
@@ -83,6 +85,19 @@ public class RiskEvaluateConfiguration {
 	@ConditionalOnMissingBean
 	public FieldExtractor fieldExtractor() {
 		return new SimpleFieldExtractor();
+	}
+
+	/**
+	 * 风控评分处理器
+	 * @author yakir
+	 * @date 2021/9/9 16:54
+	 * @param fieldExtractor
+	 * @return com.relaxed.common.risk.engine.rules.score.RiskScoreHandler
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public RiskScoreHandler riskScoreHandler(FieldExtractor fieldExtractor) {
+		return new DefaultRiskScoreHandle(fieldExtractor);
 	}
 
 	/**

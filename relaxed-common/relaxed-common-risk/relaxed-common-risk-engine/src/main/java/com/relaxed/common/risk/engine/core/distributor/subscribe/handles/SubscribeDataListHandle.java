@@ -10,6 +10,7 @@ import com.relaxed.common.risk.engine.model.vo.DataListsVO;
 import com.relaxed.common.risk.engine.model.vo.RuleVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import java.util.Map;
  * @date 2021/8/29 9:34
  * @Version 1.0
  */
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class SubscribeDataListHandle implements SubscribeHandle {

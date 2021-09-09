@@ -1,8 +1,5 @@
 package com.relaxed.common.risk.engine.rules.executor;
 
-import cn.hutool.core.text.StrPool;
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.risk.engine.enums.*;
 import com.relaxed.common.risk.engine.manage.ActivationManageService;
 import com.relaxed.common.risk.engine.manage.DataListManageService;
@@ -15,9 +12,7 @@ import com.relaxed.common.risk.engine.model.vo.RuleVO;
 import com.relaxed.common.risk.engine.rules.AbstractRiskEvaluate;
 import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.EvaluateReport;
-import com.relaxed.common.risk.engine.rules.extractor.FieldExtractor;
-import com.relaxed.common.risk.engine.rules.script.RuleScriptHandler;
-import com.relaxed.common.risk.engine.utils.ScoreUtil;
+import com.relaxed.common.risk.engine.rules.score.RiskScoreHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -46,9 +41,7 @@ public class ActivationRiskEvaluate extends AbstractRiskEvaluate {
 
 	private final RuleManageService ruleManageService;
 
-	private final RuleScriptHandler ruleScriptHandler;
-
-	private final FieldExtractor fieldExtractor;
+	private final RiskScoreHandler riskScoreHandler;
 
 	private final DataListManageService dataListManageService;
 
@@ -98,36 +91,7 @@ public class ActivationRiskEvaluate extends AbstractRiskEvaluate {
 					continue;
 				}
 				// 规则匹配 计算score
-				// 初始得分
-				BigDecimal initScore = new BigDecimal(ruleVO.getInitScore());
-				// 后续增加比列
-				BigDecimal rate = new BigDecimal(ruleVO.getRate() * 0.01);
-				// 基数
-				BigDecimal base = new BigDecimal(ruleVO.getBaseNum());
-				BigDecimal extra = BigDecimal.ZERO;
-				// 特征字段名称 fields.userId preItem.userId, abstractions.userId
-				String abstractionName = ruleVO.getAbstractionName();
-				// 最大分数
-				BigDecimal maxScore = new BigDecimal(ruleVO.getMax());
-				// TODO 优化 字段值提取 用spel
-				if (StrUtil.isNotEmpty(abstractionName)) {
-					if (abstractionName.indexOf(StrPool.DOT) != -1) {
-						String[] varNames = StrUtil.splitToArray(abstractionName, StrPool.DOT);
-
-						extra = NumberUtil.toBigDecimal((Number) fieldExtractor.extractorFieldValue(varNames[1],
-								evaluateContext, evaluateReport));
-					}
-				}
-				extra = extra.multiply(rate);
-				// 操作方式 ADD SUB MUL DIV
-				String operator = ruleVO.getOperator();
-				extra = ScoreUtil.exec(operator, base, extra);
-
-				BigDecimal amount = initScore.add(extra);
-				// 规则得分设置最大值. 若得分超出 最大分数 则同步为最大分数
-				if (maxScore.compareTo(BigDecimal.ZERO) > 0 && amount.compareTo(maxScore) > 0) {
-					amount = maxScore;
-				}
+				BigDecimal amount = riskScoreHandler.computeRule(evaluateContext, evaluateReport, ruleVO);
 				sum = sum.add(amount);
 				// hit detail
 				Hit hit = new Hit();

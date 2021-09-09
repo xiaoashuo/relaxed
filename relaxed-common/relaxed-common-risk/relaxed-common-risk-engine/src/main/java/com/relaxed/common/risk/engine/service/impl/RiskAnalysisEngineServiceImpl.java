@@ -119,7 +119,7 @@ public class RiskAnalysisEngineServiceImpl implements RiskAnalysisEngineService 
 		if (StrUtil.isEmpty(jsonResult)) {
 			return R.failed(RiskResultCode.RISK_EVAL_EXPIRED);
 		}
-		return R.ok(jsonResult);
+		return R.ok(JSONUtil.toBean(jsonResult, EvaluateReport.class));
 	}
 
 	private String buildReportCacheKey(String modelGuid, String reqId) {

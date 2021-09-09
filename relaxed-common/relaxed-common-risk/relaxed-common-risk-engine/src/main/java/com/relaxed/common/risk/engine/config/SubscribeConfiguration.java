@@ -26,17 +26,6 @@ public class SubscribeConfiguration {
 	private final EventDistributor eventDistributor;
 
 	/**
-	 * 订阅者注册器
-	 * @author yakir
-	 * @date 2021/8/29 10:09
-	 * @return com.relaxed.common.risk.engine.core.distributor.subscribe.SubscribeRegister
-	 */
-	@Bean
-	public SubscribeRegister subscribeRegister() {
-		return new SubscribeRegister(eventDistributor);
-	}
-
-	/**
 	 * 订阅holder 容器
 	 * @author yakir
 	 * @date 2021/8/29 10:08
@@ -48,14 +37,14 @@ public class SubscribeConfiguration {
 	}
 
 	/**
-	 * 订阅model处理器
+	 * 订阅者注册器
 	 * @author yakir
-	 * @date 2021/8/29 10:07
-	 * @return com.relaxed.common.risk.engine.core.distributor.subscribe.SubscribeHandle
+	 * @date 2021/8/29 10:09
+	 * @return com.relaxed.common.risk.engine.core.distributor.subscribe.SubscribeRegister
 	 */
 	@Bean
-	public SubscribeHandle subscribeModelHandle() {
-		return new SubscribeModelHandle(cacheService);
+	public SubscribeRegister subscribeRegister() {
+		return new SubscribeRegister(eventDistributor);
 	}
 
 }

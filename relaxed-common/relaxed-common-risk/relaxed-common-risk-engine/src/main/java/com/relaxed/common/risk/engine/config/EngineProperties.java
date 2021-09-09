@@ -28,11 +28,6 @@ public class EngineProperties {
 	private static String machineWorkDir;
 
 	/**
-	 * ip local path
-	 */
-	private static String ipRegionDb;
-
-	/**
 	 * mobile path
 	 */
 	private static String mobilePath;
@@ -49,24 +44,16 @@ public class EngineProperties {
 		EngineProperties.duplicate = isDuplicate;
 	}
 
-	public void setMachineLearning(Boolean machineLearning) {
-		EngineProperties.machineLearning = machineLearning;
-	}
-
-	public static String getIpRegionDb() {
-		return ipRegionDb;
-	}
-
-	public void setIpRegionDb(String ipRegionDb) {
-		EngineProperties.ipRegionDb = ipRegionDb;
-	}
-
 	public static String getMobilePath() {
 		return mobilePath;
 	}
 
 	public void setMobilePath(String mobilePath) {
 		EngineProperties.mobilePath = mobilePath;
+	}
+
+	public void setMachineLearning(Boolean machineLearning) {
+		EngineProperties.machineLearning = machineLearning;
 	}
 
 	public static String getMachineWorkDir() {

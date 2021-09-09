@@ -9,6 +9,7 @@ import com.relaxed.common.risk.engine.model.vo.ModelVO;
 import com.relaxed.common.risk.engine.model.vo.RuleVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Yakir
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2021/8/29 9:34
  * @Version 1.0
  */
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class SubscribeRuleHandle implements SubscribeHandle {
