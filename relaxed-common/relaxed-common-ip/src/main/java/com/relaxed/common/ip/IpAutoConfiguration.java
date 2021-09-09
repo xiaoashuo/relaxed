@@ -39,7 +39,8 @@ public class IpAutoConfiguration {
 	@ConditionalOnProperty(prefix = Ip2RegionProperties.PREFIX, name = "enabled", havingValue = "true")
 	public Ip2RegionSearcher autoIp2regionSearcher(Ip2RegionProperties properties) {
 		try {
-			InputStream inputStream = IpAutoConfiguration.class.getResourceAsStream(properties.getDbFile());
+			InputStream inputStream = IpAutoConfiguration.class.getClassLoader()
+					.getResourceAsStream(properties.getDbFile());
 			byte[] bytes = IoUtil.readBytes(inputStream);
 			DbConfig dbConfig = new DbConfig();
 			DbSearcher dbSearcher = new DbSearcher(dbConfig, bytes);

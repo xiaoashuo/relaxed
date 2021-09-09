@@ -19,11 +19,11 @@ public class Ip2RegionProperties {
 	/**
 	 * 是否启用
 	 */
-	private boolean enabled = true;
+	private boolean enabled = false;
 
 	/**
 	 * db 数据文件未知
 	 */
-	private String dbFile;
+	private String dbFile="ip2region.db";
 
 }
