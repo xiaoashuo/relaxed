@@ -8,6 +8,7 @@ import com.relaxed.common.cache.serialize.CacheSerializer;
 import com.relaxed.common.cache.serialize.JacksonSerializer;
 import com.relaxed.common.cache.serialize.PrefixStringRedisSerializer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -56,6 +57,7 @@ public class CacheAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnMissingBean
+	@ConditionalOnBean({ CacheProperties.class, CachePropertiesHolder.class })
 	public StringRedisTemplate stringRedisTemplate() {
 		StringRedisTemplate template = new StringRedisTemplate();
 		template.setConnectionFactory(redisConnectionFactory);
