@@ -1,6 +1,7 @@
 package com.relaxed.common.risk.engine.core.plugins.handler;
 
 import cn.hutool.core.util.StrUtil;
+import com.relaxed.common.core.util.SpringUtils;
 import com.relaxed.common.ip.IpSearcher;
 import com.relaxed.common.risk.engine.core.plugins.PluginEnum;
 import com.relaxed.common.risk.engine.core.plugins.PluginMeta;
@@ -26,14 +27,18 @@ import java.util.Map;
  * @Version 1.0
  */
 @Slf4j
-@RequiredArgsConstructor
 public class MobileLocationPlugin implements PluginService {
 
-	private final MobileInfoManageService mobileInfoManageService;
+	private final MobileInfoManageService mobileInfoManageService = SpringUtils.getBean(MobileInfoManageService.class);
 
 	@Override
 	public PluginMeta pluginMeta() {
 		return PluginEnum.MOBILE_LOCATION_PLUGIN;
+	}
+
+	@Override
+	public String pluginName() {
+		return "MOBILE2LOCATION";
 	}
 
 	@Override

@@ -61,7 +61,7 @@ public class RiskAnalysisEngineServiceImpl implements RiskAnalysisEngineService 
 		ModelVO modelVO = modelManageService.getByGuid(modelGuid);
 		// 1.基础规则效验
 		if (modelVO == null) {
-			R.failed(RiskResultCode.MODEL_NOT_EXISTS);
+			return R.failed(RiskResultCode.MODEL_NOT_EXISTS);
 		}
 		if (!ModelEnums.StatusEnum.ENABLE.getStatus().equals(modelVO.getStatus())) {
 			return R.failed(RiskResultCode.MODEL_DISABLED);

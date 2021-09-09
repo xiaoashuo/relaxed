@@ -1,6 +1,7 @@
 package com.relaxed.common.risk.engine.core.plugins.handler;
 
 import cn.hutool.core.util.StrUtil;
+import com.relaxed.common.core.util.SpringUtils;
 import com.relaxed.common.ip.Ip2RegionSearcher;
 import com.relaxed.common.ip.IpSearcher;
 import com.relaxed.common.risk.engine.core.plugins.PluginEnum;
@@ -23,14 +24,18 @@ import java.util.Map;
  * @Version 1.0
  */
 @Slf4j
-@RequiredArgsConstructor
 public class IpLocationPlugin implements PluginService {
 
-	private final IpSearcher ipSearcher;
+	private final IpSearcher ipSearcher = SpringUtils.getBean(IpSearcher.class);
 
 	@Override
 	public PluginMeta pluginMeta() {
 		return PluginEnum.IP_LOCATION_PLUGIN;
+	}
+
+	@Override
+	public String pluginName() {
+		return "IP2LOCATION";
 	}
 
 	@Override

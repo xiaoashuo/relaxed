@@ -56,7 +56,7 @@ public enum ScoreUtil {
 	NONE("none") {
 		@Override
 		BigDecimal compute(BigDecimal x, BigDecimal y) {
-			return null;
+			return y;
 		}
 	},;
 

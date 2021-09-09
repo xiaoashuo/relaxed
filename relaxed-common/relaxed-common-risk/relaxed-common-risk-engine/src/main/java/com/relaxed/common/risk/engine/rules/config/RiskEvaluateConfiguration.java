@@ -17,6 +17,7 @@ import com.relaxed.common.risk.engine.rules.statistics.executor.AggregateExecuto
 import com.relaxed.common.risk.engine.rules.statistics.invoker.SimpleAggregateInvoker;
 import com.relaxed.common.risk.engine.rules.statistics.provider.AggregateFunctionProvider;
 import com.relaxed.common.risk.engine.rules.statistics.provider.SimpleAggregateFunctionProvider;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,7 +46,7 @@ public class RiskEvaluateConfiguration {
 	 */
 	@Bean
 	@ConditionalOnMissingBean
-	public RiskEvaluateChain riskEvaluateChain(@Nullable List<RiskEvaluateBuilderCustomizer> customizerList,
+	public RiskEvaluateChain riskEvaluateChain(ObjectProvider<RiskEvaluateBuilderCustomizer> customizerList,
 			List<RiskEvaluate> riskEvaluates) {
 		RiskEvaluateChain.Builder riskEvaluateChainBuilder = RiskEvaluateChain.builder();
 		// load system eval
@@ -55,9 +56,8 @@ public class RiskEvaluateConfiguration {
 			}
 		}
 		// load user defined
-		for (RiskEvaluateBuilderCustomizer riskEvaluateBuilderCustomizer : customizerList) {
-			riskEvaluateBuilderCustomizer.customize(riskEvaluateChainBuilder);
-		}
+		customizerList.orderedStream().forEach(
+				riskEvaluateBuilderCustomizer -> riskEvaluateBuilderCustomizer.customize(riskEvaluateChainBuilder));
 		return riskEvaluateChainBuilder.build();
 	}
 

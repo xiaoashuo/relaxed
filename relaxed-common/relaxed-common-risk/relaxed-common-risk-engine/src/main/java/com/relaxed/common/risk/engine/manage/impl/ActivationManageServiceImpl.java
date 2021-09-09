@@ -5,6 +5,7 @@ import com.relaxed.common.risk.engine.model.vo.ActivationVO;
 import com.relaxed.common.risk.engine.service.ActivationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
  * @date 2021/8/31 10:42
  * @Version 1.0
  */
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class ActivationManageServiceImpl implements ActivationManageService {

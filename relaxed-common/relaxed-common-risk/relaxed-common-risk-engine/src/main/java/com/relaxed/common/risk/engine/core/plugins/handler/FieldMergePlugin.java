@@ -21,6 +21,11 @@ import java.util.stream.Collectors;
 public class FieldMergePlugin implements PluginService {
 
 	@Override
+	public String pluginName() {
+		return "FIELD_MERGE";
+	}
+
+	@Override
 	public PluginMeta pluginMeta() {
 		return PluginEnum.FIELD_MERGE_PLUGIN;
 	}

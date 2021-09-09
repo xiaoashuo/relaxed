@@ -8,7 +8,6 @@ import com.relaxed.common.risk.engine.rules.EvaluateReport;
 import com.relaxed.common.risk.engine.rules.machine.Estimator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 import org.tensorflow.SavedModelBundle;
 import org.tensorflow.Session;
 import org.tensorflow.Tensor;
@@ -53,7 +52,7 @@ public class TensorDnnEstimator implements Estimator {
 			List<ModelConfParamVO> params = modelConfVO.getParams();
 			Session.Runner runner = tfSession.runner();
 			for (ModelConfParamVO moldParam : params) {
-				runner.feed(moldParam.getFeed(), convert2Tensor(moldParam, evaluateReport.getEvaluateDataMap()));
+				runner.feed(moldParam.getFeed(), convert2Tensor(moldParam, evaluateReport.getEvaluateData()));
 			}
 			Tensor<?> output = runner.fetch(modelConfVO.getOperation()).run().get(0);
 			float[][] results = new float[1][1];

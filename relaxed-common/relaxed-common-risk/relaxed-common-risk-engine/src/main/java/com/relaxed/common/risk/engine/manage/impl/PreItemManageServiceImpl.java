@@ -39,7 +39,7 @@ public class PreItemManageServiceImpl implements PreItemManageService {
 		List<PreItemVO> preItemVOList = getByModelId(modelId);
 		Map<String, Object> result = new HashMap<>();
 		for (PreItemVO preItemVO : preItemVOList) {
-			if (!PreItemEnum.StatusEnum.ENABLE.equals(preItemVO.getStatus())) {
+			if (!PreItemEnum.StatusEnum.ENABLE.getStatus().equals(preItemVO.getStatus())) {
 				continue;
 			}
 			String pluginName = preItemVO.getPlugin();

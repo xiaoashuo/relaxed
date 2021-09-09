@@ -27,6 +27,11 @@ public class SensitiveTimePlugin implements PluginService {
 	}
 
 	@Override
+	public String pluginName() {
+		return "SENSITIVE_TIME";
+	}
+
+	@Override
 	public Object handle(PreItemVO preItemVO, Map<String, Object> jsonInfo, String[] sourceFields) {
 		long millis = Long.parseLong(jsonInfo.get(sourceFields[0]).toString());
 

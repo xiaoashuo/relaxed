@@ -1,5 +1,12 @@
 package com.relaxed.common.risk.engine.rules;
 
+import com.relaxed.common.risk.engine.rules.script.RuleScriptHandler;
+import com.relaxed.common.risk.engine.rules.script.ScriptResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Map;
+
 /**
  * @author Yakir
  * @Topic AbstractRiskEvaluate
@@ -7,6 +14,31 @@ package com.relaxed.common.risk.engine.rules;
  * @date 2021/8/29 17:15
  * @Version 1.0
  */
+@Slf4j
 public abstract class AbstractRiskEvaluate implements RiskEvaluate {
+
+	@Autowired
+	protected RuleScriptHandler ruleScriptHandler;
+
+	/**
+	 * 检查特征脚本 无限制参数 增加评估步骤可以指定自己的扩充参数
+	 * @author yakir
+	 * @date 2021/9/8 17:02
+	 * @param ruleScript
+	 * @param args
+	 * @return boolean
+	 */
+	protected boolean checkScript(String ruleScript, Object... args) {
+		boolean ret = false;
+		try {
+			ScriptResult scriptResult = ruleScriptHandler
+					.invokeMethod(ruleScriptHandler.buildContext(ruleScript, "check", args));
+			ret = scriptResult.getRunResult();
+		}
+		catch (Exception e) {
+			log.error("params:{},rule:{}", args, ruleScript, e);
+		}
+		return ret;
+	}
 
 }

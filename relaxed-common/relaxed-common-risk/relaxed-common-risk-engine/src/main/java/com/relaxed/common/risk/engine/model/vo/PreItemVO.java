@@ -69,6 +69,18 @@ public class PreItemVO implements Serializable {
 	private String plugin;
 
 	/**
+	 * 响应字段配置信息
+	 */
+	@ApiModelProperty(value = "响应字段配置信息")
+	private String configJson;
+
+	/**
+	 * 请求方式
+	 */
+	@ApiModelProperty(value = "请求方式")
+	private String reqType;
+
+	/**
 	 *
 	 */
 	@ApiModelProperty(value = "")

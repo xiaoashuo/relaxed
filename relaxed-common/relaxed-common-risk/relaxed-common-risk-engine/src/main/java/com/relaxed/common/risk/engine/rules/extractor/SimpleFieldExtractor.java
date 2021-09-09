@@ -3,6 +3,9 @@ package com.relaxed.common.risk.engine.rules.extractor;
 import com.relaxed.common.risk.engine.enums.FieldType;
 import com.relaxed.common.risk.engine.manage.FieldManageService;
 import com.relaxed.common.risk.engine.model.vo.FieldVO;
+import com.relaxed.common.risk.engine.rules.EvaluateContext;
+import com.relaxed.common.risk.engine.rules.EvaluateReport;
+import com.relaxed.common.risk.engine.rules.executor.AbstractionRiskEvaluate;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -32,6 +35,16 @@ public class SimpleFieldExtractor implements FieldExtractor {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public <T> T extractorFieldValue(String fieldName, EvaluateContext evaluateContext, EvaluateReport evaluateReport) {
+		Map eventJson = evaluateContext.getEventJson();
+		Map<String, Object> preItemMap = evaluateContext.getPreItemMap();
+		// 抽象特征
+		Map<String, ?> abstractionMAP = evaluateReport.getEvaluateData().get(AbstractionRiskEvaluate.ABSTRACTIONS);
+
+		return extractorFieldValue(fieldName, eventJson, preItemMap, abstractionMAP);
 	}
 
 	@Override

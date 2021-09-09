@@ -42,25 +42,13 @@ public class DataListManageServiceImpl implements DataListManageService {
 
 	private final ModelService modelService;
 
-	@PostConstruct
-	public void init() {
-		// 获取所有model
-		List<ModelVO> modelVOS = modelService.listByStatus(ModelEnums.StatusEnum.ENABLE.getStatus());
-		// 获取所有的黑名单列表
-		if (CollectionUtil.isEmpty(modelVOS)) {
-			return;
-		}
-		for (ModelVO modelVO : modelVOS) {
-			Long modelId = modelVO.getId();
-			Map<String, Object> dataListMap = new HashMap<>(32);
-			buildDataListMap(modelId, dataListMap);
-			cacheService.put(getDataListCacheKey(modelId), dataListMap);
-		}
-		log.info("data list has loaded.");
-
+	@Override
+	public List<ModelVO> listByStatus(Integer status) {
+		return modelService.listByStatus(status);
 	}
 
-	private void buildDataListMap(Long modelId, Map<String, Object> dataListMap) {
+	@Override
+	public void buildDataListMap(Long modelId, Map<String, Object> dataListMap) {
 		List<DataListsVO> dateListsVOS = dataListsService.list(modelId, DataListEnum.StatusEnum.ENABLE.getStatus());
 		if (CollectionUtil.isNotEmpty(dateListsVOS)) {
 			buildList2Map(dataListMap, dateListsVOS);

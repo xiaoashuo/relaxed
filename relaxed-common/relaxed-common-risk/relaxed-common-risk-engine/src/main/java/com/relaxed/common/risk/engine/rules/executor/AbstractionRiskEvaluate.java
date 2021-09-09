@@ -16,8 +16,6 @@ import com.relaxed.common.risk.engine.rules.AbstractRiskEvaluate;
 import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.EvaluateReport;
 import com.relaxed.common.risk.engine.rules.extractor.FieldExtractor;
-import com.relaxed.common.risk.engine.rules.script.RuleScriptHandler;
-import com.relaxed.common.risk.engine.rules.script.ScriptResult;
 import com.relaxed.common.risk.engine.rules.statistics.AggregateInvoker;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateResult;
@@ -26,7 +24,6 @@ import com.relaxed.common.risk.engine.rules.statistics.provider.AggregateFunctio
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -54,8 +51,6 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 
 	private final FieldManageService fieldManageService;
 
-	private final RuleScriptHandler ruleScriptHandler;
-
 	private final FieldExtractor fieldExtractor;
 
 	private final AggregateFunctionProvider aggregateFunctionProvider;
@@ -79,39 +74,39 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 		List<AbstractionVO> abstractionVOS = abstractionManageService.getByModelId(modelVo.getId());
 		if (CollectionUtil.isEmpty(abstractionVOS)) {
 			// 若特征为空 等同步步骤评估成功
-			extParam.put(ABSTRACTIONS, "模型特征为空");
+			log.info("模型{}特征为空", modelVo.getId());
 			evaluateReport.putEvaluateMap(ABSTRACTIONS, extParam);
 			return true;
 		}
-		// 2. 按 script 的条件， 分别统计 abstraction
+		// 2.获取预加载的黑/白名单集合
+		Map<String, Object> blackWhiteMap = dataListManageService.getDataListMap(modelVo.getId());
+		// 3. 按 script 的条件， 分别统计 abstraction
 		for (AbstractionVO abstractionVO : abstractionVOS) {
 			if (!AbstractionEnum.StatusEnum.ENABLE.getStatus().equals(abstractionVO.getStatus())) {
 				continue;
 			}
-			// 查询字段名称
-			String searchFieldName = fieldExtractor.extractorFieldName(abstractionVO.getSearchField());
 			// 聚合类型 平均值 最大值等等
 			Integer aggregateType = abstractionVO.getAggregateType();
 			// 查询间隔类型 日 月 周 年等等
 			Integer searchIntervalType = abstractionVO.getSearchIntervalType();
 			// 查询间隔值
 			Integer searchIntervalValue = abstractionVO.getSearchIntervalValue();
+			// 查询字段名称
+			String searchFieldName = fieldExtractor.extractorFieldName(abstractionVO.getSearchField());
 			// 查询函数字段名称
 			String functionFieldName = fieldExtractor.extractorFieldName(abstractionVO.getFunctionField());
 			// 规则脚本
 			String ruleScript = abstractionVO.getRuleScript();
-			// 获取预加载的黑/白名单集合
-			Map<String, Object> blackWhiteMap = dataListManageService.getDataListMap(modelVo.getId());
-			boolean match = checkAbstractionScript(ruleScript, eventJson, blackWhiteMap);
+			boolean match = checkScript(ruleScript, evaluateContext, blackWhiteMap);
 			if (!match) {
-				// 脚本检查不通过 过滤该特征
+				// 脚本规则不匹配 则过滤此特征提取
 				extParam.put(abstractionVO.getName(), -1);
 				continue;
 			}
 			// 获取日期字段名称
 			String refDateFieldName = modelVo.getReferenceDate();
-			// 获取事件指向时间
-			Date refDate = convertRefDate(eventJson, refDateFieldName);
+			// 获取日期字段值 时间
+			Date refDate = new Date((Long) fieldExtractor.extractorFieldValue(refDateFieldName, eventJson));
 			if (refDate == null) {
 				evaluateReport.setMsg("时间格式不正确");
 				return false;
@@ -120,16 +115,17 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 			Date beginDate = DateUtil.offset(refDate, DateField.of(searchIntervalType), searchIntervalValue * -1)
 					.toJdkDate();
 			// 查询字段值
-			Object searchFieldVal = fieldExtractor.extractorFieldValue(searchFieldName, extParam, preItemMap);
+			Object searchFieldVal = fieldExtractor.extractorFieldValue(searchFieldName, eventJson, preItemMap);
 			if (searchFieldVal == null) {
 				evaluateReport.setMsg("search {} field value not exists.", searchFieldName);
 				return false;
 			}
 			// 函数字段值
-			Object functionFieldVal = fieldExtractor.extractorFieldValue(functionFieldName, eventJson);
+			Object functionFieldVal = null;
 			// 函数字段处理
 			FieldType fieldType = null;
 			if (StrUtil.isNotEmpty(functionFieldName)) {
+				functionFieldVal = fieldExtractor.extractorFieldValue(functionFieldName, eventJson);
 				List<FieldVO> fieldVos = fieldManageService.getFieldVos(modelVo.getId());
 				// 函数字段
 				fieldType = fieldExtractor.extractorFieldType(functionFieldName, fieldVos);
@@ -152,43 +148,8 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 			Object executeResult = aggregateResult.getExecuteResult();
 			extParam.put(abstractionVO.getName(), executeResult);
 		}
-		evaluateReport.putEvaluateMap(ABSTRACTIONS, extParam);
+		evaluateReport.putEvaluateMap(getName(), extParam);
 		return true;
-	}
-
-	private Date convertRefDate(Map eventJson, String refDateFieldName) {
-		Date date = null;
-		try {
-			Long refDateTimeMills = (Long) eventJson.get(refDateFieldName);
-			date = new Date(refDateTimeMills);
-		}
-		catch (Exception e) {
-			log.error("时间转换异常", e);
-		}
-		return date;
-	}
-
-	/**
-	 * 检查特征脚本
-	 * @author yakir
-	 * @date 2021/8/30 12:54
-	 * @param ruleScript
-	 * @param eventJson
-	 * @param blackWhiteMap
-	 * @return boolean
-	 */
-	private boolean checkAbstractionScript(String ruleScript, Map eventJson, Map<String, Object> blackWhiteMap) {
-		Object[] args = { eventJson, blackWhiteMap };
-		Boolean ret = false;
-		try {
-			ScriptResult scriptResult = ruleScriptHandler
-					.invokeMethod(ruleScriptHandler.buildContext(ruleScript, "check", args));
-			ret = scriptResult.getRunResult();
-		}
-		catch (Exception e) {
-			log.error("params:{},rule:{}", args, ruleScript, e);
-		}
-		return ret;
 	}
 
 }

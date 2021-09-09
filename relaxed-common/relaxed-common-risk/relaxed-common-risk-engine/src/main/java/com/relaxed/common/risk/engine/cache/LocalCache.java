@@ -23,7 +23,7 @@ public class LocalCache implements CacheService {
 
 	@Override
 	public <V> V get(String key) {
-		return (V) localCache.get(key, v -> v);
+		return (V) localCache.get(key, v -> null);
 	}
 
 	@Override

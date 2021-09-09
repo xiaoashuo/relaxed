@@ -19,6 +19,11 @@ import java.util.Map;
 public class DateFormatPlugin implements PluginService {
 
 	@Override
+	public String pluginName() {
+		return "DATE_FORMAT";
+	}
+
+	@Override
 	public PluginMeta pluginMeta() {
 		return PluginEnum.DATE_FORMAT_PLUGIN;
 	}

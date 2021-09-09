@@ -7,7 +7,6 @@ import com.relaxed.common.risk.engine.enums.*;
 import com.relaxed.common.risk.engine.manage.ActivationManageService;
 import com.relaxed.common.risk.engine.manage.DataListManageService;
 import com.relaxed.common.risk.engine.manage.RuleManageService;
-import com.relaxed.common.risk.engine.model.dto.HitDTO;
 import com.relaxed.common.risk.engine.model.entity.Hit;
 import com.relaxed.common.risk.engine.model.entity.Risk;
 import com.relaxed.common.risk.engine.model.vo.ActivationVO;
@@ -18,13 +17,10 @@ import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.EvaluateReport;
 import com.relaxed.common.risk.engine.rules.extractor.FieldExtractor;
 import com.relaxed.common.risk.engine.rules.script.RuleScriptHandler;
-import com.relaxed.common.risk.engine.rules.script.ScriptResult;
 import com.relaxed.common.risk.engine.utils.ScoreUtil;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -64,13 +60,15 @@ public class ActivationRiskEvaluate extends AbstractRiskEvaluate {
 	@Override
 	public boolean doEval(EvaluateContext evaluateContext, EvaluateReport evaluateReport) {
 		Map<String, Object> extParam = new HashMap<>();
-		// 击中规则map
-		Map<String, List<Hit>> hitRulesMap = new HashMap<>();
-
-		Map<String, Map<String, Hit>> hitRulesMap2 = new HashMap<>();
+		// 具体击中规则列表 所有的击中规则
+		Map<String, List<Hit>> hitRuleList = new HashMap<>();
+		// 具体击中规则map 详细记录每条 key 规则
+		Map<String, Map<String, Hit>> hitRulesMap = new HashMap<>();
+		extParam.put("hitRuleList", hitRuleList);
+		extParam.put("hitRuleMap", hitRulesMap);
+		// 基础参数信息
 		ModelVO modelVo = evaluateContext.getModelVo();
-		Map eventJson = evaluateContext.getEventJson();
-		Map<String, Object> preItemMap = evaluateContext.getPreItemMap();
+		// 评估决策列表
 		List<ActivationVO> activationVOS = activationManageService.listByModelId(modelVo.getId());
 		// 获取黑白名单
 		Map<String, Object> blackWhiteMap = dataListManageService.getDataListMap(modelVo.getId());
@@ -78,10 +76,12 @@ public class ActivationRiskEvaluate extends AbstractRiskEvaluate {
 			if (!ActivationEnum.StatusEnum.ENABLE.getStatus().equals(modelVo.getStatus())) {
 				continue;
 			}
-			hitRulesMap.put(activationVO.getActivationName(), new ArrayList<>());
-			hitRulesMap2.put(activationVO.getActivationName(), new HashMap<>());
-			extParam.put("hitRulesMap", hitRulesMap);
-			extParam.put("hitRulesMap2", hitRulesMap2);
+			// 当前activations下的击中规则 与列表
+			ArrayList<Hit> currentActivationHitList = new ArrayList<>();
+			HashMap<String, Hit> currentActivationHitMap = new HashMap<>();
+			hitRuleList.put(activationVO.getActivationName(), currentActivationHitList);
+			hitRulesMap.put(activationVO.getActivationName(), currentActivationHitMap);
+
 			// 获取规则脚本
 			List<RuleVO> ruleVOS = ruleManageService.listRule(activationVO.getId());
 			// 当前策略评分 总分
@@ -92,7 +92,7 @@ public class ActivationRiskEvaluate extends AbstractRiskEvaluate {
 					continue;
 				}
 				String scripts = ruleVO.getScripts();
-				boolean match = checkActivationScript(scripts, eventJson, blackWhiteMap);
+				boolean match = super.checkScript(scripts, evaluateContext, evaluateReport, blackWhiteMap);
 				// 不通过检查脚本规则 则当前规则不进行计算
 				if (!match) {
 					continue;
@@ -112,10 +112,10 @@ public class ActivationRiskEvaluate extends AbstractRiskEvaluate {
 				// TODO 优化 字段值提取 用spel
 				if (StrUtil.isNotEmpty(abstractionName)) {
 					if (abstractionName.indexOf(StrPool.DOT) != -1) {
-						Map<String, ?> abstractionMAP = evaluateReport.getEvaluateDataMap()
-								.get(AbstractionRiskEvaluate.ABSTRACTIONS);
-						String[] varNames = abstractionName.split(StrPool.DOT);
-						extra = fieldExtractor.extractorFieldValue(varNames[1], eventJson, preItemMap, abstractionMAP);
+						String[] varNames = StrUtil.splitToArray(abstractionName, StrPool.DOT);
+
+						extra = NumberUtil.toBigDecimal((Number) fieldExtractor.extractorFieldValue(varNames[1],
+								evaluateContext, evaluateReport));
 					}
 				}
 				extra = extra.multiply(rate);
@@ -134,9 +134,8 @@ public class ActivationRiskEvaluate extends AbstractRiskEvaluate {
 				hit.setKey(ruleVO.getId().toString());
 				hit.setValue(amount.setScale(2, 4).doubleValue());
 				hit.setDesc(ruleVO.getLabel());
-				hitRulesMap.get(activationVO.getActivationName()).add(hit);
-				hitRulesMap2.get(activationVO.getActivationName()).put("rule_" + hit.getKey(), hit);
-
+				currentActivationHitList.add(hit);
+				currentActivationHitMap.put("rule_" + hit.getKey(), hit);
 			}
 
 			sum = sum.setScale(0, 4);
@@ -151,31 +150,8 @@ public class ActivationRiskEvaluate extends AbstractRiskEvaluate {
 			risk.setScore(sum.intValue());
 			extParam.put(activationVO.getActivationName(), risk);
 		}
-		evaluateReport.putEvaluateMap(ACTIVATIONS, extParam);
+		evaluateReport.putEvaluateMap(this.getName(), extParam);
 		return true;
-	}
-
-	/**
-	 * 检查特征脚本
-	 * @author yakir
-	 * @date 2021/8/30 12:54
-	 * @param ruleScript
-	 * @param eventJson
-	 * @param blackWhiteMap
-	 * @return boolean
-	 */
-	private boolean checkActivationScript(String ruleScript, Map eventJson, Map<String, Object> blackWhiteMap) {
-		Object[] args = { eventJson, blackWhiteMap };
-		Boolean ret = false;
-		try {
-			ScriptResult scriptResult = ruleScriptHandler
-					.invokeMethod(ruleScriptHandler.buildContext(ruleScript, "check", args));
-			ret = scriptResult.getRunResult();
-		}
-		catch (Exception e) {
-			log.error("params:{},rule:{}", args, ruleScript, e);
-		}
-		return ret;
 	}
 
 }

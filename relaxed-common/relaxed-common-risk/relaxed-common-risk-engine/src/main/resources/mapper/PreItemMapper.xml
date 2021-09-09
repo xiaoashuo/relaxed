@@ -1,45 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.relaxed.common.risk.engine.mapper.PreItemMapper">
-  <resultMap id="preItemMap" type="com.relaxed.common.risk.engine.model.entity.PreItem">
-                  <id property="id" column="ID"/>
-                        <result property="modelId" column="MODEL_ID"/>
-                        <result property="sourceField" column="SOURCE_FIELD"/>
-                        <result property="sourceLabel" column="SOURCE_LABEL"/>
-                        <result property="destField" column="DEST_FIELD"/>
-                        <result property="label" column="LABEL"/>
-                        <result property="args" column="ARGS"/>
-                        <result property="plugin" column="PLUGIN"/>
-                        <result property="status" column="STATUS"/>
-                        <result property="createTime" column="CREATE_TIME"/>
-                        <result property="updateTime" column="UPDATE_TIME"/>
-            </resultMap>
- 
+	<resultMap id="preItemMap" type="com.relaxed.common.risk.engine.model.entity.PreItem">
+		<id property="id" column="ID"/>
+		<result property="modelId" column="MODEL_ID"/>
+		<result property="sourceField" column="SOURCE_FIELD"/>
+		<result property="sourceLabel" column="SOURCE_LABEL"/>
+		<result property="destField" column="DEST_FIELD"/>
+		<result property="label" column="LABEL"/>
+		<result property="args" column="ARGS"/>
+		<result property="plugin" column="PLUGIN"/>
+		<result property="configJson" column="CONFIG_JSON"/>
+		<result property="reqType" column="REQ_TYPE"/>
+		<result property="status" column="STATUS"/>
+		<result property="createTime" column="CREATE_TIME"/>
+		<result property="updateTime" column="UPDATE_TIME"/>
+	</resultMap>
+
 	<sql id="Base_Column_List">
-		ID,        
-		MODEL_ID,        
-		SOURCE_FIELD,        
-		SOURCE_LABEL,        
-		DEST_FIELD,        
-		LABEL,        
-		ARGS,        
-		PLUGIN,        
-		STATUS,        
-		CREATE_TIME,        
-		UPDATE_TIME        
+		ID,
+		MODEL_ID,
+		SOURCE_FIELD,
+		SOURCE_LABEL,
+		DEST_FIELD,
+		LABEL,
+		ARGS,
+		PLUGIN,
+		CONFIG_JSON,
+		REQ_TYPE,
+		STATUS,
+		CREATE_TIME,
+		UPDATE_TIME
 	</sql>
 
 	<sql id="Base_Alias_Column_List">
-		pi.ID,        
-		pi.MODEL_ID,        
-		pi.SOURCE_FIELD,        
-		pi.SOURCE_LABEL,        
-		pi.DEST_FIELD,        
-		pi.LABEL,        
-		pi.ARGS,        
-		pi.PLUGIN,        
+		pi.ID,
+		pi.MODEL_ID,
+		pi.SOURCE_FIELD,
+		pi.SOURCE_LABEL,
+		pi.DEST_FIELD,
+		pi.LABEL,
+		pi.ARGS,
+		pi.PLUGIN,
+		pi.CONFIG_JSON,
+		pi.REQ_TYPE,
 		pi.STATUS,        
 		pi.CREATE_TIME,        
-		pi.UPDATE_TIME        
+		pi.UPDATE_TIME
 	</sql>
 </mapper>

@@ -2,6 +2,8 @@ package com.relaxed.common.risk.engine.rules.extractor;
 
 import com.relaxed.common.risk.engine.enums.FieldType;
 import com.relaxed.common.risk.engine.model.vo.FieldVO;
+import com.relaxed.common.risk.engine.rules.EvaluateContext;
+import com.relaxed.common.risk.engine.rules.EvaluateReport;
 
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,17 @@ public interface FieldExtractor {
 	 * @return T
 	 */
 	<T> T extractorFieldValue(String fieldName, Map... maps);
+
+	/**
+	 * 提取字段值
+	 * @author yakir
+	 * @date 2021/9/9 14:42
+	 * @param fieldName
+	 * @param evaluateContext
+	 * @param evaluateReport
+	 * @return T
+	 */
+	<T> T extractorFieldValue(String fieldName, EvaluateContext evaluateContext, EvaluateReport evaluateReport);
 
 	/**
 	 * 提取字段类型

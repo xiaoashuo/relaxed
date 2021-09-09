@@ -2,8 +2,11 @@ package com.relaxed.common.risk.engine.manage.impl;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.relaxed.common.risk.engine.cache.CacheKey;
+import com.relaxed.common.risk.engine.cache.CacheService;
 import com.relaxed.common.risk.engine.config.EngineProperties;
 import com.relaxed.common.risk.engine.manage.MobileInfoManageService;
 import com.relaxed.common.risk.engine.model.converter.MobileInfoConverter;
@@ -36,51 +39,20 @@ public class MobileInfoManageServiceImpl implements MobileInfoManageService {
 
 	private final MobileInfoService mobileInfoService;
 
-	private static Map<String, MobileInfoVO> mobileMap = new HashMap<>();
-
-	@PostConstruct
-	public void initAllMobileInfo() {
-		log.info("mobile info loading...");
-		Long begin = System.currentTimeMillis();
-		int count = 0;
-		try {
-			List<String> lines = FileUtil.readLines(EngineProperties.getMobilePath(), Charset.forName("UTF-8"));
-
-			List<MobileInfoVO> mobileInfoVOList = lines.stream().map(line -> {
-				String[] info = line.split(",");
-				MobileInfoVO mobile = new MobileInfoVO();
-				if (info.length == 5) {
-					mobile.setMobile(info[0]);
-					mobile.setProvince(info[1]);
-					mobile.setCity(info[2]);
-					mobile.setSupplier(info[3]);
-					mobile.setRegionCode(info[4]);
-				}
-				return mobile;
-			}).collect(Collectors.toList());
-			for (MobileInfoVO mobileInfoVO : mobileInfoVOList) {
-				mobileMap.put(mobileInfoVO.getMobile(), mobileInfoVO);
-			}
-			count = mobileInfoVOList.size();
-		}
-		catch (Exception e) {
-			throw e;
-		}
-		finally {
-			long cost = System.currentTimeMillis() - begin;
-			log.info("{}, mobile info cached, costs:{}", count, cost);
-		}
-
-	}
+	private final CacheService cacheService;
 
 	@Override
 	public MobileInfoVO getByMobile(String mobile) {
-		MobileInfoVO vo = mobileMap.get(mobile);
+		MobileInfoVO vo = cacheService.get(getMobileInfoMapCacheKey(mobile));
 		if (vo != null) {
 			return vo;
 		}
 		String result = MobileUtils.getLocation(mobile);
+		if (StrUtil.isEmpty(result)) {
+			return null;
+		}
 		JSONObject json = JSONUtil.parseObj(result);
+
 		String retMsg = json.getStr("retMsg");
 		String province = json.getStr("province");
 		String city = json.getStr("city");
@@ -94,11 +66,15 @@ public class MobileInfoManageServiceImpl implements MobileInfoManageService {
 				info.setSupplier(mobileInfoVO.getSupplier());
 				info.setRegionCode(mobileInfoVO.getRegionCode());
 				mobileInfoService.save(MobileInfoConverter.INSTANCE.voToPo(info));
-				mobileMap.put(info.getMobile(), info);
+				cacheService.put(getMobileInfoMapCacheKey(info.getMobile()), info);
 				return mobileInfoVO;
 			}
 		}
 		return null;
+	}
+
+	private String getMobileInfoMapCacheKey(String mobile) {
+		return CacheKey.getMobileInfoMapCacheKey(mobile);
 	}
 
 }

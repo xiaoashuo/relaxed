@@ -31,6 +31,11 @@ public class GpsLocationPlugin implements PluginService {
 	}
 
 	@Override
+	public String pluginName() {
+		return "GPS_LOCATION";
+	}
+
+	@Override
 	public Object handle(PreItemVO preItemVO, Map<String, Object> jsonInfo, String[] sourceFields) {
 		// 参考 http://jwd.funnyapi.com/#/index , 最好是本地库。
 		Location location = new Location();

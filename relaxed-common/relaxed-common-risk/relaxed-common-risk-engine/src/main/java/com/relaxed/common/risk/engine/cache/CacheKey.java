@@ -15,6 +15,11 @@ public class CacheKey {
 	private static final String MODEL_PREFIX = "relaxed:model:";
 
 	/**
+	 * 映射model guid-> id
+	 */
+	private static final String MODEL_GUID_PREFIX = "relaxed:model:guid:";
+
+	/**
 	 * model 字段前缀
 	 */
 	private static final String MODEL_FIELD_PREFIX = "relaxed:model:fields:";
@@ -40,6 +45,11 @@ public class CacheKey {
 	private static final String MODEL_DATA_LIST_PREFIX = "relaxed:model:data:list:";
 
 	/**
+	 * 手机信息map
+	 */
+	private static final String MOBILE_INFO_MAP_PREFIX = "relaxed:mobile:info:map:";
+
+	/**
 	 * 获取model缓存key
 	 * @author yakir
 	 * @date 2021/8/29 10:30
@@ -48,6 +58,17 @@ public class CacheKey {
 	 */
 	public static String getModelCacheKey(Long id) {
 		return MODEL_PREFIX + id;
+	}
+
+	/**
+	 * 维护model guid 缓存key
+	 * @author yakir
+	 * @date 2021/9/6 18:28
+	 * @param id
+	 * @return java.lang.String
+	 */
+	public static String getModelGuidCacheKey(String id) {
+		return MODEL_GUID_PREFIX + id;
 	}
 
 	/**
@@ -102,7 +123,19 @@ public class CacheKey {
 	 * @return java.lang.String
 	 */
 	public static String getDataListCacheKey(Long id) {
+
 		return MODEL_DATA_LIST_PREFIX + id;
+	}
+
+	/**
+	 * 获取mobile info map 缓存key
+	 * @author yakir
+	 * @date 2021/9/7 10:06
+	 * @param id
+	 * @return java.lang.String
+	 */
+	public static String getMobileInfoMapCacheKey(String id) {
+		return MOBILE_INFO_MAP_PREFIX + id;
 	}
 
 }

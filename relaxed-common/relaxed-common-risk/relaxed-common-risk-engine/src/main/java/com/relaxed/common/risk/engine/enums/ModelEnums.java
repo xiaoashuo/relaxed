@@ -62,7 +62,7 @@ public class ModelEnums {
 		 * @return boolean
 		 */
 		public static boolean validField(Integer fieldValue) {
-			return FieldValidEnum.VALID.equals(fieldValue);
+			return FieldValidEnum.VALID.getVal().equals(fieldValue);
 		}
 
 	}

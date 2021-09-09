@@ -55,8 +55,8 @@ public class ModelEventManageServiceImpl implements ModelEventManageService {
 			long count = mongoDbService.count(key, query);
 			if (count > 0) {
 				log.info("{} record has already exists!", entryName);
+				return true;
 			}
-			return true;
 		}
 
 		mongoDbService.insert(key, doc);
@@ -68,8 +68,8 @@ public class ModelEventManageServiceImpl implements ModelEventManageService {
 	public Long count(Long modelId, String searchFieldName, Object searchFieldVal, String refDateFieldName,
 			Date beginDate, Date refDateFieldVal) {
 		String collectionName = getCollectionName(modelId);
-		Query query = Query.query(new Criteria(searchFieldName).is(searchFieldVal).and(refDateFieldName).gte(beginDate)
-				.lte(refDateFieldVal));
+		Query query = Query.query(new Criteria(searchFieldName).is(searchFieldVal).and(refDateFieldName)
+				.gte(beginDate.getTime()).lte(refDateFieldVal.getTime()));
 		return mongoDbService.count(collectionName, query);
 	}
 
@@ -78,8 +78,8 @@ public class ModelEventManageServiceImpl implements ModelEventManageService {
 			Date beginDate, Date refDateFieldVal, String functionFieldName) {
 		String collectionName = getCollectionName(modelId);
 		Query query = Query.query(new Criteria(searchFieldName).is(searchFieldVal))
-				.addCriteria(new Criteria(refDateFieldName).gte(beginDate).lte(refDateFieldVal));
-		return mongoDbService.distinctCount(collectionName, query, functionFieldName);
+				.addCriteria(new Criteria(refDateFieldName).gte(beginDate.getTime()).lte(refDateFieldVal.getTime()));
+		return mongoDbService.distinctCount(collectionName, query, searchFieldName);
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class ModelEventManageServiceImpl implements ModelEventManageService {
 		String collectionName = getCollectionName(modelId);
 		List<AggregationOperation> operations = new ArrayList<>();
 		Criteria criteriaDefinition = Criteria.where(searchFieldName).is(searchFieldVal);
-		criteriaDefinition.and(refDateFieldName).gte(beginDate).lte(refDateFieldVal);
+		criteriaDefinition.and(refDateFieldName).gte(beginDate.getTime()).lte(refDateFieldVal.getTime());
 		operations.add(Aggregation.match(criteriaDefinition));
 		operations.add(Aggregation.group("_id").sum(functionFieldName).as("sum"));
 		Aggregation aggregation = Aggregation.newAggregation(operations);
@@ -109,7 +109,7 @@ public class ModelEventManageServiceImpl implements ModelEventManageService {
 		String collectionName = getCollectionName(modelId);
 		List<AggregationOperation> operations = new ArrayList<>();
 		Criteria criteriaDefinition = Criteria.where(searchFieldName).is(searchFieldVal);
-		criteriaDefinition.and(refDateFieldName).gte(beginDate).lte(refDateFieldVal);
+		criteriaDefinition.and(refDateFieldName).gte(beginDate.getTime()).lte(refDateFieldVal.getTime());
 		operations.add(Aggregation.match(criteriaDefinition));
 		operations.add(Aggregation.group("_id").avg(functionFieldName).as("avg"));
 		Aggregation aggregation = Aggregation.newAggregation(operations);
@@ -131,7 +131,7 @@ public class ModelEventManageServiceImpl implements ModelEventManageService {
 		String collectionName = getCollectionName(modelId);
 		List<AggregationOperation> operations = new ArrayList<>();
 		Criteria criteriaDefinition = Criteria.where(searchFieldName).is(searchFieldVal);
-		criteriaDefinition.and(refDateFieldName).gte(beginDate).lte(refDateFieldVal);
+		criteriaDefinition.and(refDateFieldName).gte(beginDate.getTime()).lte(refDateFieldVal.getTime());
 		operations.add(Aggregation.match(criteriaDefinition));
 		operations.add(Aggregation.group("_id").max(functionFieldName).as("max"));
 		Aggregation aggregation = Aggregation.newAggregation(operations);
@@ -151,7 +151,7 @@ public class ModelEventManageServiceImpl implements ModelEventManageService {
 		String collectionName = getCollectionName(modelId);
 		List<AggregationOperation> operations = new ArrayList<>();
 		Criteria criteriaDefinition = Criteria.where(searchFieldName).is(searchFieldVal);
-		criteriaDefinition.and(refDateFieldName).gte(beginDate).lte(refDateFieldVal);
+		criteriaDefinition.and(refDateFieldName).gte(beginDate.getTime()).lte(refDateFieldVal.getTime());
 		operations.add(Aggregation.match(criteriaDefinition));
 		operations.add(Aggregation.group("_id").max(functionFieldName).as("min"));
 		Aggregation aggregation = Aggregation.newAggregation(operations);
@@ -171,7 +171,7 @@ public class ModelEventManageServiceImpl implements ModelEventManageService {
 		String collectionName = getCollectionName(modelId);
 		List<AggregationOperation> operations = new ArrayList<>();
 		Criteria criteriaDefinition = Criteria.where(searchFieldName).is(searchFieldVal);
-		criteriaDefinition.and(refDateFieldName).gte(beginDate).lte(refDateFieldVal);
+		criteriaDefinition.and(refDateFieldName).gte(beginDate.getTime()).lte(refDateFieldVal.getTime());
 		operations.add(Aggregation.match(criteriaDefinition));
 		operations.add(Aggregation.sort(Sort.by(Sort.Direction.ASC, functionFieldName)));
 		Aggregation aggregation = Aggregation.newAggregation(operations);

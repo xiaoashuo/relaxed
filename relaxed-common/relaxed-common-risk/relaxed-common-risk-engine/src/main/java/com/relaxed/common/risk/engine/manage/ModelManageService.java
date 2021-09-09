@@ -2,6 +2,9 @@ package com.relaxed.common.risk.engine.manage;
 
 import com.relaxed.common.risk.engine.model.vo.ModelVO;
 
+import java.util.Collection;
+import java.util.Map;
+
 /**
  * @author Yakir
  * @Topic ModelManageService
@@ -28,5 +31,14 @@ public interface ModelManageService {
 	 * @return com.relaxed.common.risk.engine.model.vo.ModelVO
 	 */
 	ModelVO getByGuid(String guid);
+
+	/**
+	 * 根据状态查询
+	 * @author yakir
+	 * @date 2021/9/6 18:31
+	 * @param status
+	 * @return java.util.Map<java.lang.String,java.lang.Long>
+	 */
+	Map<String, Long> listByStatus(Integer status);
 
 }

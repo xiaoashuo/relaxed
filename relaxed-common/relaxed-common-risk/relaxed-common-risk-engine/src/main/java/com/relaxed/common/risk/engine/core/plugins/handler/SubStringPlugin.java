@@ -25,6 +25,11 @@ public class SubStringPlugin implements PluginService {
 	}
 
 	@Override
+	public String pluginName() {
+		return "SUBSTRING";
+	}
+
+	@Override
 	public Object handle(PreItemVO preItemVO, Map<String, Object> jsonInfo, String[] sourceFields) {
 		String[] args = preItemVO.getArgs().split(",");
 		String field = jsonInfo.get(sourceFields[0]).toString();

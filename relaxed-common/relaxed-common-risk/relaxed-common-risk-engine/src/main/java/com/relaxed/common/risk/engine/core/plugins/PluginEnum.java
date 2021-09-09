@@ -45,7 +45,13 @@ public enum PluginEnum implements PluginMeta {
 	/**
 	 * 日期格式化插件
 	 */
-	DATE_FORMAT_PLUGIN(7, "日期格式化插件", "", String.class),;
+	DATE_FORMAT_PLUGIN(7, "日期格式化插件", "", String.class),
+	/**
+	 * http util
+	 */
+	HTTP_UTIL_PLUGIN(8, "Http请求插件", "", String.class),
+
+	;
 
 	private final Integer order;
 

@@ -36,17 +36,10 @@ public class ModelManageServiceImpl implements ModelManageService {
 
 	private final ModelService modelService;
 
-	/**
-	 * 维护GUID到modelId的映射 TODO 存在问题 guid 不能是实时同步
-	 */
-	private Map<String, Long> guidMap;
-
-	@PostConstruct
-	public void init() {
-
-		guidMap = modelService.listByStatus(ModelEnums.StatusEnum.ENABLE.getStatus()).stream()
+	@Override
+	public Map<String, Long> listByStatus(Integer status) {
+		return modelService.listByStatus(ModelEnums.StatusEnum.ENABLE.getStatus()).stream()
 				.collect(Collectors.toMap(ModelVO::getGuid, ModelVO::getId));
-
 	}
 
 	/**
@@ -63,7 +56,7 @@ public class ModelManageServiceImpl implements ModelManageService {
 
 	@Override
 	public ModelVO getByGuid(String guid) {
-		Long modelId = guidMap.get(guid);
+		Long modelId = cacheService.get(getModelGuidCacheKey(guid));
 		ModelVO modelVO = null;
 		if (modelId != null) {
 			modelVO = getById(modelId);
@@ -72,11 +65,15 @@ public class ModelManageServiceImpl implements ModelManageService {
 			modelVO = modelService.getByGuid(guid);
 			if (modelVO != null) {
 				// 维护guid -> modelId映射
-				guidMap.put(modelVO.getGuid(), modelVO.getId());
+				cacheService.put(getModelGuidCacheKey(guid), modelVO.getId());
 				cacheService.put(getModelCacheKey(modelVO.getId()), modelVO);
 			}
 		}
 		return modelVO;
+	}
+
+	private String getModelGuidCacheKey(String guid) {
+		return CacheKey.getModelGuidCacheKey(guid);
 	}
 
 	private String getModelCacheKey(Long id) {

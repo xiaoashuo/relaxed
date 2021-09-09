@@ -26,12 +26,7 @@ public class EvaluateReport implements Serializable {
 	/**
 	 * 评估报告 扩展参数 记录各接阶段评估数据
 	 */
-	private Map<String, Map<String, ?>> evaluateDataMap = new HashMap<>();
-
-	/**
-	 * 扩展数据 在评估中 产生的一些数据 宽泛范围
-	 */
-	private Map<String, ?> extMap;
+	private Map<String, Map<String, ?>> evaluateData = new HashMap<>();
 
 	/**
 	 * 执行开始时间
@@ -54,7 +49,7 @@ public class EvaluateReport implements Serializable {
 	 * @param evaluateMap
 	 */
 	public void putEvaluateMap(String key, Map<String, Object> evaluateMap) {
-		evaluateDataMap.put(key, evaluateMap);
+		evaluateData.put(key, evaluateMap);
 	}
 
 	/**

@@ -46,7 +46,7 @@ public class DefaultMongoDbServiceImpl implements MongoDbService {
 
 	@Override
 	public long distinctCount(String collectionName, Query query, String fieldName) {
-		List<Object> distinct = mongoTemplate.findDistinct(query, collectionName, fieldName, Object.class);
+		List<Object> distinct = mongoTemplate.findDistinct(query, fieldName, collectionName, Object.class);
 		return distinct.size();
 	}
 
