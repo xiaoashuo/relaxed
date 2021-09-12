@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -36,13 +37,15 @@ public class Model implements Serializable {
 	/**
 	 * 模型名称
 	 */
+	@NotEmpty(message = "模型名称不能为空")
 	@ApiModelProperty(value = "模型名称")
 	private String modelName;
 
 	/**
-	 *
+	 * 模型标签
 	 */
-	@ApiModelProperty(value = "")
+	@NotEmpty(message = "模型标签不能为空")
+	@ApiModelProperty(value = "模型标签")
 	private String label;
 
 	/**

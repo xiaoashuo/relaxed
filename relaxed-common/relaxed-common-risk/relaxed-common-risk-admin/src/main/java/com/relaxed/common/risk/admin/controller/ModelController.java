@@ -1,5 +1,6 @@
 package com.relaxed.common.risk.admin.controller;
 
+import com.relaxed.common.risk.model.dto.ModelDTO;
 import com.relaxed.common.risk.model.entity.Model;
 import com.relaxed.common.risk.model.qo.ModelQO;
 import com.relaxed.common.risk.model.vo.ModelVO;
@@ -51,7 +52,7 @@ public class ModelController {
 	@ApiOperation(value = "新增数据", notes = "新增数据")
 	@PostMapping
 	public R<?> save(@RequestBody Model model) {
-		return modelService.save(model) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "新增数据失败");
+		return modelService.add(model) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "新增数据失败");
 	}
 
 	/**
@@ -73,7 +74,7 @@ public class ModelController {
 	@ApiOperation(value = "根据id删除数据", notes = "根据id删除数据")
 	@DeleteMapping("/{id}")
 	public R<?> removeById(@PathVariable Long id) {
-		return modelService.removeById(id) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "根据id删除数据失败");
+		return modelService.del(id) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "根据id删除数据失败");
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.relaxed.common.risk.engine.core.subscribe;
+package com.relaxed.common.risk.biz.distributor.subscribe;
 
 import com.relaxed.common.risk.biz.distributor.subscribe.SubscribeType;
 import lombok.Getter;

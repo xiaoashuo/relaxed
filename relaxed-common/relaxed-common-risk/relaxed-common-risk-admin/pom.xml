@@ -18,6 +18,10 @@
     <dependencies>
         <dependency>
             <groupId>com.lovecyy</groupId>
+            <artifactId>relaxed-common-conf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lovecyy</groupId>
             <artifactId>relaxed-common-risk-biz</artifactId>
         </dependency>
         <dependency>

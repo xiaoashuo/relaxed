@@ -1,4 +1,4 @@
-package com.relaxed.common.risk.engine.enums;
+package com.relaxed.common.risk.model.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
  * @date 2021/8/29 14:19
  * @Version 1.0
  */
-public class PreItemEnum {
+public class ActivationEnum {
 
 	@RequiredArgsConstructor
 	@Getter

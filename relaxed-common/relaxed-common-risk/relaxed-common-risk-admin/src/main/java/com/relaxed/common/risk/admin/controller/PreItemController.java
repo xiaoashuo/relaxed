@@ -51,7 +51,7 @@ public class PreItemController {
 	@ApiOperation(value = "新增数据", notes = "新增数据")
 	@PostMapping
 	public R<?> save(@RequestBody PreItem preItem) {
-		return preItemService.save(preItem) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "新增数据失败");
+		return preItemService.add(preItem) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "新增数据失败");
 	}
 
 	/**
@@ -62,18 +62,19 @@ public class PreItemController {
 	@ApiOperation(value = "更新数据", notes = "更新数据")
 	@PutMapping
 	public R<?> updateById(@RequestBody PreItem preItem) {
-		return preItemService.updateById(preItem) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "更新数据失败");
+		return preItemService.edit(preItem) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "更新数据失败");
 	}
 
 	/**
 	 * 根据id删除数据
+	 * @param modelId {@code modelId} modelId
 	 * @param id {@code id} id
 	 * @return {@code R<?>} 通用返回体
 	 */
 	@ApiOperation(value = "根据id删除数据", notes = "根据id删除数据")
-	@DeleteMapping("/{id}")
-	public R<?> removeById(@PathVariable Long id) {
-		return preItemService.removeById(id) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "根据id删除数据失败");
+	@DeleteMapping("/{modelId}/{id}")
+	public R<?> removeById(@PathVariable Long modelId,@PathVariable Long id) {
+		return preItemService.del(modelId,id) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "根据id删除数据失败");
 	}
 
 }

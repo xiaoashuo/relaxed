@@ -36,4 +36,31 @@ public interface PreItemService extends ExtendService<PreItem> {
 	 */
 	List<PreItemVO> getByModelId(Long modelId);
 
+	/**
+	 * 添加预处理字段
+	 * @author yakir
+	 * @date 2021/9/12 17:31
+	 * @param preItem
+	 * @return boolean
+	 */
+    boolean add(PreItem preItem);
+
+    /**
+     * 删除预处理项
+     * @author yakir
+     * @date 2021/9/12 17:54
+     * @param modelId
+	 * @param id
+	 * @return boolean
+     */
+	boolean del(Long modelId, Long id);
+
+	/**
+	 * 编辑预处理项
+	 * @author yakir
+	 * @date 2021/9/12 17:56
+	 * @param preItem
+	 * @return boolean
+	 */
+	boolean edit(PreItem preItem);
 }

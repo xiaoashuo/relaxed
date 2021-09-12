@@ -47,4 +47,31 @@ public interface DataListsService extends ExtendService<DataLists> {
 	 */
 	List<DataListsVO> list(Long modelId, Integer status);
 
+	/**
+	 * 增加黑白名单数据列表
+	 * @author yakir
+	 * @date 2021/9/12 18:13
+	 * @param dataLists
+	 * @return boolean
+	 */
+    boolean add(DataLists dataLists);
+
+    /**
+     * 删除黑白名单数据列表 根据id
+     * @author yakir
+     * @date 2021/9/12 18:17
+     * @param id
+     * @return boolean
+     */
+	boolean del(Long id);
+
+	/**
+	 * 编辑数据列表
+	 * @author yakir
+	 * @date 2021/9/12 18:19
+	 * @param dataLists
+	 * @return boolean
+	 */
+	boolean edit(DataLists dataLists);
+
 }

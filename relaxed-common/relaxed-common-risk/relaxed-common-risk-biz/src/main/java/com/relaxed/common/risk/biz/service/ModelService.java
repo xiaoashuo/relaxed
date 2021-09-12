@@ -46,4 +46,29 @@ public interface ModelService extends ExtendService<Model> {
 	 */
 	ModelVO getByGuid(String guid);
 
+	/**
+	 * 保存model
+	 * @author yakir
+	 * @date 2021/9/12 16:59
+	 * @param model
+	 * @return boolean
+	 */
+	boolean add(Model model);
+	/**
+	 * 根据模型名称查询模型
+	 * @author yakir
+	 * @date 2021/9/12 17:04
+	 * @param modelName
+	 * @return com.relaxed.common.risk.model.entity.Model
+	 */
+    Model getByModelName(String modelName);
+
+    /**
+     * 删除模型
+     * @author yakir
+     * @date 2021/9/12 17:18
+     * @param id
+     * @return boolean
+     */
+    boolean del(Long id);
 }

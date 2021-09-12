@@ -1,4 +1,4 @@
-package com.relaxed.common.risk.engine.enums;
+package com.relaxed.common.risk.model.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

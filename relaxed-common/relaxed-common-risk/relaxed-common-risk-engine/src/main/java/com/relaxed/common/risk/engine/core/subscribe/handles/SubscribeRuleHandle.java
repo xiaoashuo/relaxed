@@ -5,7 +5,7 @@ import com.relaxed.common.risk.biz.distributor.subscribe.SubscribeHandle;
 import com.relaxed.common.risk.biz.distributor.subscribe.SubscribeType;
 import com.relaxed.common.risk.engine.cache.CacheKey;
 import com.relaxed.common.risk.engine.cache.CacheService;
-import com.relaxed.common.risk.engine.core.subscribe.SubscribeEnum;
+import com.relaxed.common.risk.biz.distributor.subscribe.SubscribeEnum;
 import com.relaxed.common.risk.model.vo.RuleVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

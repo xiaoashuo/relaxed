@@ -1,4 +1,4 @@
-package com.relaxed.common.risk.engine.enums;
+package com.relaxed.common.risk.model.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,35 @@ import lombok.RequiredArgsConstructor;
  * @Version 1.0
  */
 public class ModelEnums {
+	@RequiredArgsConstructor
+	@Getter
+	public static enum TemplateEnum {
 
+		/**
+		 * 模板
+		 */
+		TEMPLATE(1, "模板"),
+		/**
+		 * 非模板
+		 */
+		NOT_TEMPLATE(0, "非模板"),
+	;
+
+		private final Integer val;
+
+		private final String desc;
+		/**
+		 * 模型是否为模板
+		 * @author yakir
+		 * @date 2021/9/12 17:20
+		 * @param val
+		 * @return boolean
+		 */
+		public static boolean isTemplate(Integer val){
+			return TEMPLATE.getVal().equals(val);
+		}
+
+	}
 	@RequiredArgsConstructor
 	@Getter
 	public static enum StatusEnum {

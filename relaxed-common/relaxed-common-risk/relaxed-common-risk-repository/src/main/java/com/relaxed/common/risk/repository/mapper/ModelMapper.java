@@ -38,4 +38,16 @@ public interface ModelMapper extends ExtendMapper<Model> {
 		return this.selectOne(Wrappers.lambdaQuery(Model.class).eq(Model::getGuid, guid));
 	}
 
+	/**
+	 * 根据模型名称查询
+	 * @author yakir
+	 * @date 2021/9/12 17:05
+	 * @param modelName
+	 * @return com.relaxed.common.risk.model.entity.Model
+	 */
+	default Model getByModelName(String modelName){
+		return this.selectOne(Wrappers.lambdaQuery(Model.class).eq(Model::getModelName, modelName));
+
+	}
+
 }

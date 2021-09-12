@@ -11,6 +11,8 @@ import lombok.experimental.Accessors;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author Yakir
  * @since 2021-08-29T13:57:50.664
@@ -32,6 +34,7 @@ public class PreItem extends Model<PreItem> {
 	/**
 	 * 模型ID
 	 */
+	@NotNull(message = "模型id不能为空")
 	@ApiModelProperty(value = "模型ID")
 	private Long modelId;
 
@@ -42,9 +45,9 @@ public class PreItem extends Model<PreItem> {
 	private String sourceField;
 
 	/**
-	 *
+	 * 来源标签
 	 */
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "来源标签")
 	private String sourceLabel;
 
 	/**
@@ -54,9 +57,9 @@ public class PreItem extends Model<PreItem> {
 	private String destField;
 
 	/**
-	 *
+	 * 目标标签 描述
 	 */
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "目标标签")
 	private String label;
 
 	/**
@@ -72,9 +75,9 @@ public class PreItem extends Model<PreItem> {
 	private String plugin;
 
 	/**
-	 * 响应字段配置信息
+	 * 扩展配置信息
 	 */
-	@ApiModelProperty(value = "响应字段配置信息")
+	@ApiModelProperty(value = "扩展配置信息")
 	private String configJson;
 
 	/**
@@ -84,21 +87,21 @@ public class PreItem extends Model<PreItem> {
 	private String reqType;
 
 	/**
-	 *
+	 *状态
 	 */
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "状态")
 	private Integer status;
 
 	/**
-	 *
+	 * 创建时间
 	 */
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "创建时间")
 	private LocalDateTime createTime;
 
 	/**
-	 *
+	 * 更新时间
 	 */
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "更新时间")
 	private LocalDateTime updateTime;
 
 }

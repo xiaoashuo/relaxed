@@ -1,6 +1,7 @@
 package com.relaxed.common.risk.engine.core.subscribe;
 
 import com.relaxed.common.risk.biz.distributor.EventDistributor;
+import com.relaxed.common.risk.biz.distributor.subscribe.SubscribeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
