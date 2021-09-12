@@ -3,7 +3,7 @@ package com.relaxed.common.risk.engine.rules.score;
 import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
-import com.relaxed.common.risk.engine.model.vo.RuleVO;
+import com.relaxed.common.risk.model.vo.RuleVO;
 import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.EvaluateReport;
 import com.relaxed.common.risk.engine.rules.extractor.FieldExtractor;

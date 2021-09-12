@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.relaxed.common.risk.repository.mapper.AbstractionMapper">
+  <resultMap id="abstractionMap" type="com.relaxed.common.risk.model.entity.Abstraction">
+                  <id property="id" column="ID"/>
+                        <result property="name" column="NAME"/>
+                        <result property="label" column="LABEL"/>
+                        <result property="modelId" column="MODEL_ID"/>
+                        <result property="aggregateType" column="AGGREGATE_TYPE"/>
+                        <result property="searchField" column="SEARCH_FIELD"/>
+                        <result property="searchIntervalType" column="SEARCH_INTERVAL_TYPE"/>
+                        <result property="searchIntervalValue" column="SEARCH_INTERVAL_VALUE"/>
+                        <result property="functionField" column="FUNCTION_FIELD"/>
+                        <result property="ruleScript" column="RULE_SCRIPT"/>
+                        <result property="ruleDefinition" column="RULE_DEFINITION"/>
+                        <result property="status" column="STATUS"/>
+                        <result property="comment" column="COMMENT"/>
+                        <result property="createTime" column="CREATE_TIME"/>
+                        <result property="updateTime" column="UPDATE_TIME"/>
+            </resultMap>
+ 
+	<sql id="Base_Column_List">
+		ID,        
+		NAME,        
+		LABEL,        
+		MODEL_ID,        
+		AGGREGATE_TYPE,        
+		SEARCH_FIELD,        
+		SEARCH_INTERVAL_TYPE,        
+		SEARCH_INTERVAL_VALUE,        
+		FUNCTION_FIELD,        
+		RULE_SCRIPT,        
+		RULE_DEFINITION,        
+		STATUS,        
+		COMMENT,        
+		CREATE_TIME,        
+		UPDATE_TIME        
+	</sql>
+
+	<sql id="Base_Alias_Column_List">
+		a.ID,        
+		a.NAME,        
+		a.LABEL,        
+		a.MODEL_ID,        
+		a.AGGREGATE_TYPE,        
+		a.SEARCH_FIELD,        
+		a.SEARCH_INTERVAL_TYPE,        
+		a.SEARCH_INTERVAL_VALUE,        
+		a.FUNCTION_FIELD,        
+		a.RULE_SCRIPT,        
+		a.RULE_DEFINITION,        
+		a.STATUS,        
+		a.COMMENT,        
+		a.CREATE_TIME,        
+		a.UPDATE_TIME        
+	</sql>
+</mapper>

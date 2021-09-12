@@ -24,6 +24,6 @@ public class Ip2RegionProperties {
 	/**
 	 * db 数据文件未知
 	 */
-	private String dbFile="ip2region.db";
+	private String dbFile = "ip2region.db";
 
 }

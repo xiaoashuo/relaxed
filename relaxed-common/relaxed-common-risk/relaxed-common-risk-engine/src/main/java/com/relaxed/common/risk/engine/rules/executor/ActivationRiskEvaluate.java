@@ -1,14 +1,14 @@
 package com.relaxed.common.risk.engine.rules.executor;
 
 import com.relaxed.common.risk.engine.enums.*;
-import com.relaxed.common.risk.engine.manage.ActivationManageService;
-import com.relaxed.common.risk.engine.manage.DataListManageService;
-import com.relaxed.common.risk.engine.manage.RuleManageService;
-import com.relaxed.common.risk.engine.model.entity.Hit;
-import com.relaxed.common.risk.engine.model.entity.Risk;
-import com.relaxed.common.risk.engine.model.vo.ActivationVO;
-import com.relaxed.common.risk.engine.model.vo.ModelVO;
-import com.relaxed.common.risk.engine.model.vo.RuleVO;
+import com.relaxed.common.risk.engine.service.ActivationManageService;
+import com.relaxed.common.risk.engine.service.DataListManageService;
+import com.relaxed.common.risk.engine.service.RuleManageService;
+import com.relaxed.common.risk.model.entity.Hit;
+import com.relaxed.common.risk.model.entity.Risk;
+import com.relaxed.common.risk.model.vo.ActivationVO;
+import com.relaxed.common.risk.model.vo.ModelVO;
+import com.relaxed.common.risk.model.vo.RuleVO;
 import com.relaxed.common.risk.engine.rules.AbstractRiskEvaluate;
 import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.EvaluateReport;
@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * @author Yakir
  * @Topic ActivationRiskEvaluate
- * @Description 策略评估 综合计分
+ * @Description 策略评估 综合计分 决策+评分卡
  * @date 2021/8/29 17:47
  * @Version 1.0
  */

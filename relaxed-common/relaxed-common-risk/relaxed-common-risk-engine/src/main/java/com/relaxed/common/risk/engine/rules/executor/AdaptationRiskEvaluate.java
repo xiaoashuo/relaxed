@@ -1,20 +1,17 @@
 package com.relaxed.common.risk.engine.rules.executor;
 
-import cn.hutool.core.date.StopWatch;
 import com.relaxed.common.risk.engine.config.EngineProperties;
-import com.relaxed.common.risk.engine.manage.ModelConfManageService;
-import com.relaxed.common.risk.engine.model.vo.ModelConfVO;
-import com.relaxed.common.risk.engine.model.vo.ModelVO;
+import com.relaxed.common.risk.engine.service.ModelConfManageService;
+import com.relaxed.common.risk.model.vo.ModelConfVO;
+import com.relaxed.common.risk.model.vo.ModelVO;
 import com.relaxed.common.risk.engine.rules.AbstractRiskEvaluate;
 import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.EvaluateReport;
 import com.relaxed.common.risk.engine.rules.machine.Estimator;
 import com.relaxed.common.risk.engine.rules.machine.EstimatorHolder;
-import com.relaxed.common.risk.engine.rules.script.ScriptResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;

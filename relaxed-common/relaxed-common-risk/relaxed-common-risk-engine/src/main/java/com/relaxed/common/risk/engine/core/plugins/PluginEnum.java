@@ -1,8 +1,10 @@
 package com.relaxed.common.risk.engine.core.plugins;
 
-import com.relaxed.common.risk.engine.model.entity.Location;
+import com.relaxed.common.risk.model.entity.Location;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
 
 /**
  * @author Yakir
@@ -50,6 +52,10 @@ public enum PluginEnum implements PluginMeta {
 	 * http util
 	 */
 	HTTP_UTIL_PLUGIN(8, "Http请求插件", "", String.class),
+	/**
+	 * 黑白名单数据提取
+	 */
+	BLACK_WHITE_PLUGIN(9, "黑白名单数据提取插件", "", Map.class),
 
 	;
 

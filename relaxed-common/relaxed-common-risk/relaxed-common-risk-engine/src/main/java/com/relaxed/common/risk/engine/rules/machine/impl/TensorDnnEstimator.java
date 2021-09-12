@@ -1,8 +1,8 @@
 package com.relaxed.common.risk.engine.rules.machine.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.relaxed.common.risk.engine.model.vo.ModelConfParamVO;
-import com.relaxed.common.risk.engine.model.vo.ModelConfVO;
+import com.relaxed.common.risk.model.vo.ModelConfParamVO;
+import com.relaxed.common.risk.model.vo.ModelConfVO;
 import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.EvaluateReport;
 import com.relaxed.common.risk.engine.rules.machine.Estimator;

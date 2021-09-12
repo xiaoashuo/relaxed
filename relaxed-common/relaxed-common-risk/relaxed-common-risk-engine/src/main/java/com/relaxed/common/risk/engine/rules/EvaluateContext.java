@@ -1,6 +1,6 @@
 package com.relaxed.common.risk.engine.rules;
 
-import com.relaxed.common.risk.engine.model.vo.ModelVO;
+import com.relaxed.common.risk.model.vo.ModelVO;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

@@ -1,6 +1,6 @@
 package com.relaxed.common.risk.engine.rules.statistics.executor;
 
-import com.relaxed.common.risk.engine.manage.ModelEventManageService;
+import com.relaxed.common.risk.engine.service.ModelEventManageService;
 import com.relaxed.common.risk.engine.rules.statistics.AggregateExecutor;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateEnum;

@@ -14,6 +14,10 @@
     <description>风控服务</description>
     <modules>
         <module>relaxed-common-risk-engine</module>
+        <module>relaxed-common-risk-admin</module>
+        <module>relaxed-common-risk-model</module>
+        <module>relaxed-common-risk-repository</module>
+        <module>relaxed-common-risk-biz</module>
     </modules>
 
 

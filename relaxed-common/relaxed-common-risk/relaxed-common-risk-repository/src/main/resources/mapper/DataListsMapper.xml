@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.relaxed.common.risk.repository.mapper.DataListsMapper">
+  <resultMap id="dataListsMap" type="com.relaxed.common.risk.model.entity.DataLists">
+                  <id property="id" column="ID"/>
+                        <result property="name" column="NAME"/>
+                        <result property="label" column="LABEL"/>
+                        <result property="modelId" column="MODEL_ID"/>
+                        <result property="comment" column="COMMENT"/>
+                        <result property="listType" column="LIST_TYPE"/>
+                        <result property="status" column="STATUS"/>
+                        <result property="createTime" column="CREATE_TIME"/>
+                        <result property="updateTime" column="UPDATE_TIME"/>
+            </resultMap>
+ 
+	<sql id="Base_Column_List">
+		ID,        
+		NAME,        
+		LABEL,        
+		MODEL_ID,        
+		COMMENT,        
+		LIST_TYPE,        
+		STATUS,        
+		CREATE_TIME,        
+		UPDATE_TIME        
+	</sql>
+
+	<sql id="Base_Alias_Column_List">
+		dl.ID,        
+		dl.NAME,        
+		dl.LABEL,        
+		dl.MODEL_ID,        
+		dl.COMMENT,        
+		dl.LIST_TYPE,        
+		dl.STATUS,        
+		dl.CREATE_TIME,        
+		dl.UPDATE_TIME        
+	</sql>
+</mapper>

@@ -5,7 +5,7 @@ import cn.hutool.http.*;
 import com.relaxed.common.risk.engine.core.plugins.PluginEnum;
 import com.relaxed.common.risk.engine.core.plugins.PluginMeta;
 import com.relaxed.common.risk.engine.core.plugins.PluginService;
-import com.relaxed.common.risk.engine.model.vo.PreItemVO;
+import com.relaxed.common.risk.model.vo.PreItemVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

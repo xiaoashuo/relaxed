@@ -1,6 +1,6 @@
 package com.relaxed.common.risk.engine.core.plugins;
 
-import com.relaxed.common.risk.engine.model.vo.PreItemVO;
+import com.relaxed.common.risk.model.vo.PreItemVO;
 import org.springframework.core.annotation.Order;
 
 import java.util.Map;

@@ -1,12 +1,10 @@
 package com.relaxed.common.risk.engine.rules.extractor;
 
 import com.relaxed.common.risk.engine.enums.FieldType;
-import com.relaxed.common.risk.engine.manage.FieldManageService;
-import com.relaxed.common.risk.engine.model.vo.FieldVO;
+import com.relaxed.common.risk.model.vo.FieldVO;
 import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.EvaluateReport;
 import com.relaxed.common.risk.engine.rules.executor.AbstractionRiskEvaluate;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Map;

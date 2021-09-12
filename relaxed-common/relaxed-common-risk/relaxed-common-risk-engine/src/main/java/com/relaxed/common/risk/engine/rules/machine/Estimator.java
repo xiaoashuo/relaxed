@@ -1,6 +1,6 @@
 package com.relaxed.common.risk.engine.rules.machine;
 
-import com.relaxed.common.risk.engine.model.vo.ModelConfVO;
+import com.relaxed.common.risk.model.vo.ModelConfVO;
 import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.EvaluateReport;
 

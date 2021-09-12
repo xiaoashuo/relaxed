@@ -1,11 +1,9 @@
 package com.relaxed.common.risk.engine.config;
 
+import com.relaxed.common.risk.biz.distributor.EventDistributor;
 import com.relaxed.common.risk.engine.cache.CacheService;
-import com.relaxed.common.risk.engine.core.distributor.EventDistributor;
-import com.relaxed.common.risk.engine.core.distributor.subscribe.SubscribeHandle;
-import com.relaxed.common.risk.engine.core.distributor.subscribe.SubscribeHolder;
-import com.relaxed.common.risk.engine.core.distributor.subscribe.SubscribeRegister;
-import com.relaxed.common.risk.engine.core.distributor.subscribe.handles.SubscribeModelHandle;
+import com.relaxed.common.risk.engine.core.subscribe.SubscribeHolder;
+import com.relaxed.common.risk.engine.core.subscribe.SubscribeRegister;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -2,7 +2,7 @@ package com.relaxed.common.risk.engine.core.handler;
 
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.StrUtil;
-import com.relaxed.common.risk.engine.model.vo.FieldVO;
+import com.relaxed.common.risk.model.vo.FieldVO;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

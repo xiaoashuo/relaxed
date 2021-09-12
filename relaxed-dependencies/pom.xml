@@ -116,6 +116,25 @@
                 <artifactId>relaxed-common-cache</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--risk 模块-->
+            <!--risk model-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-risk-model</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <!--risk repository-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-risk-repository</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <!--risk biz-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-risk-biz</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--risk engine-->
             <dependency>
                 <groupId>com.lovecyy</groupId>

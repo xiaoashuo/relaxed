@@ -1,6 +1,6 @@
 package com.relaxed.common.risk.engine.rules.score;
 
-import com.relaxed.common.risk.engine.model.vo.RuleVO;
+import com.relaxed.common.risk.model.vo.RuleVO;
 import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.EvaluateReport;
 

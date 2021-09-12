@@ -1,6 +1,6 @@
 package com.relaxed.common.risk.engine.core.handler;
 
-import com.relaxed.common.risk.engine.model.vo.FieldVO;
+import com.relaxed.common.risk.model.vo.FieldVO;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

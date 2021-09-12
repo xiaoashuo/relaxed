@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.risk.engine.core.plugins.PluginEnum;
 import com.relaxed.common.risk.engine.core.plugins.PluginMeta;
 import com.relaxed.common.risk.engine.core.plugins.PluginService;
-import com.relaxed.common.risk.engine.model.vo.PreItemVO;
+import com.relaxed.common.risk.model.vo.PreItemVO;
 
 import java.util.Date;
 import java.util.Map;
