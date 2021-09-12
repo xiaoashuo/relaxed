@@ -52,10 +52,6 @@ public enum PluginEnum implements PluginMeta {
 	 * http util
 	 */
 	HTTP_UTIL_PLUGIN(8, "Http请求插件", "", String.class),
-	/**
-	 * 黑白名单数据提取
-	 */
-	BLACK_WHITE_PLUGIN(9, "黑白名单数据提取插件", "", Map.class),
 
 	;
 
