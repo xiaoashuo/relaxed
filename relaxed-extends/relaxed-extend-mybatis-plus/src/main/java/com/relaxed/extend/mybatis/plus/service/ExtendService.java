@@ -24,6 +24,25 @@ public interface ExtendService<T> extends IService<T> {
 	boolean insertBatch(Collection<T> list);
 
 	/**
+	 * 插入部分列
+	 * @author yakir
+	 * @date 2021/9/17 10:36
+	 * @param list
+	 * @return boolean
+	 */
+	boolean insertBatchSomeColumn(Collection<T> list);
+
+	/**
+	 * 插入部分列
+	 * @author yakir
+	 * @date 2021/9/17 10:36
+	 * @param list
+	 * @param batchSize
+	 * @return boolean
+	 */
+	boolean insertBatchSomeColumn(Collection<T> list, int batchSize);
+
+	/**
 	 * list insert
 	 * @param list
 	 * @param batchSize
