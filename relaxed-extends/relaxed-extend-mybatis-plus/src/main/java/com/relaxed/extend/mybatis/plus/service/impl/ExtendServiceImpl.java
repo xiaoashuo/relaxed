@@ -31,6 +31,34 @@ public class ExtendServiceImpl<M extends ExtendMapper<T>, T> extends ServiceImpl
 		return insertBatch(list, DEFAULT_INSERT_BATCH_SIZE);
 	}
 
+	@Override
+	public boolean insertBatchSomeColumn(Collection<T> list) {
+		return insertBatchSomeColumn(list, DEFAULT_INSERT_BATCH_SIZE);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public boolean insertBatchSomeColumn(Collection<T> list, int batchSize) {
+		Assert.isFalse(batchSize < 1, "batchSize must not be less than one");
+		if (CollectionUtils.isEmpty(list)) {
+			return false;
+		}
+		int size = list.size();
+		// step flag
+		int i = 1;
+		// stage list not all list
+		List<T> stageList = new ArrayList<>();
+		for (T element : list) {
+			stageList.add(element);
+			if ((i % batchSize == 0) || i == size) {
+				this.getBaseMapper().insertBatchSomeColumn(stageList);
+				stageList = new ArrayList<>();
+			}
+			i++;
+		}
+		return true;
+	}
+
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public boolean insertBatch(Collection<T> list, int batchSize) {
