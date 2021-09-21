@@ -51,6 +51,7 @@ public class Model implements Serializable {
 	/**
 	 * 事件中标识实体的主键
 	 */
+	@NotEmpty(message = "模型实体名称不能为空")
 	@ApiModelProperty(value = "事件中标识实体的主键")
 	private String entityName;
 

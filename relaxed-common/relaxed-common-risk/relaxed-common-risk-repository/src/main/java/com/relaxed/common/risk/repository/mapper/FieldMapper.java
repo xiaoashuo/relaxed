@@ -27,4 +27,18 @@ public interface FieldMapper extends ExtendMapper<Field> {
 		return this.selectList(Wrappers.lambdaQuery(Field.class).eq(Field::getModelId, modelId));
 	};
 
+	/**
+	 * 查询单字段
+	 * @author yakir
+	 * @date 2021/9/19 17:24
+	 * @param modelId
+	 * @param fieldName
+	 * @return com.relaxed.common.risk.model.entity.Field
+	 */
+    default Field selectOne(Long modelId, String fieldName){
+    	return this.selectOne(Wrappers.lambdaQuery(Field.class)
+		.eq(Field::getModelId,modelId)
+		.eq(Field::getFieldName,fieldName));
+	}
+
 }

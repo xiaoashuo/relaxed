@@ -51,7 +51,7 @@ public class DataListRecordsController {
 	@ApiOperation(value = "新增数据", notes = "新增数据")
 	@PostMapping
 	public R<?> save(@RequestBody DataListRecords dataListRecords) {
-		return dataListRecordsService.save(dataListRecords) ? R.ok()
+		return dataListRecordsService.add(dataListRecords) ? R.ok()
 				: R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "新增数据失败");
 	}
 
@@ -63,7 +63,7 @@ public class DataListRecordsController {
 	@ApiOperation(value = "更新数据", notes = "更新数据")
 	@PutMapping
 	public R<?> updateById(@RequestBody DataListRecords dataListRecords) {
-		return dataListRecordsService.updateById(dataListRecords) ? R.ok()
+		return dataListRecordsService.edit(dataListRecords) ? R.ok()
 				: R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "更新数据失败");
 	}
 
@@ -75,7 +75,7 @@ public class DataListRecordsController {
 	@ApiOperation(value = "根据id删除数据", notes = "根据id删除数据")
 	@DeleteMapping("/{id}")
 	public R<?> removeById(@PathVariable Long id) {
-		return dataListRecordsService.removeById(id) ? R.ok()
+		return dataListRecordsService.del(id) ? R.ok()
 				: R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "根据id删除数据失败");
 	}
 
