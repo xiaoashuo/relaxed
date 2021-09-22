@@ -68,7 +68,7 @@ public class DefaultFieldValidateHandler implements FieldValidateHandler {
 		STRING(4, "字符串", (fieldVo, value) -> {
 			// 验证字段值类型是否匹配当前
 			return (value instanceof String) ? FieldValidResult.pass()
-					: FieldValidResult.reject(fieldVo.getFieldName(), "不是浮点型类型");
+					: FieldValidResult.reject(fieldVo.getFieldName(), "不是字符串类型");
 		}),
 		/**
 		 * 长度效验 必须相同

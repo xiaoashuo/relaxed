@@ -1,11 +1,10 @@
 package com.relaxed.common.risk.engine.rules.statistics.domain;
 
-import com.relaxed.common.risk.engine.enums.FieldType;
+import com.relaxed.common.risk.model.enums.FieldType;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
-import java.util.Map;
 
 /**
  * @author Yakir
@@ -16,7 +15,7 @@ import java.util.Map;
  */
 @Data
 @Accessors(chain = true)
-public class AggregateParamBO implements AggregateParam {
+public class AggregateParamBO implements IAggregateParam {
 
 	/**
 	 * 模型id

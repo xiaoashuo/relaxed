@@ -1,6 +1,6 @@
 package com.relaxed.common.risk.engine.rules.extractor;
 
-import com.relaxed.common.risk.engine.enums.FieldType;
+import com.relaxed.common.risk.model.enums.FieldType;
 import com.relaxed.common.risk.model.vo.FieldVO;
 import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.EvaluateReport;
@@ -24,8 +24,7 @@ public class SimpleFieldExtractor implements FieldExtractor {
 		return originText.replace("fields.", "").replace("preItems.", "");
 	}
 
-	@Override
-	public <T> T extractorFieldValue(String fieldName, Map... maps) {
+	private <T> T extractorFieldValue(String fieldName, Map... maps) {
 		for (Map map : maps) {
 			T searchFieldVal = (T) map.get(fieldName);
 			if (searchFieldVal != null) {

@@ -35,6 +35,11 @@ public class CacheKey {
 	private static final String MODEL_ABSTRACTION_PREFIX = "relaxed:model:abstraction:";
 
 	/**
+	 * 决策处理
+	 */
+	private static final String MODEL_ACTIVATION_PREFIX = "relaxed:model:activation:";
+
+	/**
 	 * 规则列表缓存
 	 */
 	private static final String MODEL_RULE_PREFIX = "relaxed:model:rule:";
@@ -105,6 +110,17 @@ public class CacheKey {
 	}
 
 	/**
+	 * 获取决策信息
+	 * @author yakir
+	 * @date 2021/9/22 16:32
+	 * @param id
+	 * @return java.lang.String
+	 */
+	public static String getModelActivationCacheKey(Long id) {
+		return MODEL_ACTIVATION_PREFIX + id;
+	}
+
+	/**
 	 * 查询规则列表缓存key
 	 * @author yakir
 	 * @date 2021/8/31 11:43
@@ -123,7 +139,6 @@ public class CacheKey {
 	 * @return java.lang.String
 	 */
 	public static String getDataListCacheKey(Long id) {
-
 		return MODEL_DATA_LIST_PREFIX + id;
 	}
 

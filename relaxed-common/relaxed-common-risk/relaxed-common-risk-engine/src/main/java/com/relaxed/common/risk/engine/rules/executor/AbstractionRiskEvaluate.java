@@ -4,11 +4,12 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
-import com.relaxed.common.risk.engine.enums.AbstractionEnum;
-import com.relaxed.common.risk.engine.enums.FieldType;
+
 import com.relaxed.common.risk.engine.service.AbstractionManageService;
 import com.relaxed.common.risk.engine.service.DataListManageService;
 import com.relaxed.common.risk.engine.service.FieldManageService;
+import com.relaxed.common.risk.model.enums.AbstractionEnum;
+import com.relaxed.common.risk.model.enums.FieldType;
 import com.relaxed.common.risk.model.vo.AbstractionVO;
 import com.relaxed.common.risk.model.vo.FieldVO;
 import com.relaxed.common.risk.model.vo.ModelVO;
@@ -66,10 +67,9 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 
 	@Override
 	public boolean doEval(EvaluateContext evaluateContext, EvaluateReport evaluateReport) {
+		// 存放当前评估器产生的数据信息
 		Map<String, Object> extParam = new HashMap<>();
 		ModelVO modelVo = evaluateContext.getModelVo();
-		Map eventJson = evaluateContext.getEventJson();
-		Map<String, Object> preItemMap = evaluateContext.getPreItemMap();
 		// 1.list abstraction
 		List<AbstractionVO> abstractionVOS = abstractionManageService.getByModelId(modelVo.getId());
 		if (CollectionUtil.isEmpty(abstractionVOS)) {
@@ -106,16 +106,18 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 			// 获取日期字段名称
 			String refDateFieldName = modelVo.getReferenceDate();
 			// 获取日期字段值 时间
-			Date refDate = new Date((Long) fieldExtractor.extractorFieldValue(refDateFieldName, eventJson));
+			Date refDate = new Date(
+					(Long) fieldExtractor.extractorFieldValue(refDateFieldName, evaluateContext, evaluateReport));
 			if (refDate == null) {
-				evaluateReport.setMsg("时间格式不正确");
+				evaluateReport.setMsg("search {} field value not exists.", refDateFieldName);
 				return false;
 			}
 			// 统计指标开始时间
 			Date beginDate = DateUtil.offset(refDate, DateField.of(searchIntervalType), searchIntervalValue * -1)
 					.toJdkDate();
 			// 查询字段值
-			Object searchFieldVal = fieldExtractor.extractorFieldValue(searchFieldName, eventJson, preItemMap);
+			Object searchFieldVal = fieldExtractor.extractorFieldValue(searchFieldName, evaluateContext,
+					evaluateReport);
 			if (searchFieldVal == null) {
 				evaluateReport.setMsg("search {} field value not exists.", searchFieldName);
 				return false;
@@ -125,7 +127,8 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 			// 函数字段处理
 			FieldType fieldType = null;
 			if (StrUtil.isNotEmpty(functionFieldName)) {
-				functionFieldVal = fieldExtractor.extractorFieldValue(functionFieldName, eventJson);
+				functionFieldVal = fieldExtractor.extractorFieldValue(functionFieldName, evaluateContext,
+						evaluateReport);
 				List<FieldVO> fieldVos = fieldManageService.getFieldVos(modelVo.getId());
 				// 函数字段
 				fieldType = fieldExtractor.extractorFieldType(functionFieldName, fieldVos);

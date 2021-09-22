@@ -73,8 +73,8 @@ public class PreItemController {
 	 */
 	@ApiOperation(value = "根据id删除数据", notes = "根据id删除数据")
 	@DeleteMapping("/{modelId}/{id}")
-	public R<?> removeById(@PathVariable Long modelId,@PathVariable Long id) {
-		return preItemService.del(modelId,id) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "根据id删除数据失败");
+	public R<?> removeById(@PathVariable Long modelId, @PathVariable Long id) {
+		return preItemService.del(modelId, id) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "根据id删除数据失败");
 	}
 
 }

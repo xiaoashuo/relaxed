@@ -45,7 +45,7 @@ public interface ModelMapper extends ExtendMapper<Model> {
 	 * @param modelName
 	 * @return com.relaxed.common.risk.model.entity.Model
 	 */
-	default Model getByModelName(String modelName){
+	default Model getByModelName(String modelName) {
 		return this.selectOne(Wrappers.lambdaQuery(Model.class).eq(Model::getModelName, modelName));
 
 	}

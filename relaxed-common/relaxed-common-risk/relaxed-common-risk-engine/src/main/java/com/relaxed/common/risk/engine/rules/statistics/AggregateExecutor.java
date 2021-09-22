@@ -1,7 +1,6 @@
 package com.relaxed.common.risk.engine.rules.statistics;
 
-import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParam;
-import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
+import com.relaxed.common.risk.engine.rules.statistics.domain.IAggregateParam;
 import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
 
 /**
@@ -11,7 +10,7 @@ import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
  * @date 2021/8/30 14:40
  * @Version 1.0
  */
-public interface AggregateExecutor<T extends AggregateParam, R> {
+public interface AggregateExecutor<T extends IAggregateParam, R> {
 
 	/**
 	 * 函数类型

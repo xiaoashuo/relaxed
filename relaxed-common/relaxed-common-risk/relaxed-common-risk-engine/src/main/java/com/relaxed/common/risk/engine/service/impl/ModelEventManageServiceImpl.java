@@ -1,11 +1,11 @@
 package com.relaxed.common.risk.engine.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.relaxed.common.risk.engine.enums.FieldType;
 import com.relaxed.common.risk.engine.mongdb.MongoDbService;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 import com.relaxed.common.risk.engine.service.ModelEventManageService;
 import com.relaxed.common.risk.engine.service.ModelManageService;
+import com.relaxed.common.risk.model.enums.FieldType;
 import com.relaxed.common.risk.model.vo.ModelVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -12,7 +12,7 @@ import com.relaxed.common.risk.engine.rules.EvaluateReport;
 public class DefaultRiskReportHandler implements RiskReportHandler {
 
 	@Override
-	public void handle(String modelGuid, String reqId, EvaluateReport evaluateReport) {
+	public void handle(String modelGuid, String reqId, String evaluateReport) {
 
 	}
 

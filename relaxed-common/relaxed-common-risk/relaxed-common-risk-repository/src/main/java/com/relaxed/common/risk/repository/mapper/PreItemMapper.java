@@ -35,10 +35,9 @@ public interface PreItemMapper extends ExtendMapper<PreItem> {
 	 * @param destField
 	 * @return com.relaxed.common.risk.model.entity.PreItem
 	 */
-	default PreItem selectOne(Long modelId, String destField){
-		return this.selectOne(Wrappers.lambdaQuery(PreItem.class)
-				.eq(PreItem::getModelId, modelId)
-		         .eq(PreItem::getDestField,destField));
+	default PreItem selectOne(Long modelId, String destField) {
+		return this.selectOne(Wrappers.lambdaQuery(PreItem.class).eq(PreItem::getModelId, modelId)
+				.eq(PreItem::getDestField, destField));
 	}
 
 	/**
@@ -49,10 +48,9 @@ public interface PreItemMapper extends ExtendMapper<PreItem> {
 	 * @param id
 	 * @return com.relaxed.common.risk.model.entity.PreItem
 	 */
-	default PreItem selectOne(Long modelId, Long id){
-		return this.selectOne(Wrappers.lambdaQuery(PreItem.class)
-				.eq(PreItem::getModelId, modelId)
-				.eq(PreItem::getId,id));
+	default PreItem selectOne(Long modelId, Long id) {
+		return this
+				.selectOne(Wrappers.lambdaQuery(PreItem.class).eq(PreItem::getModelId, modelId).eq(PreItem::getId, id));
 	}
 
 	/**
@@ -62,10 +60,8 @@ public interface PreItemMapper extends ExtendMapper<PreItem> {
 	 * @param modelId
 	 * @return com.relaxed.common.risk.model.entity.PreItem
 	 */
-	default PreItem selectOne(Long modelId){
-		return this.selectOne(Wrappers.lambdaQuery(PreItem.class)
-				.eq(PreItem::getModelId, modelId)
-				);
+	default PreItem selectOne(Long modelId) {
+		return this.selectOne(Wrappers.lambdaQuery(PreItem.class).eq(PreItem::getModelId, modelId));
 	}
 
 }

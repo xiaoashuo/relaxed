@@ -43,7 +43,6 @@ public class DataListsServiceImpl extends ExtendServiceImpl<DataListsMapper, Dat
 
 	private final EventDistributor eventDistributor;
 
-
 	@Override
 	public PageResult<DataListsVO> selectByPage(PageParam pageParam, DataListsQO dataListsQO) {
 		IPage<DataLists> page = PageUtil.prodPage(pageParam);
@@ -66,12 +65,12 @@ public class DataListsServiceImpl extends ExtendServiceImpl<DataListsMapper, Dat
 		return DataListsConverter.INSTANCE.poToVOs(list);
 	}
 
-
 	@Override
 	public boolean add(DataLists dataLists) {
-		if (SqlHelper.retBool(this.baseMapper.insert(dataLists))){
-			//发布订阅
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(), JSONUtil.toJsonStr(DataListsConverter.INSTANCE.poToVo(dataLists)));
+		if (SqlHelper.retBool(this.baseMapper.insert(dataLists))) {
+			// 发布订阅
+			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(),
+					JSONUtil.toJsonStr(DataListsConverter.INSTANCE.poToVo(dataLists)));
 			return true;
 		}
 		return false;
@@ -80,9 +79,10 @@ public class DataListsServiceImpl extends ExtendServiceImpl<DataListsMapper, Dat
 	@Override
 	public boolean del(Long id) {
 		DataLists dataLists = baseMapper.selectById(id);
-		Assert.notNull(dataLists,"data list not exists.");
-		if(SqlHelper.retBool(baseMapper.deleteById(id))){
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(), JSONUtil.toJsonStr(DataListsConverter.INSTANCE.poToVo(dataLists)));
+		Assert.notNull(dataLists, "data list not exists.");
+		if (SqlHelper.retBool(baseMapper.deleteById(id))) {
+			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(),
+					JSONUtil.toJsonStr(DataListsConverter.INSTANCE.poToVo(dataLists)));
 			return true;
 		}
 		return false;
@@ -91,11 +91,13 @@ public class DataListsServiceImpl extends ExtendServiceImpl<DataListsMapper, Dat
 	@Override
 	public boolean edit(DataLists dataLists) {
 		DataLists sqlDataLists = baseMapper.selectById(dataLists.getId());
-		Assert.notNull(sqlDataLists,"data list not exists.");
-		if(SqlHelper.retBool(baseMapper.updateById(dataLists))){
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(), JSONUtil.toJsonStr(DataListsConverter.INSTANCE.poToVo(dataLists)));
+		Assert.notNull(sqlDataLists, "data list not exists.");
+		if (SqlHelper.retBool(baseMapper.updateById(dataLists))) {
+			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(),
+					JSONUtil.toJsonStr(DataListsConverter.INSTANCE.poToVo(dataLists)));
 			return true;
 		}
 		return false;
 	}
+
 }

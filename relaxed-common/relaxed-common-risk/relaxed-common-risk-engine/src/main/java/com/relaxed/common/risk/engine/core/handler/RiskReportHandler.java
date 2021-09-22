@@ -19,6 +19,6 @@ public interface RiskReportHandler {
 	 * @param reqId
 	 * @param evaluateReport
 	 */
-	void handle(String modelGuid, String reqId, EvaluateReport evaluateReport);
+	void handle(String modelGuid, String reqId, String evaluateReport);
 
 }

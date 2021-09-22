@@ -36,4 +36,31 @@ public interface ActivationService extends ExtendService<Activation> {
 	 */
 	List<ActivationVO> listByModelId(Long modelId);
 
+	/**
+	 * 添加决策器
+	 * @author yakir
+	 * @date 2021/9/22 16:10
+	 * @param activation
+	 * @return boolean
+	 */
+	boolean add(Activation activation);
+
+	/**
+	 * 编辑决策器
+	 * @author yakir
+	 * @date 2021/9/22 16:10
+	 * @param activation
+	 * @return boolean
+	 */
+	boolean edit(Activation activation);
+
+	/**
+	 * 删除决策器
+	 * @author yakir
+	 * @date 2021/9/22 16:10
+	 * @param id
+	 * @return boolean
+	 */
+	boolean del(Long id);
+
 }
