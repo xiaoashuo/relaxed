@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
  * @Version 1.0
  */
 public class ModelEnums {
+
 	@RequiredArgsConstructor
 	@Getter
 	public static enum TemplateEnum {
@@ -22,12 +23,12 @@ public class ModelEnums {
 		/**
 		 * 非模板
 		 */
-		NOT_TEMPLATE(0, "非模板"),
-	;
+		NOT_TEMPLATE(0, "非模板"),;
 
 		private final Integer val;
 
 		private final String desc;
+
 		/**
 		 * 模型是否为模板
 		 * @author yakir
@@ -35,11 +36,12 @@ public class ModelEnums {
 		 * @param val
 		 * @return boolean
 		 */
-		public static boolean isTemplate(Integer val){
+		public static boolean isTemplate(Integer val) {
 			return TEMPLATE.getVal().equals(val);
 		}
 
 	}
+
 	@RequiredArgsConstructor
 	@Getter
 	public static enum StatusEnum {

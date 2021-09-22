@@ -31,6 +31,11 @@ public enum SubscribeEnum implements SubscribeType {
 	 * 特征处理
 	 */
 	PUB_SUB_ABSTRACTION_CHANNEL("relaxed:channel:abstraction", "发布订阅特征处理"),
+
+	/**
+	 * 决策处理
+	 */
+	PUB_SUB_ACTIVATION_CHANNEL("relaxed:channel:activation", "发布订阅决策处理"),
 	/**
 	 * 规则处理
 	 */

@@ -1,4 +1,4 @@
-package com.relaxed.common.risk.biz.service.impl;
+package com.relaxed.common.risk.engine.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
@@ -8,13 +8,13 @@ import com.relaxed.common.cache.CacheOperator;
 import com.relaxed.common.model.result.R;
 import com.relaxed.common.risk.engine.config.EngineProperties;
 import com.relaxed.common.risk.engine.core.handler.RiskReportHandler;
-import com.relaxed.common.risk.engine.enums.ModelEnums;
 import com.relaxed.common.risk.engine.exception.RiskEngineException;
 import com.relaxed.common.risk.engine.service.FieldValidateService;
 import com.relaxed.common.risk.engine.service.ModelEventManageService;
 import com.relaxed.common.risk.engine.service.ModelManageService;
 import com.relaxed.common.risk.engine.service.PreItemManageService;
 import com.relaxed.common.risk.model.dto.RiskResultCode;
+import com.relaxed.common.risk.model.enums.ModelEnums;
 import com.relaxed.common.risk.model.vo.ModelVO;
 import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.EvaluateReport;

@@ -87,7 +87,7 @@ public class PreItem extends Model<PreItem> {
 	private String reqType;
 
 	/**
-	 *状态
+	 * 状态
 	 */
 	@ApiModelProperty(value = "状态")
 	private Integer status;

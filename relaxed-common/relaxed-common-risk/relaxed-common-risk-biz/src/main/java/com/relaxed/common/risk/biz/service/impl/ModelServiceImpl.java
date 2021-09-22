@@ -42,19 +42,19 @@ import java.util.Locale;
 @Service
 public class ModelServiceImpl extends ExtendServiceImpl<ModelMapper, Model> implements ModelService {
 
-
 	private final EventDistributor eventDistributor;
 
 	@Override
 	public boolean add(Model model) {
 		String modelName = model.getModelName();
 		Model sqlModel = getByModelName(modelName);
-		Assert.isNull(sqlModel,"model name has already exists.");
+		Assert.isNull(sqlModel, "model name has already exists.");
 		model.setGuid(IdUtil.simpleUUID().toUpperCase());
 		model.setStatus(ModelEnums.StatusEnum.INIT.getStatus());
-		if (SqlHelper.retBool(this.baseMapper.insert(model))){
-			//发布订阅
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_MODEL_CHANNEL.getChannel(), JSONUtil.toJsonStr(ModelConverter.INSTANCE.poToVo(model)));
+		if (SqlHelper.retBool(this.baseMapper.insert(model))) {
+			// 发布订阅
+			eventDistributor.distribute(SubscribeEnum.PUB_SUB_MODEL_CHANNEL.getChannel(),
+					JSONUtil.toJsonStr(ModelConverter.INSTANCE.poToVo(model)));
 			return true;
 		}
 		return false;
@@ -63,11 +63,12 @@ public class ModelServiceImpl extends ExtendServiceImpl<ModelMapper, Model> impl
 	@Override
 	public boolean del(Long id) {
 		Model model = baseMapper.selectById(id);
-		Assert.notNull(model,"model not exists.");
-		//模型为模板 则不允许删除
-		Assert.state(!ModelEnums.TemplateEnum.isTemplate(model.getTemplate()),"model is template,not allowed del.");
-		if(SqlHelper.retBool(baseMapper.deleteById(id))){
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_MODEL_CHANNEL.getChannel(), JSONUtil.toJsonStr(ModelConverter.INSTANCE.poToVo(model)));
+		Assert.notNull(model, "model not exists.");
+		// 模型为模板 则不允许删除
+		Assert.state(!ModelEnums.TemplateEnum.isTemplate(model.getTemplate()), "model is template,not allowed del.");
+		if (SqlHelper.retBool(baseMapper.deleteById(id))) {
+			eventDistributor.distribute(SubscribeEnum.PUB_SUB_MODEL_CHANNEL.getChannel(),
+					JSONUtil.toJsonStr(ModelConverter.INSTANCE.poToVo(model)));
 			return true;
 		}
 		return false;
@@ -87,8 +88,6 @@ public class ModelServiceImpl extends ExtendServiceImpl<ModelMapper, Model> impl
 		IPage<ModelVO> voPage = page.convert(ModelConverter.INSTANCE::poToVo);
 		return new PageResult<>(voPage.getRecords(), voPage.getTotal());
 	}
-
-
 
 	@Override
 	public List<ModelVO> listByStatus(Integer status) {

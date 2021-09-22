@@ -43,16 +43,16 @@ public interface PreItemService extends ExtendService<PreItem> {
 	 * @param preItem
 	 * @return boolean
 	 */
-    boolean add(PreItem preItem);
+	boolean add(PreItem preItem);
 
-    /**
-     * 删除预处理项
-     * @author yakir
-     * @date 2021/9/12 17:54
-     * @param modelId
+	/**
+	 * 删除预处理项
+	 * @author yakir
+	 * @date 2021/9/12 17:54
+	 * @param modelId
 	 * @param id
 	 * @return boolean
-     */
+	 */
 	boolean del(Long modelId, Long id);
 
 	/**
@@ -63,4 +63,5 @@ public interface PreItemService extends ExtendService<PreItem> {
 	 * @return boolean
 	 */
 	boolean edit(PreItem preItem);
+
 }

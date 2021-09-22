@@ -1,6 +1,6 @@
 package com.relaxed.common.risk.engine.rules.statistics.domain;
 
-import com.relaxed.common.risk.engine.enums.FieldType;
+import com.relaxed.common.risk.model.enums.FieldType;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

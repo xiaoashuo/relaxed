@@ -4,11 +4,12 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
-import com.relaxed.common.risk.engine.enums.AbstractionEnum;
-import com.relaxed.common.risk.engine.enums.FieldType;
+
 import com.relaxed.common.risk.engine.service.AbstractionManageService;
 import com.relaxed.common.risk.engine.service.DataListManageService;
 import com.relaxed.common.risk.engine.service.FieldManageService;
+import com.relaxed.common.risk.model.enums.AbstractionEnum;
+import com.relaxed.common.risk.model.enums.FieldType;
 import com.relaxed.common.risk.model.vo.AbstractionVO;
 import com.relaxed.common.risk.model.vo.FieldVO;
 import com.relaxed.common.risk.model.vo.ModelVO;

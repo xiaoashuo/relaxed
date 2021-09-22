@@ -1,11 +1,13 @@
 package com.relaxed.common.risk.engine.rules.executor;
 
-import com.relaxed.common.risk.engine.enums.*;
 import com.relaxed.common.risk.engine.service.ActivationManageService;
 import com.relaxed.common.risk.engine.service.DataListManageService;
 import com.relaxed.common.risk.engine.service.RuleManageService;
 import com.relaxed.common.risk.model.entity.Hit;
 import com.relaxed.common.risk.model.entity.Risk;
+import com.relaxed.common.risk.model.enums.ActivationEnum;
+import com.relaxed.common.risk.model.enums.RiskEnum;
+import com.relaxed.common.risk.model.enums.RuleEnum;
 import com.relaxed.common.risk.model.vo.ActivationVO;
 import com.relaxed.common.risk.model.vo.ModelVO;
 import com.relaxed.common.risk.model.vo.RuleVO;

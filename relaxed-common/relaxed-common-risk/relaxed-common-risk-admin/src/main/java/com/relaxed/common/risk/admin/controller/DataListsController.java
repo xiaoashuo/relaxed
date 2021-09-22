@@ -62,8 +62,7 @@ public class DataListsController {
 	@ApiOperation(value = "更新数据", notes = "更新数据")
 	@PutMapping
 	public R<?> updateById(@RequestBody DataLists dataLists) {
-		return dataListsService.edit(dataLists) ? R.ok()
-				: R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "更新数据失败");
+		return dataListsService.edit(dataLists) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "更新数据失败");
 	}
 
 	/**

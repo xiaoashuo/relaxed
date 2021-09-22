@@ -54,15 +54,15 @@ public interface DataListsService extends ExtendService<DataLists> {
 	 * @param dataLists
 	 * @return boolean
 	 */
-    boolean add(DataLists dataLists);
+	boolean add(DataLists dataLists);
 
-    /**
-     * 删除黑白名单数据列表 根据id
-     * @author yakir
-     * @date 2021/9/12 18:17
-     * @param id
-     * @return boolean
-     */
+	/**
+	 * 删除黑白名单数据列表 根据id
+	 * @author yakir
+	 * @date 2021/9/12 18:17
+	 * @param id
+	 * @return boolean
+	 */
 	boolean del(Long id);
 
 	/**
