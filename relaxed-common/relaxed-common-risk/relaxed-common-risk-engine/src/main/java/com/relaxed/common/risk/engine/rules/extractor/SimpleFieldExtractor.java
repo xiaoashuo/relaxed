@@ -24,8 +24,7 @@ public class SimpleFieldExtractor implements FieldExtractor {
 		return originText.replace("fields.", "").replace("preItems.", "");
 	}
 
-	@Override
-	public <T> T extractorFieldValue(String fieldName, Map... maps) {
+	private <T> T extractorFieldValue(String fieldName, Map... maps) {
 		for (Map map : maps) {
 			T searchFieldVal = (T) map.get(fieldName);
 			if (searchFieldVal != null) {

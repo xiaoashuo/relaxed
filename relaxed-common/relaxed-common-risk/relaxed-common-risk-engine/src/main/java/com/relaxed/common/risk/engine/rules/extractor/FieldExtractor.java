@@ -27,16 +27,6 @@ public interface FieldExtractor {
 	String extractorFieldName(String originFieldName);
 
 	/**
-	 * 字段值提取器
-	 * @author yakir
-	 * @date 2021/8/30 14:11
-	 * @param fieldName
-	 * @param maps
-	 * @return T
-	 */
-	<T> T extractorFieldValue(String fieldName, Map... maps);
-
-	/**
 	 * 提取字段值
 	 * @author yakir
 	 * @date 2021/9/9 14:42

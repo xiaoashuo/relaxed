@@ -107,7 +107,8 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 			// 获取日期字段名称
 			String refDateFieldName = modelVo.getReferenceDate();
 			// 获取日期字段值 时间
-			Date refDate = new Date((Long) fieldExtractor.extractorFieldValue(refDateFieldName, eventJson));
+			Date refDate = new Date(
+					(Long) fieldExtractor.extractorFieldValue(refDateFieldName, evaluateContext, evaluateReport));
 			if (refDate == null) {
 				evaluateReport.setMsg("时间格式不正确");
 				return false;
@@ -116,7 +117,8 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 			Date beginDate = DateUtil.offset(refDate, DateField.of(searchIntervalType), searchIntervalValue * -1)
 					.toJdkDate();
 			// 查询字段值
-			Object searchFieldVal = fieldExtractor.extractorFieldValue(searchFieldName, eventJson, preItemMap);
+			Object searchFieldVal = fieldExtractor.extractorFieldValue(searchFieldName, evaluateContext,
+					evaluateReport);
 			if (searchFieldVal == null) {
 				evaluateReport.setMsg("search {} field value not exists.", searchFieldName);
 				return false;
@@ -126,7 +128,8 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 			// 函数字段处理
 			FieldType fieldType = null;
 			if (StrUtil.isNotEmpty(functionFieldName)) {
-				functionFieldVal = fieldExtractor.extractorFieldValue(functionFieldName, eventJson);
+				functionFieldVal = fieldExtractor.extractorFieldValue(functionFieldName, evaluateContext,
+						evaluateReport);
 				List<FieldVO> fieldVos = fieldManageService.getFieldVos(modelVo.getId());
 				// 函数字段
 				fieldType = fieldExtractor.extractorFieldType(functionFieldName, fieldVos);
