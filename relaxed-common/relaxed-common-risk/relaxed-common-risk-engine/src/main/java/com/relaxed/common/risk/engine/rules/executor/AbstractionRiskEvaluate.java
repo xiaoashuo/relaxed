@@ -67,10 +67,9 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 
 	@Override
 	public boolean doEval(EvaluateContext evaluateContext, EvaluateReport evaluateReport) {
+		// 存放当前评估器产生的数据信息
 		Map<String, Object> extParam = new HashMap<>();
 		ModelVO modelVo = evaluateContext.getModelVo();
-		Map eventJson = evaluateContext.getEventJson();
-		Map<String, Object> preItemMap = evaluateContext.getPreItemMap();
 		// 1.list abstraction
 		List<AbstractionVO> abstractionVOS = abstractionManageService.getByModelId(modelVo.getId());
 		if (CollectionUtil.isEmpty(abstractionVOS)) {
@@ -110,7 +109,7 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 			Date refDate = new Date(
 					(Long) fieldExtractor.extractorFieldValue(refDateFieldName, evaluateContext, evaluateReport));
 			if (refDate == null) {
-				evaluateReport.setMsg("时间格式不正确");
+				evaluateReport.setMsg("search {} field value not exists.", refDateFieldName);
 				return false;
 			}
 			// 统计指标开始时间

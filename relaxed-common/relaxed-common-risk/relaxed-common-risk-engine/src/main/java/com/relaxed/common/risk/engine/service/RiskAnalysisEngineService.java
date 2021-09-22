@@ -1,4 +1,4 @@
-package com.relaxed.common.risk.biz.service;
+package com.relaxed.common.risk.engine.service;
 
 import com.relaxed.common.model.result.R;
 

@@ -3,7 +3,7 @@ package com.relaxed.common.risk.engine.rules.statistics.invoker;
 import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.statistics.AggregateExecutor;
 import com.relaxed.common.risk.engine.rules.statistics.AggregateInvoker;
-import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParam;
+import com.relaxed.common.risk.engine.rules.statistics.domain.IAggregateParam;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateResult;
 import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
@@ -23,13 +23,13 @@ public class SimpleAggregateInvoker implements AggregateInvoker {
 	private final AggregateExecutorDiscover aggregateExecutorDiscover;
 
 	@Override
-	public <T extends AggregateParam> T buildContext(EvaluateContext evaluateContext,
+	public <T extends IAggregateParam> T buildContext(EvaluateContext evaluateContext,
 			AggregateParamBO aggregateParamBO) {
 		return (T) aggregateParamBO;
 	}
 
 	@Override
-	public <T extends AggregateParam> AggregateResult invoke(AggregateFunction function, T commandParam) {
+	public <T extends IAggregateParam> AggregateResult invoke(AggregateFunction function, T commandParam) {
 		AggregateExecutor executor = aggregateExecutorDiscover.discover(function);
 		Object result = executor.execute(commandParam);
 		return new AggregateResult(result);

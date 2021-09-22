@@ -9,17 +9,13 @@ import com.relaxed.common.model.result.R;
 import com.relaxed.common.risk.engine.config.EngineProperties;
 import com.relaxed.common.risk.engine.core.handler.RiskReportHandler;
 import com.relaxed.common.risk.engine.exception.RiskEngineException;
-import com.relaxed.common.risk.engine.service.FieldValidateService;
-import com.relaxed.common.risk.engine.service.ModelEventManageService;
-import com.relaxed.common.risk.engine.service.ModelManageService;
-import com.relaxed.common.risk.engine.service.PreItemManageService;
+import com.relaxed.common.risk.engine.service.*;
 import com.relaxed.common.risk.model.dto.RiskResultCode;
 import com.relaxed.common.risk.model.enums.ModelEnums;
 import com.relaxed.common.risk.model.vo.ModelVO;
 import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.EvaluateReport;
 import com.relaxed.common.risk.engine.rules.RiskEvaluateChain;
-import com.relaxed.common.risk.biz.service.RiskAnalysisEngineService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,17 +61,16 @@ public class RiskAnalysisEngineServiceImpl implements RiskAnalysisEngineService 
 		if (!ModelEnums.StatusEnum.ENABLE.getStatus().equals(modelVO.getStatus())) {
 			return R.failed(RiskResultCode.MODEL_DISABLED);
 		}
-		// 执行报告
-		EvaluateReport evaluateReport = new EvaluateReport();
+
 		if (ModelEnums.FieldValidEnum.validField(modelVO.getFieldValidate())) {
 			// 验证字段
 			Map<String, String> validateMap = fieldValidateService.validate(modelVO.getId(), jsonInfo);
 			if (CollectionUtil.isNotEmpty(validateMap)) {
-				evaluateReport.setMsg(JSONUtil.toJsonStr(validateMap));
-				return R.failed(RiskResultCode.FIELD_VALID_NOT_PASSED).setData(evaluateReport);
+				return R.failed(RiskResultCode.FIELD_VALID_NOT_PASSED).setData(validateMap);
 			}
 		}
-
+		// 执行报告
+		EvaluateReport evaluateReport = new EvaluateReport();
 		try {
 			// 2.预处理字段提取
 			Map<String, Object> prepare = preItemManageService.prepare(modelVO.getId(), jsonInfo);
@@ -88,7 +83,6 @@ public class RiskAnalysisEngineServiceImpl implements RiskAnalysisEngineService 
 			evaluateContext.setModelVo(modelVO);
 			evaluateContext.setEventJson(jsonInfo);
 			evaluateContext.setPreItemMap(prepare);
-
 			boolean result = riskEvaluateChain.eval(evaluateContext, evaluateReport);
 			if (!result) {
 				return R.failed(RiskResultCode.RISK_EVAL_NOT_PASSED).setData(evaluateReport);
@@ -106,7 +100,7 @@ public class RiskAnalysisEngineServiceImpl implements RiskAnalysisEngineService 
 		String jsonReport = JSONUtil.toJsonStr(evaluateReport);
 		cacheManage.set(buildReportCacheKey(modelGuid, reqId), jsonReport, 5 * 60, TimeUnit.SECONDS);
 		// 7. 保存事件信息和分析结果用于后续分析 可以发送到es redis 等等
-		riskReportHandler.handle(modelGuid, reqId, evaluateReport);
+		riskReportHandler.handle(modelGuid, reqId, jsonReport);
 		return R.ok(evaluateReport);
 	}
 

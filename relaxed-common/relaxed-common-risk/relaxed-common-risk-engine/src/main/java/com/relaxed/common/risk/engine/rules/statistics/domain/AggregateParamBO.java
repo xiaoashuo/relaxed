@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
-import java.util.Map;
 
 /**
  * @author Yakir
@@ -16,7 +15,7 @@ import java.util.Map;
  */
 @Data
 @Accessors(chain = true)
-public class AggregateParamBO implements AggregateParam {
+public class AggregateParamBO implements IAggregateParam {
 
 	/**
 	 * 模型id
