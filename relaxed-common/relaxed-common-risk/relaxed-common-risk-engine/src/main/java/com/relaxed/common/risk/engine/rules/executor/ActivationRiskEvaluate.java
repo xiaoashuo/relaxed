@@ -77,7 +77,7 @@ public class ActivationRiskEvaluate extends AbstractRiskEvaluate {
 			hitRuleList.put(activationVO.getActivationName(), currentActivationHitList);
 			hitRulesMap.put(activationVO.getActivationName(), currentActivationHitMap);
 
-			// 获取规则脚本
+			// 获取当前策略 下的所有规则脚本
 			List<RuleVO> ruleVOS = ruleManageService.listRule(activationVO.getId());
 			// 当前策略评分 总分
 			BigDecimal sum = BigDecimal.ZERO;
@@ -93,12 +93,12 @@ public class ActivationRiskEvaluate extends AbstractRiskEvaluate {
 					continue;
 				}
 				// 规则匹配 计算score
-				BigDecimal amount = riskScoreHandler.computeRule(evaluateContext, evaluateReport, ruleVO);
-				sum = sum.add(amount);
+				BigDecimal score = riskScoreHandler.computeRule(evaluateContext, evaluateReport, ruleVO);
+				sum = sum.add(score);
 				// hit detail
 				Hit hit = new Hit();
 				hit.setKey(ruleVO.getId().toString());
-				hit.setValue(amount.setScale(2, 4).doubleValue());
+				hit.setValue(score.setScale(2, 4).doubleValue());
 				hit.setDesc(ruleVO.getLabel());
 				currentActivationHitList.add(hit);
 				currentActivationHitMap.put("rule_" + hit.getKey(), hit);

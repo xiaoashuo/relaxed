@@ -35,10 +35,9 @@ public interface FieldMapper extends ExtendMapper<Field> {
 	 * @param fieldName
 	 * @return com.relaxed.common.risk.model.entity.Field
 	 */
-    default Field selectOne(Long modelId, String fieldName){
-    	return this.selectOne(Wrappers.lambdaQuery(Field.class)
-		.eq(Field::getModelId,modelId)
-		.eq(Field::getFieldName,fieldName));
+	default Field selectOne(Long modelId, String fieldName) {
+		return this.selectOne(
+				Wrappers.lambdaQuery(Field.class).eq(Field::getModelId, modelId).eq(Field::getFieldName, fieldName));
 	}
 
 }

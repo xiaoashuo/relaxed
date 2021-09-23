@@ -64,7 +64,7 @@ public class PreItemManageServiceImpl implements PreItemManageService {
 		if (CollectionUtil.isNotEmpty(preItemVOS)) {
 			return preItemVOS;
 		}
-		List<PreItemVO> preItemVOList = preItemService.getByModelId(modelId);
+		List<PreItemVO> preItemVOList = preItemService.listByModelId(modelId);
 		if (CollectionUtil.isNotEmpty(preItemVOList)) {
 			cacheService.put(getModelPreItemCacheKey(modelId), preItemVOList);
 		}

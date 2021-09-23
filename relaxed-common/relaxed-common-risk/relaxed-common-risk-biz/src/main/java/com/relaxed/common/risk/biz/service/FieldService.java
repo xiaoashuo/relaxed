@@ -44,17 +44,16 @@ public interface FieldService extends ExtendService<Field> {
 	 * @param field
 	 * @return boolean
 	 */
-    boolean add(Field field);
+	boolean add(Field field);
 
-    /**
-     * 编辑字段
-     * @author yakir
-     * @date 2021/9/19 17:28
-     * @param field
-     * @return boolean
-     */
+	/**
+	 * 编辑字段
+	 * @author yakir
+	 * @date 2021/9/19 17:28
+	 * @param field
+	 * @return boolean
+	 */
 	boolean edit(Field field);
-
 
 	/**
 	 * 删除字段
@@ -65,4 +64,5 @@ public interface FieldService extends ExtendService<Field> {
 	 * @return boolean
 	 */
 	boolean del(Model model, Field field);
+
 }

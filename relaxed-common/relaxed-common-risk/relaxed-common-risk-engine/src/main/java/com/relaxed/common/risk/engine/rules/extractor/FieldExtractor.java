@@ -42,8 +42,9 @@ public interface FieldExtractor {
 	 * @author yakir
 	 * @date 2021/8/30 14:24
 	 * @param fieldName
+	 * @param fieldType
 	 * @return com.relaxed.common.risk.engine.enums.FieldType
 	 */
-	FieldType extractorFieldType(String fieldName, List<FieldVO> fieldVOS);
+	FieldType extractorFieldType(String fieldName, Map<String, String> fieldType);
 
 }

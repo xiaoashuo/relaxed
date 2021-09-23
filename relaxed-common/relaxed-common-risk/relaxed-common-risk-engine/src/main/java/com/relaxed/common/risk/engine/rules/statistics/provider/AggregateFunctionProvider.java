@@ -1,6 +1,6 @@
 package com.relaxed.common.risk.engine.rules.statistics.provider;
 
-import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
+import com.relaxed.common.risk.engine.rules.statistics.enums.IAggregateFunction;
 
 /**
  * @author Yakir
@@ -18,6 +18,6 @@ public interface AggregateFunctionProvider {
 	 * @param order
 	 * @return com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction
 	 */
-	AggregateFunction provide(Integer order);
+	IAggregateFunction provide(Integer order);
 
 }

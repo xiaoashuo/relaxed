@@ -26,6 +26,9 @@ public class SimpleFieldExtractor implements FieldExtractor {
 
 	private <T> T extractorFieldValue(String fieldName, Map... maps) {
 		for (Map map : maps) {
+			if (map == null) {
+				continue;
+			}
 			T searchFieldVal = (T) map.get(fieldName);
 			if (searchFieldVal != null) {
 				return searchFieldVal;
@@ -45,13 +48,9 @@ public class SimpleFieldExtractor implements FieldExtractor {
 	}
 
 	@Override
-	public FieldType extractorFieldType(String fieldName, List<FieldVO> fieldVOs) {
-		for (FieldVO fieldVO : fieldVOs) {
-			if (fieldVO.getFieldName().equals(fieldName)) {
-				return FieldType.valueOf(fieldVO.getFieldType());
-			}
-		}
-		return null;
+	public FieldType extractorFieldType(String fieldName, Map<String, String> fieldType) {
+		String name = fieldType.get(fieldName);
+		return name == null ? null : FieldType.valueOf(name);
 	}
 
 }

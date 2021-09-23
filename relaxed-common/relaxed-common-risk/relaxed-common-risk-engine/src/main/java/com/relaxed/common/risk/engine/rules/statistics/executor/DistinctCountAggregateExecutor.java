@@ -4,7 +4,7 @@ import com.relaxed.common.risk.engine.service.ModelEventManageService;
 import com.relaxed.common.risk.engine.rules.statistics.AggregateExecutor;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateEnum;
-import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
+import com.relaxed.common.risk.engine.rules.statistics.enums.IAggregateFunction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -22,16 +22,13 @@ public class DistinctCountAggregateExecutor implements AggregateExecutor<Aggrega
 	private final ModelEventManageService modelEventManageService;
 
 	@Override
-	public AggregateFunction function() {
+	public IAggregateFunction function() {
 		return AggregateEnum.DISTINCT_COUNT;
 	}
 
 	@Override
 	public Long execute(AggregateParamBO aggregateParamBO) {
-		return modelEventManageService.distinctCount(aggregateParamBO.getModelId(),
-				aggregateParamBO.getSearchFieldName(), aggregateParamBO.getSearchFieldVal(),
-				aggregateParamBO.getRefDateFieldName(), aggregateParamBO.getBeginDate(),
-				aggregateParamBO.getRefDateFieldVal(), aggregateParamBO.getFunctionFieldName());
+		return modelEventManageService.distinctCount(aggregateParamBO);
 	}
 
 }

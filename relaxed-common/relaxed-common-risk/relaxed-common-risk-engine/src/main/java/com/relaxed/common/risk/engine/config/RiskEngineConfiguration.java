@@ -6,11 +6,16 @@ import com.relaxed.common.risk.engine.core.handler.DefaultFieldValidateHandler;
 import com.relaxed.common.risk.engine.core.handler.DefaultRiskReportHandler;
 import com.relaxed.common.risk.engine.core.handler.FieldValidateHandler;
 import com.relaxed.common.risk.engine.core.handler.RiskReportHandler;
+import com.relaxed.common.risk.engine.mongdb.DefaultMongoDbServiceImpl;
+import com.relaxed.common.risk.engine.mongdb.MongoDbService;
+import com.relaxed.common.risk.engine.service.ModelEventManageService;
+import com.relaxed.common.risk.engine.service.impl.ModelEventManageServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 /**
  * @author Yakir
@@ -34,6 +39,21 @@ public class RiskEngineConfiguration {
 	@ConditionalOnMissingBean
 	public CacheService cacheService() {
 		return new LocalCache();
+	}
+
+	/**
+	 * 模型事件处理器
+	 * @author yakir
+	 * @date 2021/9/23 11:41
+	 * @param mongoTemplate
+	 * @return com.relaxed.common.risk.engine.service.ModelEventManageService
+	 */
+	@SuppressWarnings({ "all" })
+	@Bean
+	@ConditionalOnMissingBean
+	public ModelEventManageService modelEventManageService(MongoTemplate mongoTemplate) {
+		DefaultMongoDbServiceImpl defaultMongoDbService = new DefaultMongoDbServiceImpl(mongoTemplate);
+		return new ModelEventManageServiceImpl(defaultMongoDbService);
 	}
 
 	/**

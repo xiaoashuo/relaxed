@@ -75,7 +75,7 @@ public class RiskAnalysisEngineServiceImpl implements RiskAnalysisEngineService 
 			// 2.预处理字段提取
 			Map<String, Object> prepare = preItemManageService.prepare(modelVO.getId(), jsonInfo);
 			// 3.保存model event
-			modelEventManageService.save(modelVO.getId(), JSONUtil.toJsonStr(jsonInfo), JSONUtil.toJsonStr(prepare),
+			modelEventManageService.save(modelVO, JSONUtil.toJsonStr(jsonInfo), JSONUtil.toJsonStr(prepare),
 					EngineProperties.getDuplicate());
 			// 4.执行分析
 			EvaluateContext evaluateContext = new EvaluateContext();
@@ -85,7 +85,8 @@ public class RiskAnalysisEngineServiceImpl implements RiskAnalysisEngineService 
 			evaluateContext.setPreItemMap(prepare);
 			boolean result = riskEvaluateChain.eval(evaluateContext, evaluateReport);
 			if (!result) {
-				return R.failed(RiskResultCode.RISK_EVAL_NOT_PASSED).setData(evaluateReport);
+				return R.failed(RiskResultCode.RISK_EVAL_NOT_PASSED).setMessage(evaluateReport.getErrorMsg())
+						.setData(evaluateReport);
 			}
 			// 5.for elastic analysis
 			Long eventTimeMillis = (Long) jsonInfo.get(modelVO.getReferenceDate());
@@ -94,7 +95,7 @@ public class RiskAnalysisEngineServiceImpl implements RiskAnalysisEngineService 
 		}
 		catch (Exception e) {
 			log.error("process error", e);
-			throw new RiskEngineException("数据处理异常:{}", e, e.getMessage());
+			throw new RiskEngineException("数据处理异常", e);
 		}
 		// 6. 缓存分析结果
 		String jsonReport = JSONUtil.toJsonStr(evaluateReport);

@@ -15,12 +15,15 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum RiskCode implements ResultCode {
 
-    /**
-     * 模型必备字段不允许删除
-     */
-    FIELD_NOT_ALLOWED_DEL(10000,"模型必备字段不允许删除"),
+	/**
+	 * 模型必备字段不允许删除
+	 */
+	FIELD_NOT_ALLOWED_DEL(10000, "模型必备字段不允许删除"),
 
-    ;
-    private final Integer code;
-    private final String message;
+	;
+
+	private final Integer code;
+
+	private final String message;
+
 }

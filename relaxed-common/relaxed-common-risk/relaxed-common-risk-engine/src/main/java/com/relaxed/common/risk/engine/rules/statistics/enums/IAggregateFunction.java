@@ -7,7 +7,7 @@ package com.relaxed.common.risk.engine.rules.statistics.enums;
  * @date 2021/8/30 14:52
  * @Version 1.0
  */
-public interface AggregateFunction {
+public interface IAggregateFunction {
 
 	/**
 	 * 聚合函数顺序

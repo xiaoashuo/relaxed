@@ -1,7 +1,7 @@
 package com.relaxed.common.risk.engine.rules.statistics;
 
 import com.relaxed.common.risk.engine.rules.statistics.domain.IAggregateParam;
-import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
+import com.relaxed.common.risk.engine.rules.statistics.enums.IAggregateFunction;
 
 /**
  * @author Yakir
@@ -18,7 +18,7 @@ public interface AggregateExecutor<T extends IAggregateParam, R> {
 	 * @date 2021/8/30 14:50
 	 * @return java.lang.Integer
 	 */
-	AggregateFunction function();
+	IAggregateFunction function();
 
 	/**
 	 * 执行命令

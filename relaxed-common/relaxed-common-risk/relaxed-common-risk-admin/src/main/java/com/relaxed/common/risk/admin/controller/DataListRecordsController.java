@@ -75,8 +75,7 @@ public class DataListRecordsController {
 	@ApiOperation(value = "根据id删除数据", notes = "根据id删除数据")
 	@DeleteMapping("/{id}")
 	public R<?> removeById(@PathVariable Long id) {
-		return dataListRecordsService.del(id) ? R.ok()
-				: R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "根据id删除数据失败");
+		return dataListRecordsService.del(id) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "根据id删除数据失败");
 	}
 
 }

@@ -21,7 +21,7 @@ public class EvaluateReport implements Serializable {
 	/**
 	 * 信息描述
 	 */
-	private String msg;
+	private String errorMsg;
 
 	/**
 	 * 评估报告 扩展参数 记录各接阶段评估数据
@@ -63,12 +63,12 @@ public class EvaluateReport implements Serializable {
 		phaseTime.put(name, time);
 	}
 
-	public void setMsg(String msg) {
-		this.msg = msg;
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
 	}
 
-	public void setMsg(String msgTemplate, Object... params) {
-		this.msg = StrUtil.format(msgTemplate, params);
+	public void setErrorMsg(String msgTemplate, Object... params) {
+		this.errorMsg = StrUtil.format(msgTemplate, params);
 	}
 
 }

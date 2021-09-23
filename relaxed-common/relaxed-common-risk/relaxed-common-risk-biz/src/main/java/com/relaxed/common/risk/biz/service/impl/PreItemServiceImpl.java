@@ -52,7 +52,7 @@ public class PreItemServiceImpl extends ExtendServiceImpl<PreItemMapper, PreItem
 
 	@Cached(prefix = "model-pre-items", key = "#modelId")
 	@Override
-	public List<PreItemVO> getByModelId(Long modelId) {
+	public List<PreItemVO> listByModelId(Long modelId) {
 		List<PreItem> preItems = baseMapper.getByModelId(modelId);
 		return preItems != null ? PreItemConverter.INSTANCE.poToVOs(preItems) : null;
 	}

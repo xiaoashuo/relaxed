@@ -23,7 +23,6 @@ import java.util.List;
  * @Version 1.0
  */
 @Slf4j
-@Service
 @RequiredArgsConstructor
 public class DefaultMongoDbServiceImpl implements MongoDbService {
 

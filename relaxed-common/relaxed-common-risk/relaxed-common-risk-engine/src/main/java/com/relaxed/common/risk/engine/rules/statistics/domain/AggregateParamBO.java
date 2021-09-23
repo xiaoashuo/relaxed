@@ -1,5 +1,6 @@
 package com.relaxed.common.risk.engine.rules.statistics.domain;
 
+import com.relaxed.common.risk.model.entity.FieldMeta;
 import com.relaxed.common.risk.model.enums.FieldType;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -23,43 +24,23 @@ public class AggregateParamBO implements IAggregateParam {
 	private Long modelId;
 
 	/**
-	 * 查询字段名称
-	 */
-	private String searchFieldName;
-
-	/**
-	 * 查询字段值
-	 */
-	private Object searchFieldVal;
-
-	/**
-	 * 开始时间
+	 * 范围的开始时间 -> 指向日期字段元数据 组合成一个区间
 	 */
 	private Date beginDate;
 
 	/**
-	 * 日期指向字段名
+	 * 查询字段元数据
 	 */
-	private String refDateFieldName;
+	private FieldMeta<Object> searchFieldMeta;
 
 	/**
-	 * 指向日期字段值
+	 * 指向日期字段元数据
 	 */
-	private Date refDateFieldVal;
+	private FieldMeta<Date> refDateFieldMeta;
 
 	/**
-	 * 函数字段名
+	 * 函数字段元数据
 	 */
-	private String functionFieldName;
-
-	/**
-	 * 函数字段值
-	 */
-	private Object functionFieldVal;
-
-	/**
-	 * 函数字段类型
-	 */
-	private FieldType functionFieldType;
+	private FieldMeta<Object> functionFieldMeta;
 
 }

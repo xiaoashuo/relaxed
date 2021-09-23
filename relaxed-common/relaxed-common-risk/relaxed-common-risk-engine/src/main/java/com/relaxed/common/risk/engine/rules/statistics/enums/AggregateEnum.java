@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum AggregateEnum implements AggregateFunction {
+public enum AggregateEnum implements IAggregateFunction {
 
 	/**
 	 * 统计函数
@@ -61,7 +61,7 @@ public enum AggregateEnum implements AggregateFunction {
 
 	private final String desc;
 
-	public static AggregateFunction of(Integer order) {
+	public static IAggregateFunction of(Integer order) {
 		for (AggregateEnum value : values()) {
 			if (value.getOrder().equals(order)) {
 				return value;

@@ -8,6 +8,7 @@ import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.risk.engine.service.AbstractionManageService;
 import com.relaxed.common.risk.engine.service.DataListManageService;
 import com.relaxed.common.risk.engine.service.FieldManageService;
+import com.relaxed.common.risk.model.entity.FieldMeta;
 import com.relaxed.common.risk.model.enums.AbstractionEnum;
 import com.relaxed.common.risk.model.enums.FieldType;
 import com.relaxed.common.risk.model.vo.AbstractionVO;
@@ -20,7 +21,7 @@ import com.relaxed.common.risk.engine.rules.extractor.FieldExtractor;
 import com.relaxed.common.risk.engine.rules.statistics.AggregateInvoker;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateResult;
-import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
+import com.relaxed.common.risk.engine.rules.statistics.enums.IAggregateFunction;
 import com.relaxed.common.risk.engine.rules.statistics.provider.AggregateFunctionProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -78,23 +79,24 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 			evaluateReport.putEvaluateMap(ABSTRACTIONS, extParam);
 			return true;
 		}
+		// 获取日期字段名称
+		String refDateFieldName = modelVo.getReferenceDate();
+		// 获取日期字段值 时间
+		Long refDateTimestamp = fieldExtractor.extractorFieldValue(refDateFieldName, evaluateContext, evaluateReport);
+		Date refDate = refDateTimestamp == null ? null : new Date(refDateTimestamp);
+		if (refDate == null) {
+			evaluateReport.setErrorMsg("search {} field value not exists.", refDateFieldName);
+			return false;
+		}
 		// 2.获取预加载的黑/白名单集合
 		Map<String, Object> blackWhiteMap = dataListManageService.getDataListMap(modelVo.getId());
+		// 3. 加载所有的字段信息 基础字段+预处理字段
+		Map<String, String> fieldTypeMap = fieldManageService.getFieldTypeMap(modelVo.getId());
 		// 3. 按 script 的条件， 分别统计 abstraction
 		for (AbstractionVO abstractionVO : abstractionVOS) {
 			if (!AbstractionEnum.StatusEnum.ENABLE.getStatus().equals(abstractionVO.getStatus())) {
 				continue;
 			}
-			// 聚合类型 平均值 最大值等等
-			Integer aggregateType = abstractionVO.getAggregateType();
-			// 查询间隔类型 日 月 周 年等等
-			Integer searchIntervalType = abstractionVO.getSearchIntervalType();
-			// 查询间隔值
-			Integer searchIntervalValue = abstractionVO.getSearchIntervalValue();
-			// 查询字段名称
-			String searchFieldName = fieldExtractor.extractorFieldName(abstractionVO.getSearchField());
-			// 查询函数字段名称
-			String functionFieldName = fieldExtractor.extractorFieldName(abstractionVO.getFunctionField());
 			// 规则脚本
 			String ruleScript = abstractionVO.getRuleScript();
 			boolean match = checkScript(ruleScript, evaluateContext, blackWhiteMap);
@@ -103,15 +105,12 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 				extParam.put(abstractionVO.getName(), -1);
 				continue;
 			}
-			// 获取日期字段名称
-			String refDateFieldName = modelVo.getReferenceDate();
-			// 获取日期字段值 时间
-			Date refDate = new Date(
-					(Long) fieldExtractor.extractorFieldValue(refDateFieldName, evaluateContext, evaluateReport));
-			if (refDate == null) {
-				evaluateReport.setMsg("search {} field value not exists.", refDateFieldName);
-				return false;
-			}
+			// 查询间隔类型 日 月 周 年等等
+			Integer searchIntervalType = abstractionVO.getSearchIntervalType();
+			// 查询间隔值
+			Integer searchIntervalValue = abstractionVO.getSearchIntervalValue();
+			// 查询字段名称
+			String searchFieldName = fieldExtractor.extractorFieldName(abstractionVO.getSearchField());
 			// 统计指标开始时间
 			Date beginDate = DateUtil.offset(refDate, DateField.of(searchIntervalType), searchIntervalValue * -1)
 					.toJdkDate();
@@ -119,33 +118,39 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 			Object searchFieldVal = fieldExtractor.extractorFieldValue(searchFieldName, evaluateContext,
 					evaluateReport);
 			if (searchFieldVal == null) {
-				evaluateReport.setMsg("search {} field value not exists.", searchFieldName);
+				evaluateReport.setErrorMsg("search {} field value not exists.", searchFieldName);
 				return false;
 			}
-			// 函数字段值
-			Object functionFieldVal = null;
-			// 函数字段处理
-			FieldType fieldType = null;
+			// 聚合特征提取信息集
+			AggregateParamBO aggregateBo = new AggregateParamBO();
+			aggregateBo.setModelId(modelVo.getId());
+			aggregateBo.setBeginDate(beginDate);
+			// 指向日期字段元数据
+			FieldMeta refDateFieldMeta = new FieldMeta(refDateFieldName, refDate,
+					fieldExtractor.extractorFieldType(refDateFieldName, fieldTypeMap));
+			aggregateBo.setRefDateFieldMeta(refDateFieldMeta);
+			// 查询字段元数据
+			FieldMeta searchFieldMeta = new FieldMeta(searchFieldName, searchFieldVal,
+					fieldExtractor.extractorFieldType(searchFieldName, fieldTypeMap));
+			aggregateBo.setSearchFieldMeta(searchFieldMeta);
+			// 查询函数字段名称
+			String functionFieldName = fieldExtractor.extractorFieldName(abstractionVO.getFunctionField());
 			if (StrUtil.isNotEmpty(functionFieldName)) {
-				functionFieldVal = fieldExtractor.extractorFieldValue(functionFieldName, evaluateContext,
+				// 函数字段值
+				Object functionFieldVal = fieldExtractor.extractorFieldValue(functionFieldName, evaluateContext,
 						evaluateReport);
-				List<FieldVO> fieldVos = fieldManageService.getFieldVos(modelVo.getId());
-				// 函数字段
-				fieldType = fieldExtractor.extractorFieldType(functionFieldName, fieldVos);
+				// 函数字段处理
+				FieldType fieldType = fieldExtractor.extractorFieldType(functionFieldName, fieldTypeMap);
 				if (fieldType == null) {
-					// 因为预处理字段没有字段类型，暂时设置为String
-					// TODO: 目前只有高级函数使用了 functionFieldType。
-					fieldType = FieldType.valueOf("STRING");
+					evaluateReport.setErrorMsg("search function {} field type not exists.", functionFieldName);
+					return false;
 				}
+				FieldMeta fieldMeta = new FieldMeta(functionFieldName, functionFieldVal, fieldType);
+				aggregateBo.setFunctionFieldMeta(fieldMeta);
 			}
-			// 执行聚合操作 by 聚合类型
-			AggregateFunction aggregateFunction = aggregateFunctionProvider.provide(aggregateType);
-			// 构建参数BO
-			AggregateParamBO aggregateBo = new AggregateParamBO().setModelId(modelVo.getId())
-					.setSearchFieldName(searchFieldName).setSearchFieldVal(searchFieldVal)
-					.setRefDateFieldName(refDateFieldName).setRefDateFieldVal(refDate).setBeginDate(beginDate)
-					.setFunctionFieldName(functionFieldName).setFunctionFieldVal(functionFieldVal)
-					.setFunctionFieldType(fieldType);
+			// 执行聚合操作 by 聚合类型 平均值 最大值等等
+			Integer aggregateType = abstractionVO.getAggregateType();
+			IAggregateFunction aggregateFunction = aggregateFunctionProvider.provide(aggregateType);
 			AggregateResult aggregateResult = aggregateInvoker.invoke(aggregateFunction,
 					aggregateInvoker.buildContext(evaluateContext, aggregateBo));
 			Object executeResult = aggregateResult.getExecuteResult();

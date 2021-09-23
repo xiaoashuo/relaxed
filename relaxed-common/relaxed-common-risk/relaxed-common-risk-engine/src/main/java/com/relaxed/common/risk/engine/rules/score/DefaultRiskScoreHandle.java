@@ -50,13 +50,12 @@ public class DefaultRiskScoreHandle implements RiskScoreHandler {
 		// 操作方式 ADD SUB MUL DIV
 		String operator = ruleVO.getOperator();
 		extra = ScoreUtil.exec(operator, base, extra);
-
-		BigDecimal amount = initScore.add(extra);
+		BigDecimal score = initScore.add(extra);
 		// 规则得分设置最大值. 若得分超出 最大分数 则同步为最大分数
-		if (maxScore.compareTo(BigDecimal.ZERO) > 0 && amount.compareTo(maxScore) > 0) {
-			amount = maxScore;
+		if (maxScore.compareTo(BigDecimal.ZERO) > 0 && score.compareTo(maxScore) > 0) {
+			score = maxScore;
 		}
-		return amount;
+		return score;
 	}
 
 }

@@ -4,7 +4,7 @@ import com.relaxed.common.risk.engine.rules.EvaluateContext;
 import com.relaxed.common.risk.engine.rules.statistics.domain.IAggregateParam;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateResult;
-import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
+import com.relaxed.common.risk.engine.rules.statistics.enums.IAggregateFunction;
 
 /**
  * @author Yakir
@@ -33,6 +33,6 @@ public interface AggregateInvoker {
 	 * @param commandParam
 	 * @return AggregateResult
 	 */
-	<T extends IAggregateParam> AggregateResult invoke(AggregateFunction function, T commandParam);
+	<T extends IAggregateParam> AggregateResult invoke(IAggregateFunction function, T commandParam);
 
 }

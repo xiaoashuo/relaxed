@@ -3,7 +3,7 @@ package com.relaxed.common.risk.engine.rules.statistics.executor;
 import com.relaxed.common.risk.engine.service.ModelEventManageService;
 import com.relaxed.common.risk.engine.rules.statistics.domain.AggregateParamBO;
 import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateEnum;
-import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
+import com.relaxed.common.risk.engine.rules.statistics.enums.IAggregateFunction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -23,16 +23,13 @@ public class MinAggregateExecutor extends AbstractAggregateExecutor<AggregatePar
 	private final ModelEventManageService modelEventManageService;
 
 	@Override
-	public AggregateFunction function() {
+	public IAggregateFunction function() {
 		return AggregateEnum.MIN;
 	}
 
 	@Override
 	public BigDecimal execute(AggregateParamBO aggregateParamBO) {
-		return modelEventManageService.min(aggregateParamBO.getModelId(), aggregateParamBO.getSearchFieldName(),
-				aggregateParamBO.getSearchFieldVal(), aggregateParamBO.getRefDateFieldName(),
-				aggregateParamBO.getBeginDate(), aggregateParamBO.getRefDateFieldVal(),
-				aggregateParamBO.getFunctionFieldName());
+		return modelEventManageService.min(aggregateParamBO);
 
 	}
 

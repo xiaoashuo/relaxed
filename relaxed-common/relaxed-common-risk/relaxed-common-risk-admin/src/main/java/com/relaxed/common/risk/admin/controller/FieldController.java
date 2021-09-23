@@ -52,14 +52,13 @@ public class FieldController {
 		return R.ok(fieldService.selectByPage(pageParam, fieldQO));
 	}
 
-
 	@ApiOperation(value = "字段类型列表", notes = "字段类型列表")
 	@GetMapping("/types")
-	public  R  listFieldTypes(){
-		Map<String,Object> fieldTypes=new HashMap<>(16);
+	public R listFieldTypes() {
+		Map<String, Object> fieldTypes = new HashMap<>(16);
 		for (FieldType value : FieldType.values()) {
-			fieldTypes.put("name",value.name());
-			fieldTypes.put("desc",value.getDesc());
+			fieldTypes.put("name", value.name());
+			fieldTypes.put("desc", value.getDesc());
 		}
 		return R.ok(fieldTypes);
 	}
@@ -95,12 +94,12 @@ public class FieldController {
 	@DeleteMapping("/{id}")
 	public R<?> removeById(@PathVariable Long id) {
 		Field field = fieldService.getById(id);
-		Assert.notNull(field,"field can not exists.");
+		Assert.notNull(field, "field can not exists.");
 		Long modelId = field.getModelId();
 		Model model = modelService.getById(modelId);
-		Assert.notNull(field,"model can not exists.");
+		Assert.notNull(field, "model can not exists.");
 
-		return fieldService.del(model,field) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "根据id删除数据失败");
+		return fieldService.del(model, field) ? R.ok() : R.failed(BaseResultCode.UPDATE_DATABASE_ERROR, "根据id删除数据失败");
 	}
 
 }

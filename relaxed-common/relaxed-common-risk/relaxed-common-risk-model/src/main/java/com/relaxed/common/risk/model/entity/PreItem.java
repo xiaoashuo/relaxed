@@ -57,6 +57,12 @@ public class PreItem extends Model<PreItem> {
 	private String destField;
 
 	/**
+	 * 目标字段类型
+	 */
+	@ApiModelProperty(value = "目标字段类型")
+	private String destFieldType;
+
+	/**
 	 * 目标标签 描述
 	 */
 	@ApiModelProperty(value = "目标标签")

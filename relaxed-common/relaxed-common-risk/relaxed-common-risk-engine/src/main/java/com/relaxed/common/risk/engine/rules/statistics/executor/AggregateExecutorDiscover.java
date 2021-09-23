@@ -1,7 +1,7 @@
 package com.relaxed.common.risk.engine.rules.statistics.executor;
 
 import com.relaxed.common.risk.engine.rules.statistics.AggregateExecutor;
-import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
+import com.relaxed.common.risk.engine.rules.statistics.enums.IAggregateFunction;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
@@ -34,8 +34,8 @@ public class AggregateExecutorDiscover {
 		AGGREGATE_EXECUTOR_HOLDER.put(aggregateExecutor.function().getFunction(), aggregateExecutor);
 	}
 
-	public AggregateExecutor discover(AggregateFunction aggregateFunction) {
-		return Objects.requireNonNull(AGGREGATE_EXECUTOR_HOLDER.get(aggregateFunction.getFunction()));
+	public AggregateExecutor discover(IAggregateFunction IAggregateFunction) {
+		return Objects.requireNonNull(AGGREGATE_EXECUTOR_HOLDER.get(IAggregateFunction.getFunction()));
 	}
 
 }

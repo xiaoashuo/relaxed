@@ -59,9 +59,10 @@ public class DataListRecordsServiceImpl extends ExtendServiceImpl<DataListRecord
 
 	@Override
 	public boolean add(DataListRecords dataListRecords) {
-		if (SqlHelper.retBool(baseMapper.insert(dataListRecords))){
-			//发布订阅
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(), JSONUtil.toJsonStr(DataListRecordsConverter.INSTANCE.poToVo(dataListRecords)));
+		if (SqlHelper.retBool(baseMapper.insert(dataListRecords))) {
+			// 发布订阅
+			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(),
+					JSONUtil.toJsonStr(DataListRecordsConverter.INSTANCE.poToVo(dataListRecords)));
 			return true;
 		}
 		return false;
@@ -69,10 +70,11 @@ public class DataListRecordsServiceImpl extends ExtendServiceImpl<DataListRecord
 
 	@Override
 	public boolean edit(DataListRecords dataListRecords) {
-		DataListRecords sqlData=getById(dataListRecords.getId());
-		Assert.notNull(sqlData,"data list can not exists.");
-		if (SqlHelper.retBool(baseMapper.updateById(dataListRecords))){
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(), JSONUtil.toJsonStr(DataListRecordsConverter.INSTANCE.poToVo(dataListRecords)));
+		DataListRecords sqlData = getById(dataListRecords.getId());
+		Assert.notNull(sqlData, "data list can not exists.");
+		if (SqlHelper.retBool(baseMapper.updateById(dataListRecords))) {
+			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(),
+					JSONUtil.toJsonStr(DataListRecordsConverter.INSTANCE.poToVo(dataListRecords)));
 			return true;
 		}
 		return false;
@@ -81,11 +83,13 @@ public class DataListRecordsServiceImpl extends ExtendServiceImpl<DataListRecord
 	@Override
 	public boolean del(Long id) {
 		DataListRecords dataListRecords = baseMapper.selectById(id);
-		Assert.notNull(dataListRecords,"data list record can not exists.");
-		if (SqlHelper.retBool(baseMapper.deleteById(id))){
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(), JSONUtil.toJsonStr(DataListRecordsConverter.INSTANCE.poToVo(dataListRecords)));
+		Assert.notNull(dataListRecords, "data list record can not exists.");
+		if (SqlHelper.retBool(baseMapper.deleteById(id))) {
+			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(),
+					JSONUtil.toJsonStr(DataListRecordsConverter.INSTANCE.poToVo(dataListRecords)));
 			return true;
 		}
 		return false;
 	}
+
 }

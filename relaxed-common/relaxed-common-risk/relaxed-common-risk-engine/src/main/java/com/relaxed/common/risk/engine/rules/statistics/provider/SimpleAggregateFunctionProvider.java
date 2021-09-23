@@ -1,7 +1,7 @@
 package com.relaxed.common.risk.engine.rules.statistics.provider;
 
 import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateEnum;
-import com.relaxed.common.risk.engine.rules.statistics.enums.AggregateFunction;
+import com.relaxed.common.risk.engine.rules.statistics.enums.IAggregateFunction;
 
 import java.util.Objects;
 
@@ -15,7 +15,7 @@ import java.util.Objects;
 public class SimpleAggregateFunctionProvider implements AggregateFunctionProvider {
 
 	@Override
-	public AggregateFunction provide(Integer order) {
+	public IAggregateFunction provide(Integer order) {
 		return Objects.requireNonNull(AggregateEnum.of(order));
 	}
 

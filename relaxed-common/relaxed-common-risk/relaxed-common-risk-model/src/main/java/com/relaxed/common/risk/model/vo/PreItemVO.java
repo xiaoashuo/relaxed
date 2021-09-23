@@ -50,6 +50,12 @@ public class PreItemVO implements Serializable {
 	private String destField;
 
 	/**
+	 * 目标字段类型
+	 */
+	@ApiModelProperty(value = "目标字段类型")
+	private String destFieldType;
+
+	/**
 	 *
 	 */
 	@ApiModelProperty(value = "")
@@ -68,33 +74,27 @@ public class PreItemVO implements Serializable {
 	private String plugin;
 
 	/**
-	 * 响应字段配置信息
+	 * 扩展配置信息
 	 */
-	@ApiModelProperty(value = "响应字段配置信息")
+	@ApiModelProperty(value = "扩展配置信息")
 	private String configJson;
 
 	/**
-	 * 请求方式
+	 * 状态
 	 */
-	@ApiModelProperty(value = "请求方式")
-	private String reqType;
-
-	/**
-	 *
-	 */
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "状态")
 	private Integer status;
 
 	/**
-	 *
+	 * 创建时间
 	 */
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "创建时间")
 	private LocalDateTime createTime;
 
 	/**
-	 *
+	 * 更新时间
 	 */
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "更新时间")
 	private LocalDateTime updateTime;
 
 }

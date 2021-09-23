@@ -50,6 +50,12 @@ public class PreItemDTO implements Serializable {
 	private String destField;
 
 	/**
+	 * 目标字段类型
+	 */
+	@ApiModelProperty(value = "目标字段类型")
+	private String destFieldType;
+
+	/**
 	 *
 	 */
 	@ApiModelProperty(value = "")

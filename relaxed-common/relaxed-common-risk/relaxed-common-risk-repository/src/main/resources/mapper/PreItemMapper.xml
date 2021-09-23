@@ -7,6 +7,7 @@
 		<result property="sourceField" column="SOURCE_FIELD"/>
 		<result property="sourceLabel" column="SOURCE_LABEL"/>
 		<result property="destField" column="DEST_FIELD"/>
+		<result property="destFieldType" column="DEST_FIELD_TYPE"/>
 		<result property="label" column="LABEL"/>
 		<result property="args" column="ARGS"/>
 		<result property="plugin" column="PLUGIN"/>
@@ -23,6 +24,7 @@
 		SOURCE_FIELD,
 		SOURCE_LABEL,
 		DEST_FIELD,
+DEST_FIELD_TYPE,
 		LABEL,
 		ARGS,
 		PLUGIN,
@@ -39,6 +41,7 @@
 		pi.SOURCE_FIELD,
 		pi.SOURCE_LABEL,
 		pi.DEST_FIELD,
+pi.DEST_FIELD_TYPE,
 		pi.LABEL,
 		pi.ARGS,
 		pi.PLUGIN,

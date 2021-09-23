@@ -34,7 +34,7 @@ public interface PreItemService extends ExtendService<PreItem> {
 	 * @param modelId
 	 * @return java.util.List<com.relaxed.common.risk.model.vo.PreItemVO>
 	 */
-	List<PreItemVO> getByModelId(Long modelId);
+	List<PreItemVO> listByModelId(Long modelId);
 
 	/**
 	 * 添加预处理字段

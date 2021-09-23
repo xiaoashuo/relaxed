@@ -43,16 +43,15 @@ public interface DataListRecordsService extends ExtendService<DataListRecords> {
 	 * @param dataListRecords
 	 * @return boolean
 	 */
-    boolean add(DataListRecords dataListRecords);
+	boolean add(DataListRecords dataListRecords);
 
-
-    /**
-     * 编辑记录内容
-     * @author yakir
-     * @date 2021/9/21 18:04
-     * @param dataListRecords
-     * @return boolean
-     */
+	/**
+	 * 编辑记录内容
+	 * @author yakir
+	 * @date 2021/9/21 18:04
+	 * @param dataListRecords
+	 * @return boolean
+	 */
 	boolean edit(DataListRecords dataListRecords);
 
 	/**
@@ -63,4 +62,5 @@ public interface DataListRecordsService extends ExtendService<DataListRecords> {
 	 * @return boolean
 	 */
 	boolean del(Long id);
+
 }

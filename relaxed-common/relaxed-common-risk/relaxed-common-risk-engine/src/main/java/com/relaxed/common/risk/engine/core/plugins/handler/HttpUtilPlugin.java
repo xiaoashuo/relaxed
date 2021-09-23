@@ -2,10 +2,12 @@ package com.relaxed.common.risk.engine.core.plugins.handler;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.*;
+import cn.hutool.json.JSONUtil;
 import com.relaxed.common.risk.engine.core.plugins.PluginEnum;
 import com.relaxed.common.risk.engine.core.plugins.PluginMeta;
 import com.relaxed.common.risk.engine.core.plugins.PluginService;
 import com.relaxed.common.risk.model.vo.PreItemVO;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -38,9 +40,13 @@ public class HttpUtilPlugin implements PluginService {
 	@Override
 	public Object handle(PreItemVO preItemVO, Map<String, Object> jsonInfo, String[] sourceFields) {
 		String url = preItemVO.getArgs();
-		String reqType = preItemVO.getReqType();
-		HttpRequest request = HttpUtil.createRequest(Method.valueOf(reqType), url);
-		String params = StrUtil.format(preItemVO.getConfigJson(), sourceFields);
+		String configJsonStr = preItemVO.getConfigJson();
+		if (StrUtil.isEmpty(configJsonStr)) {
+			return null;
+		}
+		ReqConfigTemplate reqConfigTemplate = JSONUtil.toBean(configJsonStr, ReqConfigTemplate.class);
+		HttpRequest request = HttpUtil.createRequest(Method.valueOf(reqConfigTemplate.getType()), url);
+		String params = StrUtil.format(reqConfigTemplate.getParamTemplate(), sourceFields);
 		try {
 			String response = request.body(params).execute().body();
 			log.info("http plugin:{}\n{}\n {}", url, sourceFields, response);
@@ -49,6 +55,21 @@ public class HttpUtilPlugin implements PluginService {
 			log.error("http plugins request error url:{},params:{}", url, params, e);
 		}
 		return null;
+	}
+
+	@Data
+	static class ReqConfigTemplate {
+
+		/**
+		 * 请求方式
+		 */
+		private String type;
+
+		/**
+		 * 参数模板 username={}&password={} 对应SOURCE FIELDS数据
+		 */
+		private String paramTemplate;
+
 	}
 
 }

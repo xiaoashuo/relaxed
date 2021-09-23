@@ -11,8 +11,9 @@ import com.relaxed.common.model.result.ResultCode;
  * @Version 1.0
  */
 public class RiskException extends BusinessException {
-    public RiskException(ResultCode resultCode) {
-        super(resultCode);
-    }
+
+	public RiskException(ResultCode resultCode) {
+		super(resultCode);
+	}
 
 }
