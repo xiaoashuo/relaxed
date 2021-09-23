@@ -49,17 +49,13 @@ public class RiskEvaluateConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public RiskEvaluateChain riskEvaluateChain(ObjectProvider<RiskEvaluateBuilderCustomizer> customizerList,
-			List<RiskEvaluate> riskEvaluates) {
+			ObjectProvider<RiskEvaluate> riskEvaluates) {
 		RiskEvaluateChain.Builder riskEvaluateChainBuilder = RiskEvaluateChain.builder();
-		// load system eval
-		if (CollectionUtil.isNotEmpty(riskEvaluates)) {
-			for (RiskEvaluate riskEvaluate : riskEvaluates) {
-				riskEvaluateChainBuilder.riskEvaluate(riskEvaluate);
-			}
-		}
 		// load user defined
 		customizerList.orderedStream().forEach(
 				riskEvaluateBuilderCustomizer -> riskEvaluateBuilderCustomizer.customize(riskEvaluateChainBuilder));
+		// load system eval
+		riskEvaluates.orderedStream().forEach(riskEvaluate -> riskEvaluateChainBuilder.riskEvaluate(riskEvaluate));
 		return riskEvaluateChainBuilder.build();
 	}
 
