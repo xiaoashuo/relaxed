@@ -41,15 +41,19 @@ public class DefaultRiskScoreHandle implements RiskScoreHandler {
 		if (StrUtil.isNotEmpty(abstractionName)) {
 			if (abstractionName.indexOf(StrPool.DOT) != -1) {
 				String[] varNames = StrUtil.splitToArray(abstractionName, StrPool.DOT);
-
-				extra = NumberUtil.toBigDecimal(
-						(Number) fieldExtractor.extractorFieldValue(varNames[1], evaluateContext, evaluateReport));
+				Object val = fieldExtractor.extractorFieldValue(varNames[1], evaluateContext, evaluateReport);
+				if (val instanceof Number) {
+					extra = NumberUtil.toBigDecimal((Number) val);
+				}
+				else {
+					extra = NumberUtil.toBigDecimal(val.toString());
+				}
+				extra = extra.multiply(rate);
+				// 操作方式 ADD SUB MUL DIV
+				String operator = ruleVO.getOperator();
+				extra = ScoreUtil.exec(operator, base, extra);
 			}
 		}
-		extra = extra.multiply(rate);
-		// 操作方式 ADD SUB MUL DIV
-		String operator = ruleVO.getOperator();
-		extra = ScoreUtil.exec(operator, base, extra);
 		BigDecimal score = initScore.add(extra);
 		// 规则得分设置最大值. 若得分超出 最大分数 则同步为最大分数
 		if (maxScore.compareTo(BigDecimal.ZERO) > 0 && score.compareTo(maxScore) > 0) {

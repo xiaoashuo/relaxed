@@ -4,6 +4,7 @@ import com.relaxed.common.risk.engine.rules.script.RuleScriptHandler;
 import com.relaxed.common.risk.engine.rules.script.ScriptResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 
 import java.util.Map;
 

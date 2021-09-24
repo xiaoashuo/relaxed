@@ -25,6 +25,7 @@ import com.relaxed.common.risk.engine.rules.statistics.enums.IAggregateFunction;
 import com.relaxed.common.risk.engine.rules.statistics.provider.AggregateFunctionProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -39,6 +40,7 @@ import java.util.Map;
  * @date 2021/8/29 17:45
  * @Version 1.0
  */
+@Order(1)
 @Component
 @RequiredArgsConstructor
 @Slf4j

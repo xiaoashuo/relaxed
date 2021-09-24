@@ -17,6 +17,7 @@ import com.relaxed.common.risk.engine.rules.EvaluateReport;
 import com.relaxed.common.risk.engine.rules.score.RiskScoreHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -32,6 +33,7 @@ import java.util.Map;
  * @date 2021/8/29 17:47
  * @Version 1.0
  */
+@Order(3)
 @Component
 @RequiredArgsConstructor
 @Slf4j

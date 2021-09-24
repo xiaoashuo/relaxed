@@ -11,6 +11,7 @@ import com.relaxed.common.risk.engine.rules.machine.Estimator;
 import com.relaxed.common.risk.engine.rules.machine.EstimatorHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import java.util.Map;
  * @date 2021/8/29 17:45
  * @Version 1.0
  */
+@Order(2)
 @Component
 @RequiredArgsConstructor
 @Slf4j
