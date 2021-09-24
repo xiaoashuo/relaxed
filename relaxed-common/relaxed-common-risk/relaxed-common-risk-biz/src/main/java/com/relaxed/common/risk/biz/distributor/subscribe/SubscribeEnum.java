@@ -48,7 +48,11 @@ public enum SubscribeEnum implements SubscribeType {
 	/**
 	 * 发布订阅动态脚本
 	 */
-	PUB_SUB_RULE_SCRIPT_CHANNEL("relaxed:channel:rule:script", "发布订阅动态脚本"),
+	PUB_SUB_RULE_SCRIPT_CHANNEL("relaxed:channel:rule:script", "发布订阅规则动态脚本"),
+	/**
+	 * 发布订阅特征动态脚本
+	 */
+	PUB_SUB_ABSTRACTION_SCRIPT_CHANNEL("relaxed:channel:abstraction:script", "发布订阅抽象动态脚本"),
 
 	// /**
 	// * 黑名单数据列表
