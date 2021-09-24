@@ -141,6 +141,7 @@
                 <artifactId>relaxed-common-risk-engine</artifactId>
                 <version>${reversion}</version>
             </dependency>
+
             <!--config-->
             <dependency>
                 <groupId>com.lovecyy</groupId>

@@ -49,4 +49,9 @@ public class RuleServiceImpl extends ExtendServiceImpl<RuleMapper, Rule> impleme
 		return RuleConverter.INSTANCE.poToVOs(list);
 	}
 
+	@Override
+	public Rule getByName(String ruleName) {
+		return baseMapper.selectOne(ruleName);
+	}
+
 }

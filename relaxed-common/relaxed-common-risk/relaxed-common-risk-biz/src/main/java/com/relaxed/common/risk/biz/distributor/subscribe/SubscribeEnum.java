@@ -44,6 +44,12 @@ public enum SubscribeEnum implements SubscribeType {
 	 * 数据列表channel
 	 */
 	PUB_SUB_DATALIST_CHANNEL("relaxed:channel:data:list", "发布订阅数据列表"),
+
+	/**
+	 * 发布订阅动态脚本
+	 */
+	PUB_SUB_RULE_SCRIPT_CHANNEL("relaxed:channel:rule:script", "发布订阅动态脚本"),
+
 	// /**
 	// * 黑名单数据列表
 	// */

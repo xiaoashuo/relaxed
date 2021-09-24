@@ -80,12 +80,6 @@ public class PreItemDTO implements Serializable {
 	private String configJson;
 
 	/**
-	 * 请求方式
-	 */
-	@ApiModelProperty(value = "请求方式")
-	private String reqType;
-
-	/**
 	 *
 	 */
 	@ApiModelProperty(value = "")

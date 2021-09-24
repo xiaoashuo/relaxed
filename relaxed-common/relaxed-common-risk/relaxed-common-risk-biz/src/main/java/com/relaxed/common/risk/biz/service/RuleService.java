@@ -36,4 +36,13 @@ public interface RuleService extends ExtendService<Rule> {
 	 */
 	List<RuleVO> listByActivationId(Long activationId);
 
+	/**
+	 * 根据规则名称查询规则
+	 * @author yakir
+	 * @date 2021/9/24 14:38
+	 * @param ruleName
+	 * @return com.relaxed.common.risk.model.entity.Rule
+	 */
+	Rule getByName(String ruleName);
+
 }

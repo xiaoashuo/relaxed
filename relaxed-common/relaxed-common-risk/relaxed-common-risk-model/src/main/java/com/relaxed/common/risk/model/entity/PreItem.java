@@ -87,12 +87,6 @@ public class PreItem extends Model<PreItem> {
 	private String configJson;
 
 	/**
-	 * 请求方式
-	 */
-	@ApiModelProperty(value = "请求方式")
-	private String reqType;
-
-	/**
 	 * 状态
 	 */
 	@ApiModelProperty(value = "状态")

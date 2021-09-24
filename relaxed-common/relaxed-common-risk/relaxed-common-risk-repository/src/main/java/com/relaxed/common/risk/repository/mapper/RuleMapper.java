@@ -27,4 +27,15 @@ public interface RuleMapper extends ExtendMapper<Rule> {
 		return this.selectList(Wrappers.lambdaQuery(Rule.class).eq(Rule::getActivationId, activationId));
 	}
 
+	/**
+	 * 查询根据规则名称
+	 * @author yakir
+	 * @date 2021/9/24 14:39
+	 * @param ruleName
+	 * @return com.relaxed.common.risk.model.entity.Rule
+	 */
+	default Rule selectOne(String ruleName) {
+		return this.selectOne(Wrappers.lambdaQuery(Rule.class).eq(Rule::getName, ruleName));
+	}
+
 }
