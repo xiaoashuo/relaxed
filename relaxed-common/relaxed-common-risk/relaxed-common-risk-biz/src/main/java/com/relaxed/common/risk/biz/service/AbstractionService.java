@@ -37,30 +37,12 @@ public interface AbstractionService extends ExtendService<Abstraction> {
 	List<AbstractionVO> listByModelId(Long modelId);
 
 	/**
-	 * 添加抽象特征
+	 * 根据名称得到信息
 	 * @author yakir
-	 * @date 2021/9/22 15:26
-	 * @param abstraction
-	 * @return boolean
+	 * @date 2021/9/24 18:04
+	 * @param abstractionName
+	 * @return com.relaxed.common.risk.model.entity.Abstraction
 	 */
-	boolean add(Abstraction abstraction);
-
-	/**
-	 * 编辑特征信息
-	 * @author yakir
-	 * @date 2021/9/22 15:30
-	 * @param abstraction
-	 * @return boolean
-	 */
-	boolean edit(Abstraction abstraction);
-
-	/**
-	 * 删除特征信息
-	 * @author yakir
-	 * @date 2021/9/22 15:41
-	 * @param id
-	 * @return boolean
-	 */
-	boolean del(Long id);
+	Abstraction getByName(String abstractionName);
 
 }

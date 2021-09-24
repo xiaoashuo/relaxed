@@ -38,8 +38,6 @@ import java.util.List;
 public class AbstractionServiceImpl extends ExtendServiceImpl<AbstractionMapper, Abstraction>
 		implements AbstractionService {
 
-	private final EventDistributor eventDistributor;
-
 	@Override
 	public PageResult<AbstractionVO> selectByPage(PageParam pageParam, AbstractionQO abstractionQO) {
 		IPage<Abstraction> page = PageUtil.prodPage(pageParam);
@@ -57,38 +55,8 @@ public class AbstractionServiceImpl extends ExtendServiceImpl<AbstractionMapper,
 	}
 
 	@Override
-	public boolean add(Abstraction abstraction) {
-		if (SqlHelper.retBool(baseMapper.insert(abstraction))) {
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_ABSTRACTION_CHANNEL.getChannel(),
-					JSONUtil.toJsonStr(AbstractionConverter.INSTANCE.poToVo(abstraction)));
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean edit(Abstraction abstraction) {
-		Long abstractionId = abstraction.getId();
-		Abstraction sqlAbstraction = baseMapper.selectById(abstractionId);
-		Assert.notNull(sqlAbstraction, "abstraction can not exists.");
-		if (SqlHelper.retBool(baseMapper.updateById(abstraction))) {
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_ABSTRACTION_CHANNEL.getChannel(),
-					JSONUtil.toJsonStr(AbstractionConverter.INSTANCE.poToVo(abstraction)));
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean del(Long id) {
-		Abstraction sqlAbstraction = baseMapper.selectById(id);
-		Assert.notNull(sqlAbstraction, "abstraction can not exists.");
-		if (SqlHelper.retBool(baseMapper.deleteById(id))) {
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_ABSTRACTION_CHANNEL.getChannel(),
-					JSONUtil.toJsonStr(AbstractionConverter.INSTANCE.poToVo(sqlAbstraction)));
-			return true;
-		}
-		return false;
+	public Abstraction getByName(String abstractionName) {
+		return baseMapper.selectOne(abstractionName);
 	}
 
 }

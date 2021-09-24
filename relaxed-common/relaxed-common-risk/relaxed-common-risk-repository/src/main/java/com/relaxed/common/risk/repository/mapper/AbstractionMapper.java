@@ -27,4 +27,15 @@ public interface AbstractionMapper extends ExtendMapper<Abstraction> {
 		return this.selectList(Wrappers.lambdaQuery(Abstraction.class).eq(Abstraction::getModelId, modelId));
 	}
 
+	/**
+	 * 根据名称查询特征
+	 * @author yakir
+	 * @date 2021/9/24 18:05
+	 * @param abstractionName
+	 * @return com.relaxed.common.risk.model.entity.Abstraction
+	 */
+	default Abstraction selectOne(String abstractionName) {
+		return this.selectOne(Wrappers.lambdaQuery(Abstraction.class).eq(Abstraction::getName, abstractionName));
+	}
+
 }
