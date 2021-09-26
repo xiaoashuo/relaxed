@@ -1,6 +1,5 @@
-package com.relaxed.common.risk.biz.distributor.subscribe;
+package com.relaxed.common.risk.biz.distributor.event.subscribe;
 
-import com.relaxed.common.risk.biz.distributor.subscribe.SubscribeType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

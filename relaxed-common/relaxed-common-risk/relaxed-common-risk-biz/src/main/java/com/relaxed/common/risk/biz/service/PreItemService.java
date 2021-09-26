@@ -37,31 +37,23 @@ public interface PreItemService extends ExtendService<PreItem> {
 	List<PreItemVO> listByModelId(Long modelId);
 
 	/**
-	 * 添加预处理字段
+	 * 查询一条数据
 	 * @author yakir
-	 * @date 2021/9/12 17:31
-	 * @param preItem
-	 * @return boolean
-	 */
-	boolean add(PreItem preItem);
-
-	/**
-	 * 删除预处理项
-	 * @author yakir
-	 * @date 2021/9/12 17:54
+	 * @date 2021/9/26 13:39
 	 * @param modelId
-	 * @param id
-	 * @return boolean
+	 * @param destField
+	 * @return com.relaxed.common.risk.model.entity.PreItem
 	 */
-	boolean del(Long modelId, Long id);
+	PreItem getOne(Long modelId, String destField);
 
 	/**
-	 * 编辑预处理项
+	 * 查询一条数据
 	 * @author yakir
-	 * @date 2021/9/12 17:56
-	 * @param preItem
-	 * @return boolean
+	 * @date 2021/9/26 13:41
+	 * @param modelId
+	 * @param preItemId
+	 * @return com.relaxed.common.risk.model.entity.PreItem
 	 */
-	boolean edit(PreItem preItem);
+	PreItem getOne(Long modelId, Long preItemId);
 
 }

@@ -1,4 +1,4 @@
-package com.relaxed.common.risk.biz.distributor.subscribe;
+package com.relaxed.common.risk.biz.distributor.event.subscribe;
 
 /**
  * @author Yakir

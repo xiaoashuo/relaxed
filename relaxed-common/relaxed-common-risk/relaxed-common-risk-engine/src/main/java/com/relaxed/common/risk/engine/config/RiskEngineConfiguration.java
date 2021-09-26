@@ -1,5 +1,7 @@
 package com.relaxed.common.risk.engine.config;
 
+import com.relaxed.common.risk.biz.distributor.risk.LocalRiskEvalAsyncDistributor;
+import com.relaxed.common.risk.biz.distributor.risk.RiskEvalAsyncDistributor;
 import com.relaxed.common.risk.engine.cache.CacheService;
 import com.relaxed.common.risk.engine.cache.LocalCache;
 import com.relaxed.common.risk.engine.core.handler.DefaultFieldValidateHandler;
@@ -54,6 +56,18 @@ public class RiskEngineConfiguration {
 	public ModelEventManageService modelEventManageService(MongoTemplate mongoTemplate) {
 		DefaultMongoDbServiceImpl defaultMongoDbService = new DefaultMongoDbServiceImpl(mongoTemplate);
 		return new ModelEventManageServiceImpl(defaultMongoDbService);
+	}
+
+	/**
+	 * 异步风控评估分发器
+	 * @author yakir
+	 * @date 2021/9/26 9:28
+	 * @return com.relaxed.common.risk.biz.distributor.risk.RiskEvalAsyncDistributor
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public RiskEvalAsyncDistributor riskEvalAsyncDistributor() {
+		return new LocalRiskEvalAsyncDistributor();
 	}
 
 	/**

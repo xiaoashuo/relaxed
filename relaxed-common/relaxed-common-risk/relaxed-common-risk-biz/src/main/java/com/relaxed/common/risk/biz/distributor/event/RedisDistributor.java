@@ -1,9 +1,9 @@
-package com.relaxed.common.risk.biz.distributor;
+package com.relaxed.common.risk.biz.distributor.event;
 
-import com.relaxed.common.risk.biz.distributor.subscribe.SubscribeHandle;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import com.relaxed.common.risk.biz.distributor.event.subscribe.SubscribeHandle;
 
 /**
  * @author Yakir

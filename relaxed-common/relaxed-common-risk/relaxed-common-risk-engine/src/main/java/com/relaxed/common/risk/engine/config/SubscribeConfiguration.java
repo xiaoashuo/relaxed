@@ -1,6 +1,6 @@
 package com.relaxed.common.risk.engine.config;
 
-import com.relaxed.common.risk.biz.distributor.EventDistributor;
+import com.relaxed.common.risk.biz.distributor.event.EventDistributor;
 import com.relaxed.common.risk.engine.cache.CacheService;
 import com.relaxed.common.risk.engine.core.subscribe.SubscribeHolder;
 import com.relaxed.common.risk.engine.core.subscribe.SubscribeRegister;

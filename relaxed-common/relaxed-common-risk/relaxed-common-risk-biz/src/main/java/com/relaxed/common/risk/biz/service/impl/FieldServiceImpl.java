@@ -7,15 +7,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.relaxed.common.cache.annotation.Cached;
-import com.relaxed.common.core.exception.BusinessException;
 import com.relaxed.common.model.domain.PageParam;
 import com.relaxed.common.model.domain.PageResult;
-import com.relaxed.common.risk.biz.distributor.EventDistributor;
-import com.relaxed.common.risk.biz.distributor.subscribe.SubscribeEnum;
-import com.relaxed.common.risk.biz.exception.RiskCode;
-import com.relaxed.common.risk.biz.exception.RiskException;
-import com.relaxed.common.risk.model.converter.ModelConverter;
-import com.relaxed.common.risk.model.entity.Model;
+
 import com.relaxed.common.risk.repository.mapper.FieldMapper;
 import com.relaxed.common.risk.biz.service.FieldService;
 import com.relaxed.common.risk.model.converter.FieldConverter;
@@ -42,8 +36,6 @@ import java.util.List;
 @Service
 public class FieldServiceImpl extends ExtendServiceImpl<FieldMapper, Field> implements FieldService {
 
-	private final EventDistributor eventDistributor;
-
 	@Override
 	public PageResult<FieldVO> selectByPage(PageParam pageParam, FieldQO fieldQO) {
 		IPage<Field> page = PageUtil.prodPage(pageParam);
@@ -62,44 +54,8 @@ public class FieldServiceImpl extends ExtendServiceImpl<FieldMapper, Field> impl
 	}
 
 	@Override
-	public boolean add(Field field) {
-		Long modelId = field.getModelId();
-		String fieldName = field.getFieldName();
-		Field sqlField = baseMapper.selectOne(modelId, fieldName);
-		Assert.isNull(sqlField, "model field name already exists.");
-		if (SqlHelper.retBool(baseMapper.insert(field))) {
-			// 发布订阅
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_FIELD_CHANNEL.getChannel(),
-					JSONUtil.toJsonStr(FieldConverter.INSTANCE.poToVo(field)));
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean edit(Field field) {
-		Field sqlField = getById(field.getId());
-		Assert.notNull(sqlField, "field can not exists.");
-		if (SqlHelper.retBool(baseMapper.updateById(field))) {
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_FIELD_CHANNEL.getChannel(),
-					JSONUtil.toJsonStr(FieldConverter.INSTANCE.poToVo(field)));
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean del(Model model, Field field) {
-		String fieldName = field.getFieldName();
-		if (model.getEntryName().equals(fieldName) || model.getReferenceDate().equals(fieldName)) {
-			throw new RiskException(RiskCode.FIELD_NOT_ALLOWED_DEL);
-		}
-		if (SqlHelper.retBool(baseMapper.deleteById(field.getId()))) {
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_FIELD_CHANNEL.getChannel(),
-					JSONUtil.toJsonStr(FieldConverter.INSTANCE.poToVo(field)));
-			return true;
-		}
-		return false;
+	public Field selectOne(Long modelId, String fieldName) {
+		return baseMapper.selectOne(modelId, fieldName);
 	}
 
 }

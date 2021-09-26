@@ -1,8 +1,8 @@
 package com.relaxed.common.risk.engine.core.subscribe;
 
 import com.relaxed.common.core.util.SpringUtils;
-import com.relaxed.common.risk.biz.distributor.subscribe.SubscribeHandle;
-import com.relaxed.common.risk.biz.distributor.subscribe.SubscribeType;
+import com.relaxed.common.risk.biz.distributor.event.subscribe.SubscribeHandle;
+import com.relaxed.common.risk.biz.distributor.event.subscribe.SubscribeType;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.HashMap;

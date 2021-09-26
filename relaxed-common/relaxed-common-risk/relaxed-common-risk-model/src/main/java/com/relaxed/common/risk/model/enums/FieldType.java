@@ -29,7 +29,13 @@ public enum FieldType {
 	/**
 	 * 浮点数
 	 */
-	DOUBLE(4, "浮点数", Double.class),;
+	DOUBLE(4, "浮点数", Double.class),
+	/**
+	 * json
+	 */
+	JSON(5, "JSON", String.class);
+
+	;
 
 	private final Integer key;
 

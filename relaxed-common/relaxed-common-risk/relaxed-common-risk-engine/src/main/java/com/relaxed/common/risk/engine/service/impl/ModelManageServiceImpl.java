@@ -1,6 +1,6 @@
 package com.relaxed.common.risk.engine.service.impl;
 
-import com.relaxed.common.risk.biz.distributor.EventDistributor;
+import com.relaxed.common.risk.biz.distributor.event.EventDistributor;
 import com.relaxed.common.risk.biz.service.ModelService;
 import com.relaxed.common.risk.engine.cache.CacheKey;
 import com.relaxed.common.risk.engine.cache.CacheService;

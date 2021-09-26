@@ -7,6 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.relaxed.common.cache.CacheOperator;
 import com.relaxed.common.model.result.R;
 import com.relaxed.common.risk.engine.config.EngineProperties;
+import com.relaxed.common.risk.biz.distributor.risk.RiskEvalAsyncDistributor;
 import com.relaxed.common.risk.engine.core.handler.RiskReportHandler;
 import com.relaxed.common.risk.engine.exception.RiskEngineException;
 import com.relaxed.common.risk.engine.service.*;
@@ -49,6 +50,8 @@ public class RiskAnalysisEngineServiceImpl implements RiskAnalysisEngineService 
 	private final CacheOperator<String> cacheManage;
 
 	private final RiskReportHandler riskReportHandler;
+
+	private final RiskEvalAsyncDistributor riskEvalAsyncDistributor;
 
 	@Override
 	public R evaluateRisk(String modelGuid, String reqId, Map jsonInfo) {
@@ -103,6 +106,13 @@ public class RiskAnalysisEngineServiceImpl implements RiskAnalysisEngineService 
 		// 7. 保存事件信息和分析结果用于后续分析 可以发送到es redis 等等
 		riskReportHandler.handle(modelGuid, reqId, jsonReport);
 		return R.ok(evaluateReport);
+	}
+
+	@Override
+	public R evaluateRiskAsync(String modelGuid, String reqId, Map jsonInfo) {
+		riskEvalAsyncDistributor.distribute(modelGuid, reqId, jsonInfo);
+		// 直接返回受理成功 实际执行子任务去执行评估
+		return R.ok();
 	}
 
 	@Override

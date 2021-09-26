@@ -1,5 +1,6 @@
 package com.relaxed.common.risk.engine.rules.extractor;
 
+import cn.hutool.json.JSONUtil;
 import com.relaxed.common.risk.model.enums.FieldType;
 import com.relaxed.common.risk.model.vo.FieldVO;
 import com.relaxed.common.risk.engine.rules.EvaluateContext;
@@ -29,7 +30,7 @@ public class SimpleFieldExtractor implements FieldExtractor {
 			if (map == null) {
 				continue;
 			}
-			T searchFieldVal = (T) map.get(fieldName);
+			T searchFieldVal = JSONUtil.getByPath(JSONUtil.parseObj(map), fieldName, null);
 			if (searchFieldVal != null) {
 				return searchFieldVal;
 			}
@@ -40,6 +41,7 @@ public class SimpleFieldExtractor implements FieldExtractor {
 	@Override
 	public <T> T extractorFieldValue(String fieldName, EvaluateContext evaluateContext, EvaluateReport evaluateReport) {
 		Map eventJson = evaluateContext.getEventJson();
+
 		Map<String, Object> preItemMap = evaluateContext.getPreItemMap();
 		// 抽象特征
 		Map<String, ?> abstractionMAP = evaluateReport.getEvaluateData().get(AbstractionRiskEvaluate.ABSTRACTIONS);

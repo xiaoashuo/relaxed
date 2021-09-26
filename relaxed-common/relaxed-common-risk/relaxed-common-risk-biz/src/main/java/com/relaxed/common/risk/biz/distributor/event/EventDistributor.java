@@ -1,6 +1,6 @@
-package com.relaxed.common.risk.biz.distributor;
+package com.relaxed.common.risk.biz.distributor.event;
 
-import com.relaxed.common.risk.biz.distributor.subscribe.SubscribeHandle;
+import com.relaxed.common.risk.biz.distributor.event.subscribe.SubscribeHandle;
 
 /**
  * @author Yakir

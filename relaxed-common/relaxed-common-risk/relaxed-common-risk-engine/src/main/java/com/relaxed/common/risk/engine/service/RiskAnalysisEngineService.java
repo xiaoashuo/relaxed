@@ -25,6 +25,17 @@ public interface RiskAnalysisEngineService {
 	R evaluateRisk(String modelGuid, String reqId, Map jsonInfo);
 
 	/**
+	 * 异步评估
+	 * @author yakir
+	 * @date 2021/9/26 9:18
+	 * @param modelGuid
+	 * @param reqId
+	 * @param jsonInfo
+	 * @return com.relaxed.common.model.result.R
+	 */
+	R evaluateRiskAsync(String modelGuid, String reqId, Map jsonInfo);
+
+	/**
 	 * 查询风控评估数据
 	 * @author yakir
 	 * @date 2021/8/31 15:19

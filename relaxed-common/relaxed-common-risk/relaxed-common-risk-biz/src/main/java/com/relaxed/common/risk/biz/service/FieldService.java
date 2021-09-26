@@ -38,31 +38,13 @@ public interface FieldService extends ExtendService<Field> {
 	List<FieldVO> listByModelId(Long modelId);
 
 	/**
-	 * 添加字段
+	 * 查询单字段
 	 * @author yakir
-	 * @date 2021/9/19 17:22
-	 * @param field
-	 * @return boolean
+	 * @date 2021/9/19 17:24
+	 * @param modelId
+	 * @param fieldName
+	 * @return com.relaxed.common.risk.model.entity.Field
 	 */
-	boolean add(Field field);
-
-	/**
-	 * 编辑字段
-	 * @author yakir
-	 * @date 2021/9/19 17:28
-	 * @param field
-	 * @return boolean
-	 */
-	boolean edit(Field field);
-
-	/**
-	 * 删除字段
-	 * @author yakir
-	 * @date 2021/9/19 17:34
-	 * @param model
-	 * @param field
-	 * @return boolean
-	 */
-	boolean del(Model model, Field field);
+	Field selectOne(Long modelId, String fieldName);
 
 }

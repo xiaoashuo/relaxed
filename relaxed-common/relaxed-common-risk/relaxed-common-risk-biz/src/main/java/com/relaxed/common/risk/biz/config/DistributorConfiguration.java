@@ -1,7 +1,7 @@
 package com.relaxed.common.risk.biz.config;
 
-import com.relaxed.common.risk.biz.distributor.EventDistributor;
-import com.relaxed.common.risk.biz.distributor.RedisDistributor;
+import com.relaxed.common.risk.biz.distributor.event.EventDistributor;
+import com.relaxed.common.risk.biz.distributor.event.RedisDistributor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
