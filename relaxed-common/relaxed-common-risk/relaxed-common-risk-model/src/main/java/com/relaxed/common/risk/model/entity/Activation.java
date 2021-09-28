@@ -81,12 +81,6 @@ public class Activation extends Model<Activation> {
 	 *
 	 */
 	@ApiModelProperty(value = "")
-	private String ruleOrder;
-
-	/**
-	 *
-	 */
-	@ApiModelProperty(value = "")
 	private LocalDateTime createTime;
 
 	/**

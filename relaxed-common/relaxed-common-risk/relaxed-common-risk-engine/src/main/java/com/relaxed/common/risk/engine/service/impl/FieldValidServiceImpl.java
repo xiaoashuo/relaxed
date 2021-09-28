@@ -3,6 +3,7 @@ package com.relaxed.common.risk.engine.service.impl;
 import com.relaxed.common.risk.engine.core.handler.FieldValidateHandler;
 import com.relaxed.common.risk.engine.service.FieldManageService;
 import com.relaxed.common.risk.engine.service.FieldValidateService;
+import com.relaxed.common.risk.model.entity.FieldValidResult;
 import com.relaxed.common.risk.model.vo.FieldVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class FieldValidServiceImpl implements FieldValidateService {
 		List<FieldVO> fieldVos = fieldManageService.getFieldVos(modelId);
 		Map<String, String> result = new HashMap<>();
 		for (FieldVO fieldVo : fieldVos) {
-			FieldValidateHandler.FieldValidResult validResult = fieldValidateHandler.valid(fieldVo, data);
+			FieldValidResult validResult = fieldValidateHandler.valid(fieldVo, data);
 			if (validResult.isValid()) {
 				continue;
 			}

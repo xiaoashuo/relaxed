@@ -10,7 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Yakir
@@ -38,6 +41,7 @@ public class RuleManageServiceImpl implements RuleManageService {
 		// 查询db
 		List<RuleVO> ruleVOList = ruleService.listByActivationId(activationId);
 		if (CollectionUtil.isNotEmpty(ruleVOList)) {
+			ruleVOList.sort(Comparator.comparingInt(RuleVO::getRuleOrder));
 			cacheService.put(getRuleListCacheKey(activationId), ruleVOList);
 		}
 		return ruleVOList;

@@ -11,7 +11,6 @@
                         <result property="median" column="MEDIAN"/>
                         <result property="high" column="HIGH"/>
                         <result property="status" column="STATUS"/>
-                        <result property="ruleOrder" column="RULE_ORDER"/>
                         <result property="createTime" column="CREATE_TIME"/>
                         <result property="updateTime" column="UPDATE_TIME"/>
             </resultMap>
@@ -25,8 +24,7 @@
 		BOTTOM,        
 		MEDIAN,        
 		HIGH,        
-		STATUS,        
-		RULE_ORDER,        
+		STATUS,
 		CREATE_TIME,        
 		UPDATE_TIME        
 	</sql>
@@ -40,8 +38,7 @@
 		a.BOTTOM,        
 		a.MEDIAN,        
 		a.HIGH,        
-		a.STATUS,        
-		a.RULE_ORDER,        
+		a.STATUS,
 		a.CREATE_TIME,        
 		a.UPDATE_TIME        
 	</sql>

@@ -16,6 +16,7 @@
                         <result property="max" column="MAX"/>
                         <result property="status" column="STATUS"/>
                         <result property="ruleDefinition" column="RULE_DEFINITION"/>
+	                    <result property="ruleOrder" column="RULE_ORDER"/>
                         <result property="createTime" column="CREATE_TIME"/>
                         <result property="updateTime" column="UPDATE_TIME"/>
             </resultMap>
@@ -34,7 +35,8 @@
 		RATE,        
 		MAX,        
 		STATUS,        
-		RULE_DEFINITION,        
+		RULE_DEFINITION,
+RULE_ORDER,
 		CREATE_TIME,        
 		UPDATE_TIME        
 	</sql>
@@ -53,7 +55,8 @@
 		r.RATE,        
 		r.MAX,        
 		r.STATUS,        
-		r.RULE_DEFINITION,        
+		r.RULE_DEFINITION,
+r.RULE_ORDER,
 		r.CREATE_TIME,        
 		r.UPDATE_TIME        
 	</sql>

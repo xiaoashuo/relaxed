@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.relaxed.common.model.domain.PageParam;
 import com.relaxed.common.model.domain.PageResult;
 import com.relaxed.common.risk.biz.distributor.event.EventDistributor;
-import com.relaxed.common.risk.biz.distributor.event.subscribe.SubscribeEnum;
+
 import com.relaxed.common.risk.repository.mapper.DataListRecordsMapper;
 import com.relaxed.common.risk.biz.service.DataListRecordsService;
 import com.relaxed.common.risk.model.converter.DataListRecordsConverter;
@@ -53,41 +53,6 @@ public class DataListRecordsServiceImpl extends ExtendServiceImpl<DataListRecord
 	public List<DataListRecordsVO> listDataRecord(Long dataListId) {
 		List<DataListRecords> dataListRecords = baseMapper.listDataRecord(dataListId);
 		return DataListRecordsConverter.INSTANCE.poToVOs(dataListRecords);
-	}
-
-	@Override
-	public boolean add(DataListRecords dataListRecords) {
-		if (SqlHelper.retBool(baseMapper.insert(dataListRecords))) {
-			// 发布订阅
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(),
-					JSONUtil.toJsonStr(DataListRecordsConverter.INSTANCE.poToVo(dataListRecords)));
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean edit(DataListRecords dataListRecords) {
-		DataListRecords sqlData = getById(dataListRecords.getId());
-		Assert.notNull(sqlData, "data list can not exists.");
-		if (SqlHelper.retBool(baseMapper.updateById(dataListRecords))) {
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(),
-					JSONUtil.toJsonStr(DataListRecordsConverter.INSTANCE.poToVo(dataListRecords)));
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean del(Long id) {
-		DataListRecords dataListRecords = baseMapper.selectById(id);
-		Assert.notNull(dataListRecords, "data list record can not exists.");
-		if (SqlHelper.retBool(baseMapper.deleteById(id))) {
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_DATALIST_CHANNEL.getChannel(),
-					JSONUtil.toJsonStr(DataListRecordsConverter.INSTANCE.poToVo(dataListRecords)));
-			return true;
-		}
-		return false;
 	}
 
 }

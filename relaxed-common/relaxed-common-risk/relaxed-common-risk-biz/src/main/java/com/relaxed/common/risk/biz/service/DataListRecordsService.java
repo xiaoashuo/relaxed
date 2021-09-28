@@ -36,31 +36,4 @@ public interface DataListRecordsService extends ExtendService<DataListRecords> {
 	 */
 	List<DataListRecordsVO> listDataRecord(Long dataListid);
 
-	/**
-	 * 添加记录内容
-	 * @author yakir
-	 * @date 2021/9/21 18:04
-	 * @param dataListRecords
-	 * @return boolean
-	 */
-	boolean add(DataListRecords dataListRecords);
-
-	/**
-	 * 编辑记录内容
-	 * @author yakir
-	 * @date 2021/9/21 18:04
-	 * @param dataListRecords
-	 * @return boolean
-	 */
-	boolean edit(DataListRecords dataListRecords);
-
-	/**
-	 * 删除记录内容
-	 * @author yakir
-	 * @date 2021/9/21 18:05
-	 * @param id
-	 * @return boolean
-	 */
-	boolean del(Long id);
-
 }

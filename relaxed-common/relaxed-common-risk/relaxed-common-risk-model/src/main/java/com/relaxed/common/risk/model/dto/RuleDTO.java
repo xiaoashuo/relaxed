@@ -104,15 +104,21 @@ public class RuleDTO implements Serializable {
 	private String ruleDefinition;
 
 	/**
-	 *
+	 * 规则顺序
 	 */
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "规则顺序")
+	private Integer ruleOrder;
+
+	/**
+	 * 创建时间
+	 */
+	@ApiModelProperty(value = "创建时间")
 	private LocalDateTime createTime;
 
 	/**
-	 *
+	 * 更新时间
 	 */
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "更新时间")
 	private LocalDateTime updateTime;
 
 }

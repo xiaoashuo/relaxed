@@ -77,12 +77,6 @@ public class ActivationDTO implements Serializable {
 	 *
 	 */
 	@ApiModelProperty(value = "")
-	private String ruleOrder;
-
-	/**
-	 *
-	 */
-	@ApiModelProperty(value = "")
 	private LocalDateTime createTime;
 
 	/**

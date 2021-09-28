@@ -6,13 +6,11 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
+
 import com.relaxed.common.cache.annotation.Cached;
 import com.relaxed.common.model.domain.PageParam;
 import com.relaxed.common.model.domain.PageResult;
-import com.relaxed.common.risk.biz.distributor.event.EventDistributor;
-import com.relaxed.common.risk.biz.distributor.event.subscribe.SubscribeEnum;
-import com.relaxed.common.risk.model.enums.ModelEnums;
+
 import com.relaxed.common.risk.repository.mapper.ModelMapper;
 import com.relaxed.common.risk.biz.service.ModelService;
 import com.relaxed.common.risk.model.converter.ModelConverter;
@@ -40,38 +38,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class ModelServiceImpl extends ExtendServiceImpl<ModelMapper, Model> implements ModelService {
-
-	private final EventDistributor eventDistributor;
-
-	@Override
-	public boolean add(Model model) {
-		String modelName = model.getModelName();
-		Model sqlModel = getByModelName(modelName);
-		Assert.isNull(sqlModel, "model name has already exists.");
-		model.setGuid(IdUtil.simpleUUID().toUpperCase());
-		model.setStatus(ModelEnums.StatusEnum.INIT.getStatus());
-		if (SqlHelper.retBool(this.baseMapper.insert(model))) {
-			// 发布订阅
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_MODEL_CHANNEL.getChannel(),
-					JSONUtil.toJsonStr(ModelConverter.INSTANCE.poToVo(model)));
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean del(Long id) {
-		Model model = baseMapper.selectById(id);
-		Assert.notNull(model, "model not exists.");
-		// 模型为模板 则不允许删除
-		Assert.state(!ModelEnums.TemplateEnum.isTemplate(model.getTemplate()), "model is template,not allowed del.");
-		if (SqlHelper.retBool(baseMapper.deleteById(id))) {
-			eventDistributor.distribute(SubscribeEnum.PUB_SUB_MODEL_CHANNEL.getChannel(),
-					JSONUtil.toJsonStr(ModelConverter.INSTANCE.poToVo(model)));
-			return true;
-		}
-		return false;
-	}
 
 	@Override
 	public Model getByModelName(String modelName) {

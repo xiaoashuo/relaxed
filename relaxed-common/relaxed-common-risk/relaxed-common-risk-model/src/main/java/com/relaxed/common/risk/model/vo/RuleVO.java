@@ -104,6 +104,12 @@ public class RuleVO implements Serializable {
 	private String ruleDefinition;
 
 	/**
+	 * 规则顺序
+	 */
+	@ApiModelProperty(value = "规则顺序")
+	private Integer ruleOrder;
+
+	/**
 	 *
 	 */
 	@ApiModelProperty(value = "")

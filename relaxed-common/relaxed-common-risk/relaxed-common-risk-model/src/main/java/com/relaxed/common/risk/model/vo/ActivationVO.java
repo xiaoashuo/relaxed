@@ -77,12 +77,6 @@ public class ActivationVO implements Serializable {
 	 *
 	 */
 	@ApiModelProperty(value = "")
-	private String ruleOrder;
-
-	/**
-	 *
-	 */
-	@ApiModelProperty(value = "")
 	private LocalDateTime createTime;
 
 	/**
