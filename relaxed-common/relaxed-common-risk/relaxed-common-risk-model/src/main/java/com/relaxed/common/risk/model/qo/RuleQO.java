@@ -25,8 +25,15 @@ public class RuleQO implements Serializable {
 	private Long id;
 
 	/**
-	 * 评分id
+	 * 模型ID
 	 */
+	@ApiModelProperty(value = "模型ID")
+	private Long modelId;
+
+	/**
+	 * 策略ID
+	 */
+	@ApiModelProperty(value = "策略ID")
 	private Long activationId;
 
 }

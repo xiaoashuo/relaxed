@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.relaxed.common.model.domain.PageParam;
 import com.relaxed.common.model.domain.PageResult;
-import com.relaxed.common.risk.biz.distributor.event.subscribe.SubscribeEnum;
 import com.relaxed.common.risk.repository.mapper.AbstractionMapper;
 import com.relaxed.common.risk.biz.service.AbstractionService;
 import com.relaxed.common.risk.model.converter.AbstractionConverter;

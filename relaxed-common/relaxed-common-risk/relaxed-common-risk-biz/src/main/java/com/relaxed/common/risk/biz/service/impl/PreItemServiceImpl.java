@@ -47,7 +47,6 @@ public class PreItemServiceImpl extends ExtendServiceImpl<PreItemMapper, PreItem
 		return new PageResult<>(voPage.getRecords(), voPage.getTotal());
 	}
 
-	@Cached(prefix = "model-pre-items", key = "#modelId")
 	@Override
 	public List<PreItemVO> listByModelId(Long modelId) {
 		List<PreItem> preItems = baseMapper.getByModelId(modelId);

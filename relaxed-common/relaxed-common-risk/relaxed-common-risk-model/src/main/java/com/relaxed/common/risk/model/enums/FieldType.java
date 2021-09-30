@@ -3,6 +3,8 @@ package com.relaxed.common.risk.model.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
+
 /**
  * @author Yakir
  * @Topic FieldType
@@ -29,7 +31,7 @@ public enum FieldType {
 	/**
 	 * 浮点数
 	 */
-	DOUBLE(4, "浮点数", Double.class),;
+	DOUBLE(4, "浮点数", Double.class),
 
 	;
 

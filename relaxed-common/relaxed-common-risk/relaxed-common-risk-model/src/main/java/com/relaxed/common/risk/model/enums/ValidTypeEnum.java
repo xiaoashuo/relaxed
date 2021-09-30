@@ -6,6 +6,7 @@ import com.relaxed.common.risk.model.vo.FieldVO;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.function.BiFunction;
 
 @RequiredArgsConstructor
@@ -44,10 +45,12 @@ public enum ValidTypeEnum {
 		return (value instanceof String) ? FieldValidResult.pass()
 				: FieldValidResult.reject(fieldVo.getFieldName(), "不是字符串类型");
 	}),
+
 	/**
 	 * 长度效验 必须相同
 	 */
 	LENGTH(11, "字符串长度", (fieldVo, value) -> {
+
 		Integer len = Integer.parseInt(fieldVo.getValidateArgs());
 		boolean pass = value != null && value instanceof String && ((String) value).length() == len;
 		// 验证字段值类型是否匹配当前
@@ -56,7 +59,7 @@ public enum ValidTypeEnum {
 	/**
 	 * 最大长度效验
 	 */
-	MAX_LENGTH(11, "最大长度", (fieldVo, value) -> {
+	MAX_LENGTH(12, "最大长度", (fieldVo, value) -> {
 		Integer len = Integer.parseInt(fieldVo.getValidateArgs());
 		boolean pass = value != null && value instanceof String && ((String) value).length() <= len;
 		// 验证字段值类型是否匹配当前
@@ -65,7 +68,7 @@ public enum ValidTypeEnum {
 	/**
 	 * 最小长度效验
 	 */
-	MIN_LENGTH(11, "最小长度", (fieldVo, value) -> {
+	MIN_LENGTH(13, "最小长度", (fieldVo, value) -> {
 		Integer len = Integer.parseInt(fieldVo.getValidateArgs());
 		boolean pass = value != null && value instanceof String && ((String) value).length() >= len;
 		// 验证字段值类型是否匹配当前
@@ -89,6 +92,7 @@ public enum ValidTypeEnum {
 		// 验证字段值类型是否匹配当前
 		return pass ? FieldValidResult.pass() : FieldValidResult.reject(fieldVo.getFieldName(), "手机格式不正确");
 	}),
+
 	/**
 	 * ip效验
 	 */

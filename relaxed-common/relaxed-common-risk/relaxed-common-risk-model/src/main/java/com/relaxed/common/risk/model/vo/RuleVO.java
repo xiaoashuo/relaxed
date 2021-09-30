@@ -32,9 +32,9 @@ public class RuleVO implements Serializable {
 	private Long modelId;
 
 	/**
-	 * 激活ID
+	 * 策略ID
 	 */
-	@ApiModelProperty(value = "激活ID")
+	@ApiModelProperty(value = "策略ID")
 	private Long activationId;
 
 	/**

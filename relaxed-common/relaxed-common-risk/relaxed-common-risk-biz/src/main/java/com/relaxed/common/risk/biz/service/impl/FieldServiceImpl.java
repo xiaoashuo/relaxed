@@ -46,7 +46,6 @@ public class FieldServiceImpl extends ExtendServiceImpl<FieldMapper, Field> impl
 		return new PageResult<>(voPage.getRecords(), voPage.getTotal());
 	}
 
-	@Cached(prefix = "model-fields", key = "#modelId")
 	@Override
 	public List<FieldVO> listByModelId(Long modelId) {
 		List<Field> list = baseMapper.listByModelId(modelId);

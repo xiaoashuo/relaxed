@@ -60,7 +60,6 @@ public class ModelServiceImpl extends ExtendServiceImpl<ModelMapper, Model> impl
 		return ModelConverter.INSTANCE.poToVOs(list);
 	}
 
-	@Cached(prefix = "model", key = "#guid")
 	@Override
 	public ModelVO getByGuid(String guid) {
 		log.info("model service getByGuid,{}", guid);

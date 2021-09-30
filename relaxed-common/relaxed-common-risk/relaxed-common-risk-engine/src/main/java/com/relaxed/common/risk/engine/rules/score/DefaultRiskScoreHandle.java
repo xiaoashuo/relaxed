@@ -28,17 +28,17 @@ public class DefaultRiskScoreHandle implements RiskScoreHandler {
 	public BigDecimal computeRule(EvaluateContext evaluateContext, EvaluateReport evaluateReport, RuleVO ruleVO) {
 		// 初始得分
 		BigDecimal initScore = new BigDecimal(ruleVO.getInitScore());
-		// 后续增加比列
-		BigDecimal rate = new BigDecimal(ruleVO.getRate() * 0.01);
-		// 基数
-		BigDecimal base = new BigDecimal(ruleVO.getBaseNum());
 		BigDecimal extra = BigDecimal.ZERO;
-		// 特征字段名称 fields.userId preItem.userId, abstractions.userId
-		String abstractionName = ruleVO.getAbstractionName();
 		// 最大分数
 		BigDecimal maxScore = new BigDecimal(ruleVO.getMax());
+		// 特征字段名称 计算特征字段 计分 fields.userId preItem.userId, abstractions.userId
+		String abstractionName = ruleVO.getAbstractionName();
 		// TODO 优化 字段值提取 用spel
 		if (StrUtil.isNotEmpty(abstractionName)) {
+			// 后续增加比列
+			BigDecimal rate = new BigDecimal(ruleVO.getRate() * 0.01);
+			// 基数
+			BigDecimal base = new BigDecimal(ruleVO.getBaseNum());
 			if (abstractionName.indexOf(StrPool.DOT) != -1) {
 				String[] varNames = StrUtil.splitToArray(abstractionName, StrPool.DOT);
 				Object val = fieldExtractor.extractorFieldValue(varNames[1], evaluateContext, evaluateReport);

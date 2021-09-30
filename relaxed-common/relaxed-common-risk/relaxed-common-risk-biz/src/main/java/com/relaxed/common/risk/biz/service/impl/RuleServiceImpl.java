@@ -42,7 +42,6 @@ public class RuleServiceImpl extends ExtendServiceImpl<RuleMapper, Rule> impleme
 		return new PageResult<>(voPage.getRecords(), voPage.getTotal());
 	}
 
-	@Cached(prefix = "rule", key = "#activationId")
 	@Override
 	public List<RuleVO> listByActivationId(Long activationId) {
 		List<Rule> list = baseMapper.listByActivationId(activationId);
