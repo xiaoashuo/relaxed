@@ -89,7 +89,8 @@ public class ActivationRiskEvaluate extends AbstractRiskEvaluate {
 					continue;
 				}
 				String scripts = ruleVO.getScripts();
-				boolean match = super.checkScript(scripts, evaluateContext, evaluateReport, blackWhiteMap);
+				String scriptEntry = ruleVO.getScriptEntry();
+				boolean match = super.checkScript(scripts, scriptEntry, evaluateContext, evaluateReport, blackWhiteMap);
 				// 不通过检查脚本规则 则当前规则不进行计算
 				if (!match) {
 					continue;

@@ -12,6 +12,7 @@
                         <result property="searchIntervalValue" column="SEARCH_INTERVAL_VALUE"/>
                         <result property="functionField" column="FUNCTION_FIELD"/>
                         <result property="ruleScript" column="RULE_SCRIPT"/>
+                        <result property="ruleScriptEntry" column="RULE_SCRIPT_ENTRY"/>
                         <result property="ruleDefinition" column="RULE_DEFINITION"/>
                         <result property="status" column="STATUS"/>
                         <result property="comment" column="COMMENT"/>
@@ -29,7 +30,8 @@
 		SEARCH_INTERVAL_TYPE,        
 		SEARCH_INTERVAL_VALUE,        
 		FUNCTION_FIELD,        
-		RULE_SCRIPT,        
+		RULE_SCRIPT,
+RULE_SCRIPT_ENTRY,
 		RULE_DEFINITION,        
 		STATUS,        
 		COMMENT,        
@@ -47,7 +49,8 @@
 		a.SEARCH_INTERVAL_TYPE,        
 		a.SEARCH_INTERVAL_VALUE,        
 		a.FUNCTION_FIELD,        
-		a.RULE_SCRIPT,        
+		a.RULE_SCRIPT,
+a.RULE_SCRIPT_ENTRY,
 		a.RULE_DEFINITION,        
 		a.STATUS,        
 		a.COMMENT,        

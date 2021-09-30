@@ -84,6 +84,12 @@ public class Abstraction extends Model<Abstraction> {
 	private String ruleScript;
 
 	/**
+	 * 数据校验入口
+	 */
+	@ApiModelProperty(value = "数据校验入口")
+	private String ruleScriptEntry;
+
+	/**
 	 *
 	 */
 	@ApiModelProperty(value = "")

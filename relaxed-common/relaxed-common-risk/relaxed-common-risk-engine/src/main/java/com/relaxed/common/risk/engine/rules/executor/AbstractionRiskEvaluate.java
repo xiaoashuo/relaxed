@@ -101,7 +101,9 @@ public class AbstractionRiskEvaluate extends AbstractRiskEvaluate {
 			}
 			// 规则脚本
 			String ruleScript = abstractionVO.getRuleScript();
-			boolean match = checkScript(ruleScript, evaluateContext, blackWhiteMap);
+			// 规则脚本入口
+			String ruleScriptEntry = abstractionVO.getRuleScriptEntry();
+			boolean match = checkScript(ruleScript, ruleScriptEntry, evaluateContext, blackWhiteMap);
 			if (!match) {
 				// 脚本规则不匹配 则过滤此特征提取
 				extParam.put(abstractionVO.getName(), -1);

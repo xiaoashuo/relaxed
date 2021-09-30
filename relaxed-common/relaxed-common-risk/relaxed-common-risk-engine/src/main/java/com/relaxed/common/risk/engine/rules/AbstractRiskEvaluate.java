@@ -26,14 +26,15 @@ public abstract class AbstractRiskEvaluate implements RiskEvaluate {
 	 * @author yakir
 	 * @date 2021/9/8 17:02
 	 * @param ruleScript
+	 * @param ruleScriptEntry
 	 * @param args
 	 * @return boolean
 	 */
-	protected boolean checkScript(String ruleScript, Object... args) {
+	protected boolean checkScript(String ruleScript, String ruleScriptEntry, Object... args) {
 		boolean ret = false;
 		try {
 			ScriptResult scriptResult = ruleScriptHandler
-					.invokeMethod(ruleScriptHandler.buildContext(ruleScript, "check", args));
+					.invokeMethod(ruleScriptHandler.buildContext(ruleScript, ruleScriptEntry, args));
 			ret = scriptResult.getRunResult();
 		}
 		catch (Exception e) {

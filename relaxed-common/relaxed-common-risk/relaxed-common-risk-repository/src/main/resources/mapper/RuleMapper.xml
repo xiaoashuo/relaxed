@@ -8,6 +8,7 @@
                         <result property="name" column="NAME"/>
                         <result property="label" column="LABEL"/>
                         <result property="scripts" column="SCRIPTS"/>
+                        <result property="scriptEntry" column="SCRIPT_ENTRY"/>
                         <result property="initScore" column="INIT_SCORE"/>
                         <result property="baseNum" column="BASE_NUM"/>
                         <result property="operator" column="OPERATOR"/>
@@ -27,7 +28,8 @@
 		ACTIVATION_ID,        
 		NAME,        
 		LABEL,        
-		SCRIPTS,        
+		SCRIPTS,
+SCRIPT_ENTRY,
 		INIT_SCORE,        
 		BASE_NUM,        
 		OPERATOR,        
@@ -47,7 +49,8 @@ RULE_ORDER,
 		r.ACTIVATION_ID,        
 		r.NAME,        
 		r.LABEL,        
-		r.SCRIPTS,        
+		r.SCRIPTS,
+r.SCRIPT_ENTRY,
 		r.INIT_SCORE,        
 		r.BASE_NUM,        
 		r.OPERATOR,        

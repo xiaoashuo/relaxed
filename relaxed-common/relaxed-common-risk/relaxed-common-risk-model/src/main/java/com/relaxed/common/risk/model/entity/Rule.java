@@ -60,6 +60,12 @@ public class Rule extends Model<Rule> {
 	private String scripts;
 
 	/**
+	 * 检验脚本入口
+	 */
+	@ApiModelProperty(value = "检验脚本入口")
+	private String scriptEntry;
+
+	/**
 	 * 初始分数
 	 */
 	@ApiModelProperty(value = "初始分数")
