@@ -33,7 +33,7 @@ public class ScriptTest {
 				+ "if (! annexList.contains (param as Integer)){" + " return true;" + " } }; return false;" + "" + "}}";
 		EvaluateContext evaluateContext = new EvaluateContext();
 		Map<String, String> maps = new HashMap<>();
-		maps.put("annexPackagePath", "1,2,77");
+		maps.put("annexPackagePath", "1,2,777");
 		evaluateContext.setEventJson(maps);
 		EvaluateReport evaluateReport = new EvaluateReport();
 		GroovyResult groovyResult = groovyScriptHandler.invokeMethod(
