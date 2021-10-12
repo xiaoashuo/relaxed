@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @Version 1.0
  */
 @Configuration(proxyBeanMethods = false)
-public class ThreadPoolConfig {
+public class TaskExecutionConfiguration {
 
 	/**
 	 * 修改 springboot 默认配置的 taskExecutor 的拒绝策略为使用当前线程执行
