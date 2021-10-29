@@ -142,16 +142,17 @@
                 <version>${reversion}</version>
             </dependency>
 
-            <!--config-->
-            <dependency>
-                <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-common-config</artifactId>
-                <version>${reversion}</version>
-            </dependency>
+
             <!--通用工具类-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-util</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <!--扩展mybatis -->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-extend-mybatis</artifactId>
                 <version>${reversion}</version>
             </dependency>
             <!--扩展mybatis plus-->
