@@ -11,7 +11,7 @@ import org.springframework.http.server.ServerHttpResponse;
  * @date 2021/11/15 10:15
  * @Version 1.0
  */
-public interface SecretHandler<T> {
+public interface SecretHandler<T, R> {
 
 	/**
 	 * 加密响应
@@ -22,7 +22,7 @@ public interface SecretHandler<T> {
 	 * @param response
 	 * @return java.lang.Object
 	 */
-	Object encryptResBody(T body, ServerHttpRequest request, ServerHttpResponse response);
+	Object encryptResBody(R body, ServerHttpRequest request, ServerHttpResponse response);
 
 	/**
 	 * 解密请求

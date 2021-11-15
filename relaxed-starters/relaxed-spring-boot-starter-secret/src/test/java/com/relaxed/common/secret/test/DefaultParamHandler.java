@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @Version 1.0
  */
 @Component
-public class DefaultParamHandler implements SecretHandler<BaseDto> {
+public class DefaultParamHandler implements SecretHandler<BaseDto, BaseDto> {
 
 	@Override
 	public BaseDto encryptResBody(BaseDto body, ServerHttpRequest request, ServerHttpResponse response) {
