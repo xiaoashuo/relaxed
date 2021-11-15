@@ -28,7 +28,7 @@ public class EncryptResponseAdvice implements ResponseBodyAdvice<Object> {
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
 		return returnType.getMethod().isAnnotationPresent(ResponseEncrypt.class)
-				&& secretHandler.supportType(returnType.getParameterType());
+				&& secretHandler.supportResType(returnType.getParameterType());
 	}
 
 	@Override

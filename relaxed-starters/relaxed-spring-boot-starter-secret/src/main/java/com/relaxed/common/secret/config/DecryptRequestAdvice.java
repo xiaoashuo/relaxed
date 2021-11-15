@@ -35,7 +35,7 @@ public class DecryptRequestAdvice extends RequestBodyAdviceAdapter {
 	public boolean supports(MethodParameter methodParameter, Type targetType,
 			Class<? extends HttpMessageConverter<?>> converterType) {
 		return methodParameter.getMethod().isAnnotationPresent(RequestDecrypt.class)
-				&& secretHandler.supportType(methodParameter.getParameterType());
+				&& secretHandler.supportReqType(methodParameter.getParameterType());
 	}
 
 	/**

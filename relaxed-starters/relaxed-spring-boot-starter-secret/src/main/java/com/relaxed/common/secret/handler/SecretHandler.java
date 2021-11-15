@@ -48,21 +48,33 @@ public interface SecretHandler<T, R> {
 	 * 得到参数化类型
 	 * @author yakir
 	 * @date 2021/11/15 10:39
+	 * @param parameterizedIndex
 	 * @return java.lang.Class<?>
 	 */
-	default Class<?> getParameterizedType() {
-		return ClassUtil.getTypeArgument(getClass());
+	default Class<?> getParameterizedType(Integer parameterizedIndex) {
+		return ClassUtil.getTypeArgument(getClass(), parameterizedIndex);
 	}
 
 	/**
-	 * 是否支持处理类型
+	 * 是否支持请求处理类型
 	 * @author yakir
 	 * @date 2021/11/15 10:40
 	 * @param clazz
 	 * @return boolean
 	 */
-	default boolean supportType(Class<?> clazz) {
-		return getParameterizedType().isAssignableFrom(clazz);
+	default boolean supportReqType(Class<?> clazz) {
+		return getParameterizedType(0).isAssignableFrom(clazz);
+	}
+
+	/**
+	 * 是否支持响应处理
+	 * @author yakir
+	 * @date 2021/11/15 17:13
+	 * @param clazz
+	 * @return boolean
+	 */
+	default boolean supportResType(Class<?> clazz) {
+		return getParameterizedType(1).isAssignableFrom(clazz);
 	}
 
 }
