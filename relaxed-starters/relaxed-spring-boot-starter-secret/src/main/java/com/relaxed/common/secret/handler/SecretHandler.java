@@ -20,9 +20,9 @@ public interface SecretHandler<T> {
 	 * @param body
 	 * @param request
 	 * @param response
-	 * @return T
+	 * @return java.lang.Object
 	 */
-	T encryptResBody(T body, ServerHttpRequest request, ServerHttpResponse response);
+	Object encryptResBody(T body, ServerHttpRequest request, ServerHttpResponse response);
 
 	/**
 	 * 解密请求

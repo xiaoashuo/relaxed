@@ -1,5 +1,6 @@
 package com.relaxed.common.secret.config;
 
+import com.relaxed.common.secret.annotation.RequestDecrypt;
 import com.relaxed.common.secret.annotation.ResponseEncrypt;
 import com.relaxed.common.secret.handler.SecretHandler;
 import lombok.RequiredArgsConstructor;
