@@ -26,6 +26,7 @@
         <module>relaxed-common-ip</module>
         <module>relaxed-common-cache</module>
         <module>relaxed-common-util</module>
+        <module>relaxed-common-util</module>
     </modules>
 
 
