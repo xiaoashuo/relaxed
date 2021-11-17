@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAd
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
@@ -34,7 +35,11 @@ public class DecryptRequestAdvice extends RequestBodyAdviceAdapter {
 	@Override
 	public boolean supports(MethodParameter methodParameter, Type targetType,
 			Class<? extends HttpMessageConverter<?>> converterType) {
-		return methodParameter.getMethod().isAnnotationPresent(RequestDecrypt.class)
+
+		Method method = methodParameter.getMethod();
+		Class<?> declaringClass = method.getDeclaringClass();
+		return (declaringClass.isAnnotationPresent(RequestDecrypt.class)
+				|| method.isAnnotationPresent(RequestDecrypt.class))
 				&& secretHandler.supportReqType(methodParameter.getParameterType());
 	}
 
@@ -53,9 +58,13 @@ public class DecryptRequestAdvice extends RequestBodyAdviceAdapter {
 	public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter methodParameter,
 			Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
 		RequestDecrypt methodAnnotation = methodParameter.getMethodAnnotation(RequestDecrypt.class);
+		if (methodAnnotation == null) {
+			methodAnnotation = methodParameter.getDeclaringClass().getAnnotation(RequestDecrypt.class);
+		}
 		if (methodAnnotation.post()) {
 			body = secretHandler.decryptReqBody(body);
 		}
+
 		return super.afterBodyRead(body, inputMessage, methodParameter, targetType, converterType);
 	}
 
@@ -73,6 +82,9 @@ public class DecryptRequestAdvice extends RequestBodyAdviceAdapter {
 	public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter methodParameter,
 			Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
 		RequestDecrypt methodAnnotation = methodParameter.getMethodAnnotation(RequestDecrypt.class);
+		if (methodAnnotation == null) {
+			methodAnnotation = methodParameter.getDeclaringClass().getAnnotation(RequestDecrypt.class);
+		}
 		if (methodAnnotation.pre()) {
 			HttpHeaders headers = inputMessage.getHeaders();
 			InputStream body = inputMessage.getBody();

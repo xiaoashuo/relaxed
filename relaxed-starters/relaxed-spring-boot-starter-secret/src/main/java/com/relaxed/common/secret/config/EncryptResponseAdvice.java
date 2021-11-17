@@ -12,6 +12,8 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.lang.reflect.Method;
+
 /**
  * @author Yakir
  * @Topic DecryptRequestAdvice
@@ -26,9 +28,12 @@ public class EncryptResponseAdvice implements ResponseBodyAdvice<Object> {
 	private final SecretHandler secretHandler;
 
 	@Override
-	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-		return returnType.getMethod().isAnnotationPresent(ResponseEncrypt.class)
-				&& secretHandler.supportResType(returnType.getParameterType());
+	public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> converterType) {
+		Method method = methodParameter.getMethod();
+		Class<?> declaringClass = method.getDeclaringClass();
+		return (declaringClass.isAnnotationPresent(ResponseEncrypt.class)
+				|| method.isAnnotationPresent(ResponseEncrypt.class))
+				&& secretHandler.supportResType(methodParameter.getParameterType());
 	}
 
 	@Override
