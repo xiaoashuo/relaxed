@@ -1,5 +1,6 @@
 package com.relaxed.common.swagger;
 
+import com.relaxed.common.swagger.property.SwaggerProperties;
 import com.relaxed.common.swagger.property.SwaggerProviderProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -26,7 +27,7 @@ import java.util.List;
  * @Version 1.0
  */
 @Import(SwaggerAutoConfiguration.class)
-@ConditionalOnProperty(name = "relaxed.swagger.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = SwaggerProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class SwaggerProviderAutoConfiguration {
 
 	private static final String ALL = "*";

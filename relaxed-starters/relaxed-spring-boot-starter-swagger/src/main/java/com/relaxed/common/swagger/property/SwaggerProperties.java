@@ -16,8 +16,10 @@ import java.util.List;
  * @Version 1.0
  */
 @Data
-@ConfigurationProperties("relaxed.swagger")
+@ConfigurationProperties(SwaggerProperties.PREFIX)
 public class SwaggerProperties {
+
+	public static final String PREFIX = "relaxed.swagger";
 
 	/**
 	 * 是否开启swagger

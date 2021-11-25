@@ -43,12 +43,13 @@ public class SwaggerAutoConfiguration {
 	public Docket api() {
 		// 1. 文档信息构建
 		Docket docket = new Docket(swaggerProperties.getDocumentationType().getType()).host(swaggerProperties.getHost())
-				.groupName(swaggerProperties.getGroupName()).apiInfo(apiInfo());
+				.groupName(swaggerProperties.getGroupName()).apiInfo(apiInfo()).enable(swaggerProperties.getEnabled());
 		// 2.安全配置
 		docket.securitySchemes(securitySchema()).securityContexts(securityContext());
 		// 3.selection by requestHandler and by paths
 		docket.select().apis(RequestHandlerSelectors.basePackage(swaggerProperties.getBasePackage())).paths(paths())
 				.build();
+
 		return docket;
 	}
 
