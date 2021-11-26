@@ -35,6 +35,8 @@
         <groovy.version>3.0.9</groovy.version>
         <tensorflow.version>1.15.0</tensorflow.version>
         <ip2region.version>1.7.2</ip2region.version>
+        <software.amazon.awssdk.version>2.17.89</software.amazon.awssdk.version>
+
         <!-- 跳过测试 -->
         <skipTests>true</skipTests>
     </properties>
@@ -50,6 +52,17 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+
+            <!-- 亚马逊云 Java sdk https://mvnrepository.com/artifact/software.amazon.awssdk/bom/2.17.88 -->
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>${software.amazon.awssdk.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <!--model 模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
@@ -323,6 +336,11 @@
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-http</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-crypto</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
             <!--easyExcel 处理-->

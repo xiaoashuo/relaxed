@@ -24,6 +24,7 @@
          <module>relaxed-spring-boot-starter-easyexcel</module>
          <module>relaxed-spring-boot-starter-sms</module>
          <module>relaxed-spring-boot-starter-secret</module>
+         <module>relaxed-spring-boot-starter-oss</module>
     </modules>
 
 
