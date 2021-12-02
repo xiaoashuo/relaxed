@@ -35,7 +35,7 @@
         <groovy.version>3.0.9</groovy.version>
         <tensorflow.version>1.15.0</tensorflow.version>
         <ip2region.version>1.7.2</ip2region.version>
-        <software.amazon.awssdk.version>2.17.89</software.amazon.awssdk.version>
+        <software.amazon.awssdk.version>2.17.46</software.amazon.awssdk.version>
 
         <!-- 跳过测试 -->
         <skipTests>true</skipTests>

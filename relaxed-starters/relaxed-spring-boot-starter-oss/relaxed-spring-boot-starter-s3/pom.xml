@@ -12,7 +12,7 @@
     <artifactId>relaxed-spring-boot-starter-s3</artifactId>
 
     <properties>
-        <aws.version>1.11.939</aws.version>
+
 
     </properties>
     <dependencies>
