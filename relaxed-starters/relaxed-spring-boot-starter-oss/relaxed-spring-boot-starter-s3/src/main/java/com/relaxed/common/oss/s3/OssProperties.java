@@ -59,7 +59,7 @@ public class OssProperties {
 
 	/**
 	 * <p>
-	 * bucket 必填
+	 * bucket 必填 命名空间
 	 * </p>
 	 */
 	private String bucket;

@@ -34,37 +34,46 @@ import java.util.Set;
 public class OssClient implements DisposableBean {
 
 
-	private  String endpoint;
+	private final   String endpoint;
 
-	private  String region;
+	private final  String region;
 
-	private  String accessKey;
+	private final  String accessKey;
 
-	private  String accessSecret;
+	private  final String accessSecret;
 
-	private  String bucket;
-	private  String domain;
-	private  String root;
+	private final  String bucket;
+	private final String domain;
+	private final String root;
 	/**
 	 * true path-style nginx 反向代理和S3默认支持 pathStyle {http://endpoint/bucketname} false
 	 * supports virtual-hosted-style 阿里云等需要配置为 virtual-hosted-style
 	 * 模式{http://bucketname.endpoint}
 	 */
-	private Boolean pathStyleAccess = true;
+	private final boolean pathStyleAccess;
 
-	private String downloadPrefix;
+	private final String downloadPrefix;
 
-	private  ObjectCannedACL acl;
+	private final ObjectCannedACL acl;
 
-	private S3Client s3Client;
+	private final S3Client s3Client;
 
-	public void setS3Client(S3Client s3Client) {
-		this.s3Client = s3Client;
+	public   OssClient(OssClientBuilder ossClientBuilder){
+		//同步OssClientBuilder信息
+		this.endpoint=ossClientBuilder.getEndpoint();
+		this.region=ossClientBuilder.getRegion();
+		this.accessKey=ossClientBuilder.getAccessKey();
+		this.accessSecret=ossClientBuilder.getAccessSecret();
+		this.bucket=ossClientBuilder.getBucket();
+		this.domain=ossClientBuilder.getDomain();
+		this.pathStyleAccess=ossClientBuilder.getPathStyleAccess();
+		this.downloadPrefix=ossClientBuilder.getProxyUrl();
+		this.root=ossClientBuilder.getRootPath();
+		this.acl=ossClientBuilder.getAcl();
+		this.s3Client=ossClientBuilder.getS3Client();
 	}
 
-	public S3Client getS3Client() {
-		return s3Client;
-	}
+
 
 	/**
 	 * 上传文件 使用默认存储桶目录
@@ -93,7 +102,6 @@ public class OssClient implements DisposableBean {
 	 * @return java.lang.String
 	 */
 	public String upload(InputStream inputStream, Long size, String bucketName, String relativePath, ObjectCannedACL acl){
-		relativePath=removeDefaultPrefix(relativePath);
 		PutObjectRequest.Builder builder = PutObjectRequest.builder().bucket(bucketName).key(relativePath);
 		if (acl!=null){
 			builder.acl(acl);
@@ -103,15 +111,7 @@ public class OssClient implements DisposableBean {
 		return getDownloadUrl(bucketName, relativePath);
 	}
 
-	private String removeDefaultPrefix(String source){
-		return removePrefix(OssConstants.SLASH,source);
-	}
-	private String removePrefix(String prefix,String source){
-		if (source.startsWith(prefix)){
-			return source.substring(prefix.length());
-		}
-		return source;
-	}
+
 
 
 
@@ -119,6 +119,14 @@ public class OssClient implements DisposableBean {
 		return list(bucketName,null,null);
 
 	}
+	/**
+	 * 查询列表
+	 * @author yakir
+	 * @date 2021/12/1 18:19
+	 * @param bucketName 桶名称
+	 * @param marker
+	 * @param maxKeys
+	 */
 	public List<String> list(String bucketName,String marker,Integer maxKeys){
 		ListObjectsRequest listObjects = ListObjectsRequest
 				.builder()
@@ -148,11 +156,18 @@ public class OssClient implements DisposableBean {
 	public void delete(String path){
 	   delete(bucket,path);
 	}
+	/**
+	 * 删除单个文件
+	 * @author yakir
+	 * @date 2021/12/1 18:19
+	 * @param bucketName 桶名称
+	 * @param path
+	 */
 	public void delete(String bucketName,String path){
 		if (!StringUtils.hasText(path)){
 			return;
 		}
-        getS3Client().deleteObject(builder -> builder.bucket(bucketName).key(removeDefaultPrefix(path)));
+        getS3Client().deleteObject(builder -> builder.bucket(bucketName).key(path));
 	}
     /**
      * 批量删除使用默认桶
@@ -168,6 +183,7 @@ public class OssClient implements DisposableBean {
 	 * 批量删除
 	 * @author yakir
 	 * @date 2021/12/2 13:58
+	 * @param bucketName 桶名称 可以理解为命名空间下的目录
 	 * @param paths
 	 */
 	public void batchDelete(String bucketName,Set<String> paths){
@@ -177,7 +193,7 @@ public class OssClient implements DisposableBean {
 		ArrayList<ObjectIdentifier> keys = new ArrayList<>();
 		for (String path : paths) {
 			ObjectIdentifier   objectId = ObjectIdentifier.builder()
-					.key(getPathWithBucket(bucketName,removeDefaultPrefix(path)))
+					.key(getPathWithBucket(bucketName,path))
 					.build();
 			keys.add(objectId);
 		}
@@ -187,6 +203,7 @@ public class OssClient implements DisposableBean {
 				.objects(keys)
 				.build();
 		DeleteObjectsRequest multiObjectDeleteRequest = DeleteObjectsRequest.builder()
+				//指定命名空间
 				.bucket(bucket)
 				.delete(del)
 				.build();
@@ -198,19 +215,20 @@ public class OssClient implements DisposableBean {
 	 * copy 对象
 	 * @author yakir
 	 * @date 2021/12/3 15:53
-	 * @param sourceBucketName
-	 * @param sourcePath
-	 * @param toBucketName
-	 * @param toPath
+	 * @param sourceBucketName source
+	 * @param sourcePath img/6.jpg
+	 * @param toBucketName dest
+	 * @param toPath img/5.jpg
 	 * @return java.lang.String 目标下载地址
 	 */
 	public String copy(String sourceBucketName,String sourcePath,String toBucketName,String toPath){
 		CopyObjectRequest copyObjRequest =  CopyObjectRequest
 				.builder()
+				//此处一定要指定原始命名空间
 				.sourceBucket(bucket)
-				.sourceKey(getPathWithBucket(sourceBucketName,removeDefaultPrefix(sourcePath)))
+				.sourceKey(getPathWithBucket(sourceBucketName,sourcePath))
 				.destinationBucket(toBucketName)
-				.destinationKey(removeDefaultPrefix(toPath)).build();
+				.destinationKey(toPath).build();
 
 		CopyObjectResponse copyObjectResponse = getS3Client().copyObject(copyObjRequest);
 		copyObjectResponse.copyObjectResult();
@@ -238,6 +256,12 @@ public class OssClient implements DisposableBean {
 		return String.format("%s/%s", downloadPrefix,relativePath);
 	}
 
+
+
+
+	public S3Client getS3Client() {
+		return s3Client;
+	}
 	@Override
 	public void destroy() throws Exception {
 		if (s3Client != null) {
