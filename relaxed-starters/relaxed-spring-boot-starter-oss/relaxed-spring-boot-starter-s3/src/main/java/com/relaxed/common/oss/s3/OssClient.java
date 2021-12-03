@@ -140,7 +140,7 @@ public class OssClient implements DisposableBean {
 		List<String> paths=new ArrayList<>();
 		for (S3Object content : contents) {
 			String key = content.key();
-			String downloadUrl = getDownloadUrl(key);
+			String downloadUrl = String.format("%s/%s", downloadPrefix,key);
 			paths.add(downloadUrl);
 		}
 		return paths;
@@ -252,9 +252,7 @@ public class OssClient implements DisposableBean {
 	public String getDownloadUrl(String bucketName,String relativePath) {
 		return String.format("%s/%s/%s", downloadPrefix, bucketName,relativePath);
 	}
-	public String getDownloadUrl(String relativePath) {
-		return String.format("%s/%s", downloadPrefix,relativePath);
-	}
+
 
 
 
