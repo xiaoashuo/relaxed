@@ -1,6 +1,6 @@
 package com.relaxed.common.oss.s3;
 
-import com.relaxed.common.oss.s3.domain.S3UploadResult;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
@@ -30,7 +31,6 @@ import java.util.Set;
  */
 @Slf4j
 @Setter
-@Getter
 public class OssClient implements DisposableBean {
 
 
@@ -62,6 +62,10 @@ public class OssClient implements DisposableBean {
 		this.s3Client = s3Client;
 	}
 
+	public S3Client getS3Client() {
+		return s3Client;
+	}
+
 	/**
 	 * 上传文件 使用默认存储桶目录
 	 * @author yakir
@@ -71,11 +75,11 @@ public class OssClient implements DisposableBean {
 	 * @param relativePath
 	 * @return java.lang.String
 	 */
-	public S3UploadResult upload(InputStream inputStream,Long size,String relativePath){
+	public String upload(InputStream inputStream,Long size,String relativePath){
 		return upload(inputStream,size,bucket,relativePath,acl);
 	}
 
-	public S3UploadResult upload(InputStream inputStream,Long size,String bucketName,String relativePath){
+	public String upload(InputStream inputStream,Long size,String bucketName,String relativePath){
 		return upload(inputStream,size,bucketName,relativePath,acl);
 	}
 	/**
@@ -88,22 +92,21 @@ public class OssClient implements DisposableBean {
 	 * @param relativePath 文件路径  未关联根路径的
 	 * @return java.lang.String
 	 */
-	public S3UploadResult upload(InputStream inputStream, Long size, String bucketName, String relativePath, ObjectCannedACL acl){
+	public String upload(InputStream inputStream, Long size, String bucketName, String relativePath, ObjectCannedACL acl){
 		relativePath=removeDefaultPrefix(relativePath);
 		PutObjectRequest.Builder builder = PutObjectRequest.builder().bucket(bucketName).key(relativePath);
 		if (acl!=null){
 			builder.acl(acl);
 		}
 		//返回eTag
-		PutObjectResponse putObjectResponse = getS3Client().putObject(builder.build(), RequestBody.fromInputStream(inputStream, size));
-		return S3UploadResult.builder().bucketName(bucketName).eTag(putObjectResponse.eTag())
-				.relativePath(relativePath).downloadUrl(getDownloadUrl(bucketName, relativePath)).build();
+		getS3Client().putObject(builder.build(), RequestBody.fromInputStream(inputStream, size));
+		return getDownloadUrl(bucketName, relativePath);
 	}
 
-	public String removeDefaultPrefix(String source){
+	private String removeDefaultPrefix(String source){
 		return removePrefix(OssConstants.SLASH,source);
 	}
-	public String removePrefix(String prefix,String source){
+	private String removePrefix(String prefix,String source){
 		if (source.startsWith(prefix)){
 			return source.substring(prefix.length());
 		}
@@ -112,18 +115,28 @@ public class OssClient implements DisposableBean {
 
 
 
+	public List<String> list(String bucketName){
+		return list(bucketName,null,null);
 
-	public void list(){
-		list(bucket);
 	}
-	public void list(String bucketName){
+	public List<String> list(String bucketName,String marker,Integer maxKeys){
 		ListObjectsRequest listObjects = ListObjectsRequest
 				.builder()
-				.bucket(bucketName)
+				.bucket(bucket)
+				.prefix(bucketName)
+                .marker(marker)
+				.maxKeys(maxKeys)
 				.build();
-		ListObjectsResponse response = getS3Client().listObjects(listObjects);
-		List<S3Object> contents = response.contents();
-		log.info("输入{}",contents);
+		ListObjectsResponse res = getS3Client().listObjects(listObjects);
+		List<S3Object> contents = res.contents();
+		List<String> paths=new ArrayList<>();
+		for (S3Object content : contents) {
+			String key = content.key();
+			String downloadUrl = getDownloadUrl(key);
+			paths.add(downloadUrl);
+		}
+		return paths;
+
 	}
 
 	/**
@@ -141,36 +154,23 @@ public class OssClient implements DisposableBean {
 		}
         getS3Client().deleteObject(builder -> builder.bucket(bucketName).key(removeDefaultPrefix(path)));
 	}
-
-	public void deletes(Set<String> paths){
-		if (CollectionUtils.isEmpty(paths)){
-			return;
-		}
-		ArrayList<ObjectIdentifier> keys = new ArrayList<>();
-		for (String path : paths) {
-			ObjectIdentifier   objectId = ObjectIdentifier.builder()
-					.key(getPathWithBucket(bucket,removeDefaultPrefix(path)))
-					.build();
-			keys.add(objectId);
-		}
-
-		// Delete multiple objects in one request.
-		Delete del = Delete.builder()
-				.objects(keys)
-				.build();
-		DeleteObjectsRequest multiObjectDeleteRequest = DeleteObjectsRequest.builder()
-				.bucket(bucket)
-				.delete(del)
-				.build();
-		getS3Client().deleteObjects(multiObjectDeleteRequest);
+    /**
+     * 批量删除使用默认桶
+     * @author yakir
+     * @date 2021/12/3 16:12
+     * @param paths
+     */
+	public void batchDelete(Set<String> paths){
+	   batchDelete(bucket,paths);
 	}
+
 	/**
 	 * 批量删除
 	 * @author yakir
 	 * @date 2021/12/2 13:58
 	 * @param paths
 	 */
-	public void deletes(String bucketName,Set<String> paths){
+	public void batchDelete(String bucketName,Set<String> paths){
 		if (CollectionUtils.isEmpty(paths)){
 			return;
 		}
@@ -195,7 +195,17 @@ public class OssClient implements DisposableBean {
 
 
 
-	public S3UploadResult copy(String sourceBucketName,String sourcePath,String toBucketName,String toPath){
+	/**
+	 * copy 对象
+	 * @author yakir
+	 * @date 2021/12/3 15:53
+	 * @param sourceBucketName
+	 * @param sourcePath
+	 * @param toBucketName
+	 * @param toPath
+	 * @return java.lang.String 目标下载地址
+	 */
+	public String copy(String sourceBucketName,String sourcePath,String toBucketName,String toPath){
 		CopyObjectRequest copyObjRequest =  CopyObjectRequest
 				.builder()
 				.sourceBucket(bucket)
@@ -204,40 +214,13 @@ public class OssClient implements DisposableBean {
 				.destinationKey(removeDefaultPrefix(toPath)).build();
 
 		CopyObjectResponse copyObjectResponse = getS3Client().copyObject(copyObjRequest);
-		CopyObjectResult copyObjectResult = copyObjectResponse.copyObjectResult();
-		return S3UploadResult.builder().bucketName(toBucketName).relativePath(toPath).eTag(copyObjectResult.eTag())
-				.downloadUrl(getDownloadUrl(toBucketName, toPath)).build();
+		copyObjectResponse.copyObjectResult();
+		return getDownloadUrl(toBucketName, toPath);
 
 	}
 
-	protected String getCopyUrl(String path) throws UnsupportedEncodingException {
-		return URLEncoder.encode(bucket +path, StandardCharsets.UTF_8.toString());
-	}
 
-	/**
-	 * 批量删除
-	 * @author yakir
-	 * @date 2021/12/1 18:19
-	 * @param paths
-	 */
-	public void delete(List<String> paths){
-		if (CollectionUtils.isEmpty(paths)){
-			return;
-		}
-		ArrayList<ObjectIdentifier> toDelete = new ArrayList<>();
-		for (String path : paths) {
-			ObjectIdentifier.Builder builder = ObjectIdentifier.builder().key(path);
-			toDelete.add(builder.build());
-		}
-		DeleteObjectsRequest dor = DeleteObjectsRequest.builder()
-				.bucket(bucket)
-				.delete(Delete.builder().objects(toDelete).build())
-				.build();
-		getS3Client().deleteObjects(dor);
-	}
-
-
-	public String getPathWithBucket(String bucketName,String relativePath){
+	private String getPathWithBucket(String bucketName,String relativePath){
 		Assert.hasText(relativePath, "path must not be empty");
 		if (relativePath.startsWith(OssConstants.SLASH)) {
 			relativePath = relativePath.substring(1);
@@ -251,6 +234,9 @@ public class OssClient implements DisposableBean {
 	 */
 	public String getDownloadUrl(String bucketName,String relativePath) {
 		return String.format("%s/%s/%s", downloadPrefix, bucketName,relativePath);
+	}
+	public String getDownloadUrl(String relativePath) {
+		return String.format("%s/%s", downloadPrefix,relativePath);
 	}
 
 	@Override

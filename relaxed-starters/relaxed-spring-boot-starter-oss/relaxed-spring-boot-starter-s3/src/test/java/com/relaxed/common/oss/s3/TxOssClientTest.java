@@ -12,7 +12,9 @@ import org.springframework.util.Assert;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Yakir
@@ -22,7 +24,7 @@ import java.util.*;
  * @Version 1.0
  */
 @Slf4j
-public class OssClientTest {
+public class TxOssClientTest {
     private OssProperties properties;
 
 
@@ -32,7 +34,7 @@ public class OssClientTest {
 
     @BeforeEach
     public void before(){
-        buildTxProperties();
+        buildProperties();
         OssClientBuilder ossClientBuilder = new OssClientBuilder();
         ossClientBuilder.rootPath(properties.getRootPath());
         ossClientBuilder.region(properties.getRegion());
@@ -46,27 +48,17 @@ public class OssClientTest {
         ossClientBuilder.pathModifier(new DefaultPathModifier());
          ossClient = ossClientBuilder.build();
     }
-    private void buildAliProperties() {
+
+    private void buildProperties() {
         properties = new OssProperties();
         properties.setRootPath("/");
         properties.setAcl(null);
-        properties.setBucket("yakir-oss");
-        properties.setAccessKey("LTAI4FiGxjNniXjFNtddUJNT");
-        properties.setAccessSecret("BC3Sd5dbcDxU9LsswXFCt4tgc19uRF");
+        properties.setBucket("bucket");
+        properties.setAccessKey("access-key");
+        properties.setAccessSecret("access-secret");
         // 根据自己的需求配置
-        properties.setEndpoint("oss-cn-beijing.aliyuncs.com");
-        properties.setRegion("oss-cn-beijing");
-    }
-    private void buildTxProperties() {
-        properties = new OssProperties();
-        properties.setRootPath("/");
-        properties.setAcl(null);
-        properties.setBucket("test-1258769891");
-        properties.setAccessKey("AKIDSoxtbBevynOmxud7NPDn9HBqHXZNxKTO");
-        properties.setAccessSecret("lIbgXCestgFajfPwEI7j7HFzgJtRp1zk");
-        // 根据自己的需求配置
-        properties.setEndpoint("cos.ap-shanghai.myqcloud.com");
-        properties.setRegion("ap-shanghai");
+        properties.setEndpoint("endPoint");
+        properties.setRegion("region");
     }
 
 

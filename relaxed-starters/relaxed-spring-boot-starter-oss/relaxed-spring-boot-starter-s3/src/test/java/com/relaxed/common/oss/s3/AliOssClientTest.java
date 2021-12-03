@@ -12,7 +12,9 @@ import org.springframework.util.Assert;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Yakir
@@ -22,7 +24,7 @@ import java.util.*;
  * @Version 1.0
  */
 @Slf4j
-public class OssClientTest {
+public class AliOssClientTest {
     private OssProperties properties;
 
 
@@ -32,7 +34,7 @@ public class OssClientTest {
 
     @BeforeEach
     public void before(){
-        buildTxProperties();
+        buildProperties();
         OssClientBuilder ossClientBuilder = new OssClientBuilder();
         ossClientBuilder.rootPath(properties.getRootPath());
         ossClientBuilder.region(properties.getRegion());
@@ -46,33 +48,22 @@ public class OssClientTest {
         ossClientBuilder.pathModifier(new DefaultPathModifier());
          ossClient = ossClientBuilder.build();
     }
-    private void buildAliProperties() {
+    private void buildProperties() {
         properties = new OssProperties();
         properties.setRootPath("/");
         properties.setAcl(null);
-        properties.setBucket("yakir-oss");
-        properties.setAccessKey("LTAI4FiGxjNniXjFNtddUJNT");
-        properties.setAccessSecret("BC3Sd5dbcDxU9LsswXFCt4tgc19uRF");
+        properties.setBucket("bucket");
+        properties.setAccessKey("key");
+        properties.setAccessSecret("secret");
         // 根据自己的需求配置
-        properties.setEndpoint("oss-cn-beijing.aliyuncs.com");
-        properties.setRegion("oss-cn-beijing");
-    }
-    private void buildTxProperties() {
-        properties = new OssProperties();
-        properties.setRootPath("/");
-        properties.setAcl(null);
-        properties.setBucket("test-1258769891");
-        properties.setAccessKey("AKIDSoxtbBevynOmxud7NPDn9HBqHXZNxKTO");
-        properties.setAccessSecret("lIbgXCestgFajfPwEI7j7HFzgJtRp1zk");
-        // 根据自己的需求配置
-        properties.setEndpoint("cos.ap-shanghai.myqcloud.com");
-        properties.setRegion("ap-shanghai");
+        properties.setEndpoint("endPoint");
+        properties.setRegion("region");
     }
 
 
     @SneakyThrows
     @Test
-    void txUpload(){
+    void aliUpload(){
         String bucketName = "test";
         String relativePath = "img/test3.jpg";
         File file = new File("D:\\other\\100000\\test4.jpg");
@@ -98,8 +89,8 @@ public class OssClientTest {
     void txDelete(){
         //单条删除
         String bucketName = "test";
-        String relativePath = "img/test4.jpg";
-        ossClient.delete(bucketName,relativePath);
+//        String relativePath = "img/test4.jpg";
+//        ossClient.delete(bucketName,relativePath);
 
         //批量删除
         Set<String> paths=new HashSet<>();
@@ -109,8 +100,19 @@ public class OssClientTest {
     }
     @SneakyThrows
     @Test
+    void txBatchDelete(){
+        //单条删除
+        String bucketName = "test";
+        //批量删除
+        Set<String> paths=new HashSet<>();
+        paths.add("img/test5.jpg");
+        paths.add("img/test6.jpg");
+        ossClient.batchDelete(bucketName,paths);
+    }
+    @SneakyThrows
+    @Test
     void txList(){
-        String bucketName="test";
+        String bucketName="test/img";
         List<String> paths = ossClient.list(bucketName);
         log.info("结果数组:{}",paths);
     }

@@ -1,6 +1,7 @@
 package com.relaxed.common.oss.s3;
 
 import com.relaxed.common.oss.s3.interceptor.ModifyPathInterceptor;
+import com.relaxed.common.oss.s3.modifier.PathModifier;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
@@ -120,6 +121,7 @@ public class OssClientBuilder {
     private  Set<OssClientCustomizer> customizers;
 
 
+    private PathModifier pathModifier;
 
     public OssClientBuilder endpoint(String endpoint){
         this.endpoint=endpoint;
@@ -167,6 +169,10 @@ public class OssClientBuilder {
         this.customizers=this.append(null,customizers);
         return this;
     }
+    public OssClientBuilder pathModifier(PathModifier pathModifier){
+        this.pathModifier=pathModifier;
+        return this;
+    }
     public OssClientBuilder rootPath(String rootPath){
         if (!StringUtils.hasText(rootPath)) {
             this.rootPath = OssConstants.SLASH;
@@ -197,6 +203,7 @@ public class OssClientBuilder {
 
     private OssClient configure(OssClient ossClient) {
         //同步OssClient信息
+
         PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
         map.from(this.endpoint).to(ossClient::setEndpoint);
         map.from(this.region).to(ossClient::setRegion);
@@ -254,7 +261,7 @@ public class OssClientBuilder {
         }
         ossClient.setDownloadPrefix(finalUri);
         // 配置
-//       builder.overrideConfiguration(cb -> cb.addExecutionInterceptor(new ModifyPathInterceptor(bucket)));
+       builder.overrideConfiguration(cb -> cb.addExecutionInterceptor(new ModifyPathInterceptor(bucket,pathModifier)));
         return builder;
     }
 
