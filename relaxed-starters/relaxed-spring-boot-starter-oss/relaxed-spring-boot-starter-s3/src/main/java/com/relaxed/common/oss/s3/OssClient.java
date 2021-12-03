@@ -187,12 +187,11 @@ public class OssClient implements DisposableBean {
 				.objects(keys)
 				.build();
 		DeleteObjectsRequest multiObjectDeleteRequest = DeleteObjectsRequest.builder()
-				.bucket(bucketName)
+				.bucket(bucket)
 				.delete(del)
 				.build();
 		getS3Client().deleteObjects(multiObjectDeleteRequest);
 	}
-
 
 
 	/**

@@ -53,10 +53,10 @@ public class AliOssClientTest {
         properties.setRootPath("/");
         properties.setAcl(null);
         properties.setBucket("bucket");
-        properties.setAccessKey("key");
-        properties.setAccessSecret("secret");
+        properties.setAccessKey("access-key");
+        properties.setAccessSecret("access-secret");
         // 根据自己的需求配置
-        properties.setEndpoint("endPoint");
+        properties.setEndpoint("end-point");
         properties.setRegion("region");
     }
 
@@ -105,8 +105,8 @@ public class AliOssClientTest {
         String bucketName = "test";
         //批量删除
         Set<String> paths=new HashSet<>();
-        paths.add("img/test5.jpg");
-        paths.add("img/test6.jpg");
+        paths.add("img/test3.jpg");
+        paths.add("img/test4.jpg");
         ossClient.batchDelete(bucketName,paths);
     }
     @SneakyThrows

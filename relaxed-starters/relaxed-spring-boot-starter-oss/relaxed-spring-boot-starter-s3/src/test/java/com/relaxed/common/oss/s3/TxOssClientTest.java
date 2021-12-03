@@ -57,7 +57,7 @@ public class TxOssClientTest {
         properties.setAccessKey("access-key");
         properties.setAccessSecret("access-secret");
         // 根据自己的需求配置
-        properties.setEndpoint("endPoint");
+        properties.setEndpoint("end-point");
         properties.setRegion("region");
     }
 
@@ -90,13 +90,13 @@ public class TxOssClientTest {
     void txDelete(){
         //单条删除
         String bucketName = "test";
-        String relativePath = "img/test4.jpg";
-        ossClient.delete(bucketName,relativePath);
+//        String relativePath = "img/test4.jpg";
+//        ossClient.delete(bucketName,relativePath);
 
         //批量删除
         Set<String> paths=new HashSet<>();
-        paths.add("img/test5.jpg");
-        paths.add("img/test6.jpg");
+        paths.add("img/test2.jpg");
+        paths.add("img/test3.jpg");
         ossClient.batchDelete(bucketName,paths);
     }
     @SneakyThrows
