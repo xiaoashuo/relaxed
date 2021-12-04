@@ -9,6 +9,13 @@ import software.amazon.awssdk.core.interceptor.ExecutionAttributes;
 import software.amazon.awssdk.core.interceptor.ExecutionInterceptor;
 import software.amazon.awssdk.core.interceptor.SdkExecutionAttribute;
 import software.amazon.awssdk.http.SdkHttpRequest;
+import software.amazon.awssdk.services.s3.S3Configuration;
+import software.amazon.awssdk.services.s3.internal.BucketUtils;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import static software.amazon.awssdk.services.s3.internal.endpoints.S3EndpointUtils.isPathStyleAccessEnabled;
 
 
 /**
@@ -25,6 +32,7 @@ import software.amazon.awssdk.http.SdkHttpRequest;
 public class ModifyPathInterceptor implements ExecutionInterceptor {
 
 	private final String bucket;
+	private final boolean pathStyleAccess;
 
 	private final PathModifier pathModifier;
 
@@ -35,25 +43,23 @@ public class ModifyPathInterceptor implements ExecutionInterceptor {
 
 		SdkHttpRequest request = context.httpRequest();
 
-		final SdkHttpRequest.Builder rb = SdkHttpRequest.builder()
+		SdkHttpRequest.Builder builder = request.toBuilder();
 
-				.protocol(request.protocol())
-
-				.host(request.host())
-
-				.port(request.port())
-
-				.headers(request.headers())
-
-				.method(request.method())
-
-				.rawQueryParameters(request.rawQueryParameters());
 
 		// 移除 path 前的 bucket 声明
-		String targetPath = pathModifier.modifyRequestPath(bucket,executionAttributes.getAttribute(SdkExecutionAttribute.OPERATION_NAME), request.encodedPath());
-		rb.encodedPath(targetPath);
+		String sourcePath = request.encodedPath();
+		if (pathModifier.canUseVirtualAddressing(pathStyleAccess,bucket)) {
+			String proxyPath = pathModifier.modifyRequestPath(bucket, executionAttributes.getAttribute(SdkExecutionAttribute.OPERATION_NAME), sourcePath);
+			builder.encodedPath(proxyPath);
+		}else{
+			builder.encodedPath(sourcePath);
+		}
 
-		return rb.build();
+
+		return builder.build();
 	}
+
+
+
 
 }

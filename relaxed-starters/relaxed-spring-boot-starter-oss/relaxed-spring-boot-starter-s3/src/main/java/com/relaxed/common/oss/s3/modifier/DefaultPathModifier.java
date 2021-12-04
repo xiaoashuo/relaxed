@@ -13,11 +13,6 @@ public class DefaultPathModifier implements PathModifier{
 
     @Override
     public String modifyRequestPath(String bucket,String optionName, String sourcePath) {
-        if (sourcePath.startsWith(OssConstants.SLASH + bucket)) {
-            return sourcePath.substring((OssConstants.SLASH + bucket).length());
-        }
-        else {
-            return sourcePath;
-        }
+       return  sourcePath.replaceFirst("/" + bucket, "");
     }
 }
