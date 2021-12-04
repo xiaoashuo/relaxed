@@ -251,7 +251,12 @@ public class OssClientBuilder {
         builder.endpointOverride(endpoint).credentialsProvider(
                 StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, accessSecret)));
         // 配置
-        builder.overrideConfiguration(cb -> cb.addExecutionInterceptor(new ModifyPathInterceptor(bucket,pathStyleAccess,pathModifier)));
+
+        builder.overrideConfiguration(cb -> {
+            //用路径模式
+            boolean usePathStyleAccess = !StringUtils.hasText(domain) || pathModifier.canUseVirtualAddressing(pathStyleAccess, bucket);
+            cb.addExecutionInterceptor(new ModifyPathInterceptor(bucket, usePathStyleAccess,pathModifier));
+        });
         return builder;
     }
 

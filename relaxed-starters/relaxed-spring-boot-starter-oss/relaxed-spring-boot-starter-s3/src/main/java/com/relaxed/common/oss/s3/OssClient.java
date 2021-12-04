@@ -147,15 +147,7 @@ public class OssClient implements DisposableBean {
 
 	}
 
-	/**
-	 * 删除单个文件
-	 * @author yakir
-	 * @date 2021/12/1 18:19
-	 * @param path
-	 */
-	public void delete(String path){
-	   delete(bucket,path);
-	}
+
 	/**
 	 * 删除单个文件
 	 * @author yakir
@@ -163,37 +155,33 @@ public class OssClient implements DisposableBean {
 	 * @param bucketName 桶名称
 	 * @param path
 	 */
-	public void delete(String bucketName,String path){
+	public void delete(String path){
 		if (!StringUtils.hasText(path)){
 			return;
 		}
-        getS3Client().deleteObject(builder -> builder.bucket(bucketName).key(path));
+        getS3Client().deleteObject(builder -> builder.bucket(bucket).key(path));
 	}
-    /**
-     * 批量删除使用默认桶
-     * @author yakir
-     * @date 2021/12/3 16:12
-     * @param paths
-     */
-	public void batchDelete(Set<String> paths){
-	   batchDelete(bucket,paths);
-	}
+
 
 	/**
 	 * 批量删除
 	 * @author yakir
 	 * @date 2021/12/2 13:58
-	 * @param bucketName 桶名称 可以理解为命名空间下的目录
+	 * @param paths 相对于bucket命名空间下的完整路径
+	 *                 <p>
+	 *                  eg: bucket test-oss    文件 img/test.jpg
+	 *                      path: img/test.jpg
+	 *                 </p>
 	 * @param paths
 	 */
-	public void batchDelete(String bucketName,Set<String> paths){
+	public void batchDelete(Set<String> paths){
 		if (CollectionUtils.isEmpty(paths)){
 			return;
 		}
 		ArrayList<ObjectIdentifier> keys = new ArrayList<>();
 		for (String path : paths) {
 			ObjectIdentifier   objectId = ObjectIdentifier.builder()
-					.key(getPathWithBucket(bucketName,path))
+					.key(path)
 					.build();
 			keys.add(objectId);
 		}
@@ -209,33 +197,28 @@ public class OssClient implements DisposableBean {
 				.build();
 		getS3Client().deleteObjects(multiObjectDeleteRequest);
 	}
-
-
 	/**
 	 * copy 对象
 	 * @author yakir
 	 * @date 2021/12/3 15:53
-	 * @param sourceBucketName source
-	 * @param sourcePath img/6.jpg
-	 * @param toBucketName dest
-	 * @param toPath img/5.jpg
+	 * @param sourcePath img/6.jpg 相对于bucket下面的路径
+	 * @param toPath img/5.jpg 相对于bucket下面的路径
 	 * @return java.lang.String 目标下载地址
 	 */
-	public String copy(String sourceBucketName,String sourcePath,String toBucketName,String toPath){
+	public String copy(String sourcePath, String toPath){
 		CopyObjectRequest copyObjRequest =  CopyObjectRequest
 				.builder()
 				//此处一定要指定原始命名空间
 				.sourceBucket(bucket)
-				.sourceKey(getPathWithBucket(sourceBucketName,sourcePath))
-				.destinationBucket(toBucketName)
+				.sourceKey(sourcePath)
+				.destinationBucket(bucket)
 				.destinationKey(toPath).build();
 
 		CopyObjectResponse copyObjectResponse = getS3Client().copyObject(copyObjRequest);
 		copyObjectResponse.copyObjectResult();
-		return getDownloadUrl(toBucketName, toPath);
+		return getDownloadUrl(toPath);
 
 	}
-
 
 	private String getPathWithBucket(String bucketName,String relativePath){
 		Assert.hasText(relativePath, "path must not be empty");
@@ -253,6 +236,13 @@ public class OssClient implements DisposableBean {
 		return String.format("%s/%s/%s", downloadPrefix, bucketName,relativePath);
 	}
 
+	public String getDownloadUrl(String relativePath) {
+		if (StringUtils.hasText(domain)){
+			return String.format("%s/%s/%s", downloadPrefix, bucket,relativePath);
+		}else{
+			return String.format("%s/%s", downloadPrefix,relativePath);
+		}
+	}
 
 
 

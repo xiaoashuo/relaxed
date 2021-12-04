@@ -32,7 +32,8 @@ import static software.amazon.awssdk.services.s3.internal.endpoints.S3EndpointUt
 public class ModifyPathInterceptor implements ExecutionInterceptor {
 
 	private final String bucket;
-	private final boolean pathStyleAccess;
+
+	private final boolean usePathStyleAccess;
 
 	private final PathModifier pathModifier;
 
@@ -46,9 +47,10 @@ public class ModifyPathInterceptor implements ExecutionInterceptor {
 		SdkHttpRequest.Builder builder = request.toBuilder();
 
 
-		// 移除 path 前的 bucket 声明
+		// 若使用虚拟主机模式则 保持源路径
+		// 若使用路径模式 则需要 移除 path 前的 bucket 声明
 		String sourcePath = request.encodedPath();
-		if (pathModifier.canUseVirtualAddressing(pathStyleAccess,bucket)) {
+		if (usePathStyleAccess) {
 			String proxyPath = pathModifier.modifyRequestPath(bucket, executionAttributes.getAttribute(SdkExecutionAttribute.OPERATION_NAME), sourcePath);
 			builder.encodedPath(proxyPath);
 		}else{
