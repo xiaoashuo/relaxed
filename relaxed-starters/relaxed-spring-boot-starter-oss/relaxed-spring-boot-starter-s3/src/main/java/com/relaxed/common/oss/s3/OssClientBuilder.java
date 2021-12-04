@@ -197,29 +197,7 @@ public class OssClientBuilder {
 	}
 
 	public OssClient build() {
-
-		URI proxyEndPoint;
-		if (StringUtils.hasText(domain)) {
-			// 若有文本 则使用 自定义域名
-			proxyEndPoint = URI.create(domain);
-			proxyUrl = domain;
-
-		}
-		else {
-			// 若未定义域名
-			// 使用托管形式 参考文档
-			// https://docs.aws.amazon.com/zh_cn/AmazonS3/latest/userguide/VirtualHosting.html
-			// 手动改变 替代 S3BucketEndpointResolver#changeToDnsEndpoint
-			proxyEndPoint = URI.create(endpoint);
-			if (pathModifier.canUseVirtualAddressing(pathStyleAccess, bucket)) {
-				proxyEndPoint = pathModifier.convertToVirtualHostEndpoint(proxyEndPoint, bucket);
-				proxyUrl = proxyEndPoint.toString();
-			}
-			else {
-				proxyUrl = String.format("%s/%s", proxyEndPoint, bucket);
-			}
-		}
-
+		URI proxyEndPoint = endpointSelect();
 		// 构建S3Client
 		S3ClientBuilder s3ClientBuilder = create(proxyEndPoint);
 		s3Client = s3ClientBuilder.build();
@@ -229,6 +207,30 @@ public class OssClientBuilder {
 			});
 		}
 		return new OssClient(this);
+	}
+
+	private URI endpointSelect() {
+		URI proxyEndPoint;
+		if (StringUtils.hasText(domain)) {
+			proxyEndPoint = URI.create(domain);
+			proxyUrl = domain;
+		}
+		else {
+			// 使用托管形式
+			// 参考文档https://docs.aws.amazon.com/zh_cn/AmazonS3/latest/userguide/VirtualHosting.html
+			// 手动改变 替代 S3BucketEndpointResolver#changeToDnsEndpoint
+			proxyEndPoint = URI.create(endpoint);
+			if (pathModifier.canUseVirtualAddressing(pathStyleAccess, bucket)) {
+				proxyEndPoint = pathModifier.convertToVirtualHostEndpoint(proxyEndPoint, bucket);
+				proxyUrl = proxyEndPoint.toString();
+			}
+			else {
+				// 路径模式 经过拦截器会默认为endpoint后面加上bucket
+				// 此时只需要下载地址保持和请求一致即可 BaseClientHandler#finalizeSdkHttpFullRequest#67
+				proxyUrl = String.format("%s/%s", proxyEndPoint, bucket);
+			}
+		}
+		return proxyEndPoint;
 	}
 
 	private S3ClientBuilder create(URI endpoint) {
@@ -247,8 +249,7 @@ public class OssClientBuilder {
 
 		builder.overrideConfiguration(cb -> {
 			// 用路径模式
-			boolean usePathStyleAccess = !StringUtils.hasText(domain)
-					|| pathModifier.canUseVirtualAddressing(pathStyleAccess, bucket);
+			boolean usePathStyleAccess = pathModifier.canUseVirtualAddressing(pathStyleAccess, bucket);
 			cb.addExecutionInterceptor(new ModifyPathInterceptor(bucket, usePathStyleAccess, pathModifier));
 		});
 		return builder;

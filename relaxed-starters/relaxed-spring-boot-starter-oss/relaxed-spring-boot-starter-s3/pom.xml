@@ -27,12 +27,7 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <scope>compile</scope>
         </dependency>
-        <!--S3 SDK https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/setup-project-maven.html-->
-<!--        <dependency>-->
-<!--            <groupId>com.amazonaws</groupId>-->
-<!--            <artifactId>aws-java-sdk-s3</artifactId>-->
-<!--            <version>${aws.version}</version>-->
-<!--        </dependency>-->
+
 <!--        https://docs.aws.amazon.com/zh_cn/sdk-for-java/latest/developer-guide/get-started.html-->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>

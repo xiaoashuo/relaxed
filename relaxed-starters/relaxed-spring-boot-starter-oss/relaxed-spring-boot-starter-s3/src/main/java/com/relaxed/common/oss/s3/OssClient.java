@@ -15,6 +15,7 @@ import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -44,13 +45,6 @@ public class OssClient implements DisposableBean {
 
 	private final String domain;
 
-	private final String root;
-
-	/**
-	 * true path-style nginx 反向代理和S3默认支持 pathStyle {http://endpoint/bucketname} false
-	 * supports virtual-hosted-style 阿里云等需要配置为 virtual-hosted-style
-	 * 模式{http://bucketname.endpoint}
-	 */
 	private final boolean pathStyleAccess;
 
 	private final String downloadPrefix;
@@ -69,7 +63,6 @@ public class OssClient implements DisposableBean {
 		this.domain = ossClientBuilder.getDomain();
 		this.pathStyleAccess = ossClientBuilder.getPathStyleAccess();
 		this.downloadPrefix = ossClientBuilder.getProxyUrl();
-		this.root = ossClientBuilder.getRootPath();
 		this.acl = ossClientBuilder.getAcl();
 		this.s3Client = ossClientBuilder.getS3Client();
 	}
@@ -97,8 +90,8 @@ public class OssClient implements DisposableBean {
 		return getDownloadUrl(relativePath);
 	}
 
-	public List<String> list(String bucketName) {
-		return list(bucketName, null, null);
+	public List<String> list(String prefix) {
+		return list(prefix, null, null);
 
 	}
 
@@ -106,19 +99,19 @@ public class OssClient implements DisposableBean {
 	 * 查询列表
 	 * @author yakir
 	 * @date 2021/12/1 18:19
-	 * @param bucketName 桶名称
+	 * @param prefix 前缀匹配 oss 里面 文件物理层路径默认都为字符串 不存在目录
 	 * @param marker
 	 * @param maxKeys
 	 */
-	public List<String> list(String bucketName, String marker, Integer maxKeys) {
-		ListObjectsRequest listObjects = ListObjectsRequest.builder().bucket(bucket).prefix(bucketName).marker(marker)
+	public List<String> list(String prefix, String marker, Integer maxKeys) {
+		ListObjectsRequest listObjects = ListObjectsRequest.builder().bucket(bucket).prefix(prefix).marker(marker)
 				.maxKeys(maxKeys).build();
 		ListObjectsResponse res = getS3Client().listObjects(listObjects);
 		List<S3Object> contents = res.contents();
 		List<String> paths = new ArrayList<>();
 		for (S3Object content : contents) {
 			String key = content.key();
-			String downloadUrl = String.format("%s/%s", downloadPrefix, key);
+			String downloadUrl = getDownloadUrl(key);
 			paths.add(downloadUrl);
 		}
 		return paths;
@@ -129,7 +122,6 @@ public class OssClient implements DisposableBean {
 	 * 删除单个文件
 	 * @author yakir
 	 * @date 2021/12/1 18:19
-	 * @param bucketName 桶名称
 	 * @param path
 	 */
 	public void delete(String path) {
@@ -180,28 +172,15 @@ public class OssClient implements DisposableBean {
 				// 此处一定要指定原始命名空间
 				.sourceBucket(bucket).sourceKey(sourcePath).destinationBucket(bucket).destinationKey(toPath).build();
 
-		CopyObjectResponse copyObjectResponse = getS3Client().copyObject(copyObjRequest);
-		copyObjectResponse.copyObjectResult();
+		getS3Client().copyObject(copyObjRequest);
 		return getDownloadUrl(toPath);
 
-	}
-
-	private String getPathWithBucket(String bucketName, String relativePath) {
-		Assert.hasText(relativePath, "path must not be empty");
-		if (relativePath.startsWith(OssConstants.SLASH)) {
-			relativePath = relativePath.substring(1);
-		}
-		return bucketName + "/" + relativePath;
 	}
 
 	/**
 	 * 获取 绝对路径 的下载url
 	 * @author lingting 2021-05-12 18:50
 	 */
-	public String getDownloadUrl(String bucketName, String relativePath) {
-		return String.format("%s/%s/%s", downloadPrefix, bucketName, relativePath);
-	}
-
 	public String getDownloadUrl(String relativePath) {
 		if (StringUtils.hasText(domain)) {
 			return String.format("%s/%s/%s", downloadPrefix, bucket, relativePath);

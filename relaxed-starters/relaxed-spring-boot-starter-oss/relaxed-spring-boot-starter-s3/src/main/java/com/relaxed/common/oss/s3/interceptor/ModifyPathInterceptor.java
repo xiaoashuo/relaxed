@@ -47,13 +47,11 @@ public class ModifyPathInterceptor implements ExecutionInterceptor {
 		// 若使用虚拟主机模式则 保持源路径
 		// 若使用路径模式 则需要 移除 path 前的 bucket 声明
 		String sourcePath = request.encodedPath();
+
 		if (usePathStyleAccess) {
 			String proxyPath = pathModifier.modifyRequestPath(bucket,
 					executionAttributes.getAttribute(SdkExecutionAttribute.OPERATION_NAME), sourcePath);
 			builder.encodedPath(proxyPath);
-		}
-		else {
-			builder.encodedPath(sourcePath);
 		}
 
 		return builder.build();

@@ -90,22 +90,22 @@ public class TxOssClientTest {
 	void txDelete() {
 		// 单条删除
 		String bucketName = "test";
-		String relativePath = "img/test10.jpg";
+		String relativePath = "test/test2.jpg";
 		ossClient.delete(relativePath);
 
 		// 批量删除
-		Set<String> paths = new HashSet<>();
-		paths.add("img/test2.jpg");
-		paths.add("img/test3.jpg");
-		ossClient.batchDelete(paths);
+		// Set<String> paths = new HashSet<>();
+		// paths.add("img/test2.jpg");
+		// paths.add("img/test3.jpg");
+		// ossClient.batchDelete(paths);
 	}
 
 	@SneakyThrows
 	@Test
 	void txList() {
 
-		String bucketName = "test";
-		List<String> paths = ossClient.list(bucketName);
+		String prefix = "test";
+		List<String> paths = ossClient.list(prefix);
 		log.info("结果数组:{}", paths);
 	}
 

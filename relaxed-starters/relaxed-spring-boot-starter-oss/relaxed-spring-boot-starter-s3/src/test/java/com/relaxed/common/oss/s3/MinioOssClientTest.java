@@ -7,10 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,7 +65,7 @@ public class MinioOssClientTest {
 	@Test
 	void aliUpload() {
 
-		String relativePath = "imga/test3.jpg";
+		String relativePath = "t/imga/test3.jpg";
 		File file = new File("D:\\other\\images\\duola.jpg");
 		InputStream stream = new FileInputStream(file);
 		StreamMeta streamMeta = StreamMeta.convertToByteStreamMeta(stream);
@@ -76,7 +78,7 @@ public class MinioOssClientTest {
 	@SneakyThrows
 	@Test
 	void txCopy() {
-		String sourcePath = "img/duola.jpg";
+		String sourcePath = "imga/test3.jpg";
 		String destPath = "test/er/test4.jpg";
 		String copyDownloadUrl = ossClient.copy(sourcePath, destPath);
 		log.info("copy结果:{}", copyDownloadUrl);
@@ -101,7 +103,8 @@ public class MinioOssClientTest {
 	@SneakyThrows
 	@Test
 	void aliList() {
-		String bucketName = "img";
+
+		String bucketName = "t";
 		List<String> paths = ossClient.list(bucketName);
 		log.info("结果数组:{}", paths);
 	}
