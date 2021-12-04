@@ -66,7 +66,7 @@ public class OssProperties {
 	 * 自定义域名转发
 	 * </p>
 	 * <p>
-	 * 本值优先级最高, 配置本值后 endpoint 无效
+	 * 本值优先级最高, 配置本值后 endpoint 无效 pathStyleAccess 无效
 	 * </p>
 	 */
 	private String domain;

@@ -226,7 +226,8 @@ public class OssClientBuilder {
 
 		builder.overrideConfiguration(cb -> {
 			// 用路径模式
-			boolean usePathStyleAccess = pathModifier.canUseVirtualAddressing(pathStyleAccess, bucket);
+			boolean usePathStyleAccess = StringUtils.hasText(domain) ? false
+					: pathModifier.canUseVirtualAddressing(pathStyleAccess, bucket);
 			cb.addExecutionInterceptor(new ModifyPathInterceptor(bucket, usePathStyleAccess, pathModifier));
 		});
 		return builder;
