@@ -23,7 +23,7 @@ import java.util.Set;
  * @Version 1.0
  */
 @Slf4j
-public class TxOssClientTest {
+public class MinioOssClientTest {
 
 	private OssProperties properties;
 
@@ -44,67 +44,64 @@ public class TxOssClientTest {
 		ossClientBuilder.acl(properties.getAcl());
 		ossClientBuilder.pathModifier(new DefaultPathModifier());
 		ossClient = ossClientBuilder.build();
-
 	}
 
 	private void buildProperties() {
 		properties = new OssProperties();
 		properties.setRootPath("/");
 		properties.setAcl(null);
-		properties.setBucket("bucket");
-		properties.setAccessKey("access-key");
-		properties.setAccessSecret("access-secret");
-		properties.setPathStyleAccess(false);
+		properties.setBucket("test");
+		properties.setAccessKey("yakirsmall");
+		properties.setAccessSecret("yakirsmall");
 		// 根据自己的需求配置
-		properties.setEndpoint("https://cos.ap-shanghai.myqcloud.com");
-		properties.setRegion("ap-shanghai");
+		properties.setDomain("http://127.0.0.1:9000");
+		// properties.setEndpoint("");
+		properties.setRegion("test");
 	}
 
 	@SneakyThrows
 	@Test
-	void txUpload() {
+	void aliUpload() {
 
-		String relativePath = "img/test3.jpg";
+		String relativePath = "imga/test3.jpg";
 		File file = new File("D:\\other\\images\\duola.jpg");
 		InputStream stream = new FileInputStream(file);
 		StreamMeta streamMeta = StreamMeta.convertToByteStreamMeta(stream);
 		String downloadUrl = ossClient.upload(streamMeta.getInputStream(), streamMeta.getSize(), relativePath);
 		log.info("上传结果:{}", downloadUrl);
+
 		Assert.state(ossClient.getDownloadUrl(relativePath).equals(downloadUrl), "下载地址不一致");
 	}
 
 	@SneakyThrows
 	@Test
 	void txCopy() {
-		String sourcePath = "test/test2.jpg";
-		String destPath = "test3/test4.jpg";
+		String sourcePath = "img/duola.jpg";
+		String destPath = "test/er/test4.jpg";
 		String copyDownloadUrl = ossClient.copy(sourcePath, destPath);
-		// String copyDownloadUrl = ossClient.copy("test", "img/test3.jpg",
-		// destBucketName, destPath);
-		Assert.state(ossClient.getDownloadUrl(destPath).equals(copyDownloadUrl), "Copy下载地址不一致");
 		log.info("copy结果:{}", copyDownloadUrl);
+		Assert.state(ossClient.getDownloadUrl(destPath).equals(copyDownloadUrl), "Copy下载地址不一致");
 	}
 
 	@SneakyThrows
 	@Test
-	void txDelete() {
+	void aliDelete() {
 		// 单条删除
-		String bucketName = "test";
-		String relativePath = "img/test10.jpg";
-		ossClient.delete(relativePath);
+
+		// String relativePath = "img/test3.jpg";
+		// ossClient.delete(bucketName,relativePath);
 
 		// 批量删除
 		Set<String> paths = new HashSet<>();
-		paths.add("img/test2.jpg");
-		paths.add("img/test3.jpg");
+		paths.add("img/duola.jpg");
+		paths.add("img/壁纸.jpg");
 		ossClient.batchDelete(paths);
 	}
 
 	@SneakyThrows
 	@Test
-	void txList() {
-
-		String bucketName = "test";
+	void aliList() {
+		String bucketName = "img";
 		List<String> paths = ossClient.list(bucketName);
 		log.info("结果数组:{}", paths);
 	}

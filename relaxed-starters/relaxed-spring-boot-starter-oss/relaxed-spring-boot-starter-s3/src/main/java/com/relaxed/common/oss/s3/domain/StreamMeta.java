@@ -18,28 +18,31 @@ import java.io.InputStream;
 @Getter
 @RequiredArgsConstructor
 public class StreamMeta {
-    private final Long size;
-    private final InputStream inputStream;
 
-    /**
-     * 转换为字节流模板
-     * @author yakir
-     * @date 2021/11/26 15:27
-     * @param inputStream
-     * @return com.relaxed.common.oss.s3.domain.StreamMeta
-     */
-    public static StreamMeta convertToByteStreamMeta(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+	private final Long size;
 
-        long size = 0;
-        byte[] buffer = new byte[1024];
-        int len;
+	private final InputStream inputStream;
 
-        while ((len = inputStream.read(buffer)) > -1) {
-            size += len;
-            out.write(buffer, 0, len);
-        }
+	/**
+	 * 转换为字节流模板
+	 * @author yakir
+	 * @date 2021/11/26 15:27
+	 * @param inputStream
+	 * @return com.relaxed.common.oss.s3.domain.StreamMeta
+	 */
+	public static StreamMeta convertToByteStreamMeta(InputStream inputStream) throws IOException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        return new StreamMeta(size, new ByteArrayInputStream(out.toByteArray()));
-    }
+		long size = 0;
+		byte[] buffer = new byte[1024];
+		int len;
+
+		while ((len = inputStream.read(buffer)) > -1) {
+			size += len;
+			out.write(buffer, 0, len);
+		}
+
+		return new StreamMeta(size, new ByteArrayInputStream(out.toByteArray()));
+	}
+
 }

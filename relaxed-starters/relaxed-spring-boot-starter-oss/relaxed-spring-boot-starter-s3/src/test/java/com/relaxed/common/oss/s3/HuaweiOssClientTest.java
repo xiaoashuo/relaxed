@@ -11,9 +11,7 @@ import org.springframework.util.Assert;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Yakir
@@ -23,7 +21,7 @@ import java.util.Set;
  * @Version 1.0
  */
 @Slf4j
-public class TxOssClientTest {
+public class HuaweiOssClientTest {
 
 	private OssProperties properties;
 
@@ -56,15 +54,14 @@ public class TxOssClientTest {
 		properties.setAccessSecret("access-secret");
 		properties.setPathStyleAccess(false);
 		// 根据自己的需求配置
-		properties.setEndpoint("https://cos.ap-shanghai.myqcloud.com");
-		properties.setRegion("ap-shanghai");
+		properties.setEndpoint("https://obs.cn-east-3.myhuaweicloud.com");
+		properties.setRegion("cn-east-3");
 	}
 
 	@SneakyThrows
 	@Test
 	void txUpload() {
-
-		String relativePath = "img/test3.jpg";
+		String relativePath = "img/test4.jpg";
 		File file = new File("D:\\other\\images\\duola.jpg");
 		InputStream stream = new FileInputStream(file);
 		StreamMeta streamMeta = StreamMeta.convertToByteStreamMeta(stream);
@@ -76,11 +73,9 @@ public class TxOssClientTest {
 	@SneakyThrows
 	@Test
 	void txCopy() {
-		String sourcePath = "test/test2.jpg";
-		String destPath = "test3/test4.jpg";
+		String sourcePath = "dest";
+		String destPath = "test4.jpg";
 		String copyDownloadUrl = ossClient.copy(sourcePath, destPath);
-		// String copyDownloadUrl = ossClient.copy("test", "img/test3.jpg",
-		// destBucketName, destPath);
 		Assert.state(ossClient.getDownloadUrl(destPath).equals(copyDownloadUrl), "Copy下载地址不一致");
 		log.info("copy结果:{}", copyDownloadUrl);
 	}
@@ -94,10 +89,10 @@ public class TxOssClientTest {
 		ossClient.delete(relativePath);
 
 		// 批量删除
-		Set<String> paths = new HashSet<>();
-		paths.add("img/test2.jpg");
-		paths.add("img/test3.jpg");
-		ossClient.batchDelete(paths);
+		// Set<String> paths=new HashSet<>();
+		// paths.add("img/test2.jpg");
+		// paths.add("img/test3.jpg");
+		// ossClient.batchDelete(bucketName,paths);
 	}
 
 	@SneakyThrows

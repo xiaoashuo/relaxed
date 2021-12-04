@@ -17,37 +17,39 @@ import org.springframework.context.annotation.Lazy;
  * @date 2021/11/25 18:23
  * @Version 1.0
  */
-@EnableConfigurationProperties({OssProperties.class})
+@EnableConfigurationProperties({ OssProperties.class })
 @Configuration(proxyBeanMethods = false)
 public class OssClientAutoConfiguration {
 
+	@Bean
+	@ConditionalOnMissingBean
+	public OssClientBuilder ossClientBuilder(OssProperties ossProperties, PathModifier pathModifier,
+			ObjectProvider<OssClientCustomizer> ossClientBuilders) {
+		OssClientBuilder ossClientBuilder = new OssClientBuilder();
+		ossClientBuilder.rootPath(ossProperties.getRootPath());
+		ossClientBuilder.region(ossProperties.getRegion());
+		ossClientBuilder.accessKey(ossProperties.getAccessKey());
+		ossClientBuilder.accessSecret(ossProperties.getAccessSecret());
+		ossClientBuilder.bucket(ossProperties.getBucket());
+		ossClientBuilder.domain(ossProperties.getDomain());
+		ossClientBuilder.pathStyleAccess(ossProperties.getPathStyleAccess());
+		ossClientBuilder.acl(ossProperties.getAcl());
+		ossClientBuilder.pathModifier(pathModifier);
+		ossClientBuilder.customizers(ossClientBuilders.orderedStream()::iterator);
+		return ossClientBuilder;
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public OssClientBuilder ossClientBuilder(OssProperties ossProperties,PathModifier pathModifier, ObjectProvider<OssClientCustomizer> ossClientBuilders){
-        OssClientBuilder ossClientBuilder = new OssClientBuilder();
-        ossClientBuilder.rootPath(ossProperties.getRootPath());
-        ossClientBuilder.region(ossProperties.getRegion());
-        ossClientBuilder.accessKey(ossProperties.getAccessKey());
-        ossClientBuilder.accessSecret(ossProperties.getAccessSecret());
-        ossClientBuilder.bucket(ossProperties.getBucket());
-        ossClientBuilder.domain(ossProperties.getDomain());
-        ossClientBuilder.pathStyleAccess(ossProperties.getPathStyleAccess());
-        ossClientBuilder.acl(ossProperties.getAcl());
-        ossClientBuilder.pathModifier(pathModifier);
-        ossClientBuilder.customizers(ossClientBuilders.orderedStream()::iterator);
-        return ossClientBuilder;
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public PathModifier pathModifier() {
+		return new DefaultPathModifier();
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public PathModifier pathModifier(){
-        return new DefaultPathModifier();
-    }
-    @Lazy
-    @Bean
-    @ConditionalOnMissingBean({OssClient.class})
-    public OssClient ossClient(OssClientBuilder ossClientBuilder){
-        return ossClientBuilder.build();
-    }
+	@Lazy
+	@Bean
+	@ConditionalOnMissingBean({ OssClient.class })
+	public OssClient ossClient(OssClientBuilder ossClientBuilder) {
+		return ossClientBuilder.build();
+	}
+
 }

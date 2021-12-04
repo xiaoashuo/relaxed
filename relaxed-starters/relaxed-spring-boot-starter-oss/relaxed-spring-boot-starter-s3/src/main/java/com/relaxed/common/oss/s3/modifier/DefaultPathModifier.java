@@ -9,10 +9,11 @@ import com.relaxed.common.oss.s3.OssConstants;
  * @date 2021/12/3 14:57
  * @Version 1.0
  */
-public class DefaultPathModifier implements PathModifier{
+public class DefaultPathModifier implements PathModifier {
 
-    @Override
-    public String modifyRequestPath(String bucket,String optionName, String sourcePath) {
-       return  sourcePath.replaceFirst("/" + bucket, "");
-    }
+	@Override
+	public String modifyRequestPath(String bucket, String optionName, String sourcePath) {
+		return sourcePath.replaceFirst("/" + bucket, "");
+	}
+
 }

@@ -23,9 +23,9 @@ public class OssProperties {
 	 * <ul>
 	 * <li>阿里云节点: https://oss-cn-qingdao.aliyuncs.com</li>
 	 * <li>亚马逊s3节点: https://s3.ap-southeast-1.amazonaws.com</li>
-	 * <li>亚马逊节点:   https://ap-southeast-1.amazonaws.com</li>
-	 * <li>腾讯云节点:  https://cos.ap-shanghai.myqcloud.com</li>
-	 * <li>华为云节点:  https://obs.cn-east-3.myhuaweicloud.com</li>
+	 * <li>亚马逊节点: https://ap-southeast-1.amazonaws.com</li>
+	 * <li>腾讯云节点: https://cos.ap-shanghai.myqcloud.com</li>
+	 * <li>华为云节点: https://obs.cn-east-3.myhuaweicloud.com</li>
 	 * </ul>
 	 * <p>
 	 * 只需要完整 正确的节点地址即可
@@ -42,7 +42,7 @@ public class OssProperties {
 	 * </p>
 	 *
 	 */
-	private String region= Region.US_EAST_1.toString();
+	private String region = Region.US_EAST_1.toString();
 
 	/**
 	 * 密钥key
@@ -72,8 +72,8 @@ public class OssProperties {
 	private String domain;
 
 	/**
-	 * true path-style nginx 反向代理和S3默认支持 pathStyle {http://endpoint/bucketname}
-	 * false supports virtual-hosted-style 阿里云等需要配置为 virtual-hosted-style
+	 * true path-style nginx 反向代理和S3默认支持 pathStyle {http://endpoint/bucketname} false
+	 * supports virtual-hosted-style 阿里云等需要配置为 virtual-hosted-style
 	 * 模式{http://bucketname.endpoint}
 	 */
 	private Boolean pathStyleAccess = true;
@@ -87,7 +87,5 @@ public class OssProperties {
 	 * 上传时为文件配置acl, 为null 不配置
 	 */
 	private ObjectCannedACL acl;
-
-
 
 }
