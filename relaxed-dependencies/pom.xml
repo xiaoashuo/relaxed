@@ -217,6 +217,12 @@
                 <artifactId>relaxed-spring-boot-starter-secret</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--oss s3 对象存储-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-spring-boot-starter-s3</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--swagger 接口文档 -->
             <dependency>
                 <groupId>io.swagger</groupId>

@@ -79,11 +79,6 @@ public class OssProperties {
 	private Boolean pathStyleAccess = true;
 
 	/**
-	 * 所有文件相关操作都在此路径下进行操作
-	 */
-	private String rootPath = OssConstants.SLASH;
-
-	/**
 	 * 上传时为文件配置acl, 为null 不配置
 	 */
 	private ObjectCannedACL acl;

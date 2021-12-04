@@ -1,7 +1,5 @@
 package com.relaxed.common.oss.s3.modifier;
 
-import com.relaxed.common.oss.s3.OssConstants;
-
 /**
  * @author Yakir
  * @Topic DefaultPathModifier

@@ -31,7 +31,6 @@ public class HuaweiOssClientTest {
 	public void before() {
 		buildProperties();
 		OssClientBuilder ossClientBuilder = new OssClientBuilder();
-		ossClientBuilder.rootPath(properties.getRootPath());
 		ossClientBuilder.region(properties.getRegion());
 		ossClientBuilder.accessKey(properties.getAccessKey());
 		ossClientBuilder.accessSecret(properties.getAccessSecret());
@@ -47,7 +46,6 @@ public class HuaweiOssClientTest {
 
 	private void buildProperties() {
 		properties = new OssProperties();
-		properties.setRootPath("/");
 		properties.setAcl(null);
 		properties.setBucket("bucket");
 		properties.setAccessKey("access-key");

@@ -26,7 +26,6 @@ public class OssClientAutoConfiguration {
 	public OssClientBuilder ossClientBuilder(OssProperties ossProperties, PathModifier pathModifier,
 			ObjectProvider<OssClientCustomizer> ossClientBuilders) {
 		OssClientBuilder ossClientBuilder = new OssClientBuilder();
-		ossClientBuilder.rootPath(ossProperties.getRootPath());
 		ossClientBuilder.region(ossProperties.getRegion());
 		ossClientBuilder.accessKey(ossProperties.getAccessKey());
 		ossClientBuilder.accessSecret(ossProperties.getAccessSecret());

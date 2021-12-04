@@ -1,21 +1,12 @@
 package com.relaxed.common.oss.s3.interceptor;
 
-import com.relaxed.common.oss.s3.OssConstants;
 import com.relaxed.common.oss.s3.modifier.PathModifier;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import software.amazon.awssdk.core.interceptor.Context;
 import software.amazon.awssdk.core.interceptor.ExecutionAttributes;
 import software.amazon.awssdk.core.interceptor.ExecutionInterceptor;
 import software.amazon.awssdk.core.interceptor.SdkExecutionAttribute;
 import software.amazon.awssdk.http.SdkHttpRequest;
-import software.amazon.awssdk.services.s3.S3Configuration;
-import software.amazon.awssdk.services.s3.internal.BucketUtils;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import static software.amazon.awssdk.services.s3.internal.endpoints.S3EndpointUtils.isPathStyleAccessEnabled;
 
 /**
  * <p>

@@ -102,11 +102,6 @@ public class OssClientBuilder {
 	private Boolean pathStyleAccess = true;
 
 	/**
-	 * 所有文件相关操作都在此路径下进行操作
-	 */
-	private String rootPath;
-
-	/**
 	 * 代理url
 	 */
 	private String proxyUrl;
@@ -169,24 +164,6 @@ public class OssClientBuilder {
 
 	public OssClientBuilder pathModifier(PathModifier pathModifier) {
 		this.pathModifier = pathModifier;
-		return this;
-	}
-
-	public OssClientBuilder rootPath(String rootPath) {
-		if (!StringUtils.hasText(rootPath)) {
-			this.rootPath = OssConstants.SLASH;
-		}
-
-		// 保证 root path 以 / 结尾
-		if (!rootPath.endsWith(OssConstants.SLASH)) {
-			this.rootPath = rootPath + OssConstants.SLASH;
-		}
-
-		// 保证 root path 不以 / 开头
-		if (rootPath.startsWith(OssConstants.SLASH)) {
-			this.rootPath = rootPath.substring(1);
-		}
-
 		return this;
 	}
 
