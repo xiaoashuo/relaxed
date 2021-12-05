@@ -176,7 +176,7 @@ public class OssClientBuilder {
 
 	public OssClient build() {
 		EndPointSelect endPointSelect = EndPointSelect.toBuilder().domain(domain).pathStyleAccess(pathStyleAccess)
-				.bucket(bucket).endpoint(endpoint).build();
+				.bucket(bucket).endpoint(endpoint).pathModifier(pathModifier).build();
 		proxyUrl = endPointSelect.getProxyUrl();
 		// 构建S3Client
 		S3ClientBuilder s3ClientBuilder = create(endPointSelect);

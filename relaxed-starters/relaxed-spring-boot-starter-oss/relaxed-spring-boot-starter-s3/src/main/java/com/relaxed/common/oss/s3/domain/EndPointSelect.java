@@ -62,7 +62,7 @@ public class EndPointSelect {
 			return this;
 		}
 
-		public Builder bucket(PathModifier pathModifier) {
+		public Builder pathModifier(PathModifier pathModifier) {
 			this.pathModifier = pathModifier;
 			return this;
 		}
