@@ -1,5 +1,6 @@
 package com.relaxed.common.oss.s3;
 
+import com.relaxed.common.oss.s3.domain.EndPointSelect;
 import com.relaxed.common.oss.s3.interceptor.ModifyPathInterceptor;
 import com.relaxed.common.oss.s3.modifier.PathModifier;
 import lombok.Getter;
@@ -174,9 +175,11 @@ public class OssClientBuilder {
 	}
 
 	public OssClient build() {
-		URI proxyEndPoint = endpointSelect();
+		EndPointSelect endPointSelect = EndPointSelect.toBuilder().domain(domain).pathStyleAccess(pathStyleAccess)
+				.bucket(bucket).endpoint(endpoint).build();
+		proxyUrl = endPointSelect.getProxyUrl();
 		// 构建S3Client
-		S3ClientBuilder s3ClientBuilder = create(proxyEndPoint);
+		S3ClientBuilder s3ClientBuilder = create(endPointSelect);
 		s3Client = s3ClientBuilder.build();
 		if (!CollectionUtils.isEmpty(this.customizers)) {
 			this.customizers.forEach((customizer) -> {
@@ -186,31 +189,7 @@ public class OssClientBuilder {
 		return new OssClient(this);
 	}
 
-	private URI endpointSelect() {
-		URI proxyEndPoint;
-		if (StringUtils.hasText(domain)) {
-			proxyEndPoint = URI.create(domain);
-			proxyUrl = domain;
-		}
-		else {
-			// 使用托管形式
-			// 参考文档https://docs.aws.amazon.com/zh_cn/AmazonS3/latest/userguide/VirtualHosting.html
-			// 手动改变 替代 S3BucketEndpointResolver#changeToDnsEndpoint
-			proxyEndPoint = URI.create(endpoint);
-			if (pathModifier.canUseVirtualAddressing(pathStyleAccess, bucket)) {
-				proxyEndPoint = pathModifier.convertToVirtualHostEndpoint(proxyEndPoint, bucket);
-				proxyUrl = proxyEndPoint.toString();
-			}
-			else {
-				// 路径模式 经过拦截器会默认为endpoint后面加上bucket
-				// 此时只需要下载地址保持和请求一致即可 BaseClientHandler#finalizeSdkHttpFullRequest#67
-				proxyUrl = String.format("%s/%s", proxyEndPoint, bucket);
-			}
-		}
-		return proxyEndPoint;
-	}
-
-	private S3ClientBuilder create(URI endpoint) {
+	private S3ClientBuilder create(EndPointSelect endPointSelect) {
 		S3ClientBuilder builder = S3Client.builder();
 		// 设置区域
 		builder.region(Region.of(region));
@@ -220,15 +199,13 @@ public class OssClientBuilder {
 		// 关闭路径形式
 		builder.serviceConfiguration(sb -> sb.pathStyleAccessEnabled(pathStyleAccess).chunkedEncodingEnabled(false));
 
-		builder.endpointOverride(endpoint).credentialsProvider(
+		builder.endpointOverride(endPointSelect.getProxyEndPoint()).credentialsProvider(
 				StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, accessSecret)));
 		// 配置
 
 		builder.overrideConfiguration(cb -> {
-			// 用路径模式
-			boolean usePathStyleAccess = StringUtils.hasText(domain) ? false
-					: pathModifier.canUseVirtualAddressing(pathStyleAccess, bucket);
-			cb.addExecutionInterceptor(new ModifyPathInterceptor(bucket, usePathStyleAccess, pathModifier));
+			cb.addExecutionInterceptor(
+					new ModifyPathInterceptor(bucket, endPointSelect.isUseVirtualAddress(), pathModifier));
 		});
 		return builder;
 	}
