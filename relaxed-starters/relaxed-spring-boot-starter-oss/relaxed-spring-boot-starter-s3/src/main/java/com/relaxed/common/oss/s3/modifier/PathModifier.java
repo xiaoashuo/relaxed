@@ -1,5 +1,6 @@
 package com.relaxed.common.oss.s3.modifier;
 
+import org.springframework.util.StringUtils;
 import software.amazon.awssdk.services.s3.internal.BucketUtils;
 
 import java.net.URI;
@@ -46,6 +47,25 @@ public interface PathModifier {
 	 */
 	default URI convertToVirtualHostEndpoint(URI endpoint, String bucket) {
 		return URI.create(String.format("%s://%s.%s", endpoint.getScheme(), bucket, endpoint.getAuthority()));
+	}
+
+	/**
+	 * 得到下载url
+	 * @author yakir
+	 * @date 2021/12/6 10:43
+	 * @param domain 域名
+	 * @param bucket 桶
+	 * @param downloadPrefix 下载前缀
+	 * @param relativePath 相对路径
+	 * @return java.lang.String
+	 */
+	default String getDownloadUrl(String domain, String bucket, String downloadPrefix, String relativePath) {
+		if (StringUtils.hasText(domain)) {
+			return String.format("%s/%s/%s", downloadPrefix, bucket, relativePath);
+		}
+		else {
+			return String.format("%s/%s", downloadPrefix, relativePath);
+		}
 	}
 
 }

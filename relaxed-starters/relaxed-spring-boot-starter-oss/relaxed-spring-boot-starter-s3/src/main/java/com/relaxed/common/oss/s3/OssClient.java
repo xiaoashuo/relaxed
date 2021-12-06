@@ -1,5 +1,6 @@
 package com.relaxed.common.oss.s3;
 
+import com.relaxed.common.oss.s3.modifier.PathModifier;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -51,6 +52,8 @@ public class OssClient implements DisposableBean {
 
 	private final ObjectCannedACL acl;
 
+	private final PathModifier pathModifier;
+
 	private final S3Client s3Client;
 
 	public OssClient(OssClientBuilder ossClientBuilder) {
@@ -64,6 +67,7 @@ public class OssClient implements DisposableBean {
 		this.pathStyleAccess = ossClientBuilder.getPathStyleAccess();
 		this.downloadPrefix = ossClientBuilder.getProxyUrl();
 		this.acl = ossClientBuilder.getAcl();
+		this.pathModifier = ossClientBuilder.getPathModifier();
 		this.s3Client = ossClientBuilder.getS3Client();
 	}
 
@@ -182,12 +186,7 @@ public class OssClient implements DisposableBean {
 	 * @author lingting 2021-05-12 18:50
 	 */
 	public String getDownloadUrl(String relativePath) {
-		if (StringUtils.hasText(domain)) {
-			return String.format("%s/%s/%s", downloadPrefix, bucket, relativePath);
-		}
-		else {
-			return String.format("%s/%s", downloadPrefix, relativePath);
-		}
+		return pathModifier.getDownloadUrl(domain, bucket, downloadPrefix, relativePath);
 	}
 
 	public S3Client getS3Client() {
