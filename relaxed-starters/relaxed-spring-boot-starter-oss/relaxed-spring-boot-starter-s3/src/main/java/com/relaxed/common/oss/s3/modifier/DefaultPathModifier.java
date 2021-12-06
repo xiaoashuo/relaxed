@@ -9,9 +9,4 @@ package com.relaxed.common.oss.s3.modifier;
  */
 public class DefaultPathModifier implements PathModifier {
 
-	@Override
-	public String modifyRequestPath(String bucket, String optionName, String sourcePath) {
-		return sourcePath.replaceFirst("/" + bucket, "");
-	}
-
 }

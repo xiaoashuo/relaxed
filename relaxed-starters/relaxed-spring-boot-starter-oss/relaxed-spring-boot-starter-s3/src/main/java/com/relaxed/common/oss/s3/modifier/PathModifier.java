@@ -23,7 +23,10 @@ public interface PathModifier {
 	 * @param sourcePath 源路径
 	 * @return java.lang.String
 	 */
-	String modifyRequestPath(String bucket, String optionName, String sourcePath);
+
+	default String modifyRequestPath(String bucket, String optionName, String sourcePath) {
+		return sourcePath.replaceFirst("/" + bucket, "");
+	}
 
 	/**
 	 * 是否使用使用虚拟主机地址
