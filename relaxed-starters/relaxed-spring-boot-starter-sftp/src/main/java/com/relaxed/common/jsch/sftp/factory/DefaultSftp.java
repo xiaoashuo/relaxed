@@ -30,7 +30,7 @@ public class DefaultSftp extends AbstractSftp {
 			return true;
 		}
 		catch (SftpException e) {
-			log.error("option error", e);
+			log.error("isExist exception params[{}]", path, e);
 			return false;
 		}
 	}
@@ -49,7 +49,8 @@ public class DefaultSftp extends AbstractSftp {
 			return channelSftp.get(name);
 		}
 		catch (SftpException e) {
-			throw new SftpClientException("sftp get remote file input stream error", e);
+			throw new SftpClientException(String.format("get remote file exception params[dir=%s,name=%s]", dir, name),
+					e);
 		}
 	}
 
@@ -67,7 +68,8 @@ public class DefaultSftp extends AbstractSftp {
 			return file;
 		}
 		catch (Exception e) {
-			throw new SftpClientException("sftp get remote file download error", e);
+			throw new SftpClientException(
+					String.format("get remote file download exception params[dir=%s,name=%s]", dir, name), e);
 		}
 	}
 
@@ -81,7 +83,8 @@ public class DefaultSftp extends AbstractSftp {
 			return file;
 		}
 		catch (Exception e) {
-			throw new SftpClientException("sftp get remote file download error", e);
+			throw new SftpClientException(
+					String.format("remote file download exception param[fullPath=%s]", absoluteFilePath), e);
 		}
 	}
 
@@ -99,7 +102,7 @@ public class DefaultSftp extends AbstractSftp {
 			channelSftp.put(in, name);
 		}
 		catch (SftpException e) {
-			throw new SftpClientException("sftp upload file error", e);
+			throw new SftpClientException(String.format("upload file exception params[dir=%s,name=%s]", dir, name), e);
 		}
 	}
 
@@ -109,7 +112,7 @@ public class DefaultSftp extends AbstractSftp {
 			upload(dir, name, fis);
 		}
 		catch (SftpClientException | IOException e) {
-			throw new SftpClientException("sftp upload file error", e);
+			throw new SftpClientException(String.format("upload file exception params[dir=%s,name=%s]", dir, name), e);
 		}
 	}
 
@@ -121,7 +124,7 @@ public class DefaultSftp extends AbstractSftp {
 			channelSftp.put(src, name);
 		}
 		catch (SftpException e) {
-			throw new SftpClientException("sftp upload file error", e);
+			throw new SftpClientException(String.format("upload file exception params[dir=%s,name=%s]", dir, name), e);
 		}
 	}
 
@@ -137,7 +140,7 @@ public class DefaultSftp extends AbstractSftp {
 			channelSftp.rmdir(dir);
 		}
 		catch (SftpException e) {
-			throw new SftpClientException("sftp delete directory error", e);
+			throw new SftpClientException(String.format("delete directory exception params[dir=%s]", dir), e);
 		}
 	}
 
@@ -155,7 +158,7 @@ public class DefaultSftp extends AbstractSftp {
 			channelSftp.rm(name);
 		}
 		catch (SftpException e) {
-			throw new SftpClientException("sftp delete file error", e);
+			throw new SftpClientException(String.format("delete file exception params[dir=%s,name=%s]", dir, name), e);
 		}
 	}
 
@@ -177,7 +180,7 @@ public class DefaultSftp extends AbstractSftp {
 			}
 		}
 		catch (SftpException e) {
-			throw new SftpClientException("sftp create directory error", e);
+			throw new SftpClientException(String.format("create directory exception params[dir=%s]", dir), e);
 		}
 	}
 
@@ -206,7 +209,7 @@ public class DefaultSftp extends AbstractSftp {
 			channelSftp.ls(path, selector);
 		}
 		catch (SftpException e) {
-			throw new SftpClientException("sftp view directory error", e);
+			throw new SftpClientException(String.format("view directory exception params[path=%s]", path), e);
 		}
 		return result;
 	}
@@ -217,7 +220,8 @@ public class DefaultSftp extends AbstractSftp {
 			channelSftp.rename(src, target);
 		}
 		catch (SftpException e) {
-			throw new SftpClientException("sftp move file error", e);
+			throw new SftpClientException(
+					String.format("sftp move file exception params[src=%s,target=%s]", src, target), e);
 		}
 	}
 
@@ -229,7 +233,9 @@ public class DefaultSftp extends AbstractSftp {
 			channelSftp.rename(src, fileName);
 		}
 		catch (SftpException e) {
-			throw new SftpClientException("sftp move file error", e);
+			throw new SftpClientException(
+					String.format(" move file exception params[src=%s,target=%s,fileName=%s]", src, target, fileName),
+					e);
 		}
 	}
 
@@ -257,7 +263,8 @@ public class DefaultSftp extends AbstractSftp {
 				channelSftp.chmod(p, path);
 			}
 			catch (SftpException e) {
-				throw new SftpClientException("sftp modify permissions error", e);
+				throw new SftpClientException(
+						String.format("modify permissions exception params[perm=%s,path=%s]", permissions, path), e);
 			}
 		}
 
