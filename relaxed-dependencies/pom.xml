@@ -154,8 +154,22 @@
                 <artifactId>relaxed-common-risk-engine</artifactId>
                 <version>${reversion}</version>
             </dependency>
-
-
+            <!--日志模块-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-log-mdc</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-log-access</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-log-operation</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--通用工具类-->
             <dependency>
                 <groupId>com.lovecyy</groupId>

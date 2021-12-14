@@ -15,19 +15,16 @@
 
         <dependency>
             <groupId>com.lovecyy</groupId>
-            <artifactId>relaxed-common-core</artifactId>
+            <artifactId>relaxed-common-log-mdc</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
+            <groupId>com.lovecyy</groupId>
+            <artifactId>relaxed-common-log-access</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <scope>compile</scope>
+            <groupId>com.lovecyy</groupId>
+            <artifactId>relaxed-common-log-operation</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
