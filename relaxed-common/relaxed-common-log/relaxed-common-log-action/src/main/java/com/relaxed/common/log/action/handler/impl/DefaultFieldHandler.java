@@ -22,6 +22,12 @@ import java.time.LocalDateTime;
 public class DefaultFieldHandler implements FieldHandler {
 
 	@Override
+	public AttributeModel extractAttributeModel(Object oldFieldValue, Object newFieldValue) {
+		AttributeModel attributeModel = new AttributeModel();
+		return null;
+	}
+
+	@Override
 	public AttributeModel extractAttributeModel(Field field, LogTag logTag, Object oldFieldValue,
 			Object newFieldValue) {
 		AttributeModel attributeModel = new AttributeModel();
@@ -32,8 +38,8 @@ public class DefaultFieldHandler implements FieldHandler {
 		String alias = logTag == null ? fieldName : logTag.alias();
 		attributeModel.setAttributeAlias(alias);
 		// 效验字段类型
-		boolean basicHandleType = ClassUtil.isBasicType(fieldType) || String.class.isAssignableFrom(fieldType)
-				|| LocalDateTime.class.isAssignableFrom(fieldType);
+		boolean basicHandleType = ClassUtil.isBasicType(fieldType) || LocalDateTime.class.isAssignableFrom(fieldType);
+		// 基本类型不比较差异值
 		if (basicHandleType) {
 			String oldValueStr = StrUtil.toString(oldFieldValue);
 			String newValueStr = StrUtil.toString(newFieldValue);
@@ -46,12 +52,10 @@ public class DefaultFieldHandler implements FieldHandler {
 		String newValueStr = JSONUtil.toJsonStr(newFieldValue);
 		attributeModel.setOldValue(oldValueStr);
 		attributeModel.setNewValue(newValueStr);
-		if (logTag != null) {
-			Class<? extends DiffConverter> converter = logTag.converter();
-			DiffConverter diffConverter = DiffConvertHolder.getByClass(converter);
-			String diffValue = diffConverter.diffValue(field, logTag, oldFieldValue, newFieldValue);
-			attributeModel.setDiffValue(diffValue);
-		}
+		DiffConverter diffConverter = logTag == null ? DiffConvertHolder.getByDefault()
+				: DiffConvertHolder.getByClass(logTag.converter());
+		String diffValue = diffConverter.diffValue(field, logTag, oldFieldValue, newFieldValue);
+		attributeModel.setDiffValue(diffValue);
 		return attributeModel;
 	}
 

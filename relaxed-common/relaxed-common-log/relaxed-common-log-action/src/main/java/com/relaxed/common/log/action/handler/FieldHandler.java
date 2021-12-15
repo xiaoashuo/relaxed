@@ -25,4 +25,6 @@ public interface FieldHandler {
 	 */
 	AttributeModel extractAttributeModel(Field field, LogTag logTag, Object oldFieldValue, Object newFieldValue);
 
+	AttributeModel extractAttributeModel(Object oldFieldValue, Object newFieldValue);
+
 }

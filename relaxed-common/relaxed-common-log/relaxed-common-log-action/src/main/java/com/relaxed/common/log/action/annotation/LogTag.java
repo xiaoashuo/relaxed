@@ -1,6 +1,5 @@
 package com.relaxed.common.log.action.annotation;
 
-import com.relaxed.common.log.action.converter.DefaultTypeDiffConverter;
 import com.relaxed.common.log.action.converter.DiffConverter;
 import com.relaxed.common.log.action.converter.NullTypeConverter;
 
