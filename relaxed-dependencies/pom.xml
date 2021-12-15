@@ -37,6 +37,7 @@
         <ip2region.version>1.7.2</ip2region.version>
         <software.amazon.awssdk.version>2.17.46</software.amazon.awssdk.version>
         <diffutil.version>1.3.0</diffutil.version>
+        <zjsonpatch.version>0.4.11</zjsonpatch.version>
 
         <!-- 跳过测试 -->
         <skipTests>true</skipTests>
@@ -433,6 +434,13 @@
                 <artifactId>diffutils</artifactId>
                 <version>${diffutil.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.flipkart.zjsonpatch</groupId>
+                <artifactId>zjsonpatch</artifactId>
+                <version>${zjsonpatch.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

@@ -5,6 +5,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.action.annotation.LogTag;
 import com.relaxed.common.log.action.converter.SimpleTypeDiffConverter;
+import com.relaxed.common.log.action.converter.json.JsonTypeConverter;
 import com.relaxed.common.log.action.converter.richtext.RichTextTypeConverter;
 import com.relaxed.common.log.action.handler.DataHandler;
 import com.relaxed.common.log.action.handler.FieldHandler;
@@ -49,13 +50,13 @@ class LogClientTest {
 		@LogTag(alias = "用户名", converter = SimpleTypeDiffConverter.class)
 		private InnerData innerData;
 
-		@LogTag(alias = "扩展参数", converter = SimpleTypeDiffConverter.class)
-		private String extParam;
+		@LogTag(alias = "json参数", converter = JsonTypeConverter.class)
+		private String jsonParam;
 
 		/**
 		 * 富文本
 		 */
-		@LogTag(converter = RichTextTypeConverter.class)
+		@LogTag(alias = "富文本", converter = RichTextTypeConverter.class)
 		private String richText;
 
 	}
@@ -68,19 +69,6 @@ class LogClientTest {
 	}
 
 	@Test
-	public void testRichDiff() {
-
-		String oldStr = "<html>\n" + "\n" + "<head>\n" + "<title>我的第一个 HTML 页面</title>\n" + "</head>\n" + "\n"
-				+ "<body>\n" + "<p>body 元素的内容会显示在浏览器中。</p>\n" + "<p>title 元素的内容会显示在浏览器的标题栏中。</p>\n" + "</body>\n" + "\n"
-				+ "</html>\n";
-		String newStr = "<html>\n" + "\n" + "<head>\n" + "<title>我的第一个 自己的 HTML 页面</title>\n" + "</head>\n" + "\n"
-				+ "<body>\n" + "<p>body 元素的内容会显示在浏览器中。</p>\n" + "<p>ces</p>\n" + "<p>title 元素的内容会显示在浏览器的标题栏中。</p>\n"
-				+ "</body>\n" + "\n" + "</html>\n";
-		String s = RichTextTypeConverter.diffText(oldStr, newStr);
-		System.out.println(s);
-	}
-
-	@Test
 	public void ts() {
 		RecordHandler recordHandler = new DefaultRecordHandler();
 		FieldHandler fieldHandler = new DefaultFieldHandler();
@@ -89,8 +77,10 @@ class LogClientTest {
 		logClientProperties.setAppName("test");
 		LogClient logClient = new LogClient(dataHandler, logClientProperties);
 		String objectId = IdUtil.objectId();
-		TestData oldValue = buildTestData1("张三", "男");
-		TestData newValue = buildTestData1("李四", "女");
+		String expected = "{\"username\":\"张三\",\"version\":\"1.0.0\",\"content\":[{\"lineNumber\":1,\"gender\":\"女\"}]}";
+		String actual = "{\"jack\":\"张三\",\"version\":\"1.0.0\",\"content\":[{\"lineNumber\":2,\"age\":\"18\"}]}";
+		TestData oldValue = buildTestData1("张三", "男", expected);
+		TestData newValue = buildTestData1("李四", "女", actual);
 
 		logClient.logObject(objectId, "张三", "created", "创建", "", "测试", oldValue, newValue);
 		log.info("上报结束");
@@ -104,8 +94,8 @@ class LogClientTest {
 		return oldStr;
 	}
 
-	private TestData buildTestData1(String username, String gender) {
-		String source = "{\"version\":\"1.0.0\",\"content\":[{\"lineNumber\":1,\"age\":\"18\"}]}";
+	private TestData buildTestData1(String username, String gender, String jsonParam) {
+
 		TestData testData = new TestData();
 		testData.setId(1);
 		testData.setUsername(username);
@@ -113,9 +103,7 @@ class LogClientTest {
 		InnerData innerData = new InnerData();
 		innerData.setGender(gender);
 		testData.setInnerData(innerData);
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.set("test", IdUtil.objectId());
-		testData.setExtParam(JSONUtil.toJsonStr(jsonObject));
+		testData.setJsonParam(jsonParam);
 		testData.setRichText(getHtmlText());
 		return testData;
 	}
