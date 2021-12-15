@@ -38,13 +38,13 @@ public class LogClient {
 		operationModel.setOldValue(oldObject);
 		operationModel.setNewValue(newObject);
 		operationModel.setOperationTime(LocalDateTime.now());
-		log.info("日志记录开始{}", operationModel);
+		log.debug("日志记录开始{}", operationModel);
 		// 将比对方法下沉到记录 时间点
 		try {
 			dataHandler.recordObject(operationModel);
 		}
 		catch (Exception e) {
-			log.error("日志记录异常{}", objectId, e);
+			log.debug("日志记录异常{}", objectId, e);
 		}
 	}
 
