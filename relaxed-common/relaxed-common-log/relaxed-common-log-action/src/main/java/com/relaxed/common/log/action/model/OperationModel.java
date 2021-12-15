@@ -37,6 +37,11 @@ public class OperationModel {
 	private String objectId;
 
 	/**
+	 * traceId
+	 */
+	private String tractId;
+
+	/**
 	 * 操作者
 	 */
 	private String operator;

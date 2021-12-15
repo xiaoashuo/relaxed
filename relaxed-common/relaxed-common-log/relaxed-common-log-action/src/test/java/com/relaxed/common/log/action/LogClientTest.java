@@ -82,7 +82,7 @@ class LogClientTest {
 		TestData oldValue = buildTestData1("张三", "男", expected);
 		TestData newValue = buildTestData1("李四", "女", actual);
 
-		logClient.logObject(objectId, "张三", "created", "创建", "", "测试", oldValue, newValue);
+		logClient.logObject(IdUtil.simpleUUID(), objectId, "张三", "created", "创建", "", "测试", oldValue, newValue);
 		log.info("上报结束");
 	}
 

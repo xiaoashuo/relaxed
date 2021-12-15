@@ -24,13 +24,14 @@ public class LogClient {
 
 	private final LogClientProperties logClientProperties;
 
-	public void logObject(String objectId, String operator, String operationName, String operationAlias,
+	public void logObject(String traceId, String objectId, String operator, String operationName, String operationAlias,
 			String extraWords, String comment, Object oldObject, Object newObject) {
 		OperationModel operationModel = new OperationModel();
 		operationModel.setAppName(logClientProperties.getAppName());
 		operationModel.setObjectName(oldObject.getClass().getSimpleName());
 		operationModel.setObjectId(objectId);
 		operationModel.setOperator(operator);
+		operationModel.setTractId(traceId);
 		operationModel.setOperationName(operationName);
 		operationModel.setOperationAlias(operationAlias);
 		operationModel.setExtraWords(extraWords);
@@ -38,13 +39,17 @@ public class LogClient {
 		operationModel.setOldValue(oldObject);
 		operationModel.setNewValue(newObject);
 		operationModel.setOperationTime(LocalDateTime.now());
+		logObject(operationModel);
+	}
+
+	public void logObject(OperationModel operationModel) {
 		log.debug("日志记录开始{}", operationModel);
 		// 将比对方法下沉到记录 时间点
 		try {
 			dataHandler.recordObject(operationModel);
 		}
 		catch (Exception e) {
-			log.debug("日志记录异常{}", objectId, e);
+			log.debug("日志记录异常{}", operationModel.getTractId(), e);
 		}
 	}
 
