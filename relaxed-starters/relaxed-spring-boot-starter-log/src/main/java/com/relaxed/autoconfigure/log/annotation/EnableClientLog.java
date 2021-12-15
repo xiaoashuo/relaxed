@@ -1,5 +1,6 @@
 package com.relaxed.autoconfigure.log.annotation;
 
+import com.relaxed.autoconfigure.log.LogClientAutoConfiguration;
 import com.relaxed.autoconfigure.log.OperationLogAutoConfiguration;
 import org.springframework.context.annotation.Import;
 
@@ -15,7 +16,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import({ OperationLogAutoConfiguration.class })
+@Import({ LogClientAutoConfiguration.class })
 public @interface EnableClientLog {
 
 }

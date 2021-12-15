@@ -1,5 +1,6 @@
 package com.relaxed.autoconfigure.log;
 
+import com.relaxed.common.log.action.LogClient;
 import com.relaxed.common.log.action.properties.LogClientProperties;
 import com.relaxed.common.log.action.handler.DataHandler;
 import com.relaxed.common.log.action.handler.FieldHandler;
@@ -57,6 +58,20 @@ public class LogClientAutoConfiguration {
 	@ConditionalOnMissingBean
 	public DataHandler dataHandler(RecordHandler recordHandler, FieldHandler fieldHandler) {
 		return new DefaultDataHandler(recordHandler, fieldHandler);
+	}
+
+	/**
+	 * 日志客户端
+	 * @author yakir
+	 * @date 2021/12/15 16:44
+	 * @param dataHandler
+	 * @param logClientProperties
+	 * @return com.relaxed.common.log.action.LogClient
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public LogClient logClient(DataHandler dataHandler, LogClientProperties logClientProperties) {
+		return new LogClient(dataHandler, logClientProperties);
 	}
 
 }

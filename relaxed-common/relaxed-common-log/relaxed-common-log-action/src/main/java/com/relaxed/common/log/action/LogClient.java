@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
  */
 @RequiredArgsConstructor
 @Slf4j
-@Component
 public class LogClient {
 
 	private final DataHandler dataHandler;
