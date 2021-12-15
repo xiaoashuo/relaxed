@@ -5,6 +5,7 @@ import com.relaxed.common.log.action.converter.richtext.RichTextTypeConverter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 /**
  * @author Yakir
@@ -21,6 +22,11 @@ public class DiffConvertHolder {
 		CONVERTER_HOLDER.put(SimpleTypeDiffConverter.class, new SimpleTypeDiffConverter());
 		CONVERTER_HOLDER.put(RichTextTypeConverter.class, new RichTextTypeConverter());
 		CONVERTER_HOLDER.put(JsonTypeConverter.class, new JsonTypeConverter());
+		// SPI 加载所有的 转换器类型处理
+		ServiceLoader<DiffConverter> loadedDrivers = ServiceLoader.load(DiffConverter.class);
+		for (DiffConverter diffConverter : loadedDrivers) {
+			CONVERTER_HOLDER.put(diffConverter.getClass(), diffConverter);
+		}
 	}
 
 	public static DiffConverter getByClass(Class<? extends DiffConverter> clazz) {

@@ -31,32 +31,4 @@ public class JsonTypeConverter implements DiffConverter {
 		return JsonUtil.jsonDiff(StrUtil.toString(oldFieldValue), StrUtil.toString(newFieldValue));
 	}
 
-	public static void main(String[] args) throws JsonProcessingException {
-		String original = "{\"version\":\"1.0.0\",\"content\":[{\"lineNumber\":1,\"gender\":\"男\"}]}";
-		String targetJson = "{\"version\":\"1.0.0\",\"content\":[{\"lineNumber\":2,\"age\":\"18\"}]}";
-
-		System.out.println("结束");
-	}
-
-	interface ResultHandle {
-
-		void handle(String key, String sourceValue, String targetValue);
-
-	}
-
-	@Data
-	class JsonModel {
-
-		private String jsonName;
-
-		private String sourceJsonValue;
-
-		private String targetJsonValue;
-
-		private String diffValue;
-
-		private String action;
-
-	}
-
 }

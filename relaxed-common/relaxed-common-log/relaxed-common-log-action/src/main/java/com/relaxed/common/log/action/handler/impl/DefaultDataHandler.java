@@ -27,7 +27,6 @@ import java.lang.reflect.Field;
  * @Version 1.0
  */
 @RequiredArgsConstructor
-@Component
 public class DefaultDataHandler implements DataHandler {
 
 	private final RecordHandler recordHandler;
