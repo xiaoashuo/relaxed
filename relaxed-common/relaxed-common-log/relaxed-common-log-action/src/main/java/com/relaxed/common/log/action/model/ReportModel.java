@@ -33,6 +33,11 @@ public class ReportModel {
 	private String objectName;
 
 	/**
+	 * traceId
+	 */
+	private String tractId;
+
+	/**
 	 * 对象关联id
 	 */
 	private String objectId;
@@ -85,6 +90,7 @@ public class ReportModel {
 	public static ReportModel of(OperationModel operationModel) {
 		ReportModel reportModel = new ReportModel();
 		reportModel.setAppName(operationModel.getAppName());
+		reportModel.setTractId(operationModel.getTractId());
 		reportModel.setObjectName(operationModel.getObjectName());
 		reportModel.setObjectId(operationModel.getObjectId());
 		reportModel.setOperator(operationModel.getOperator());
