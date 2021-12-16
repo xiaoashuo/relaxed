@@ -27,7 +27,6 @@ public class LogClient {
 	public void logObject(String traceId, String objectId, String operator, String operationName, String operationAlias,
 			String extraWords, String comment, Object oldObject, Object newObject) {
 		OperationModel operationModel = new OperationModel();
-		operationModel.setAppName(logClientProperties.getAppName());
 		operationModel.setObjectName(oldObject.getClass().getSimpleName());
 		operationModel.setObjectId(objectId);
 		operationModel.setOperator(operator);
@@ -43,6 +42,7 @@ public class LogClient {
 	}
 
 	public void logObject(OperationModel operationModel) {
+		operationModel.setAppName(logClientProperties.getAppName());
 		log.debug("日志记录开始{}", operationModel);
 		// 将比对方法下沉到记录 时间点
 		try {
