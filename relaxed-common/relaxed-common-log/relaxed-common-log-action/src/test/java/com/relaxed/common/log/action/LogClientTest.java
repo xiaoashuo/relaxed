@@ -1,12 +1,10 @@
 package com.relaxed.common.log.action;
 
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.action.annotation.LogTag;
-import com.relaxed.common.log.action.converter.SimpleTypeDiffConverter;
-import com.relaxed.common.log.action.converter.json.JsonTypeConverter;
-import com.relaxed.common.log.action.converter.richtext.RichTextTypeConverter;
+import com.relaxed.common.log.action.converter.SimpleTypeDiffExtractor;
+import com.relaxed.common.log.action.converter.json.JsonTypeExtractor;
+import com.relaxed.common.log.action.converter.richtext.RichTextTypeExtractor;
 import com.relaxed.common.log.action.handler.DataHandler;
 import com.relaxed.common.log.action.handler.FieldHandler;
 import com.relaxed.common.log.action.handler.RecordHandler;
@@ -15,7 +13,6 @@ import com.relaxed.common.log.action.handler.impl.DefaultFieldHandler;
 import com.relaxed.common.log.action.handler.impl.DefaultRecordHandler;
 import com.relaxed.common.log.action.properties.LogClientProperties;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,16 +44,16 @@ class LogClientTest {
 
 		private String password;
 
-		@LogTag(alias = "用户名", converter = SimpleTypeDiffConverter.class)
+		@LogTag(alias = "用户名", extractor = SimpleTypeDiffExtractor.class)
 		private InnerData innerData;
 
-		@LogTag(alias = "json参数", converter = JsonTypeConverter.class)
+		@LogTag(alias = "json参数", extractor = JsonTypeExtractor.class)
 		private String jsonParam;
 
 		/**
 		 * 富文本
 		 */
-		@LogTag(alias = "富文本", converter = RichTextTypeConverter.class)
+		@LogTag(alias = "富文本", extractor = RichTextTypeExtractor.class)
 		private String richText;
 
 	}

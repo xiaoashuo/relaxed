@@ -12,7 +12,7 @@ import java.lang.reflect.Field;
  * @date 2021/12/14 17:28
  * @Version 1.0
  */
-public class SimpleTypeDiffConverter implements DiffConverter {
+public class SimpleTypeDiffExtractor implements DiffExtractor {
 
 	@Override
 	public String diffValue(Field field, LogTag logTag, Object oldFieldValue, Object newFieldValue) {

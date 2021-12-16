@@ -3,7 +3,7 @@ package com.relaxed.common.log.action.converter.richtext;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.action.annotation.LogTag;
-import com.relaxed.common.log.action.converter.DiffConverter;
+import com.relaxed.common.log.action.converter.DiffExtractor;
 import difflib.*;
 
 import java.lang.reflect.Field;
@@ -16,7 +16,7 @@ import java.util.*;
  * @date 2021/12/15 9:49
  * @Version 1.0
  */
-public class RichTextTypeConverter implements DiffConverter {
+public class RichTextTypeExtractor implements DiffExtractor {
 
 	@Override
 	public String diffValue(Field field, LogTag logTag, Object oldFieldValue, Object newFieldValue) {

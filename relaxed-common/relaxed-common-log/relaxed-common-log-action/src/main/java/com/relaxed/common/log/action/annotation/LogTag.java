@@ -1,7 +1,7 @@
 package com.relaxed.common.log.action.annotation;
 
-import com.relaxed.common.log.action.converter.DiffConverter;
-import com.relaxed.common.log.action.converter.NullTypeConverter;
+import com.relaxed.common.log.action.converter.DiffExtractor;
+import com.relaxed.common.log.action.converter.SimpleTypeDiffExtractor;
 
 import java.lang.annotation.*;
 
@@ -24,9 +24,15 @@ public @interface LogTag {
 	String alias() default "";
 
 	/**
-	 * 转换器
+	 * 当前处理字段类型 别名
 	 * @return
 	 */
-	Class<? extends DiffConverter> converter() default NullTypeConverter.class;
+	String typeAlias() default "";
+
+	/**
+	 * 差异提取器
+	 * @return
+	 */
+	Class<? extends DiffExtractor> extractor() default SimpleTypeDiffExtractor.class;
 
 }

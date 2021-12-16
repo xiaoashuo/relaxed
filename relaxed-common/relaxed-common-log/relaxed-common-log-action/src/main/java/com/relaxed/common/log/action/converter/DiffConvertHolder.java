@@ -1,7 +1,8 @@
 package com.relaxed.common.log.action.converter;
 
-import com.relaxed.common.log.action.converter.json.JsonTypeConverter;
-import com.relaxed.common.log.action.converter.richtext.RichTextTypeConverter;
+import com.relaxed.common.log.action.converter.json.JsonTypeExtractor;
+import com.relaxed.common.log.action.converter.richtext.RichTextTypeExtractor;
+import org.springframework.util.Assert;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,21 +17,22 @@ import java.util.ServiceLoader;
  */
 public class DiffConvertHolder {
 
-	private static Map<Class<? extends DiffConverter>, DiffConverter> CONVERTER_HOLDER = new HashMap<>();
+	private static Map<Class<? extends DiffExtractor>, DiffExtractor> CONVERTER_HOLDER = new HashMap<>();
 	static {
-		CONVERTER_HOLDER.put(NullTypeConverter.class, new NullTypeConverter());
-		CONVERTER_HOLDER.put(SimpleTypeDiffConverter.class, new SimpleTypeDiffConverter());
-		CONVERTER_HOLDER.put(RichTextTypeConverter.class, new RichTextTypeConverter());
-		CONVERTER_HOLDER.put(JsonTypeConverter.class, new JsonTypeConverter());
+		CONVERTER_HOLDER.put(SimpleTypeDiffExtractor.class, new SimpleTypeDiffExtractor());
+		CONVERTER_HOLDER.put(RichTextTypeExtractor.class, new RichTextTypeExtractor());
+		CONVERTER_HOLDER.put(JsonTypeExtractor.class, new JsonTypeExtractor());
 		// SPI 加载所有的 转换器类型处理
-		ServiceLoader<DiffConverter> loadedDrivers = ServiceLoader.load(DiffConverter.class);
-		for (DiffConverter diffConverter : loadedDrivers) {
-			CONVERTER_HOLDER.put(diffConverter.getClass(), diffConverter);
+		ServiceLoader<DiffExtractor> loadedDrivers = ServiceLoader.load(DiffExtractor.class);
+		for (DiffExtractor diffExtractor : loadedDrivers) {
+			CONVERTER_HOLDER.put(diffExtractor.getClass(), diffExtractor);
 		}
 	}
 
-	public static DiffConverter getByClass(Class<? extends DiffConverter> clazz) {
-		return CONVERTER_HOLDER.get(clazz);
+	public static DiffExtractor getByClass(Class<? extends DiffExtractor> clazz) {
+		DiffExtractor diffExtractor = CONVERTER_HOLDER.get(clazz);
+		Assert.notNull(diffExtractor, "diff extractor can not null.");
+		return diffExtractor;
 	}
 
 	/**
@@ -38,10 +40,10 @@ public class DiffConvertHolder {
 	 * @author yakir
 	 * @date 2021/12/15 15:19
 	 * @param clazz
-	 * @param diffConverter
+	 * @param diffExtractor
 	 */
-	public static void register(Class<? extends DiffConverter> clazz, DiffConverter diffConverter) {
-		CONVERTER_HOLDER.put(clazz, diffConverter);
+	public static void register(Class<? extends DiffExtractor> clazz, DiffExtractor diffExtractor) {
+		CONVERTER_HOLDER.put(clazz, diffExtractor);
 	}
 
 	/**
@@ -50,8 +52,8 @@ public class DiffConvertHolder {
 	 * @date 2021/12/15 10:06
 	 * @return com.relaxed.common.log.action.converter.DiffConverter
 	 */
-	public static DiffConverter getByDefault() {
-		return CONVERTER_HOLDER.get(SimpleTypeDiffConverter.class);
+	public static DiffExtractor getByDefault() {
+		return CONVERTER_HOLDER.get(SimpleTypeDiffExtractor.class);
 	}
 
 }

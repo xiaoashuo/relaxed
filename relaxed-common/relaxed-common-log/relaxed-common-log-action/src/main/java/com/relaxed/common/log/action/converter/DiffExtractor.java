@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
  * @date 2021/12/14 17:26
  * @Version 1.0
  */
-public interface DiffConverter {
+public interface DiffExtractor {
 
 	/**
 	 * 转换出 差异值

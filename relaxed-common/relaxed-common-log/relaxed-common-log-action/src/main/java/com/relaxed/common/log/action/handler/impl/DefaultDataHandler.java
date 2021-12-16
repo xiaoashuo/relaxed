@@ -42,10 +42,13 @@ public class DefaultDataHandler implements DataHandler {
 		// 构建报告
 		ReportModel reportModel = ReportModel.of(operationModel);
 		ArrayList<AttributeModel> attributeModelList = new ArrayList<>();
-		// 1.效验新旧元素是否为同一类型
+		// 1.效验新旧元素是否为同一类型 ,同类型 比对差异 不同则不进行查询比对
 		if (oldValueClass.equals(newValueClass)) {
 			Field[] declaredFields = ClassUtil.getDeclaredFields(oldValueClass);
 			for (Field declaredField : declaredFields) {
+				if (fieldHandler.ignoreField(declaredField)) {
+					continue;
+				}
 				LogTag logTag = AnnotationUtil.getAnnotation(declaredField, LogTag.class);
 				Object oldFieldValue = ReflectUtil.getFieldValue(oldValue, declaredField);
 				Object newFieldValue = ReflectUtil.getFieldValue(newValue, declaredField);
@@ -53,11 +56,6 @@ public class DefaultDataHandler implements DataHandler {
 						newFieldValue);
 				attributeModelList.add(attributeModel);
 			}
-
-		}
-		else {
-			// 类型不一致 直接进行 上报
-
 		}
 		reportModel.setAttributeModelList(attributeModelList);
 		recordHandler.report(reportModel);
