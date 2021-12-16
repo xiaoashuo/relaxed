@@ -46,12 +46,13 @@ public class DefaultDataHandler implements DataHandler {
 		if (oldValueClass.equals(newValueClass)) {
 			Field[] declaredFields = ClassUtil.getDeclaredFields(oldValueClass);
 			for (Field declaredField : declaredFields) {
-				if (fieldHandler.ignoreField(declaredField)) {
-					continue;
-				}
+
 				LogTag logTag = AnnotationUtil.getAnnotation(declaredField, LogTag.class);
 				Object oldFieldValue = ReflectUtil.getFieldValue(oldValue, declaredField);
 				Object newFieldValue = ReflectUtil.getFieldValue(newValue, declaredField);
+				if (fieldHandler.ignoreField(declaredField, oldFieldValue, newFieldValue)) {
+					continue;
+				}
 				AttributeModel attributeModel = fieldHandler.extractAttributeModel(declaredField, logTag, oldFieldValue,
 						newFieldValue);
 				attributeModelList.add(attributeModel);

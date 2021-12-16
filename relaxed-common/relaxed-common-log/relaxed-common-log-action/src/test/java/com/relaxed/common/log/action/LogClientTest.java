@@ -11,6 +11,7 @@ import com.relaxed.common.log.action.handler.RecordHandler;
 import com.relaxed.common.log.action.handler.impl.DefaultDataHandler;
 import com.relaxed.common.log.action.handler.impl.DefaultFieldHandler;
 import com.relaxed.common.log.action.handler.impl.DefaultRecordHandler;
+import com.relaxed.common.log.action.model.AttributeModel;
 import com.relaxed.common.log.action.properties.LogClientProperties;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.lang.reflect.Field;
 
 /**
  * @author Yakir
@@ -44,7 +47,7 @@ class LogClientTest {
 
 		private String password;
 
-		@LogTag(alias = "用户名", extractor = SimpleTypeDiffExtractor.class)
+		@LogTag(alias = "用户名", typeAlias = "内部实体", extractor = SimpleTypeDiffExtractor.class)
 		private InnerData innerData;
 
 		@LogTag(alias = "json参数", extractor = JsonTypeExtractor.class)
@@ -68,7 +71,21 @@ class LogClientTest {
 	@Test
 	public void ts() {
 		RecordHandler recordHandler = new DefaultRecordHandler();
-		FieldHandler fieldHandler = new DefaultFieldHandler();
+		FieldHandler fieldHandler = new FieldHandler() {
+			@Override
+			public AttributeModel extractAttributeModel(Field field, LogTag logTag, Object oldFieldValue,
+					Object newFieldValue) {
+				return new DefaultFieldHandler().extractAttributeModel(field, logTag, oldFieldValue, newFieldValue);
+			}
+
+			@Override
+			public boolean ignoreField(Field field, Object oldFieldValue, Object newFieldValue) {
+				if (field.getName().equals("username")) {
+					return true;
+				}
+				return false;
+			}
+		};
 		DataHandler dataHandler = new DefaultDataHandler(recordHandler, fieldHandler);
 		LogClientProperties logClientProperties = new LogClientProperties();
 		logClientProperties.setAppName("test");

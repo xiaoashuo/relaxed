@@ -26,12 +26,14 @@ public interface FieldHandler {
 	AttributeModel extractAttributeModel(Field field, LogTag logTag, Object oldFieldValue, Object newFieldValue);
 
 	/**
-	 * 是否忽略当前处理字段
+	 * 是否忽略当前处理字段 忽略 则不进行属性变更记录
 	 * @author yakir
 	 * @date 2021/12/16 9:35
 	 * @param field
+	 * @param oldFieldValue
+	 * @param newFieldValue
 	 * @return boolean true 忽略 false 不忽略
 	 */
-	boolean ignoreField(Field field);
+	boolean ignoreField(Field field, Object oldFieldValue, Object newFieldValue);
 
 }

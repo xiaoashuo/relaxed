@@ -51,7 +51,7 @@ public class DefaultFieldHandler implements FieldHandler {
 	}
 
 	@Override
-	public boolean ignoreField(Field field) {
+	public boolean ignoreField(Field field, Object oldFieldValue, Object newFieldValue) {
 		return false;
 	}
 
