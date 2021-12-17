@@ -1,6 +1,8 @@
 package com.relaxed.common.log.action;
 
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.log.action.annotation.LogTag;
 import com.relaxed.common.log.action.converter.EntityTypeConverter;
 import com.relaxed.common.log.action.converter.SimpleTypeDiffExtractor;
@@ -103,7 +105,10 @@ class LogClientTest {
 
 			@Override
 			public boolean ignoreField(Field field, Object oldFieldValue, Object newFieldValue) {
-				if (field.getName().equals("username")) {
+				// 若为字符串或基本类型 内容相同 则不进行记录
+				Class<?> fieldType = field.getType();
+				if ((String.class.isAssignableFrom(fieldType) || ClassUtil.isBasicType(fieldType))
+						&& oldFieldValue.equals(newFieldValue)) {
 					return true;
 				}
 				return false;
@@ -116,8 +121,8 @@ class LogClientTest {
 		String objectId = IdUtil.objectId();
 		String expected = "{\"username\":\"张三\",\"version\":\"1.0.0\",\"content\":[{\"lineNumber\":1,\"gender\":\"女\"}]}";
 		String actual = "{\"jack\":\"张三\",\"version\":\"1.0.0\",\"content\":[{\"lineNumber\":2,\"age\":\"18\"}]}";
-		TestData oldValue = buildTestData1("张三", "男", expected);
-		TestData newValue = buildTestData1("李四", "女", actual);
+		TestData oldValue = buildTestData1("张三", "男", expected, false);
+		TestData newValue = buildTestData1("李四", "女", actual, true);
 
 		logClient.logObject(IdUtil.simpleUUID(), objectId, "张三", "created", "创建", "", "测试", oldValue, newValue);
 		log.info("上报结束");
@@ -131,7 +136,7 @@ class LogClientTest {
 		return oldStr;
 	}
 
-	private TestData buildTestData1(String username, String gender, String jsonParam) {
+	private TestData buildTestData1(String username, String gender, String jsonParam, boolean randomInnerData) {
 
 		TestData testData = new TestData();
 		testData.setId(1);
@@ -140,7 +145,7 @@ class LogClientTest {
 		InnerData innerData = new InnerData();
 		innerData.setGender(gender);
 		InnerDataText innerDataText = new InnerDataText();
-		innerDataText.setData(IdUtil.simpleUUID());
+		innerDataText.setData(randomInnerData ? IdUtil.simpleUUID() : null);
 		innerDataText.setTeachers(Lists.asList(new Teacher(IdUtil.simpleUUID())));
 		innerData.setInnerDataText(innerDataText);
 		testData.setInnerData(innerData);

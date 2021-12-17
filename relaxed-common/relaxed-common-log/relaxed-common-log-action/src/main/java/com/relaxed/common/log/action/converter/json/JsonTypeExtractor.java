@@ -48,8 +48,8 @@ public class JsonTypeExtractor implements DiffExtractor {
 			String value = nodeValue(node.get(VALUE), "");
 			String path = nodeValue(node.get(PATH), "");
 			String fromValue = nodeValue(node.get(FROM_VALUE), "");
-
-			attributeChange.setOp(AttrOptionEnum.of(op).toString());
+			AttrOptionEnum attrOptionEnum = AttrOptionEnum.of(op);
+			attributeChange.setOp(attrOptionEnum.toString());
 			attributeChange.setPath(path);
 			String property = "";
 			if (StringUtils.hasText(path)) {
@@ -57,8 +57,16 @@ public class JsonTypeExtractor implements DiffExtractor {
 				property = pathArray[pathArray.length - 1];
 			}
 			attributeChange.setProperty(property);
-			attributeChange.setLeftValue(fromValue);
-			attributeChange.setRightValue(value);
+			if (AttrOptionEnum.ADD.equals(attrOptionEnum)) {
+				attributeChange.setRightValue(value);
+			}
+			else if (AttrOptionEnum.REMOVE.equals(attrOptionEnum)) {
+				attributeChange.setLeftValue(value);
+			}
+			else {
+				attributeChange.setLeftValue(fromValue);
+				attributeChange.setRightValue(value);
+			}
 			attributeChangeList.add(attributeChange);
 		}
 
