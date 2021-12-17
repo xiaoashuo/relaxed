@@ -22,7 +22,10 @@
             <groupId>com.flipkart.zjsonpatch</groupId>
             <artifactId>zjsonpatch</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.javers</groupId>
+            <artifactId>javers-core</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.googlecode.java-diff-utils</groupId>

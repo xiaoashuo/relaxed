@@ -22,6 +22,7 @@ public class DiffConvertHolder {
 		CONVERTER_HOLDER.put(SimpleTypeDiffExtractor.class, new SimpleTypeDiffExtractor());
 		CONVERTER_HOLDER.put(RichTextTypeExtractor.class, new RichTextTypeExtractor());
 		CONVERTER_HOLDER.put(JsonTypeExtractor.class, new JsonTypeExtractor());
+		CONVERTER_HOLDER.put(EntityTypeConverter.class, new EntityTypeConverter());
 		// SPI 加载所有的 转换器类型处理
 		ServiceLoader<DiffExtractor> loadedDrivers = ServiceLoader.load(DiffExtractor.class);
 		for (DiffExtractor diffExtractor : loadedDrivers) {

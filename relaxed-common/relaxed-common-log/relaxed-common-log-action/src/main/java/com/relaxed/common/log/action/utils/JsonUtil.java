@@ -48,12 +48,16 @@ public class JsonUtil {
 	 * @param actual 支持 json对象 json数组
 	 * @return java.lang.String 返回差异json数组
 	 */
-	@SneakyThrows
 	public static String jsonDiff(String expected, String actual) {
+		return jsonPatchDiff(expected, actual).toPrettyString();
+	}
+
+	@SneakyThrows
+	public static JsonNode jsonPatchDiff(String expected, String actual) {
 		JsonNode source = MAPPER.readTree(expected);
 		JsonNode target = MAPPER.readTree(actual);
-		JsonNode jsonpPatch = jsonDiff(source, target, flags);
-		return jsonpPatch.toPrettyString();
+		JsonNode jsonpPatch = jsonDiff(source, target);
+		return jsonpPatch;
 	}
 
 	public static JsonNode jsonDiff(JsonNode expected, JsonNode actual) {

@@ -2,6 +2,7 @@ package com.relaxed.common.log.action;
 
 import cn.hutool.core.util.IdUtil;
 import com.relaxed.common.log.action.annotation.LogTag;
+import com.relaxed.common.log.action.converter.EntityTypeConverter;
 import com.relaxed.common.log.action.converter.SimpleTypeDiffExtractor;
 import com.relaxed.common.log.action.converter.json.JsonTypeExtractor;
 import com.relaxed.common.log.action.converter.richtext.RichTextTypeExtractor;
@@ -13,7 +14,9 @@ import com.relaxed.common.log.action.handler.impl.DefaultFieldHandler;
 import com.relaxed.common.log.action.handler.impl.DefaultRecordHandler;
 import com.relaxed.common.log.action.model.AttributeModel;
 import com.relaxed.common.log.action.properties.LogClientProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.javers.common.collections.Lists;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +24,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * @author Yakir
@@ -47,7 +51,7 @@ class LogClientTest {
 
 		private String password;
 
-		@LogTag(alias = "用户名", typeAlias = "内部实体", extractor = SimpleTypeDiffExtractor.class)
+		@LogTag(alias = "用户名", typeAlias = "内部实体", extractor = EntityTypeConverter.class)
 		private InnerData innerData;
 
 		@LogTag(alias = "json参数", extractor = JsonTypeExtractor.class)
@@ -65,6 +69,25 @@ class LogClientTest {
 	public static class InnerData {
 
 		private String gender;
+
+		private InnerDataText innerDataText;
+
+	}
+
+	@Data
+	public static class InnerDataText {
+
+		private String data;
+
+		private List<Teacher> teachers;
+
+	}
+
+	@AllArgsConstructor
+	@Data
+	public static class Teacher {
+
+		private String name;
 
 	}
 
@@ -116,6 +139,10 @@ class LogClientTest {
 		testData.setPassword("123456");
 		InnerData innerData = new InnerData();
 		innerData.setGender(gender);
+		InnerDataText innerDataText = new InnerDataText();
+		innerDataText.setData(IdUtil.simpleUUID());
+		innerDataText.setTeachers(Lists.asList(new Teacher(IdUtil.simpleUUID())));
+		innerData.setInnerDataText(innerDataText);
 		testData.setInnerData(innerData);
 		testData.setJsonParam(jsonParam);
 		testData.setRichText(getHtmlText());

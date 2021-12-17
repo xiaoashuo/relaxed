@@ -1,6 +1,7 @@
 package com.relaxed.common.log.action.model;
 
 import lombok.Data;
+import org.javers.core.metamodel.annotation.Id;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
