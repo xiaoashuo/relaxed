@@ -1,4 +1,4 @@
-package com.relaxed.common.log.action.converter.richtext;
+package com.relaxed.common.log.action.extractor.richtext;
 
 class Part {
 

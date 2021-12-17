@@ -1,14 +1,9 @@
-package com.relaxed.common.log.action.converter;
+package com.relaxed.common.log.action.extractor;
 
-import java.time.LocalDateTime;
-
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.action.annotation.LogTag;
 import com.relaxed.common.log.action.enums.AttrOptionEnum;
 import com.relaxed.common.log.action.model.AttributeChange;
-import com.relaxed.common.log.action.model.AttributeModel;
-import com.relaxed.common.log.action.model.OperationModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.assertj.core.util.Lists;
@@ -19,12 +14,10 @@ import org.javers.core.Javers;
 import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Change;
 import org.javers.core.diff.Diff;
-import org.javers.core.diff.changetype.Atomic;
 import org.javers.core.diff.changetype.NewObject;
 import org.javers.core.diff.changetype.ObjectRemoved;
 import org.javers.core.diff.changetype.ValueChange;
 import org.javers.core.metamodel.object.GlobalId;
-import org.javers.core.metamodel.object.UnboundedValueObjectId;
 import org.javers.core.metamodel.object.ValueObjectId;
 import org.springframework.util.StringUtils;
 
@@ -41,7 +34,7 @@ import static org.javers.core.diff.ListCompareAlgorithm.LEVENSHTEIN_DISTANCE;
  * @date 2021/12/16 18:37
  * @Version 1.0
  */
-public class EntityTypeConverter implements DiffExtractor {
+public class EntityTypeExtractor implements DiffExtractor {
 
 	private static Javers javers = JaversBuilder.javers().withListCompareAlgorithm(LEVENSHTEIN_DISTANCE).build();
 

@@ -1,4 +1,4 @@
-package com.relaxed.common.log.action.converter.json;
+package com.relaxed.common.log.action.extractor.json;
 
 import cn.hutool.core.util.StrUtil;
 
@@ -6,7 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import com.relaxed.common.log.action.annotation.LogTag;
-import com.relaxed.common.log.action.converter.DiffExtractor;
+import com.relaxed.common.log.action.extractor.DiffExtractor;
 import com.relaxed.common.log.action.enums.AttrOptionEnum;
 import com.relaxed.common.log.action.model.AttributeChange;
 import com.relaxed.common.log.action.utils.JsonUtil;

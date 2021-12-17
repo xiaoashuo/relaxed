@@ -1,7 +1,7 @@
 package com.relaxed.common.log.action.annotation;
 
-import com.relaxed.common.log.action.converter.DiffExtractor;
-import com.relaxed.common.log.action.converter.SimpleTypeDiffExtractor;
+import com.relaxed.common.log.action.extractor.DiffExtractor;
+import com.relaxed.common.log.action.extractor.SimpleTypeDiffExtractor;
 
 import java.lang.annotation.*;
 

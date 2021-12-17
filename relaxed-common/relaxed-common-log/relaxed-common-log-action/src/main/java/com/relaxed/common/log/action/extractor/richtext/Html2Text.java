@@ -1,4 +1,4 @@
-package com.relaxed.common.log.action.converter.richtext;
+package com.relaxed.common.log.action.extractor.richtext;
 
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML;

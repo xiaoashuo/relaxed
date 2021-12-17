@@ -1,9 +1,9 @@
-package com.relaxed.common.log.action.converter.richtext;
+package com.relaxed.common.log.action.extractor.richtext;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.action.annotation.LogTag;
-import com.relaxed.common.log.action.converter.DiffExtractor;
+import com.relaxed.common.log.action.extractor.DiffExtractor;
 import difflib.*;
 
 import java.lang.reflect.Field;

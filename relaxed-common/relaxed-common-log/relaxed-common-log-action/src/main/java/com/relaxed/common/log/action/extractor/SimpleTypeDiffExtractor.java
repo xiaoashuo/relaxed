@@ -1,4 +1,4 @@
-package com.relaxed.common.log.action.converter;
+package com.relaxed.common.log.action.extractor;
 
 import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.log.action.annotation.LogTag;

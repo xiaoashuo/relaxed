@@ -2,12 +2,10 @@ package com.relaxed.common.log.action;
 
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.log.action.annotation.LogTag;
-import com.relaxed.common.log.action.converter.EntityTypeConverter;
-import com.relaxed.common.log.action.converter.SimpleTypeDiffExtractor;
-import com.relaxed.common.log.action.converter.json.JsonTypeExtractor;
-import com.relaxed.common.log.action.converter.richtext.RichTextTypeExtractor;
+import com.relaxed.common.log.action.extractor.EntityTypeExtractor;
+import com.relaxed.common.log.action.extractor.json.JsonTypeExtractor;
+import com.relaxed.common.log.action.extractor.richtext.RichTextTypeExtractor;
 import com.relaxed.common.log.action.handler.DataHandler;
 import com.relaxed.common.log.action.handler.FieldHandler;
 import com.relaxed.common.log.action.handler.RecordHandler;
@@ -53,7 +51,7 @@ class LogClientTest {
 
 		private String password;
 
-		@LogTag(alias = "用户名", typeAlias = "内部实体", extractor = EntityTypeConverter.class)
+		@LogTag(alias = "用户名", typeAlias = "内部实体", extractor = EntityTypeExtractor.class)
 		private InnerData innerData;
 
 		@LogTag(alias = "json参数", extractor = JsonTypeExtractor.class)
