@@ -1,6 +1,6 @@
 package com.relaxed.common.dingtalk;
 
-import com.relaxed.common.dingtalk.request.DingTalkSender;
+import com.relaxed.extend.dingtalk.request.DingTalkSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

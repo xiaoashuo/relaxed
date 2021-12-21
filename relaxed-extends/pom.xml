@@ -16,6 +16,8 @@
         <module>relaxed-extend-mybatis-plus</module>
         <module>relaxed-extend-mybatis</module>
         <module>relaxed-extend-sms</module>
+        <module>relaxed-extend-mail</module>
+        <module>relaxed-extend-dingtalk</module>
     </modules>
 
 

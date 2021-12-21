@@ -81,12 +81,7 @@
                 <artifactId>relaxed-common-ip</artifactId>
                 <version>${reversion}</version>
             </dependency>
-            <!--配置模块-->
-            <dependency>
-                <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-common-conf</artifactId>
-                <version>${reversion}</version>
-            </dependency>
+
             <!--脱敏模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
@@ -162,6 +157,12 @@
                 <artifactId>relaxed-common-util</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--通用异常处理-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-exception</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--扩展mybatis -->
             <dependency>
                 <groupId>com.lovecyy</groupId>
@@ -174,7 +175,18 @@
                 <artifactId>relaxed-extend-mybatis-plus</artifactId>
                 <version>${reversion}</version>
             </dependency>
-
+            <!--扩展Mail-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-extend-mail</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <!--扩展ding talk-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-extend-dingtalk</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--sftp客户端-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
@@ -203,6 +215,12 @@
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-log</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <!--web-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-spring-boot-starter-web</artifactId>
                 <version>${reversion}</version>
             </dependency>
             <!--xss 过滤-->

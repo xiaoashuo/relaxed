@@ -65,12 +65,6 @@
                 <scope>import</scope>
             </dependency>
 
-<!--            <dependency>-->
-<!--                <groupId>com.lovecyy</groupId>-->
-<!--                <artifactId>relaxed-spring-boot-starter-easyexcel</artifactId>-->
-<!--                <version>${reversion}</version>-->
-<!--            </dependency>-->
-
         </dependencies>
     </dependencyManagement>
 
