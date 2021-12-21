@@ -25,6 +25,7 @@
          <module>relaxed-spring-boot-starter-sms</module>
          <module>relaxed-spring-boot-starter-secret</module>
          <module>relaxed-spring-boot-starter-oss</module>
+         <module>relaxed-spring-boot-starter-web</module>
     </modules>
 
 
