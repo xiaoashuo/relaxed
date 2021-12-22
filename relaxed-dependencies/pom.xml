@@ -19,7 +19,7 @@
         <mybatis.version>3.5.5</mybatis.version>
         <mybatis-plus.version>3.4.2</mybatis-plus.version>
         <jsqlparse.version>4.0</jsqlparse.version>
-        <dynamic-datasource.version>3.3.1</dynamic-datasource.version>
+        <dynamic-datasource.version>3.5.0</dynamic-datasource.version>
         <jasypt.version>2.1.0</jasypt.version>
         <jsch.version>0.1.54</jsch.version>
         <easyexcel.version>2.2.10</easyexcel.version>
