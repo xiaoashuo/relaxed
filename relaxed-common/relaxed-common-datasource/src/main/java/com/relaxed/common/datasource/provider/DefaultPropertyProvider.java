@@ -18,6 +18,7 @@ public class DefaultPropertyProvider implements PropertyProvider {
 		dataSourceProperty.setUrl(url);
 		dataSourceProperty.setUsername(username);
 		dataSourceProperty.setPassword(password);
+		dataSourceProperty.setLazy(true);
 		return dataSourceProperty;
 	}
 
