@@ -1,6 +1,7 @@
 package com.relaxed.autoconfigure.web.exception;
 
 import com.relaxed.common.exception.annotation.ExceptionNotice;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,8 +11,12 @@ import org.springframework.stereotype.Component;
  * @date 2021/12/21 10:41
  * @Version 1.0
  */
+// @ExceptionNotice
 @Component
 public class TestService {
+
+	@Autowired
+	private TestAsyncService testAsyncService;
 
 	@ExceptionNotice
 	public void hello() {
@@ -29,8 +34,13 @@ public class TestService {
 		return "hello";
 	}
 
-	// @ExceptionNotice
 	public String helloNoAnnotationReturn() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				testAsyncService.asyncError();
+			}
+		}).start();
 		if (true) {
 			throw new RuntimeException("接口调用出现异常");
 		}
