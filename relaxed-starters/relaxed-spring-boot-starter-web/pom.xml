@@ -23,6 +23,10 @@
         </dependency>
         <dependency>
             <groupId>com.lovecyy</groupId>
+            <artifactId>relaxed-common-desensitize</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-dingtalk</artifactId>
             <optional>true</optional>
         </dependency>

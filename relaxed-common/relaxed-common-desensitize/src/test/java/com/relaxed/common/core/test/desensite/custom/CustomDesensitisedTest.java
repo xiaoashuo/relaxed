@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.relaxed.common.desensitize.AnnotationHandlerHolder;
 import com.relaxed.common.desensitize.DesensitizationHandlerHolder;
-import com.relaxed.common.desensitize.json.JsonSerializerModifier;
+import com.relaxed.common.desensitize.json.JsonDesensitizeSerializerModifier;
 import com.relaxed.common.core.test.desensite.DesensitizationUser;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class CustomDesensitisedTest {
 			return handler.handle(value);
 		});
 		// 初始化序列号modifier
-		JsonSerializerModifier modifier = new JsonSerializerModifier();
+		JsonDesensitizeSerializerModifier modifier = new JsonDesensitizeSerializerModifier();
 		objectMapper.setSerializerFactory(objectMapper.getSerializerFactory().withSerializerModifier(modifier));
 
 		DesensitizationUser user = new DesensitizationUser().setEmail("chengbohua@foxmail.com").setUsername("xiaoming")

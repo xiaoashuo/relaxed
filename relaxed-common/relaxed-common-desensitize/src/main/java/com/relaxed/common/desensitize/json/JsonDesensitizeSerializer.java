@@ -34,6 +34,9 @@ public class JsonDesensitizeSerializer<T> extends JsonSerializer<T> {
 
 	@Override
 	public void serialize(T value, JsonGenerator jsonGenerator, SerializerProvider serializers) throws IOException {
+		if (!(value instanceof String)) {
+			return;
+		}
 		String str = (String) value;
 		String fieldName = jsonGenerator.getOutputContext().getCurrentName();
 		// 未开启脱敏
