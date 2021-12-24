@@ -9,7 +9,7 @@ import org.springframework.aop.Pointcut;
  * @date 2021/12/21 10:30
  * @Version 1.0
  */
-public interface PointCutRegister {
+public interface PointCutBuilder {
 
 	/**
 	 * 切点构建

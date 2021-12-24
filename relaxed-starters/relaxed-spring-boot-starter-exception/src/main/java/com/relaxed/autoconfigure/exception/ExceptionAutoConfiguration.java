@@ -5,7 +5,6 @@ import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.exception.ExceptionHandleConfig;
 import com.relaxed.common.exception.annotation.ExceptionNotice;
 import com.relaxed.common.exception.aop.AnnotationMethodPoint;
-import com.relaxed.common.exception.aop.PointCutRegister;
 import com.relaxed.common.exception.handler.DefaultGlobalExceptionHandler;
 import com.relaxed.common.exception.handler.DingTalkGlobalExceptionHandler;
 import com.relaxed.common.exception.handler.GlobalExceptionHandler;
