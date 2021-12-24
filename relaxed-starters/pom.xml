@@ -26,6 +26,7 @@
          <module>relaxed-spring-boot-starter-secret</module>
          <module>relaxed-spring-boot-starter-oss</module>
          <module>relaxed-spring-boot-starter-web</module>
+         <module>relaxed-spring-boot-starter-exception</module>
     </modules>
 
 

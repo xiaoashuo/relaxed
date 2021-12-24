@@ -1,4 +1,4 @@
-package com.relaxed.autoconfigure.web.exception;
+package com.relaxed.autoconfigure.exception;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -13,6 +13,11 @@ import java.util.concurrent.TimeUnit;
 @Data
 @ConfigurationProperties(prefix = "relaxed.exception")
 public class ExceptionHandleProperties {
+
+	/**
+	 * 应用名称
+	 */
+	private String appName;
 
 	/**
 	 * 忽略指定异常，请注意：只会忽略填写的异常类，而不会忽略该异常类的子类

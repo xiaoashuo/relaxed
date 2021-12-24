@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 public @interface Log {
 
 	/**
-	 * 消息分组
+	 * 日志分组
 	 * @return
 	 */
 	String group() default "default";

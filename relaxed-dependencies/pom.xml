@@ -251,6 +251,12 @@
                 <artifactId>relaxed-spring-boot-starter-xss</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--exception-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-spring-boot-starter-exception</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--secret 请求参数加解密-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
