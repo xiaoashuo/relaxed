@@ -26,10 +26,12 @@ public interface OperationLogHandler<T> {
 	 * @param joinPoint 当前执行方法的切点信息
 	 * @param startTime 方法开始时间
 	 * @param endTime 方法结束时间
+	 * @param executionResult 执行结果 可能为null
 	 * @param throwable 方法执行的异常，为 null 则表示无异常
 	 * @return 操作日志对象
 	 */
-	T fillExecutionInfo(T log, ProceedingJoinPoint joinPoint, long startTime, long endTime, Throwable throwable);
+	T fillExecutionInfo(T log, ProceedingJoinPoint joinPoint, long startTime, long endTime, Object executionResult,
+			Throwable throwable);
 
 	/**
 	 * 处理日志，可以在这里进行存储，或者输出

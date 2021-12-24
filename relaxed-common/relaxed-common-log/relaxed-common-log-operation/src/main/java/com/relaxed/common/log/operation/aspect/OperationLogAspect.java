@@ -49,25 +49,28 @@ public class OperationLogAspect<T> {
 		Assert.notNull(log, "operationLogging annotation must not be null!");
 		T operationLog = operationLogHandler.buildLog(log, joinPoint);
 		Throwable throwable = null;
+		Object result = null;
 		try {
-			return joinPoint.proceed();
+			result = joinPoint.proceed();
+			return result;
 		}
 		catch (Throwable e) {
 			throwable = e;
 			throw throwable;
 		}
 		finally {
-			handleLog(joinPoint, startTime, operationLog, throwable);
+			handleLog(joinPoint, startTime, operationLog, result, throwable);
 		}
 	}
 
-	private void handleLog(ProceedingJoinPoint joinPoint, long startTime, T operationLog, Throwable throwable) {
+	private void handleLog(ProceedingJoinPoint joinPoint, long startTime, T operationLog, Object executionResult,
+			Throwable throwable) {
 		try {
 			// 结束时间
 			long endTime = System.currentTimeMillis();
 			// 处理操作日志
-			operationLogHandler.handleLog(
-					operationLogHandler.fillExecutionInfo(operationLog, joinPoint, startTime, endTime, throwable));
+			operationLogHandler.handleLog(operationLogHandler.fillExecutionInfo(operationLog, joinPoint, startTime,
+					endTime, executionResult, throwable));
 		}
 		catch (Exception e) {
 			log.error("记录操作日志异常：{}", operationLog);
