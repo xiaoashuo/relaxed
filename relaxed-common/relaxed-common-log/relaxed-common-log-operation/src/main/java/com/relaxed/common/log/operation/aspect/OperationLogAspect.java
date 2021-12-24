@@ -73,7 +73,7 @@ public class OperationLogAspect<T> {
 					endTime, executionResult, throwable));
 		}
 		catch (Exception e) {
-			log.error("记录操作日志异常：{}", operationLog);
+			log.error("记录操作日志异常：{}", operationLog, e);
 		}
 	}
 
