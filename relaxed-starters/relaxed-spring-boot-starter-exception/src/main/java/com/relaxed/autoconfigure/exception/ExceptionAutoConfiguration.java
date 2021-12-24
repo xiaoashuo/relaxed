@@ -6,6 +6,7 @@ import com.relaxed.common.exception.ExceptionHandleConfig;
 import com.relaxed.common.exception.annotation.ExceptionNotice;
 import com.relaxed.common.exception.aop.AnnotationMethodPoint;
 import com.relaxed.common.exception.aop.PointCutRegister;
+import com.relaxed.common.exception.handler.DefaultGlobalExceptionHandler;
 import com.relaxed.common.exception.handler.DingTalkGlobalExceptionHandler;
 import com.relaxed.common.exception.handler.GlobalExceptionHandler;
 import com.relaxed.common.exception.handler.MailGlobalExceptionHandler;
@@ -35,6 +36,16 @@ public class ExceptionAutoConfiguration {
 
 	@Value("${spring.application.name}")
 	private String applicationName;
+
+	/**
+	 * 默认的异常处理器
+	 * @return DefaultExceptionHandler
+	 */
+	@Bean
+	@ConditionalOnMissingBean(GlobalExceptionHandler.class)
+	public GlobalExceptionHandler defaultGlobalExceptionHandler() {
+		return new DefaultGlobalExceptionHandler();
+	}
 
 	/**
 	 * 钉钉消息通知的日志处理器

@@ -20,16 +20,6 @@ import org.springframework.context.annotation.Role;
 public class ExceptionAopAutoConfiguration {
 
 	/**
-	 * 默认的异常处理器
-	 * @return DefaultExceptionHandler
-	 */
-	@Bean
-	@ConditionalOnMissingBean(GlobalExceptionHandler.class)
-	public GlobalExceptionHandler defaultGlobalExceptionHandler() {
-		return new DefaultGlobalExceptionHandler();
-	}
-
-	/**
 	 * 默认切点注册器
 	 * @author yakir
 	 * @date 2021/12/21 14:33

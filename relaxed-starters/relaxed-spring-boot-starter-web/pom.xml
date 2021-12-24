@@ -19,7 +19,7 @@
 
         <dependency>
             <groupId>com.lovecyy</groupId>
-            <artifactId>relaxed-common-exception</artifactId>
+            <artifactId>relaxed-spring-boot-starter-exception</artifactId>
         </dependency>
         <dependency>
             <groupId>com.lovecyy</groupId>
