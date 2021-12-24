@@ -17,10 +17,10 @@ import org.springframework.context.annotation.Role;
  * @Version 1.0
  */
 @Configuration(proxyBeanMethods = false)
-public class ExceptionConfiguration {
+public class ExceptionAopAutoConfiguration {
 
 	/**
-	 * 默认的日志处理器
+	 * 默认的异常处理器
 	 * @return DefaultExceptionHandler
 	 */
 	@Bean
