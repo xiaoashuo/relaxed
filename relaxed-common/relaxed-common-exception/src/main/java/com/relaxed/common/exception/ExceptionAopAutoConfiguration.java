@@ -46,35 +46,17 @@ public class ExceptionAopAutoConfiguration {
 	}
 
 	/**
-	 * 异常策略
-	 * @author yakir
-	 * @date 2021/12/24 18:10
-	 * @return com.relaxed.common.exception.aop.ExceptionStrategy
-	 */
-	@Bean
-	@ConditionalOnMissingBean
-	public ExceptionStrategy exceptionStrategy() {
-		return new ExceptionStrategy() {
-			@Override
-			public boolean nestedMulNotice() {
-				return false;
-			}
-		};
-	}
-
-	/**
 	 * 异常注解拦截器
 	 * @author yakir
 	 * @date 2021/12/24 18:10
-	 * @param exceptionStrategy
 	 * @param globalExceptionHandler
 	 * @return com.relaxed.common.exception.aop.ExceptionAnnotationInterceptor
 	 */
 	@Bean
 	@ConditionalOnMissingBean
-	public ExceptionAnnotationInterceptor exceptionAnnotationInterceptor(ExceptionStrategy exceptionStrategy,
+	public ExceptionAnnotationInterceptor exceptionAnnotationInterceptor(
 			GlobalExceptionHandler globalExceptionHandler) {
-		return new ExceptionAnnotationInterceptor(exceptionStrategy, globalExceptionHandler);
+		return new ExceptionAnnotationInterceptor(globalExceptionHandler);
 	}
 
 	/**

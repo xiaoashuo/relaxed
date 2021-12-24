@@ -20,14 +20,12 @@ import org.springframework.util.StringUtils;
 @Slf4j
 public class ExceptionAnnotationInterceptor implements MethodInterceptor {
 
-	private final ExceptionStrategy exceptionStrategy;
-
 	private final GlobalExceptionHandler globalExceptionHandler;
 
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
 		// 若未开启嵌套多次通知 并以存在线程变量 则直接跳过档次调用链执行
-		if (!exceptionStrategy.nestedMulNotice() && StringUtils.hasText(ExceptionHolder.getXID())) {
+		if (StringUtils.hasText(ExceptionHolder.getXID())) {
 			return invocation.proceed();
 		}
 		String xid = IdUtil.simpleUUID();

@@ -27,41 +27,26 @@ import java.util.Map;
  */
 public class ExceptionHolder {
 
-	private static final ThreadLocal<Map<String, String>> CONTEXT_HOLDER = ThreadLocal
-			.withInitial(() -> new HashMap<>());
+	private static final ThreadLocal<String> CONTEXT_HOLDER = new ThreadLocal();
 
-	private static final String XID = "LOCAL_EXCEPTION_XID";
+	public ExceptionHolder() {
+	}
 
-	/**
-	 * Gets xid.
-	 * @return the xid
-	 */
 	public static String getXID() {
-		String xid = CONTEXT_HOLDER.get().get(XID);
+		String xid = CONTEXT_HOLDER.get();
 		return StringUtils.hasText(xid) ? xid : null;
 	}
 
-	/**
-	 * Unbind string.
-	 * @return the string
-	 */
 	public static String unbind(String xid) {
-		CONTEXT_HOLDER.get().remove(xid);
+		CONTEXT_HOLDER.remove();
 		return xid;
 	}
 
-	/**
-	 * bind string.
-	 * @return the string
-	 */
 	public static String bind(String xid) {
-		CONTEXT_HOLDER.get().put(XID, xid);
+		CONTEXT_HOLDER.set(xid);
 		return xid;
 	}
 
-	/**
-	 * remove
-	 */
 	public static void remove() {
 		CONTEXT_HOLDER.remove();
 	}
