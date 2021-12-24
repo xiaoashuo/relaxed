@@ -43,6 +43,7 @@ public class ExceptionAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(GlobalExceptionHandler.class)
+	@ConditionalOnProperty(prefix = "relaxed.exception", matchIfMissing = true, name = "type", havingValue = "NONE")
 	public GlobalExceptionHandler defaultGlobalExceptionHandler() {
 		return new DefaultGlobalExceptionHandler();
 	}
