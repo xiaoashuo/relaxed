@@ -16,11 +16,15 @@
 
 package com.relaxed.common.datasource;
 
+import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.relaxed.common.datasource.config.DataSourceProperties;
 import com.relaxed.common.datasource.config.JdbcDynamicDataSourceProvider;
 import com.relaxed.common.datasource.provider.DefaultPropertyProvider;
 import com.relaxed.common.datasource.provider.PropertyProvider;
+import com.relaxed.common.datasource.toolkit.DynamicDataSourceHelper;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -39,6 +43,23 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter(DataSourceAutoConfiguration.class)
 @EnableConfigurationProperties(DataSourceProperties.class)
 public class DynamicDataSourceAutoConfiguration {
+
+	/**
+	 * 动态数据源帮助类
+	 * @param stringEncryptor
+	 * @param defaultDataSourceCreator
+	 * @param dynamicRoutingDataSource
+	 * @param propertyProvider
+	 * @return
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public DynamicDataSourceHelper dynamicDataSourceHelper(StringEncryptor stringEncryptor,
+			DefaultDataSourceCreator defaultDataSourceCreator, DynamicRoutingDataSource dynamicRoutingDataSource,
+			PropertyProvider propertyProvider) {
+		return new DynamicDataSourceHelper(stringEncryptor, defaultDataSourceCreator, dynamicRoutingDataSource,
+				propertyProvider);
+	}
 
 	@Bean
 	@ConditionalOnMissingBean

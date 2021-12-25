@@ -2,11 +2,13 @@ package com.relaxed.common.datasource.toolkit;
 
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.relaxed.common.datasource.provider.PropertyProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -21,7 +23,7 @@ import java.sql.DriverManager;
  * @date 2021/6/3 14:03
  * @Version 1.0
  */
-@Component
+
 @Slf4j
 @RequiredArgsConstructor
 public class DynamicDataSourceHelper {
@@ -34,13 +36,13 @@ public class DynamicDataSourceHelper {
 	/**
 	 * 数据连接池创建者
 	 */
-	private final DataSourceCreator dataSourceCreator;
+	private final DefaultDataSourceCreator dataSourceCreator;
 
 	/**
 	 * 动态路由数据连接
 	 */
-	@Resource(type = DataSource.class)
-	private DynamicRoutingDataSource dynamicRoutingDataSource;
+
+	private final DynamicRoutingDataSource dynamicRoutingDataSource;
 
 	private final PropertyProvider propertyProvider;
 
