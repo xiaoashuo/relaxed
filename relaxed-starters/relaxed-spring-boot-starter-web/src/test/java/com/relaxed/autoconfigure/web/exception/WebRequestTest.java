@@ -1,6 +1,11 @@
 package com.relaxed.autoconfigure.web.exception;
 
 import com.baomidou.mybatisplus.annotation.Version;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.relaxed.extend.mybatis.plus.conditions.update.LambdaUpdateWrapperX;
+import com.relaxed.extend.mybatis.plus.toolkit.WrappersX;
+import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,6 +33,15 @@ public class WebRequestTest {
 
 	@Test
 	public void testWeb() throws Exception {
+
+		TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), User.class);
+		User user = new User();
+		LambdaUpdateWrapperX<User> as = WrappersX.lambdaUpdateX(user).eq(User::getUsername, "as")
+				.set(User::getUsername, "asaaa")
+
+				.eqIfPresent(User::getAge, null);
+
+		System.out.println(as);
 		MvcResult mvcResult = null;
 		try {
 			mvcResult = mockMvc.perform(get("/test/hello")).andReturn();
