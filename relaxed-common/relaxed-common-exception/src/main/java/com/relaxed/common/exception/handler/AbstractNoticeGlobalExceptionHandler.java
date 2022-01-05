@@ -151,6 +151,9 @@ public abstract class AbstractNoticeGlobalExceptionHandler extends Thread
 				queue.put(throwable);
 			}
 		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
 		catch (Exception e) {
 			log.error("往异常消息队列插入新异常时出错", e);
 		}

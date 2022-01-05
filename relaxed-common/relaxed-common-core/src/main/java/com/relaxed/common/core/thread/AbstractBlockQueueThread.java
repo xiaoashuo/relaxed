@@ -25,6 +25,9 @@ public abstract class AbstractBlockQueueThread<T> extends AbstractQueueThread<T>
 			try {
 				queue.put(t);
 			}
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
 			catch (Exception e) {
 				log.error("{} put Object error, param: {}", this.getClass().toString(), t, e);
 			}
