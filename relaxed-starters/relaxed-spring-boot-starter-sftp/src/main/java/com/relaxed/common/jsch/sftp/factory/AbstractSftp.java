@@ -22,6 +22,13 @@ public abstract class AbstractSftp {
 
 	/**
 	 * 获取远程文件的输入流
+	 * @param absoluteFilePath 绝对文件路径
+	 * @return 远程文件流
+	 */
+	public abstract InputStream getInputStream(String absoluteFilePath);
+
+	/**
+	 * 获取远程文件的输入流
 	 * @param dir 文件目录
 	 * @param name 文件名
 	 * @return 远程文件流

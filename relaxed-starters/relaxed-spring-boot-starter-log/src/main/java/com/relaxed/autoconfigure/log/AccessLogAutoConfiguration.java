@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(AccessLogProperties.class)
 public class AccessLogAutoConfiguration {
 
-	private final AccessLogHandler<?> accessLogService;
+	private final AccessLogHandler<?> accessLogHandler;
 
 	private final AccessLogProperties accessLogProperties;
 
@@ -32,7 +32,7 @@ public class AccessLogAutoConfiguration {
 	public FilterRegistrationBean<AccessLogFilter> accessLogFilterRegistrationBean() {
 		log.debug("access log 记录拦截器已开启====");
 		FilterRegistrationBean<AccessLogFilter> registrationBean = new FilterRegistrationBean<>(
-				new AccessLogFilter(accessLogService, accessLogProperties.getIgnoreUrlPatterns()));
+				new AccessLogFilter(accessLogHandler, accessLogProperties.getIgnoreUrlPatterns()));
 		registrationBean.setOrder(-10);
 		return registrationBean;
 	}
