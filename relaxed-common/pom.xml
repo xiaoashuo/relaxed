@@ -27,6 +27,7 @@
         <module>relaxed-common-util</module>
         <module>relaxed-common-log</module>
         <module>relaxed-common-exception</module>
+        <module>relaxed-common-translation</module>
     </modules>
 
 
