@@ -36,6 +36,20 @@ public class DefaultSftp extends AbstractSftp {
 	}
 
 	@Override
+	public InputStream getInputStream(String absoluteFilePath) {
+		if (!isExist(absoluteFilePath)) {
+			throw new SftpClientException(String.format("the file (%s) does not exist.", absoluteFilePath));
+		}
+		try {
+			return channelSftp.get(absoluteFilePath);
+		}
+		catch (SftpException e) {
+			throw new SftpClientException(String.format("get remote file exception params[path=%s]", absoluteFilePath),
+					e);
+		}
+	}
+
+	@Override
 	public InputStream getInputStream(String dir, String name) {
 		if (!isExist(dir)) {
 			throw new SftpClientException(String.format("the directory (%s) does not exist.", dir));

@@ -63,6 +63,12 @@ public abstract class AbstractQueueThread<T> extends Thread
 	}
 
 	/**
+	 * 运行前执行初始化
+	 */
+	public void init() {
+	}
+
+	/**
 	 * 预处理数据
 	 */
 	public void preProcess() {
@@ -77,6 +83,7 @@ public abstract class AbstractQueueThread<T> extends Thread
 
 	@Override
 	public void run() {
+		init();
 		List<T> list;
 		while (isRunning()) {
 			list = new ArrayList<>(getBatchSize());
@@ -93,8 +100,12 @@ public abstract class AbstractQueueThread<T> extends Thread
 					shutdownHandler(list);
 				}
 			}
-			catch (Throwable ex) {
+			catch (Exception ex) {
 				errorHandle(ex, list);
+			}
+			catch (Throwable ex) {
+				log.error("线程队列运行异常!", ex);
+				throw ex;
 			}
 		}
 	}
