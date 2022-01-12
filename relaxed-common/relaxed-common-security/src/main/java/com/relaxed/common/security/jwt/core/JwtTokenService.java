@@ -13,7 +13,7 @@ import java.util.Collection;
  * @date 2021/8/11 21:23
  * @Version 1.0
  */
-public interface JwtTokenService {
+public interface JwtTokenService<T extends UserDetails> {
 
 	/**
 	 * 生成token
@@ -22,7 +22,7 @@ public interface JwtTokenService {
 	 * @param userDetails
 	 * @return java.lang.String
 	 */
-	String generateToken(UserDetails userDetails);
+	String generateToken(T userDetails);
 
 	/**
 	 * 得到主体用户名
@@ -41,7 +41,7 @@ public interface JwtTokenService {
 	 * @param user
 	 * @throws JwtVerifyException
 	 */
-	void verify(String token, UserDetails user) throws JwtVerifyException;
+	void verify(String token, T user) throws JwtVerifyException;
 
 	/**
 	 * 是否应该刷新token
