@@ -8,9 +8,11 @@ import com.relaxed.common.translation.core.AbstractTranslationRequest;
 
 import com.relaxed.common.translation.core.TranslationResponse;
 
-import com.relaxed.common.translation.enums.LangEnum;
 import com.relaxed.common.translation.enums.TransEnum;
+
 import com.relaxed.common.translation.tookit.TokenUtils;
+import com.relaxed.common.translation.trans.TransParam;
+import com.relaxed.common.translation.trans.TransResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -25,17 +27,11 @@ import java.util.Map;
  * @Version 1.0
  */
 @Data
-public class GoogleRequest extends AbstractTranslationRequest {
+public class GoogleRequest extends AbstractTranslationRequest<TransParam> {
 
 	private static final String GOOGLE_URL = "https://translate.googleapis.com/translate_a/single";
 
-	public Map<String, String> formData = new HashMap<>();
-
-	private LangEnum from;
-
-	private LangEnum to;
-
-	private String text;
+	protected Map<String, String> formData = new HashMap<>();
 
 	@Override
 	public String getUrl() {
@@ -52,13 +48,12 @@ public class GoogleRequest extends AbstractTranslationRequest {
 		return URLUtil.buildQuery(formData, CharsetUtil.CHARSET_UTF_8);
 	}
 
-
-
 	@Override
 	protected Map<String, String> fillFormData(Map<String, String> formData) {
+		String text = translationParam.getText();
 		formData.put("client", "t");
-		formData.put("sl", langMap.get(from));
-		formData.put("tl", langMap.get(to));
+		formData.put("sl", langMap.get(translationParam.getFrom()));
+		formData.put("tl", langMap.get(translationParam.getTo()));
 		formData.put("hl", "zh-CN");
 		formData.put("dt", "at");
 		formData.put("dt", "bd");
@@ -81,21 +76,14 @@ public class GoogleRequest extends AbstractTranslationRequest {
 		return formData;
 	}
 
-
-
 	@Override
 	public <T> TranslationResponse<T> execute(String param) {
 		String url = this.getUrl();
 		String urlString = url + "?" + param;
 		String result = HttpUtil.get(urlString);
 		String realResult = parseResult(result);
-		return  TranslationResponse.ok(new Response(realResult));
+		return TranslationResponse.ok(new TransResponse(realResult));
 	}
-
-
-
-
-
 
 	private static String parseResult(String inputJson) {
 		JSONArray jsonArray2 = (JSONArray) new JSONArray(inputJson).get(0);
@@ -106,10 +94,4 @@ public class GoogleRequest extends AbstractTranslationRequest {
 		return result.toString();
 	}
 
-	@AllArgsConstructor
-	@Data
-	public class Response {
-
-		private String val;
-	}
 }

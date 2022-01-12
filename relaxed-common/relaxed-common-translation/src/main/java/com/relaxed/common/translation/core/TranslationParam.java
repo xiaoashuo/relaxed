@@ -8,4 +8,5 @@ package com.relaxed.common.translation.core;
  * @Version 1.0
  */
 public interface TranslationParam {
+
 }

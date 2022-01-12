@@ -12,11 +12,17 @@ import java.util.Map;
  * @date 2022/1/11 16:17
  * @Version 1.0
  */
-public abstract class AbstractTranslationRequest implements TranslationRequest {
+public abstract class AbstractTranslationRequest<P extends TranslationParam> implements TranslationRequest {
 
 	protected Map<LangEnum, String> langMap = new HashMap<>();
 
 	protected Map<String, String> formData = new HashMap<>();
+
+	protected P translationParam;
+
+	public void setTranslationParam(P translationParam) {
+		this.translationParam = translationParam;
+	}
 
 	protected AbstractTranslationRequest() {
 		init();
@@ -34,16 +40,16 @@ public abstract class AbstractTranslationRequest implements TranslationRequest {
 		return put(fillFormData(formData));
 	}
 
-	protected abstract Map<String, String> fillFormData(Map<String, String> formData);
+	protected Map<String, String> fillFormData(Map<String, String> formData) {
+		return formData;
+	}
 
 	public abstract String put(Map<String, String> formData);
-
-
 
 	/**
 	 * 初始化默认语言支持
 	 */
-	protected  void initDefaultLangSupport(){
+	protected void initDefaultLangSupport() {
 		langMap.put(LangEnum.ZH, "zh-CN");
 		langMap.put(LangEnum.EN, "en");
 		langMap.put(LangEnum.JP, "ja");
@@ -60,7 +66,5 @@ public abstract class AbstractTranslationRequest implements TranslationRequest {
 	protected void delLangSupport(LangEnum source) {
 		langMap.remove(source);
 	}
-
-
 
 }

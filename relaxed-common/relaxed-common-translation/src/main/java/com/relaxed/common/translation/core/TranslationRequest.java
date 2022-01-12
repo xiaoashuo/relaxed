@@ -29,6 +29,7 @@ public interface TranslationRequest {
 	 * @return
 	 */
 	TransEnum tsType();
+
 	/**
 	 * 执行请求
 	 * @author yakir

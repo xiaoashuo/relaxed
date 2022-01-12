@@ -10,26 +10,27 @@ import lombok.Data;
  * @Version 1.0
  */
 @Data
-public class TranslationResponse<T>{
+public class TranslationResponse<T> {
 
-    public static final Integer SUCCESS_CODE = 200;
+	public static final Integer SUCCESS_CODE = 200;
 
-    private Integer code;
+	private Integer code;
 
-    private String msg;
+	private String msg;
 
-    private T data;
+	private T data;
 
-    public static <T> TranslationResponse ok(T data){
-        TranslationResponse<T> response = new TranslationResponse<>();
-        response.setCode(SUCCESS_CODE);
-        response.setMsg("success");
-        response.setData(data);
-        return response;
+	public static <T> TranslationResponse ok(T data) {
+		TranslationResponse<T> response = new TranslationResponse<>();
+		response.setCode(SUCCESS_CODE);
+		response.setMsg("success");
+		response.setData(data);
+		return response;
 
-    }
-    public boolean success() {
-        return SUCCESS_CODE.equals(this.code);
-    }
+	}
+
+	public boolean success() {
+		return SUCCESS_CODE.equals(this.code);
+	}
 
 }

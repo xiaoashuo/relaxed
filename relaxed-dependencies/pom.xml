@@ -193,6 +193,12 @@
                 <artifactId>relaxed-common-exception</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--翻译器-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-translation</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--扩展mybatis -->
             <dependency>
                 <groupId>com.lovecyy</groupId>
