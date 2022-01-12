@@ -3,6 +3,7 @@ package com.relaxed.common.translation.querier;
 import com.relaxed.common.translation.core.*;
 import com.relaxed.common.translation.enums.LangEnum;
 import com.relaxed.common.translation.trans.google.GoogleRequest;
+import com.relaxed.common.translation.trans.tencent.TencentRequest;
 import com.relaxed.common.translation.tts.google.GoogleTTSRequest;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class Querier<T extends AbstractTranslationRequest> {
 	public static <T extends AbstractTranslationRequest> Querier<T> trans() {
 		Querier querier = new Querier();
 		querier.attach(new GoogleRequest());
+		querier.attach(new TencentRequest());
 		return querier;
 	}
 

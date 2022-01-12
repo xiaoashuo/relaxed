@@ -57,7 +57,7 @@ public abstract class AbstractTranslationRequest<P extends TranslationParam> imp
 		langMap.put(LangEnum.FRA, "fr");
 		langMap.put(LangEnum.RU, "ru");
 		langMap.put(LangEnum.DE, "de");
-	};
+	}
 
 	protected void addLangSupport(LangEnum source, String val) {
 		langMap.put(source, val);

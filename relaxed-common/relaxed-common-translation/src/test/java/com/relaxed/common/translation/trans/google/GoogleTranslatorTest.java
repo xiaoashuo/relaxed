@@ -7,6 +7,7 @@ import com.relaxed.common.translation.enums.LangEnum;
 import com.relaxed.common.translation.querier.Querier;
 import com.relaxed.common.translation.trans.TransParam;
 import com.relaxed.common.translation.trans.TransResponse;
+import com.relaxed.common.translation.trans.tencent.TencentRequest;
 import com.relaxed.common.translation.tts.TTSParam;
 import com.relaxed.common.translation.tts.TTSResponse;
 import com.relaxed.common.translation.tts.google.GoogleTTSRequest;
@@ -26,25 +27,28 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class GoogleTranslatorTest {
 
-	// @Test
-	// public void testYoudao() {
-	// Translator translator = new Translator();
-	// YoudaoTranslationRequest youdaoTranslationRequest = new YoudaoTranslationRequest();
-	// youdaoTranslationRequest.setFrom(LangEnum.EN);
-	// youdaoTranslationRequest.setTo(LangEnum.ZH);
-	// youdaoTranslationRequest.setText("Happiness is a way station between too much and
-	// too little.");
-	// YoudaoResponse result = translator.translate(youdaoTranslationRequest);
-	// System.out.println(result);
-	// //
-	// // GoogleParamTTS googleParamTTS = new GoogleParamTTS();
-	// // googleParamTTS.setFrom(LangEnum.EN);
-	// // googleParamTTS.setText("To be or not to be, that is a question.");
-	// //// googleParamTTS.setDownloadPath("D:\\google\\download");
-	// // GoogleTTSResponse ttsResponse = transtor.translate(googleParamTTS);
-	// // System.out.println(ttsResponse);
-	//
-	// }
+	@Test
+	public void testTencent() {
+		// 翻译器
+		// Translator translator = new Translator();
+		// //1.构造翻译参数
+		// TransParam transParam = new TransParam();
+		// transParam.setFrom(LangEnum.EN);
+		// transParam.setTo(LangEnum.ZH);
+		// transParam.setText("Happiness is a way station between too much and too
+		// little.");
+		// //2.构造翻译请求客户端
+		// TencentRequest tencentRequest = new TencentRequest();
+		// tencentRequest.setTranslationParam(transParam);
+		// //3.翻译器执行翻译请求
+		// TranslationResponse<TransResponse> result =
+		// translator.translate(tencentRequest);
+		// System.out.println(result);
+		TransParam buildTransParam = new TransParam().setFrom(LangEnum.EN).setTo(LangEnum.ZH).setText("hello world.");
+		TranslationResponse<TransResponse> buildTransResult = Querier.trans().execute(buildTransParam);
+		System.out.println(buildTransResult);
+
+	}
 
 	@Test
 	public void testGoogle() {
