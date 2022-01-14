@@ -1,5 +1,6 @@
 package com.relaxed.common.oss.s3;
 
+import com.relaxed.common.oss.s3.exception.OssException;
 import com.relaxed.common.oss.s3.modifier.PathModifier;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,9 @@ import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.utils.IoUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -120,6 +123,25 @@ public class OssClient implements DisposableBean {
 		}
 		return paths;
 
+	}
+
+	/**
+	 * 下载字节文件
+	 * @author yakir
+	 * @date 2022/1/14 13:03
+	 * @param relativePath 相对路径 test/img.png
+	 * @return byte[]
+	 */
+	public byte[] download(String relativePath) {
+		try {
+			GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucket).key(relativePath).build();
+			try (ResponseInputStream<GetObjectResponse> responseInputStream = s3Client.getObject(getObjectRequest)) {
+				return IoUtils.toByteArray(responseInputStream);
+			}
+		}
+		catch (IOException e) {
+			throw new OssException("download file error bucket:" + this.bucket + "path:" + relativePath, e);
+		}
 	}
 
 	/**
