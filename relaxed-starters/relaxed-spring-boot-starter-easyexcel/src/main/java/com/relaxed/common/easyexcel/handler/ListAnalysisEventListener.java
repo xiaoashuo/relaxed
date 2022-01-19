@@ -1,6 +1,7 @@
 package com.relaxed.common.easyexcel.handler;
 
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.relaxed.common.easyexcel.vo.ErrorMessage;
 
 import javax.validation.ConstraintViolation;
 import java.util.List;
@@ -24,6 +25,6 @@ public abstract class ListAnalysisEventListener<T> extends AnalysisEventListener
 	 * 获取异常校验结果
 	 * @return 集合
 	 */
-	public abstract Map<Long, Set<ConstraintViolation<T>>> getErrors();
+	public abstract List<ErrorMessage> getErrors();
 
 }
