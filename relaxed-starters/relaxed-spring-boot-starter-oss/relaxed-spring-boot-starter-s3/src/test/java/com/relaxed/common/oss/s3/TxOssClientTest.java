@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
+import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,14 +62,18 @@ public class TxOssClientTest {
 	@SneakyThrows
 	@Test
 	void txUpload() {
-
-		String relativePath = "img/test3.jpg";
-		File file = new File("D:\\other\\images\\duola.jpg");
-		InputStream stream = new FileInputStream(file);
-		StreamMeta streamMeta = StreamMeta.convertToByteStreamMeta(stream);
-		String downloadUrl = ossClient.upload(streamMeta.getInputStream(), streamMeta.getSize(), relativePath);
-		log.info("上传结果:{}", downloadUrl);
-		Assert.state(ossClient.getDownloadUrl(relativePath).equals(downloadUrl), "下载地址不一致");
+		File file = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "test.txt");
+		String relativePath = "img/test.txt";
+		String downloadFileUrl = ossClient.upload(file, relativePath);
+		log.info("上传结果:{}", downloadFileUrl);
+		Assert.state(ossClient.getDownloadUrl(relativePath).equals(downloadFileUrl), "下载地址不一致");
+		// InputStream stream = new FileInputStream(file);
+		// StreamMeta streamMeta = StreamMeta.convertToByteStreamMeta(stream);
+		// String downloadUrl = ossClient.upload(streamMeta.getInputStream(),
+		// streamMeta.getSize(), relativePath);
+		// log.info("上传结果:{}", downloadUrl);
+		// Assert.state(ossClient.getDownloadUrl(relativePath).equals(downloadUrl),
+		// "下载地址不一致");
 	}
 
 	@SneakyThrows

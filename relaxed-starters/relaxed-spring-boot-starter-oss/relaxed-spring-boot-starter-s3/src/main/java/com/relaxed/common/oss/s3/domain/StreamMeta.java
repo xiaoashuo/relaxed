@@ -2,11 +2,9 @@ package com.relaxed.common.oss.s3.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import software.amazon.awssdk.utils.IoUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * @author Yakir
@@ -27,22 +25,13 @@ public class StreamMeta {
 	 * 转换为字节流模板
 	 * @author yakir
 	 * @date 2021/11/26 15:27
-	 * @param inputStream
+	 * @param inputStream Caller is responsible for closing the given input stream.
 	 * @return com.relaxed.common.oss.s3.domain.StreamMeta
 	 */
 	public static StreamMeta convertToByteStreamMeta(InputStream inputStream) throws IOException {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-		long size = 0;
-		byte[] buffer = new byte[1024];
-		int len;
-
-		while ((len = inputStream.read(buffer)) > -1) {
-			size += len;
-			out.write(buffer, 0, len);
-		}
-
-		return new StreamMeta(size, new ByteArrayInputStream(out.toByteArray()));
+		byte[] byteContent = IoUtils.toByteArray(inputStream);
+		long size = byteContent.length;
+		return new StreamMeta(size, new ByteArrayInputStream(byteContent));
 	}
 
 }

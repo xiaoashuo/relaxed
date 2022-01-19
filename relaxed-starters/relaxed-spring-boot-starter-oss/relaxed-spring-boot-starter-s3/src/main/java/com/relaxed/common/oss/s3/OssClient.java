@@ -16,6 +16,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.utils.IoUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -78,6 +79,10 @@ public class OssClient implements DisposableBean {
 		return upload(inputStream, size, relativePath, acl);
 	}
 
+	public String upload(File file, String relativePath) {
+		return upload(file, relativePath, acl);
+	}
+
 	/**
 	 * 上传文件
 	 * @author yakir
@@ -94,6 +99,25 @@ public class OssClient implements DisposableBean {
 		}
 		// 返回eTag
 		getS3Client().putObject(builder.build(), RequestBody.fromInputStream(inputStream, size));
+		return getDownloadUrl(relativePath);
+	}
+
+	/**
+	 * 上传文件
+	 * @author yakir
+	 * @date 2022/1/19 16:12
+	 * @param file
+	 * @param relativePath
+	 * @param acl
+	 * @return java.lang.String
+	 */
+	public String upload(File file, String relativePath, ObjectCannedACL acl) {
+		PutObjectRequest.Builder builder = PutObjectRequest.builder().bucket(bucket).key(relativePath);
+		if (acl != null) {
+			builder.acl(acl);
+		}
+		// 返回eTag
+		getS3Client().putObject(builder.build(), RequestBody.fromFile(file));
 		return getDownloadUrl(relativePath);
 	}
 
