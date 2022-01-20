@@ -7,6 +7,7 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import com.relaxed.common.exception.ExceptionHandleConfig;
 import com.relaxed.common.exception.domain.ExceptionMessage;
 import com.relaxed.common.exception.domain.ExceptionNoticeResponse;
+import com.relaxed.common.exception.holder.ExceptionNotifierHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -31,6 +32,8 @@ public abstract class AbstractNoticeGlobalExceptionHandler extends Thread
 
 	protected final ExceptionHandleConfig config;
 
+	protected final ExceptionNotifierHolder notifierHolder;
+
 	/**
 	 * 通知消息存放 e.message 堆栈信息
 	 */
@@ -53,8 +56,10 @@ public abstract class AbstractNoticeGlobalExceptionHandler extends Thread
 
 	protected final String applicationName;
 
-	protected AbstractNoticeGlobalExceptionHandler(ExceptionHandleConfig config, String applicationName) {
+	protected AbstractNoticeGlobalExceptionHandler(ExceptionHandleConfig config, ExceptionNotifierHolder notifierHolder,
+			String applicationName) {
 		this.config = config;
+		this.notifierHolder = notifierHolder;
 		messages = new ConcurrentHashMap<>(config.getMax() * 2);
 		this.applicationName = applicationName;
 		try {
@@ -115,9 +120,7 @@ public abstract class AbstractNoticeGlobalExceptionHandler extends Thread
 				messages.forEach((k, v) -> {
 					try {
 						ExceptionNoticeResponse response = send(v);
-						if (!response.isSuccess()) {
-							log.error("消息通知发送失败! msg: {}", response.getErrMsg());
-						}
+						handleExceptionNoticeResponse(response);
 					}
 					catch (Exception e) {
 						log.error("消息通知时发生异常", e);
@@ -141,7 +144,21 @@ public abstract class AbstractNoticeGlobalExceptionHandler extends Thread
 	 * @return 返回消息发送状态，如果发送失败需要设置失败信息
 	 * @author lingting 2020-06-12 00:37:23
 	 */
-	public abstract ExceptionNoticeResponse send(ExceptionMessage sendMessage);
+	public ExceptionNoticeResponse send(ExceptionMessage sendMessage) {
+		return notifierHolder.notice(sendMessage);
+	}
+
+	/**
+	 * 处理通知结果
+	 * @author yakir
+	 * @date 2022/1/20 17:34
+	 * @param response
+	 */
+	public void handleExceptionNoticeResponse(ExceptionNoticeResponse response) {
+		if (!response.isSuccess()) {
+			log.error("消息通知发送失败! 详细信息{}", response.getNoticeResults());
+		}
+	}
 
 	@Override
 	public void handle(Throwable throwable) {

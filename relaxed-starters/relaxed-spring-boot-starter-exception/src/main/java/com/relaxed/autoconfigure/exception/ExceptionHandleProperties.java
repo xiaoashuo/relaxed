@@ -3,7 +3,9 @@ package com.relaxed.autoconfigure.exception;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -13,6 +15,11 @@ import java.util.concurrent.TimeUnit;
 @Data
 @ConfigurationProperties(prefix = "relaxed.exception")
 public class ExceptionHandleProperties {
+
+	/**
+	 * 通知渠道
+	 */
+	private Map<String, Boolean> channels = new HashMap<>();
 
 	/**
 	 * 应用名称
