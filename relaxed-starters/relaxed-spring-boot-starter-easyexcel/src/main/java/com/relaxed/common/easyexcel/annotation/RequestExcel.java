@@ -20,7 +20,7 @@ public @interface RequestExcel {
 	/**
 	 * 前端上传字段名称 file
 	 */
-	String fileName() default "file";
+	String fileName() default "";
 
 	/**
 	 * 读取的监听器类

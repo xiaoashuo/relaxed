@@ -3,13 +3,17 @@ package com.relaxed.common.easyexcel.aop;
 import com.alibaba.excel.EasyExcel;
 
 import com.relaxed.common.easyexcel.annotation.RequestExcel;
+import com.relaxed.common.easyexcel.converters.LocalDateStringConverter;
+import com.relaxed.common.easyexcel.converters.LocalDateTimeStringConverter;
 import com.relaxed.common.easyexcel.handler.ListAnalysisEventListener;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.core.Conventions;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ResolvableType;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -57,9 +61,13 @@ public class RequestExcelArgumentResolver implements HandlerMethodArgumentResolv
 		// 获取请求文件流
 		HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
 		assert request != null;
+		String fieldName = requestExcel.fileName();
+		if (!StringUtils.hasText(fieldName)) {
+			fieldName = Conventions.getVariableNameForParameter(parameter);
+		}
 		InputStream inputStream;
 		if (request instanceof MultipartRequest) {
-			MultipartFile file = ((MultipartRequest) request).getFile(requestExcel.fileName());
+			MultipartFile file = ((MultipartRequest) request).getFile(fieldName);
 			assert file != null;
 			inputStream = file.getInputStream();
 		}
@@ -71,13 +79,14 @@ public class RequestExcelArgumentResolver implements HandlerMethodArgumentResolv
 		Class<?> excelModelClass = ResolvableType.forMethodParameter(parameter).getGeneric(0).resolve();
 
 		// 这里需要指定读用哪个 class 去读，然后读取第一个 sheet 文件流会自动关闭
-		EasyExcel.read(inputStream, excelModelClass, readListener).ignoreEmptyRow(requestExcel.ignoreEmptyRow()).sheet()
-				.doRead();
+		EasyExcel.read(inputStream, excelModelClass, readListener).registerConverter(LocalDateStringConverter.INSTANCE)
+				.registerConverter(LocalDateTimeStringConverter.INSTANCE).ignoreEmptyRow(requestExcel.ignoreEmptyRow())
+				.sheet().doRead();
 
 		// 校验失败的数据处理 交给 BindResult
-		WebDataBinder dataBinder = webDataBinderFactory.createBinder(webRequest, readListener.getErrors(), "excel");
+		WebDataBinder dataBinder = webDataBinderFactory.createBinder(webRequest, readListener.getErrors(), fieldName);
 		ModelMap model = modelAndViewContainer.getModel();
-		model.put(BindingResult.MODEL_KEY_PREFIX + "excel", dataBinder.getBindingResult());
+		model.put(BindingResult.MODEL_KEY_PREFIX + fieldName, dataBinder.getBindingResult());
 
 		return readListener.getList();
 	}
