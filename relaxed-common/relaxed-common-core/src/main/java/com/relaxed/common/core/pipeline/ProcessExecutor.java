@@ -15,7 +15,7 @@ import java.util.Map;
  * @date 2022/2/10 9:50
  * @Version 1.0
  */
-@RequiredArgsConstructor
+
 public class ProcessExecutor {
 
 	/**
@@ -23,16 +23,17 @@ public class ProcessExecutor {
 	 */
 	private final Map<String, ProcessTemplate> templateConfig;
 
-	private PostProcessor NullPostProcessor = processContext -> {
-	};
+	private final PostProcessor globalPostProcessor;
 
-	/**
-	 * 执行责任链
-	 * @param context
-	 * @return 返回上下文内容
-	 */
-	public ProcessContext process(ProcessContext context) {
-		return process(context, NullPostProcessor);
+	public ProcessExecutor(Map<String, ProcessTemplate> templateConfig) {
+		this.templateConfig = templateConfig;
+		this.globalPostProcessor = processContext -> {
+		};
+	}
+
+	public ProcessExecutor(Map<String, ProcessTemplate> templateConfig, PostProcessor globalPostProcessor) {
+		this.templateConfig = templateConfig;
+		this.globalPostProcessor = globalPostProcessor;
 	}
 
 	/**
@@ -40,7 +41,7 @@ public class ProcessExecutor {
 	 * @param context
 	 * @return 返回上下文内容
 	 */
-	public ProcessContext process(ProcessContext context, PostProcessor callback) {
+	public ProcessContext process(ProcessContext context) {
 
 		/**
 		 * 前置检查
@@ -63,7 +64,8 @@ public class ProcessExecutor {
 				break;
 			}
 		}
-		callback.postProcess(context);
+		// 回调处理
+		globalPostProcessor.postProcess(context);
 		return context;
 	}
 

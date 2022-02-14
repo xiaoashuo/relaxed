@@ -1,5 +1,6 @@
 package com.relaxed.extend.mybatis.plus.toolkit;
 
+import com.relaxed.extend.mybatis.plus.conditions.query.LambdaAliasQueryWrapperX;
 import com.relaxed.extend.mybatis.plus.conditions.query.LambdaQueryWrapperX;
 import com.relaxed.extend.mybatis.plus.conditions.update.LambdaUpdateWrapperX;
 
@@ -70,6 +71,27 @@ public final class WrappersX {
 	 */
 	public static <T> LambdaUpdateWrapperX<T> lambdaUpdateX(Class<T> entityClass) {
 		return new LambdaUpdateWrapperX<>(entityClass);
+	}
+
+	/**
+	 * 获取 LambdaAliasQueryWrapper&lt;T&gt;
+	 * @param entity 实体类
+	 * @param <T> 实体类泛型
+	 * @return LambdaAliasQueryWrapper&lt;T&gt;
+	 */
+	public static <T> LambdaAliasQueryWrapperX<T> lambdaAliasQueryX(T entity) {
+		return new LambdaAliasQueryWrapperX<>(entity);
+	}
+
+	/**
+	 * 获取 LambdaAliasQueryWrapper&lt;T&gt;
+	 * @param entityClass 实体类class
+	 * @param <T> 实体类泛型
+	 * @return LambdaAliasQueryWrapper&lt;T&gt;
+	 * @since 3.3.1
+	 */
+	public static <T> LambdaAliasQueryWrapperX<T> lambdaAliasQueryX(Class<T> entityClass) {
+		return new LambdaAliasQueryWrapperX<>(entityClass);
 	}
 
 }

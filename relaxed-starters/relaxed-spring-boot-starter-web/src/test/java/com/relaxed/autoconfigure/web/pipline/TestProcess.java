@@ -36,12 +36,7 @@ public class TestProcess {
 		ProcessContext processContext = ProcessContext.builder().processId(IdUtil.simpleUUID())
 				.processModel(processContextModel).channel("ts").needBreak(false).response(R.ok("流程开始")).build();
 
-		processExecutor.process(processContext, new PostProcessor() {
-			@Override
-			public void postProcess(ProcessContext processContext) {
-				log.info("流程处理结束{}", processContext);
-			}
-		});
+		processExecutor.process(processContext);
 
 	}
 
