@@ -17,7 +17,7 @@
         <module>relaxed-dependencies</module>
     </modules>
 
-    <name>relaxed</name>
+    <name>${project.artifactId}</name>
     <description>项目基本脚手架</description>
     <url>https://github.com/xiaoashuo/relaxed</url>
 
@@ -76,6 +76,7 @@
         </repository>
     </distributionManagement>
     <build>
+        <finalName>${project.name}</finalName>
         <!--重要 如果不设置resource 会导致application.yaml中的@@找不到pom文件中的配置-->
         <resources>
             <resource>
