@@ -105,6 +105,7 @@
                 <artifactId>relaxed-common-idempotent</artifactId>
                 <version>${reversion}</version>
             </dependency>
+
             <!--多数据源-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
@@ -221,6 +222,12 @@
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-extend-dingtalk</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <!--下载模块-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-spring-boot-starter-download</artifactId>
                 <version>${reversion}</version>
             </dependency>
             <!--sftp客户端-->
