@@ -14,6 +14,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum DownTypeEnum {
 
-	LOCAL, SFTP, OTHER;
+	LOCAL, SFTP,;
 
 }

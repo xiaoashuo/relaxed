@@ -64,15 +64,7 @@ public abstract class AbstractDownloadHandler implements DownloadHandler, Applic
 		response.setContentType(contentType);
 		response.setCharacterEncoding(responseDownload.charset());
 		buildHeaders(response, responseDownload, fileName);
-		DownTypeEnum channel = responseDownload.channel();
-		if (DownTypeEnum.OTHER.equals(channel)) {
-			DownloadHandler customDownloadHandler = applicationContext.getBean(responseDownload.customHandler());
-			Assert.notNull(customDownloadHandler, "custom download handler can not null");
-			customDownloadHandler.download(o, response, responseDownload);
-		}
-		else {
-			write(downloadModel, response, responseDownload);
-		}
+		write(downloadModel, response, responseDownload);
 
 	}
 
