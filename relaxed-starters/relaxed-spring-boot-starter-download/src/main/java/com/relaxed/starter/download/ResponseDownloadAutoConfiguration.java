@@ -28,7 +28,7 @@ public class ResponseDownloadAutoConfiguration {
 
 	private final RequestMappingHandlerAdapter requestMappingHandlerAdapter;
 
-	private final ResponseDownloadReturnValueHandler responseExcelReturnValueHandler;
+	private final ResponseDownloadReturnValueHandler responseDownloadReturnValueHandler;
 
 	/**
 	 * 追加 Excel返回值处理器 到 springmvc 中
@@ -39,7 +39,7 @@ public class ResponseDownloadAutoConfiguration {
 				.getReturnValueHandlers();
 
 		List<HandlerMethodReturnValueHandler> newHandlers = new ArrayList<>();
-		newHandlers.add(responseExcelReturnValueHandler);
+		newHandlers.add(responseDownloadReturnValueHandler);
 		assert returnValueHandlers != null;
 		newHandlers.addAll(returnValueHandlers);
 		requestMappingHandlerAdapter.setReturnValueHandlers(newHandlers);
