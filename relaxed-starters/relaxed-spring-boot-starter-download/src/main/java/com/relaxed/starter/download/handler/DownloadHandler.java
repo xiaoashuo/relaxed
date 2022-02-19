@@ -1,6 +1,7 @@
 package com.relaxed.starter.download.handler;
 
 import com.relaxed.starter.download.annotation.ResponseDownload;
+import com.relaxed.starter.download.domain.DownloadModel;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,25 +16,18 @@ public interface DownloadHandler {
 
 	/**
 	 * 是否支持
-	 * @param o obj
+	 * @param downloadModel DownloadModel
 	 * @param responseDownload
 	 * @return
 	 */
-	boolean support(Object o, ResponseDownload responseDownload);
-
-	/**
-	 * 校验
-	 * @param o obj
-	 * @param responseDownload 注解
-	 */
-	void check(Object o, ResponseDownload responseDownload);
+	boolean support(DownloadModel downloadModel, ResponseDownload responseDownload);
 
 	/**
 	 * 返回的对象
-	 * @param o obj
+	 * @param downloadModel DownloadModel
 	 * @param response 输出对象
 	 * @param responseDownload 注解
 	 */
-	void download(Object o, HttpServletResponse response, ResponseDownload responseDownload);
+	void download(DownloadModel downloadModel, HttpServletResponse response, ResponseDownload responseDownload);
 
 }

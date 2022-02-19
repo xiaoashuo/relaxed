@@ -22,7 +22,7 @@ import java.io.FileInputStream;
 public class LocalDownloadHandler extends AbstractDownloadHandler {
 
 	@Override
-	public boolean support(Object o, ResponseDownload responseDownload) {
+	public boolean support(DownloadModel downloadModel, ResponseDownload responseDownload) {
 		return DownTypeEnum.LOCAL.equals(responseDownload.channel());
 	}
 
@@ -30,13 +30,13 @@ public class LocalDownloadHandler extends AbstractDownloadHandler {
 	@Override
 	protected void write(DownloadModel downloadModel, HttpServletResponse response, ResponseDownload responseDownload) {
 		String parentPath = downloadModel.getParentPath();
-		String fullFileName = downloadModel.getFileName() + downloadModel.getFileSuffix();
-		File file = new File(parentPath, fullFileName);
+		String fileName = downloadModel.getFileName();
+		File file = new File(parentPath, fileName);
 		try (FileInputStream fileInputStream = new FileInputStream(file)) {
 			ServletUtil.write(response, fileInputStream);
 		}
 		catch (Exception e) {
-			log.error("下载文件,渠道{} 路径{}，名称{}异常", responseDownload.channel(), parentPath, fullFileName, e);
+			log.error("下载文件,渠道{} 路径{}，名称{}异常", responseDownload.channel(), parentPath, fileName, e);
 			throw e;
 		}
 	}

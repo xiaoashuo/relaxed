@@ -2,6 +2,7 @@ package com.relaxed.starter.download.aop;
 
 import com.relaxed.starter.download.annotation.ResponseDownload;
 import com.relaxed.starter.download.handler.DownloadHandler;
+import com.relaxed.starter.download.handler.DownloadHandlerChain;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
@@ -24,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ResponseDownloadReturnValueHandler implements HandlerMethodReturnValueHandler {
 
-	private final List<DownloadHandler> downloadHandlerList;
+	private final DownloadHandlerChain downloadHandlerChain;
 
 	@Override
 	public boolean supportsReturnType(MethodParameter parameter) {
@@ -40,8 +41,8 @@ public class ResponseDownloadReturnValueHandler implements HandlerMethodReturnVa
 		ResponseDownload responseDownload = parameter.getMethodAnnotation(ResponseDownload.class);
 		Assert.state(responseDownload != null, "No @Download");
 		mavContainer.setRequestHandled(true);
-		downloadHandlerList.stream().filter(handler -> handler.support(returnValue, responseDownload)).findFirst()
-				.ifPresent(handler -> handler.download(returnValue, response, responseDownload));
+		downloadHandlerChain.process(returnValue, response, responseDownload);
+
 	}
 
 }

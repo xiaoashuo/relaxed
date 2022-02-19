@@ -4,7 +4,6 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.relaxed.starter.download.annotation.ResponseDownload;
 import com.relaxed.starter.download.domain.DownloadModel;
-import com.relaxed.starter.download.enums.DownTypeEnum;
 import com.relaxed.starter.download.exception.DownloadException;
 import lombok.SneakyThrows;
 import org.springframework.beans.BeansException;
@@ -13,7 +12,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
-import org.springframework.util.Assert;
 
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
@@ -35,29 +33,7 @@ public abstract class AbstractDownloadHandler implements DownloadHandler, Applic
 	}
 
 	@Override
-	public void check(Object o, ResponseDownload responseDownload) {
-
-		if (!(o instanceof DownloadModel)) {
-			throw new DownloadException("return value  type must be  DownloadModel");
-		}
-		DownloadModel downloadModel = (DownloadModel) o;
-		if (StrUtil.isEmpty(downloadModel.getFileSuffix())) {
-			throw new DownloadException("@ResponseDownload fileType 配置不存在");
-		}
-
-		if (StrUtil.isEmpty(downloadModel.getFileName())) {
-			throw new DownloadException("filename can not be null");
-		}
-		String[] headers = responseDownload.headers();
-		if (ArrayUtil.isNotEmpty(headers) && headers.length % 2 != 0) {
-			throw new DownloadException("@ResponseDownload headers 必须为2的倍数");
-		}
-	}
-
-	@Override
-	public void download(Object o, HttpServletResponse response, ResponseDownload responseDownload) {
-		check(o, responseDownload);
-		DownloadModel downloadModel = (DownloadModel) o;
+	public void download(DownloadModel downloadModel, HttpServletResponse response, ResponseDownload responseDownload) {
 		String fileName = extractFileName(responseDownload, downloadModel);
 		String contentType = MediaTypeFactory.getMediaType(fileName).map(MediaType::toString)
 				.orElse(responseDownload.contentType());
@@ -103,8 +79,7 @@ public abstract class AbstractDownloadHandler implements DownloadHandler, Applic
 	 */
 	@SneakyThrows
 	protected String extractFileName(ResponseDownload responseDownload, DownloadModel downloadModel) {
-		return String.format("%s%s", URLEncoder.encode(downloadModel.getFileName(), "UTF-8"),
-				downloadModel.getFileSuffix());
+		return URLEncoder.encode(downloadModel.getFileName(), "UTF-8");
 	}
 
 }
