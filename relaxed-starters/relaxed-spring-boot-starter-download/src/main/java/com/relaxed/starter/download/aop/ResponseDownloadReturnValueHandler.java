@@ -39,7 +39,7 @@ public class ResponseDownloadReturnValueHandler implements HandlerMethodReturnVa
 		HttpServletResponse response = nativeWebRequest.getNativeResponse(HttpServletResponse.class);
 		Assert.state(response != null, "No HttpServletResponse");
 		ResponseDownload responseDownload = parameter.getMethodAnnotation(ResponseDownload.class);
-		Assert.state(responseDownload != null, "No @Download");
+		Assert.state(responseDownload != null, "No @ResponseDownload");
 		mavContainer.setRequestHandled(true);
 		downloadHandlerChain.process(returnValue, response, responseDownload);
 
