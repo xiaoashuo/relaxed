@@ -51,6 +51,8 @@
 + fileName 文件名称 带后缀 123.png
 + fileType 文件类型 png
 + parentPath 文件父级路径 绝对路径 eg /test/123.png 此处就是/test
++ separator  文件路径分隔符 默认为系统分隔符 
++ fullFilePath 文件全路径  eg /test/123.png
 + extra 额外参数 自定义处理器时可能用的到
 + downloadCallback 后置处理器 执行完之后可以做一些收尾工作
 
