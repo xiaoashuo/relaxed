@@ -1,14 +1,18 @@
 package com.relaxed.starter.download;
 
+import com.relaxed.common.jsch.sftp.SftpAutoConfiguration;
 import com.relaxed.common.jsch.sftp.client.ISftpClient;
 import com.relaxed.common.oss.s3.OssClient;
 import com.relaxed.starter.download.aop.ResponseDownloadReturnValueHandler;
 import com.relaxed.starter.download.handler.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import java.util.List;
 
@@ -30,33 +34,43 @@ public class ResponseDownloadHandler {
 	 * @return com.relaxed.starter.download.handler.LocalDownloadHandler
 	 */
 	@Bean
-	@ConditionalOnMissingBean
+	@ConditionalOnMissingBean(LocalDownloadHandler.class)
 	public LocalDownloadHandler localDownloadHandler() {
 		return new LocalDownloadHandler();
 	}
 
-	/**
-	 * sftp下载器
-	 * @param iSftpClient
-	 * @return
-	 */
-	@Bean
-	@ConditionalOnMissingBean
-	@ConditionalOnBean(ISftpClient.class)
-	public SftpDownloadHandler sftpDownloadHandler(ISftpClient iSftpClient) {
-		return new SftpDownloadHandler(iSftpClient);
+	@Configuration
+	@ConditionalOnClass(ISftpClient.class)
+	public static class ISftpRegister {
+
+		/**
+		 * sftp下载器
+		 * @param iSftpClient
+		 * @return
+		 */
+		@Bean
+		@ConditionalOnMissingBean(SftpDownloadHandler.class)
+		public SftpDownloadHandler sftpDownloadHandler(ISftpClient iSftpClient) {
+			return new SftpDownloadHandler(iSftpClient);
+		}
+
 	}
 
-	/**
-	 * oss 下载器
-	 * @param ossClient
-	 * @return
-	 */
-	@Bean
-	@ConditionalOnMissingBean
-	@ConditionalOnBean(OssClient.class)
-	public OssDownloadHandler ossDownloadHandler(OssClient ossClient) {
-		return new OssDownloadHandler(ossClient);
+	@Configuration
+	@ConditionalOnClass(OssClient.class)
+	public static class OssRegister {
+
+		/**
+		 * oss 下载器
+		 * @param ossClient
+		 * @return
+		 */
+		@Bean
+		@ConditionalOnMissingBean(OssDownloadHandler.class)
+		public OssDownloadHandler ossDownloadHandler(OssClient ossClient) {
+			return new OssDownloadHandler(ossClient);
+		}
+
 	}
 
 	/**
