@@ -1,4 +1,4 @@
-package com.relaxed.autoconfigure.web.mybatis;
+package com.relaxed.admin.core.mybatis;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;

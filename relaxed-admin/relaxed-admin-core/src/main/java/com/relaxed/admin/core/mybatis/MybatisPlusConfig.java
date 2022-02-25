@@ -1,4 +1,4 @@
-package com.relaxed.autoconfigure.web.mybatis;
+package com.relaxed.admin.core.mybatis;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.annotation.FieldFill;

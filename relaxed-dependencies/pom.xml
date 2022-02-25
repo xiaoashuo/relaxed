@@ -73,7 +73,12 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
+            <!-- admin core-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-admin-core</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--model 模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
