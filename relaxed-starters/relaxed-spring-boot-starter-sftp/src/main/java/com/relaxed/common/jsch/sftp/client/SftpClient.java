@@ -29,7 +29,7 @@ public class SftpClient implements ISftpClient {
 			policyHandler.handle(sftp);
 		}
 		catch (Exception e) {
-			throw new SftpClientException(" sftp exception", e);
+			throw new SftpClientException("proxy sftp exception", e);
 		}
 		finally {
 			if (sftp != null) {
@@ -49,7 +49,7 @@ public class SftpClient implements ISftpClient {
 
 		}
 		catch (Exception e) {
-			throw new SftpClientException("get sftp error", e);
+			throw new SftpClientException("proxy sftp exception", e);
 		}
 		finally {
 			if (sftp != null) {
