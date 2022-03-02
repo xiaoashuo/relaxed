@@ -81,14 +81,6 @@ public class SpringUtils implements ApplicationContextAware {
 	 * @param event
 	 */
 	public static void publishEvent(ApplicationEvent event) {
-		publishEvent(event);
-	}
-
-	/**
-	 * 发布事件
-	 * @param event
-	 */
-	public static void publishEvent(Object event) {
 		if (context == null) {
 			return;
 		}

@@ -84,7 +84,7 @@ public abstract class AbstractBatchOps {
 		}
 		// 异步任务时候 同步等待执行完成
 		if (CollectionUtil.isNotEmpty(completableFutures)) {
-			completableFutures.forEach(completableFuture -> completableFuture.join());
+			completableFutures.forEach(CompletableFuture::join);
 		}
 		stopWatch.stop();
 		log.info("{}-batch process end time {} ms...", taskName, stopWatch.getTotalTimeMillis());

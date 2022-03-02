@@ -1,5 +1,6 @@
 package com.relaxed.admin.core.thread;
 
+import cn.hutool.core.map.MapUtil;
 import org.slf4j.MDC;
 import org.springframework.core.task.TaskDecorator;
 
@@ -19,7 +20,11 @@ public class MdcTaskDecorator implements TaskDecorator {
 		Map<String, String> contextMap = MDC.getCopyOfContextMap();
 		return () -> {
 			try {
-				MDC.setContextMap(contextMap);
+				// 现在：@Async线程上下文！
+				// 恢复Web线程上下文的MDC数据
+				if (MapUtil.isNotEmpty(contextMap)) {
+					MDC.setContextMap(contextMap);
+				}
 				runnable.run();
 			}
 			finally {

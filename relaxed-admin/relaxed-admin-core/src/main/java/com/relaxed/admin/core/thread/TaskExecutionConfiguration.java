@@ -1,5 +1,6 @@
 package com.relaxed.admin.core.thread;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.task.TaskExecutorCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,7 @@ public class TaskExecutionConfiguration {
 	 * @return org.springframework.core.task.TaskDecorator
 	 */
 	@Bean
+	@ConditionalOnMissingBean
 	public TaskDecorator mdcTaskDecorator() {
 		return new MdcTaskDecorator();
 	}
@@ -35,6 +37,7 @@ public class TaskExecutionConfiguration {
 	 * @return org.springframework.boot.task.TaskExecutorCustomizer
 	 */
 	@Bean
+	@ConditionalOnMissingBean
 	public TaskExecutorCustomizer taskExecutorCustomizerExtend() {
 		return (executor) -> {
 			// 线程池对拒绝任务(无线程可用)的处理策略
