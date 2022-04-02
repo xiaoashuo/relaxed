@@ -2,8 +2,10 @@ package com.relaxed.common.easyexcel.converters;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.CellData;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 import java.text.ParseException;
@@ -33,7 +35,7 @@ public enum LocalDateStringConverter implements Converter<LocalDate> {
 	}
 
 	@Override
-	public LocalDate convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+	public LocalDate convertToJavaData(ReadCellData cellData, ExcelContentProperty contentProperty,
 			GlobalConfiguration globalConfiguration) throws ParseException {
 		if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
 			return LocalDate.parse(cellData.getStringValue());
@@ -46,7 +48,7 @@ public enum LocalDateStringConverter implements Converter<LocalDate> {
 	}
 
 	@Override
-	public CellData<String> convertToExcelData(LocalDate value, ExcelContentProperty contentProperty,
+	public WriteCellData<String> convertToExcelData(LocalDate value, ExcelContentProperty contentProperty,
 			GlobalConfiguration globalConfiguration) {
 		DateTimeFormatter formatter;
 		if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
@@ -55,7 +57,7 @@ public enum LocalDateStringConverter implements Converter<LocalDate> {
 		else {
 			formatter = DateTimeFormatter.ofPattern(contentProperty.getDateTimeFormatProperty().getFormat());
 		}
-		return new CellData<>(value.format(formatter));
+		return new WriteCellData<>(value.format(formatter));
 	}
 
 }

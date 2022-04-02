@@ -22,7 +22,7 @@
         <dynamic-datasource.version>3.5.0</dynamic-datasource.version>
         <jasypt.version>2.1.0</jasypt.version>
         <jsch.version>0.1.54</jsch.version>
-        <easyexcel.version>2.2.10</easyexcel.version>
+        <easyexcel.version>3.0.5</easyexcel.version>
         <poi.version>5.2.2</poi.version>
         <flatten-maven-plugin.version>1.2.5</flatten-maven-plugin.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
