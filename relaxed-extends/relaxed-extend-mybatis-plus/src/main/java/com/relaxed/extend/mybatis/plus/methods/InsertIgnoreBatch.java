@@ -11,6 +11,14 @@ public class InsertIgnoreBatch extends AbstractInsertBatch {
 
 	private static final String SQL_METHOD = "insertIgnoreBatch";
 
+	public InsertIgnoreBatch() {
+		super(SQL_METHOD);
+	}
+
+	public InsertIgnoreBatch(String methodName) {
+		super(methodName);
+	}
+
 	/**
 	 * 插入如果中已经存在相同的记录，则忽略当前新数据
 	 */
@@ -19,11 +27,6 @@ public class InsertIgnoreBatch extends AbstractInsertBatch {
 	@Override
 	protected String getSql() {
 		return INSERT_IGNORE_SQL;
-	}
-
-	@Override
-	protected String getId() {
-		return SQL_METHOD;
 	}
 
 }

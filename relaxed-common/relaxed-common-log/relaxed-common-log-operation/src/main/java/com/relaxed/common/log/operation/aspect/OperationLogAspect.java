@@ -44,10 +44,10 @@ public class OperationLogAspect<T> {
 		Method method = signature.getMethod();
 
 		// 获取操作日志注解 备注： AnnotationUtils.findAnnotation 方法无法获取继承的属性
-		Log log = AnnotatedElementUtils.findMergedAnnotation(method, Log.class);
+		Log operatorLog = AnnotatedElementUtils.findMergedAnnotation(method, Log.class);
 		// 获取操作日志 DTO
-		Assert.notNull(log, "operationLogging annotation must not be null!");
-		T operationLog = operationLogHandler.buildLog(log, joinPoint);
+		Assert.notNull(operatorLog, "operationLogging annotation must not be null!");
+		T operationLog = operationLogHandler.buildLog(operatorLog, joinPoint);
 		Throwable throwable = null;
 		Object result = null;
 		try {
@@ -59,18 +59,20 @@ public class OperationLogAspect<T> {
 			throw throwable;
 		}
 		finally {
-			handleLog(joinPoint, startTime, operationLog, result, throwable);
+			boolean isSaveResult = operatorLog.recordResult();
+			handleLog(joinPoint, startTime, operationLog, throwable, isSaveResult, result);
 		}
 	}
 
-	private void handleLog(ProceedingJoinPoint joinPoint, long startTime, T operationLog, Object executionResult,
-			Throwable throwable) {
+	private void handleLog(ProceedingJoinPoint joinPoint, long startTime, T operationLog, Throwable throwable,
+			boolean isSaveResult, Object executionResult) {
 		try {
 			// 结束时间
 			long endTime = System.currentTimeMillis();
+
 			// 处理操作日志
 			operationLogHandler.handleLog(operationLogHandler.fillExecutionInfo(operationLog, joinPoint, startTime,
-					endTime, executionResult, throwable));
+					endTime, throwable, isSaveResult, executionResult));
 		}
 		catch (Exception e) {
 			log.error("记录操作日志异常：{}", operationLog, e);

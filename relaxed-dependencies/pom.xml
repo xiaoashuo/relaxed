@@ -17,7 +17,7 @@
         <hutool.version>5.7.18</hutool.version>
         <xxl-job.version>2.2.0</xxl-job.version>
         <mybatis.version>3.5.5</mybatis.version>
-        <mybatis-plus.version>3.4.2</mybatis-plus.version>
+        <mybatis-plus.version>3.5.1</mybatis-plus.version>
         <jsqlparse.version>4.3</jsqlparse.version>
         <dynamic-datasource.version>3.5.0</dynamic-datasource.version>
         <jasypt.version>2.1.0</jasypt.version>

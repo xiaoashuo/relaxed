@@ -16,14 +16,17 @@ public class ReplaceBatch extends AbstractInsertBatch {
 	 */
 	private static final String INSERT_IGNORE_SQL = "\"<script>\\nREPLACE INTO %s %s VALUES %s\\n</script>\"";
 
-	@Override
-	protected String getSql() {
-		return SQL_METHOD;
+	public ReplaceBatch() {
+		super(SQL_METHOD);
+	}
+
+	public ReplaceBatch(String methodName) {
+		super(methodName);
 	}
 
 	@Override
-	protected String getId() {
-		return INSERT_IGNORE_SQL;
+	protected String getSql() {
+		return SQL_METHOD;
 	}
 
 }

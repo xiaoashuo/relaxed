@@ -13,14 +13,17 @@ public class InsertBatch extends AbstractInsertBatch {
 
 	private static final String SQL_METHOD = "insertBatch";
 
-	@Override
-	protected String getSql() {
-		return SqlMethod.INSERT_ONE.getSql();
+	public InsertBatch() {
+		super(SQL_METHOD);
+	}
+
+	public InsertBatch(String methodName) {
+		super(methodName);
 	}
 
 	@Override
-	protected String getId() {
-		return SQL_METHOD;
+	protected String getSql() {
+		return SqlMethod.INSERT_ONE.getSql();
 	}
 
 }

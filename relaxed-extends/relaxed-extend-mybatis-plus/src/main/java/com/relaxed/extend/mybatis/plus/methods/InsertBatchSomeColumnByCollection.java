@@ -27,9 +27,18 @@ import java.util.function.Predicate;
  * @date 2021/6/10 10:18
  * @Version 1.0
  */
-@NoArgsConstructor
 @AllArgsConstructor
 public class InsertBatchSomeColumnByCollection extends AbstractMethod {
+
+	private static final String SQL_METHOD = "insertBatchSomeColumn";
+
+	public InsertBatchSomeColumnByCollection() {
+		super(SQL_METHOD);
+	}
+
+	public InsertBatchSomeColumnByCollection(String methodName) {
+		super(methodName);
+	}
 
 	/**
 	 * 字段筛选条件
@@ -43,10 +52,10 @@ public class InsertBatchSomeColumnByCollection extends AbstractMethod {
 		KeyGenerator keyGenerator = new NoKeyGenerator();
 		SqlMethod sqlMethod = SqlMethod.INSERT_ONE;
 		List<TableFieldInfo> fieldList = tableInfo.getFieldList();
-		String insertSqlColumn = tableInfo.getKeyInsertSqlColumn(false)
+		String insertSqlColumn = tableInfo.getKeyInsertSqlColumn(true, false)
 				+ this.filterTableFieldInfo(fieldList, predicate, TableFieldInfo::getInsertSqlColumn, EMPTY);
 		String columnScript = LEFT_BRACKET + insertSqlColumn.substring(0, insertSqlColumn.length() - 1) + RIGHT_BRACKET;
-		String insertSqlProperty = tableInfo.getKeyInsertSqlProperty(ENTITY_DOT, false)
+		String insertSqlProperty = tableInfo.getKeyInsertSqlProperty(true, ENTITY_DOT, false)
 				+ this.filterTableFieldInfo(fieldList, predicate, i -> i.getInsertSqlProperty(ENTITY_DOT), EMPTY);
 		insertSqlProperty = LEFT_BRACKET + insertSqlProperty.substring(0, insertSqlProperty.length() - 1)
 				+ RIGHT_BRACKET;
@@ -74,12 +83,6 @@ public class InsertBatchSomeColumnByCollection extends AbstractMethod {
 		SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
 		return this.addInsertMappedStatement(mapperClass, modelClass, getMethod(sqlMethod), sqlSource, keyGenerator,
 				keyProperty, keyColumn);
-	}
-
-	@Override
-	public String getMethod(SqlMethod sqlMethod) {
-		// 自定义 mapper 方法名
-		return "insertBatchSomeColumn";
 	}
 
 }

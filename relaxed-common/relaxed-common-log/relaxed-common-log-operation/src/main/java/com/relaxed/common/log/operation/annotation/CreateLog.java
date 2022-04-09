@@ -32,4 +32,18 @@ public @interface CreateLog {
 	@AliasFor(annotation = Log.class)
 	String msg();
 
+	/**
+	 * 是否保存方法入参
+	 * @return boolean
+	 */
+	@AliasFor(annotation = Log.class)
+	boolean recordParams() default true;
+
+	/**
+	 * 是否保存方法返回值
+	 * @return boolean
+	 */
+	@AliasFor(annotation = Log.class)
+	boolean recordResult() default true;
+
 }

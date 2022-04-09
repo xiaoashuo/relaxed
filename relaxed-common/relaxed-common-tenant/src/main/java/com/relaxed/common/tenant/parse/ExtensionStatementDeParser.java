@@ -56,7 +56,7 @@ public class ExtensionStatementDeParser extends StatementDeParser {
 		Expression whereExpression = update.getWhere();
 		update.setWhere(processWhereExpression(whereExpression, update.getTable(), expressionDeParser, getBuffer(),
 				getTenant()));
-		UpdateDeParser updateDeParser = new UpdateDeParser(expressionDeParser, parser, getBuffer());
+		UpdateDeParser updateDeParser = new UpdateDeParser(expressionDeParser, getBuffer());
 		updateDeParser.deParse(update);
 	}
 
