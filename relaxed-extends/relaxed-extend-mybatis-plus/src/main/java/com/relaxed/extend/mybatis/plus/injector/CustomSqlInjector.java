@@ -1,8 +1,10 @@
 package com.relaxed.extend.mybatis.plus.injector;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.relaxed.extend.mybatis.plus.methods.InsertBatchSomeColumnByCollection;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -22,6 +24,8 @@ public class CustomSqlInjector extends DefaultSqlInjector {
 	@Override
 	public List<AbstractMethod> getMethodList(Class<?> mapperClass, TableInfo tableInfo) {
 		List<AbstractMethod> list = super.getMethodList(mapperClass, tableInfo);
+		list.add(new InsertBatchSomeColumnByCollection(t -> t.getFieldFill() != FieldFill.UPDATE));
+
 		list.addAll(this.methods);
 		return list;
 	}

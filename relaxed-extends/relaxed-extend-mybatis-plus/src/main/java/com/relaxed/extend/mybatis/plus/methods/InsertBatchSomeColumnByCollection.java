@@ -27,7 +27,6 @@ import java.util.function.Predicate;
  * @date 2021/6/10 10:18
  * @Version 1.0
  */
-@AllArgsConstructor
 public class InsertBatchSomeColumnByCollection extends AbstractMethod {
 
 	private static final String SQL_METHOD = "insertBatchSomeColumn";
@@ -36,16 +35,21 @@ public class InsertBatchSomeColumnByCollection extends AbstractMethod {
 		super(SQL_METHOD);
 	}
 
-	public InsertBatchSomeColumnByCollection(String methodName) {
-		super(methodName);
-	}
-
 	/**
 	 * 字段筛选条件
 	 */
 	@Setter
 	@Accessors(chain = true)
 	private Predicate<TableFieldInfo> predicate;
+
+	public InsertBatchSomeColumnByCollection(Predicate<TableFieldInfo> predicate) {
+		this(SQL_METHOD, predicate);
+	}
+
+	public InsertBatchSomeColumnByCollection(String methodName, Predicate<TableFieldInfo> predicate) {
+		super(methodName);
+		this.predicate = predicate;
+	}
 
 	@Override
 	public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
