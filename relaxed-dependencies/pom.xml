@@ -117,12 +117,8 @@
                 <artifactId>relaxed-common-datasource</artifactId>
                 <version>${reversion}</version>
             </dependency>
-            <!--数据域-->
-            <dependency>
-                <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-common-datascope</artifactId>
-                <version>${reversion}</version>
-            </dependency>
+
+
             <!--多租户 独立数据库 多schema-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
@@ -293,6 +289,12 @@
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-s3</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <!--数据域-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-spring-boot-starter-datascope</artifactId>
                 <version>${reversion}</version>
             </dependency>
             <!--swagger 接口文档 -->
