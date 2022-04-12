@@ -1,6 +1,7 @@
 package com.relaxed.common.idempotent.annotation;
 
 import java.lang.annotation.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 幂等控制注解
@@ -38,9 +39,27 @@ public @interface Idempotent {
 	long duration() default 10 * 60;
 
 	/**
+	 * 控制时长单位，默认为 SECONDS 秒
+	 * @return {@link TimeUnit}
+	 */
+	TimeUnit timeUnit() default TimeUnit.SECONDS;
+
+	/**
+	 * 提示信息，正在执行中的提示
+	 * @return 提示信息
+	 */
+	String message() default "重复请求，请稍后重试";
+
+	/**
 	 * 否在业务完成后立刻清除，幂等 key
 	 * @return boolean true: 立刻清除 false: 不处理
 	 */
 	boolean removeKeyWhenFinished() default false;
+
+	/**
+	 * 否在业务执行异常时立刻清除幂等 key
+	 * @return boolean true: 立刻清除 false: 不处理
+	 */
+	boolean removeKeyWhenError() default false;
 
 }
