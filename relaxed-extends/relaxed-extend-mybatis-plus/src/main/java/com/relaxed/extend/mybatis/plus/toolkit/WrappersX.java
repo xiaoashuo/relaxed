@@ -2,6 +2,7 @@ package com.relaxed.extend.mybatis.plus.toolkit;
 
 import com.relaxed.extend.mybatis.plus.conditions.query.LambdaAliasQueryWrapperX;
 import com.relaxed.extend.mybatis.plus.conditions.query.LambdaQueryWrapperX;
+import com.relaxed.extend.mybatis.plus.conditions.query.TableAliasFunction;
 import com.relaxed.extend.mybatis.plus.conditions.update.LambdaUpdateWrapperX;
 
 /**
@@ -84,6 +85,18 @@ public final class WrappersX {
 	}
 
 	/**
+	 * 获取表别名自定义
+	 * @author yakir
+	 * @date 2022/4/12 10:48
+	 * @param entity
+	 * @param tableAliasFunction
+	 * @return com.relaxed.extend.mybatis.plus.conditions.query.LambdaAliasQueryWrapperX<T>
+	 */
+	public static <T> LambdaAliasQueryWrapperX<T> lambdaAliasQueryX(T entity, TableAliasFunction tableAliasFunction) {
+		return new LambdaAliasQueryWrapperX<>(entity, tableAliasFunction);
+	}
+
+	/**
 	 * 获取 LambdaAliasQueryWrapper&lt;T&gt;
 	 * @param entityClass 实体类class
 	 * @param <T> 实体类泛型
@@ -92,6 +105,19 @@ public final class WrappersX {
 	 */
 	public static <T> LambdaAliasQueryWrapperX<T> lambdaAliasQueryX(Class<T> entityClass) {
 		return new LambdaAliasQueryWrapperX<>(entityClass);
+	}
+
+	/**
+	 * 获取表别名自定义
+	 * @author yakir
+	 * @date 2022/4/12 10:48
+	 * @param entityClass
+	 * @param tableAliasFunction
+	 * @return com.relaxed.extend.mybatis.plus.conditions.query.LambdaAliasQueryWrapperX<T>
+	 */
+	public static <T> LambdaAliasQueryWrapperX<T> lambdaAliasQueryX(Class<T> entityClass,
+			TableAliasFunction tableAliasFunction) {
+		return new LambdaAliasQueryWrapperX<>(entityClass, tableAliasFunction);
 	}
 
 }

@@ -30,6 +30,8 @@ public class LambdaAliasQueryWrapperX<T> extends LambdaQueryWrapperX<T> {
 
 	private final String tableAlias;
 
+	private TableAliasFunction tableAliasFunction;
+
 	/**
 	 * 带别名的查询列 sql 片段，默认为null，第一次使用时加载<br/>
 	 * eg. t.id,t.name
@@ -37,13 +39,23 @@ public class LambdaAliasQueryWrapperX<T> extends LambdaQueryWrapperX<T> {
 	private String allAliasSqlSelect = null;
 
 	public LambdaAliasQueryWrapperX(T entity) {
+		this(entity, TableAliasHelper::tableAlias);
+	}
+
+	public LambdaAliasQueryWrapperX(T entity, TableAliasFunction tableAliasFunction) {
 		super(entity);
-		this.tableAlias = TableAliasHelper.tableAlias(getEntityClass());
+		this.tableAliasFunction = tableAliasFunction;
+		this.tableAlias = this.tableAliasFunction.alias(getEntityClass());
 	}
 
 	public LambdaAliasQueryWrapperX(Class<T> entityClass) {
+		this(entityClass, TableAliasHelper::tableAlias);
+	}
+
+	public LambdaAliasQueryWrapperX(Class<T> entityClass, TableAliasFunction tableAliasFunction) {
 		super(entityClass);
-		this.tableAlias = TableAliasHelper.tableAlias(getEntityClass());
+		this.tableAliasFunction = tableAliasFunction;
+		this.tableAlias = this.tableAliasFunction.alias(getEntityClass());
 	}
 
 	/**
@@ -53,7 +65,7 @@ public class LambdaAliasQueryWrapperX<T> extends LambdaQueryWrapperX<T> {
 	 */
 	public String getAllAliasSqlSelect() {
 		if (allAliasSqlSelect == null) {
-			allAliasSqlSelect = TableAliasHelper.tableAliasSelectSql(getEntityClass());
+			allAliasSqlSelect = TableAliasHelper.tableAliasSelectSql(getEntityClass(), this.tableAliasFunction);
 		}
 		return allAliasSqlSelect;
 	}

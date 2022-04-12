@@ -2,6 +2,7 @@ package com.relaxed.extend.mybatis.plus.alias;
 
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.relaxed.extend.mybatis.plus.conditions.query.TableAliasFunction;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import java.util.Map;
@@ -38,9 +39,13 @@ public final class TableAliasHelper {
 	 * @return sql片段
 	 */
 	public static String tableAliasSelectSql(Class<?> clazz) {
+		return tableAliasSelectSql(clazz, TableAliasHelper::tableAlias);
+	}
+
+	public static String tableAliasSelectSql(Class<?> clazz, TableAliasFunction tableAliasFunction) {
 		String tableAliasSelectSql = TABLE_ALIAS_SELECT_COLUMNS_CACHE.get(clazz);
 		if (tableAliasSelectSql == null) {
-			String tableAlias = tableAlias(clazz);
+			String tableAlias = tableAliasFunction.alias(clazz);
 
 			TableInfo tableInfo = TableInfoHelper.getTableInfo(clazz);
 			String allSqlSelect = tableInfo.getAllSqlSelect();
