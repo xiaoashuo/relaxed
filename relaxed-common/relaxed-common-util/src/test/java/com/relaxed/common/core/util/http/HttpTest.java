@@ -38,6 +38,7 @@ public class HttpTest {
 	 */
 	@Test
 	public void postJson() {
+
 		String urlStr = "http://localhost:9093/json";
 		String data = "{\"username\":\"zs\"}";
 		HttpRequest httpRequest = HttpUtil.createPost(urlStr);
