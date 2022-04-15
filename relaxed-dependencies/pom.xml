@@ -14,7 +14,7 @@
         <spring-javaformat-checkstyle.version>0.0.27</spring-javaformat-checkstyle.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
         <lombok.version>1.18.20</lombok.version>
-        <hutool.version>5.7.18</hutool.version>
+        <hutool.version>5.8.0.M3</hutool.version>
         <xxl-job.version>2.2.0</xxl-job.version>
         <mybatis.version>3.5.5</mybatis.version>
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
