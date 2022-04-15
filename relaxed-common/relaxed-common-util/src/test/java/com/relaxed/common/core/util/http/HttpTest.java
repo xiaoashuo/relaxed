@@ -1,7 +1,12 @@
 package com.relaxed.common.core.util.http;
 
-import com.relaxed.common.core.util.http.part.FilePart;
-import com.relaxed.common.core.util.http.part.TextPart;
+import cn.hutool.core.io.resource.Resource;
+import cn.hutool.core.io.resource.StringResource;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResource;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -96,22 +101,27 @@ public class HttpTest {
 	 */
 	@Test
 	public void uploadAndJson() {
-		String urlStr = "http://localhost:9093/upload/form/json";
-		String data = "{\"username\":\"zs\"}";
+		String urlStr = "http://localhost:9093/stamp-app/template/config";
+		String data = "{\n" + "\t\"stampCode\": \"test\",\n" + "     \"configName\":\"借款协议\",\n"
+				+ "\t\"fileType\": \"9\",\n" + "\t\"operatorId\": 0,\n" + "\t\"operatorName\": \"管理员\",\n"
+				+ "\t\"bizFieldName\": \"id\",\n" + "\t\"remark\": \"测试环境\"\n" + "}";
 		String filePath = "D:\\total_contract.docx";
 		File file = new File(filePath);
 		// 指定文本部分数据为json类型
-		TextPart part = new TextPart(data, "application/json");
 		Map<String, Object> parts = new HashMap<>();
+		Resource resource = com.relaxed.common.core.util.http.HttpUtil.buildMultipartFormWithType(data);
 		// 添加json 对应表单
-		parts.put("template", part);
+		parts.put("template", resource);
 		// 添加文件
 		parts.put("file", file);
-		HttpRequest httpRequest = HttpUtil.createPost(urlStr);
+		cn.hutool.http.HttpRequest httpRequest = cn.hutool.http.HttpUtil.createPost(urlStr);
+
+		// HttpRequest httpRequest = HttpUtil.createPost(urlStr);
 		httpRequest.header("appId", "test");
 		httpRequest.form(parts);
-		HttpResponse execute = httpRequest.execute();
-		String body = execute.body();
+		String body = httpRequest.execute().body();
+		// HttpResponse execute = httpRequest.execute();
+		// String body = execute.body();
 		log.info("接收到结果{}", body);
 
 	}
