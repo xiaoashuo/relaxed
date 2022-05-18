@@ -100,7 +100,7 @@ class SenderTest {
 		CreateRequest request = new CreateRequest();
 		request.setChannelNo("test");
 		request.setRequestMethod(RequestMethod.POST);
-		request.setTemplateConfigId("31");
+		request.setTemplateCode("1526743370016247808");
 		Map<String, String> data1 = new HashMap<>();
 		data1.put("partnerBizNo", IdUtil.simpleUUID());
 		data1.put("cardnumber", "12311");

@@ -88,7 +88,7 @@ public class HttpSender implements ISender {
 		fillHttpRequestHeader(httpRequest, headMap);
 		HttpResponse httpResponse = httpRequest.execute();
 		if (httpResponse.getStatus() != 200) {
-			throw new HttpException("request failed -{}", httpResponse.body());
+			throw new HttpException("{}", httpResponse.body());
 		}
 		HttpResponseWrapper responseWrapper = new HttpResponseWrapper();
 		responseWrapper.setCharset(httpResponse.charset());

@@ -19,7 +19,7 @@ import java.util.Map;
 @Data
 public class CreateRequest extends AbstractRequest<CreateResponse> {
 
-	private String templateConfigId;
+	private String templateCode;
 
 	private List<Map<String, String>> data;
 
