@@ -55,7 +55,7 @@ public abstract class AbstractBatchOps {
 		// 组相关
 		BatchGroup batchGroup = batchParam.getBatchGroup();
 		int size = batchGroup.getSize();
-		Integer groupNum = batchGroup.getGroupNum();
+		long groupNum = batchGroup.getGroupNum();
 		// 数据提供者
 		BatchSupplier batchSupplier = batchParam.getBatchSupplier();
 		// 数据消费者
@@ -63,7 +63,7 @@ public abstract class AbstractBatchOps {
 		log.info("{}-batch process start...", taskName);
 		StopWatch stopWatch = new StopWatch(taskName);
 		stopWatch.start();
-		List<CompletableFuture> completableFutures = new ArrayList<>(groupNum);
+		List<CompletableFuture> completableFutures = new ArrayList<>();
 		for (int i = 1; i <= groupNum; i++) {
 			// 起始处理值
 			int currentStepPosition = computeStartPos(i, size);

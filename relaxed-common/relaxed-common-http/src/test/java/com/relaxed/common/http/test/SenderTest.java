@@ -1,0 +1,116 @@
+package com.relaxed.common.http.test;
+
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
+import com.relaxed.common.http.DefaultSender;
+
+import com.relaxed.common.http.test.example.create.CreateRequest;
+import com.relaxed.common.http.test.example.create.CreateResponse;
+import com.relaxed.common.http.test.example.file.FileRequest;
+import com.relaxed.common.http.test.example.file.FileResponse;
+import com.relaxed.common.http.test.example.query.StampQueryRequest;
+import com.relaxed.common.http.test.example.query.StampQueryResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author Yakir
+ * @Topic SenderTest
+ * @Description
+ * @date 2022/2/9 15:51
+ * @Version 1.0
+ */
+@Slf4j
+@SpringBootApplication(scanBasePackages = { "com.relaxed" })
+@SpringBootTest
+@ActiveProfiles("local")
+class SenderTest {
+
+	private final String baseUrl = "http://1.116.78.223";
+
+	private DefaultSender.RequestHeaderGenerate requestHeaderGenerate = () -> getRequestHeader();
+
+	@Test
+	public void testUpload() {
+
+		DefaultSender sender = new DefaultSender(baseUrl, requestHeaderGenerate);
+		StampQueryRequest request = new StampQueryRequest();
+		request.setChannelNo("test");
+		request.setRequestMethod(RequestMethod.GET);
+		request.setFileNo("48");
+		log.info("请求参数:{}", request);
+		StampQueryResponse response = sender.send(request);
+		log.info("请求响应:{}", response);
+	}
+
+	@Test
+	public void testDownload() {
+
+		DefaultSender sender = new DefaultSender(baseUrl, requestHeaderGenerate);
+		FileRequest request = new FileRequest();
+		request.setChannelNo("test");
+		request.setRequestMethod(RequestMethod.GET);
+		request.setFileNo("48");
+		log.info("请求参数:{}", request);
+		FileResponse response = sender.send(request);
+		log.info("请求响应:{}", response);
+		String fileContent = response.getFileContent();
+		File file = new File("test.pdf");
+		FileUtil.writeBytes(Base64.decode(fileContent), file);
+	}
+
+	private Map<String, String> getRequestHeader() {
+		Map<String, String> map = new HashMap<>();
+		map.put("appId", "trust");
+		map.put("channel", "trust");
+		map.put("operatorId", "1");
+		map.put("operatorName", "seal");
+		return map;
+	}
+
+	@Test
+	public void testCreate() {
+
+		DefaultSender sender = new DefaultSender(baseUrl, requestHeaderGenerate);
+		CreateRequest request = new CreateRequest();
+		request.setChannelNo("test");
+		request.setRequestMethod(RequestMethod.POST);
+		request.setTemplateConfigId("31");
+		Map<String, String> data1 = new HashMap<>();
+		data1.put("partnerBizNo", IdUtil.simpleUUID());
+		data1.put("cardnumber", "12311");
+		data1.put("bank", "12121");
+		data1.put("name2", "1212");
+		data1.put("email", "121121@qq.com");
+		data1.put("phone", "12121");
+		data1.put("address", "121");
+		data1.put("code", "12");
+		data1.put("number", "1212");
+		data1.put("type", "121");
+		data1.put("legal", "121");
+		data1.put("contract", "1212");
+		data1.put("share", "121");
+		data1.put("bond", "121");
+		data1.put("category", "121");
+		data1.put("name", "121");
+
+		List<Map<String, String>> list = new ArrayList<>();
+		list.add(data1);
+		request.setData(list);
+		log.info("请求参数:{}", request);
+		CreateResponse response = sender.send(request);
+		log.info("请求响应:{}", response);
+	}
+
+}

@@ -16,7 +16,7 @@ public class BatchGroup {
 	/**
 	 * 分组数
 	 */
-	private int groupNum;
+	private long groupNum;
 
 	/**
 	 * 批次大小
@@ -26,15 +26,15 @@ public class BatchGroup {
 	/**
 	 * 总数
 	 */
-	private int total;
+	private long total;
 
-	public BatchGroup(int total, int size) {
+	public BatchGroup(long total, int size) {
 		Assert.isTrue(total > 0, "total must not be less 0");
 		Assert.isTrue(size > 0, "size must not be less 0");
 		this.total = total;
 		this.size = size;
 		// 切分数目
-		int groupNum = total / size;
+		long groupNum = total / size;
 		this.groupNum = total % size != 0 ? groupNum + 1 : groupNum;
 	}
 

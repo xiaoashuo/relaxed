@@ -110,7 +110,12 @@
                 <artifactId>relaxed-common-idempotent</artifactId>
                 <version>${reversion}</version>
             </dependency>
-
+            <!--Http模块-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-common-http</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--多数据源-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
