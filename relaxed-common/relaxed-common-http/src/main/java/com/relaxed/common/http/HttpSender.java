@@ -3,17 +3,17 @@ package com.relaxed.common.http;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpException;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.http.Method;
+import cn.hutool.http.*;
 import com.relaxed.common.core.util.SpringUtils;
 
 import com.relaxed.common.http.core.ISender;
 import com.relaxed.common.http.core.request.IRequest;
 import com.relaxed.common.http.core.response.IResponse;
+import com.relaxed.common.http.domain.HttpResponseWrapper;
+
+import com.relaxed.common.http.domain.IHttpResponse;
 import com.relaxed.common.http.domain.RequestForm;
-import com.relaxed.common.http.domain.ResponseWrapper;
+
 import com.relaxed.common.http.domain.UploadFile;
 import com.relaxed.common.http.event.ReqReceiveEvent;
 import com.relaxed.common.http.exception.RequestException;
@@ -32,18 +32,18 @@ import java.util.Optional;
  * @Version 1.0
  */
 @Slf4j
-public class DefaultSender implements ISender {
+public class HttpSender implements ISender {
 
 	private final String baseUrl;
 
 	private final RequestHeaderGenerate headerGenerate;
 
-	public DefaultSender(String baseUrl) {
+	public HttpSender(String baseUrl) {
 		this.baseUrl = baseUrl;
 		this.headerGenerate = () -> null;
 	}
 
-	public DefaultSender(String baseUrl, RequestHeaderGenerate headerGenerate) {
+	public HttpSender(String baseUrl, RequestHeaderGenerate headerGenerate) {
 		this.baseUrl = baseUrl;
 		this.headerGenerate = headerGenerate;
 	}
@@ -57,20 +57,7 @@ public class DefaultSender implements ISender {
 		R response = null;
 		Throwable myThrowable = null;
 		try {
-			HttpRequest httpRequest = buildHttpRequest(requestUrl, requestForm);
-			Map<String, String> headMap = headerGenerate.generate();
-			fillHttpRequestHeader(httpRequest, headMap);
-			ResponseWrapper responseWrapper = new ResponseWrapper();
-			HttpResponse execute = httpRequest.execute();
-			if (execute.getStatus() != 200) {
-				throw new HttpException("request failed -{}", execute.body());
-			}
-			if (request.isDownloadRequest()) {
-				responseWrapper.setFileStream(execute.bodyBytes());
-			}
-			else {
-				responseWrapper.setBody(execute.body());
-			}
+			IHttpResponse responseWrapper = doExecute(requestUrl, requestForm);
 			log.debug("请求渠道:{} url:{} 参数:{} 响应:{}", channel, requestUrl, requestForm, responseWrapper);
 			response = request.convertToResponse(responseWrapper);
 			return response;
@@ -87,7 +74,29 @@ public class DefaultSender implements ISender {
 		}
 	}
 
-	private void fillHttpRequestHeader(HttpRequest httpRequest, Map<String, String> headMap) {
+	/**
+	 * 真正执行请求方法
+	 * @author yakir
+	 * @date 2022/5/18 17:52
+	 * @param requestUrl
+	 * @param requestForm
+	 * @return T
+	 */
+	protected <T extends IHttpResponse> T doExecute(String requestUrl, RequestForm requestForm) {
+		HttpRequest httpRequest = buildHttpRequest(requestUrl, requestForm);
+		Map<String, String> headMap = headerGenerate.generate();
+		fillHttpRequestHeader(httpRequest, headMap);
+		HttpResponse httpResponse = httpRequest.execute();
+		if (httpResponse.getStatus() != 200) {
+			throw new HttpException("request failed -{}", httpResponse.body());
+		}
+		HttpResponseWrapper responseWrapper = new HttpResponseWrapper();
+		responseWrapper.setCharset(httpResponse.charset());
+		responseWrapper.setBodyBytes(httpResponse.bodyBytes());
+		return (T) responseWrapper;
+	}
+
+	protected void fillHttpRequestHeader(HttpRequest httpRequest, Map<String, String> headMap) {
 		if (MapUtil.isEmpty(headMap)) {
 			return;
 		}
@@ -103,7 +112,7 @@ public class DefaultSender implements ISender {
 		SpringUtils.publishEvent(event);
 	}
 
-	private HttpRequest buildHttpRequest(String requestUrl, RequestForm requestForm) {
+	protected HttpRequest buildHttpRequest(String requestUrl, RequestForm requestForm) {
 		RequestMethod requestMethod = requestForm.getRequestMethod();
 		boolean isGet = requestMethod.name().equalsIgnoreCase(RequestMethod.GET.name());
 		HttpRequest httpRequest;
@@ -159,6 +168,10 @@ public class DefaultSender implements ISender {
 		}
 		return method;
 
+	}
+
+	protected RequestHeaderGenerate headerGenerate() {
+		return headerGenerate;
 	}
 
 	public interface RequestHeaderGenerate {

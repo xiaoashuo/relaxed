@@ -4,8 +4,10 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 
 import com.relaxed.common.http.core.response.IResponse;
+import com.relaxed.common.http.domain.HttpResponseWrapper;
+import com.relaxed.common.http.domain.IHttpResponse;
 import com.relaxed.common.http.domain.RequestForm;
-import com.relaxed.common.http.domain.ResponseWrapper;
+
 import com.relaxed.common.http.domain.UploadFile;
 import com.relaxed.common.http.util.ClassUtil;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -94,8 +96,8 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	 * @return R
 	 */
 	@Override
-	public R convertToResponse(ResponseWrapper response) {
-		return JSONUtil.toBean(response.getBody(), responseClass);
+	public R convertToResponse(IHttpResponse response) {
+		return JSONUtil.toBean(response.body(), responseClass);
 	}
 
 	protected Class<R> currentResponseClass() {

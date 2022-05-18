@@ -69,8 +69,8 @@ public class FileRequest extends AbstractRequest<FileResponse> {
    //}
 
    // @Override
-   //	public FileResponse convertToResponse(ResponseWrapper response) {
-   //		byte[] fileStream = response.getFileStream();
+   //	public FileResponse convertToResponse(IHttpResponse response) {
+   //		byte[] fileStream = response.bodyBytes();
    //		FileResponse fileResponse = new FileResponse();
    //		fileResponse.setCode(200);
    //		fileResponse.setMessage("success");
@@ -86,7 +86,7 @@ public class FileRequest extends AbstractRequest<FileResponse> {
 	@Test
 	public void testUpload() {
         //1.创建发送者 此处使用默认的 用户可以自己实现
-		DefaultSender sender = new DefaultSender();
+        HttpSender httpSender = new HttpSender(baseUrl, requestHeaderGenerate);
         //2.创建请求参数
 		FileRequest request = new FileRequest();
 		request.setChannelNo("test");
@@ -94,7 +94,7 @@ public class FileRequest extends AbstractRequest<FileResponse> {
 		request.setName("张三拿文件来了");
 		log.info("请求参数:{}", request);
         //3.发送请求->获得响应
-		FileResponse response = sender.send(request);
+		FileResponse response = httpSender.send(request);
 		log.info("请求响应:{}", response);
 	}
 ```
@@ -108,145 +108,47 @@ customSender 实现`ISender`接口即可
 ```java
 /**
  * @author Yakir
- * @Topic DefaultSender
+ * @Topic CustomSender
  * @Description
- * @date 2022/5/18 8:34
+ * @date 2022/5/18 17:55
  * @Version 1.0
  */
-@Slf4j
-public class DefaultSender implements ISender {
+public class CustomSender extends HttpSender {
 
-	private final String baseUrl ;
+    public CustomSender(String baseUrl) {
+        super(baseUrl);
 
-	private final RequestHeaderGenerate headerGenerate;
-	public DefaultSender(String baseUrl){
-		this.baseUrl=baseUrl;
-		this.headerGenerate= () -> null;
-	}
-	public DefaultSender(String baseUrl,RequestHeaderGenerate headerGenerate){
-		this.baseUrl=baseUrl;
-		this.headerGenerate=headerGenerate;
-	}
+    }
 
+    public CustomSender(String baseUrl, RequestHeaderGenerate headerGenerate) {
+        super(baseUrl, headerGenerate);
+    }
 
-	@Override
-	public <R extends IResponse> R send(IRequest<R> request) {
-		String requestUrl = request.getUrl(baseUrl);
-		String channel = request.getChannel();
-		RequestForm requestForm = request.generateRequestParam();
-		Long startTime = System.currentTimeMillis();
-		R response = null;
-		Throwable myThrowable = null;
-		try {
-			HttpRequest httpRequest = buildHttpRequest(requestUrl, requestForm);
-			Map<String, String> headMap = headerGenerate.generate();
-			fillHttpRequestHeader(httpRequest,headMap);
-			ResponseWrapper responseWrapper = new ResponseWrapper();
-			HttpResponse execute = httpRequest.execute();
-			if (execute.getStatus()!=200){
-				throw new HttpException("request failed -{}",execute.body());
-			}
-			if (request.isDownloadRequest()){
-				responseWrapper.setFileStream(execute.bodyBytes());
-			}else{
-				responseWrapper.setBody(execute.body());
-			}
-			log.debug("请求渠道:{} url:{} 参数:{} 响应:{}", channel, requestUrl, requestForm, responseWrapper);
-			response = request.convertToResponse(responseWrapper);
-			return response;
-
-		}
-		catch (Throwable throwable) {
-			myThrowable = ExceptionUtil.unwrap(throwable);
-			throw new RequestException(myThrowable);
-		}
-		finally {
-			// 结束时间
-			Long endTime = System.currentTimeMillis();
-			publishReqResEvent(channel, requestUrl, request, requestForm, response, myThrowable, startTime, endTime);
-		}
-	}
-
-	private void fillHttpRequestHeader(HttpRequest httpRequest, Map<String, String> headMap) {
-		if (MapUtil.isEmpty(headMap)){
-			return;
-		}
-		for (Map.Entry<String, String> entry : headMap.entrySet()) {
-			httpRequest.header(entry.getKey(),entry.getValue());
-		}
-	}
-
-	private <R extends IResponse> void publishReqResEvent(String channel, String url, IRequest<R> request,
-			RequestForm requestForm, R response, Throwable throwable, Long startTime, Long endTime) {
-		ReqReceiveEvent event = new ReqReceiveEvent(channel, url, request, requestForm, response, throwable, startTime,
-				endTime);
-		SpringUtils.publishEvent(event);
-	}
-
-	private HttpRequest buildHttpRequest(String requestUrl, RequestForm requestForm) {
-		RequestMethod requestMethod = requestForm.getRequestMethod();
-		boolean isGet = requestMethod.name().equalsIgnoreCase(RequestMethod.GET.name());
-		HttpRequest httpRequest;
-		if (isGet) {
-			httpRequest = HttpRequest.of(requestUrl);
-			httpRequest.setMethod(convertToHuMethod(requestMethod));
-			httpRequest.form(requestForm.getForm());
-		}
-		else {
-			httpRequest = HttpRequest.of(requestUrl);
-			httpRequest.setMethod(convertToHuMethod(requestMethod));
-			String body = requestForm.getBody();
-			if (StrUtil.isNotEmpty(body)) {
-				// 走json
-				httpRequest.body(body);
-			}
-			else {
-				httpRequest.form(requestForm.getForm());
-				List<UploadFile> files = requestForm.getFiles();
-				Optional.ofNullable(files).ifPresent(uploadFiles -> {
-					for (UploadFile uploadFile : uploadFiles) {
-						httpRequest.form(uploadFile.getFileName(), uploadFile.getFileData());
-					}
-				});
-
-			}
-		}
-		return httpRequest;
-	}
-
-	public Method convertToHuMethod(RequestMethod requestMethod) {
-
-		Method method;
-		switch (requestMethod) {
-		case GET:
-			method = Method.GET;
-			break;
-		case POST:
-			method = Method.POST;
-			break;
-		case PUT:
-			method = Method.PUT;
-			break;
-		case PATCH:
-			method = Method.PATCH;
-			break;
-		case DELETE:
-			method = Method.DELETE;
-			break;
-		default:
-			throw new RuntimeException("method not found");
-
-		}
-		return method;
-
-	}
-
-
-	public interface RequestHeaderGenerate{
-		Map<String,String> generate();
-	}
+    /**
+     * 此方法 可以构建自己的http client
+     * @author yakir
+     * @date 2022/5/18 18:02
+     * @param requestUrl
+     * @param requestForm
+     * @return T
+     */
+    @Override
+    protected <T extends IHttpResponse> T doExecute(String requestUrl, RequestForm requestForm) {
+        HttpRequest httpRequest = buildHttpRequest(requestUrl, requestForm);
+        Map<String, String> headMap = super.headerGenerate().generate();
+        fillHttpRequestHeader(httpRequest, headMap);
+        HttpResponse httpResponse = httpRequest.execute();
+        if (httpResponse.getStatus() != 200) {
+            throw new HttpException("request failed -{}", httpResponse.body());
+        }
+        HttpResponseWrapper responseWrapper = new HttpResponseWrapper();
+        responseWrapper.setCharset(httpResponse.charset());
+        responseWrapper.setBodyBytes(httpResponse.bodyBytes());
+        return (T) responseWrapper;
+    }
 
 }
+
 
 ```
 

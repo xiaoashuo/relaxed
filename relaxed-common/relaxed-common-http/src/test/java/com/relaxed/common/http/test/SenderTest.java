@@ -3,8 +3,9 @@ package com.relaxed.common.http.test;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
-import com.relaxed.common.http.DefaultSender;
+import com.relaxed.common.http.HttpSender;
 
+import com.relaxed.common.http.test.custom.CustomSender;
 import com.relaxed.common.http.test.example.create.CreateRequest;
 import com.relaxed.common.http.test.example.create.CreateResponse;
 import com.relaxed.common.http.test.example.file.FileRequest;
@@ -39,31 +40,44 @@ class SenderTest {
 
 	private final String baseUrl = "http://1.116.78.223";
 
-	private DefaultSender.RequestHeaderGenerate requestHeaderGenerate = () -> getRequestHeader();
+	private HttpSender.RequestHeaderGenerate requestHeaderGenerate = () -> getRequestHeader();
 
 	@Test
-	public void testUpload() {
+	public void testCustomSenderUpload() {
 
-		DefaultSender sender = new DefaultSender(baseUrl, requestHeaderGenerate);
+		CustomSender httpSender = new CustomSender(baseUrl, requestHeaderGenerate);
 		StampQueryRequest request = new StampQueryRequest();
 		request.setChannelNo("test");
 		request.setRequestMethod(RequestMethod.GET);
 		request.setFileNo("48");
 		log.info("请求参数:{}", request);
-		StampQueryResponse response = sender.send(request);
+		StampQueryResponse response = httpSender.send(request);
+		log.info("请求响应:{}", response);
+	}
+
+	@Test
+	public void testUpload() {
+
+		HttpSender httpSender = new HttpSender(baseUrl, requestHeaderGenerate);
+		StampQueryRequest request = new StampQueryRequest();
+		request.setChannelNo("test");
+		request.setRequestMethod(RequestMethod.GET);
+		request.setFileNo("48");
+		log.info("请求参数:{}", request);
+		StampQueryResponse response = httpSender.send(request);
 		log.info("请求响应:{}", response);
 	}
 
 	@Test
 	public void testDownload() {
 
-		DefaultSender sender = new DefaultSender(baseUrl, requestHeaderGenerate);
+		HttpSender httpSender = new HttpSender(baseUrl, requestHeaderGenerate);
 		FileRequest request = new FileRequest();
 		request.setChannelNo("test");
 		request.setRequestMethod(RequestMethod.GET);
 		request.setFileNo("48");
 		log.info("请求参数:{}", request);
-		FileResponse response = sender.send(request);
+		FileResponse response = httpSender.send(request);
 		log.info("请求响应:{}", response);
 		String fileContent = response.getFileContent();
 		File file = new File("test.pdf");
@@ -82,7 +96,7 @@ class SenderTest {
 	@Test
 	public void testCreate() {
 
-		DefaultSender sender = new DefaultSender(baseUrl, requestHeaderGenerate);
+		HttpSender httpSender = new HttpSender(baseUrl, requestHeaderGenerate);
 		CreateRequest request = new CreateRequest();
 		request.setChannelNo("test");
 		request.setRequestMethod(RequestMethod.POST);
@@ -109,7 +123,7 @@ class SenderTest {
 		list.add(data1);
 		request.setData(list);
 		log.info("请求参数:{}", request);
-		CreateResponse response = sender.send(request);
+		CreateResponse response = httpSender.send(request);
 		log.info("请求响应:{}", response);
 	}
 
