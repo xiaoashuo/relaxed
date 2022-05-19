@@ -17,12 +17,7 @@ public class DelegateHandler implements Handler {
 
 	@Override
 	public void handle(AbstractSftp sftp) {
-		try {
-			target.handle(sftp);
-		}
-		catch (Exception e) {
-			throw new SftpClientException("exec sftp action error", e);
-		}
+		target.handle(sftp);
 	}
 
 }

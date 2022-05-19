@@ -17,12 +17,7 @@ public class DelegateSupplyHandler<T> implements SupplyHandler {
 
 	@Override
 	public T supplyHandle(AbstractSftp sftp) {
-		try {
-			return (T) target.supplyHandle(sftp);
-		}
-		catch (Exception e) {
-			throw new SftpClientException("exec sftp action error", e);
-		}
+		return (T) target.supplyHandle(sftp);
 	}
 
 }
