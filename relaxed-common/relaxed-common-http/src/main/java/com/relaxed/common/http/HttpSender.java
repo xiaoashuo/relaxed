@@ -90,12 +90,30 @@ public class HttpSender implements ISender {
 		if (httpResponse.getStatus() != 200) {
 			throw new HttpException("{}", httpResponse.body());
 		}
+		return convertOriginalResponse(httpResponse);
+	}
+
+	/**
+	 * 转换原始响应
+	 * @author yakir
+	 * @date 2022/5/19 9:12
+	 * @param httpResponse
+	 * @return T
+	 */
+	protected <T extends IHttpResponse> T convertOriginalResponse(HttpResponse httpResponse) {
 		HttpResponseWrapper responseWrapper = new HttpResponseWrapper();
 		responseWrapper.setCharset(httpResponse.charset());
 		responseWrapper.setBodyBytes(httpResponse.bodyBytes());
 		return (T) responseWrapper;
 	}
 
+	/**
+	 * 填充请求头
+	 * @author yakir
+	 * @date 2022/5/19 9:12
+	 * @param httpRequest
+	 * @param headMap
+	 */
 	protected void fillHttpRequestHeader(HttpRequest httpRequest, Map<String, String> headMap) {
 		if (MapUtil.isEmpty(headMap)) {
 			return;
@@ -105,6 +123,19 @@ public class HttpSender implements ISender {
 		}
 	}
 
+	/**
+	 * 发布事件
+	 * @author yakir
+	 * @date 2022/5/19 9:12
+	 * @param channel
+	 * @param url
+	 * @param request
+	 * @param requestForm
+	 * @param response
+	 * @param throwable
+	 * @param startTime
+	 * @param endTime
+	 */
 	private <R extends IResponse> void publishReqResEvent(String channel, String url, IRequest<R> request,
 			RequestForm requestForm, R response, Throwable throwable, Long startTime, Long endTime) {
 		ReqReceiveEvent event = new ReqReceiveEvent(channel, url, request, requestForm, response, throwable, startTime,
@@ -112,6 +143,14 @@ public class HttpSender implements ISender {
 		SpringUtils.publishEvent(event);
 	}
 
+	/**
+	 * 构建http请求
+	 * @author yakir
+	 * @date 2022/5/19 9:12
+	 * @param requestUrl
+	 * @param requestForm
+	 * @return cn.hutool.http.HttpRequest
+	 */
 	protected HttpRequest buildHttpRequest(String requestUrl, RequestForm requestForm) {
 		RequestMethod requestMethod = requestForm.getRequestMethod();
 		boolean isGet = requestMethod.name().equalsIgnoreCase(RequestMethod.GET.name());
@@ -143,6 +182,13 @@ public class HttpSender implements ISender {
 		return httpRequest;
 	}
 
+	/**
+	 * 转换方法
+	 * @author yakir
+	 * @date 2022/5/19 9:13
+	 * @param requestMethod
+	 * @return cn.hutool.http.Method
+	 */
 	public Method convertToHuMethod(RequestMethod requestMethod) {
 
 		Method method;
@@ -170,6 +216,12 @@ public class HttpSender implements ISender {
 
 	}
 
+	/**
+	 * 获取头生成器
+	 * @author yakir
+	 * @date 2022/5/19 9:13
+	 * @return com.relaxed.common.http.HttpSender.RequestHeaderGenerate
+	 */
 	protected RequestHeaderGenerate headerGenerate() {
 		return headerGenerate;
 	}

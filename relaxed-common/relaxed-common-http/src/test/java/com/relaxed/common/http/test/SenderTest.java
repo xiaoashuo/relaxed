@@ -38,7 +38,7 @@ import java.util.Map;
 @ActiveProfiles("local")
 class SenderTest {
 
-	private final String baseUrl = "http://lovecyy.cn/api";
+	private final String baseUrl = "http://test.lovecyy.cn";
 
 	private HttpSender.RequestHeaderGenerate requestHeaderGenerate = () -> getRequestHeader();
 
