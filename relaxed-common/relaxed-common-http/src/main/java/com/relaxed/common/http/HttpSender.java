@@ -7,6 +7,7 @@ import cn.hutool.http.*;
 import com.relaxed.common.core.util.SpringUtils;
 
 import com.relaxed.common.http.core.ISender;
+import com.relaxed.common.http.core.header.RequestHeaderGenerate;
 import com.relaxed.common.http.core.request.IRequest;
 import com.relaxed.common.http.core.response.IResponse;
 import com.relaxed.common.http.domain.HttpResponseWrapper;
@@ -40,7 +41,7 @@ public class HttpSender implements ISender {
 
 	public HttpSender(String baseUrl) {
 		this.baseUrl = baseUrl;
-		this.headerGenerate = () -> null;
+		this.headerGenerate = (url, requestForm) -> null;
 	}
 
 	public HttpSender(String baseUrl, RequestHeaderGenerate headerGenerate) {
@@ -84,7 +85,7 @@ public class HttpSender implements ISender {
 	 */
 	protected <T extends IHttpResponse> T doExecute(String requestUrl, RequestForm requestForm) {
 		HttpRequest httpRequest = buildHttpRequest(requestUrl, requestForm);
-		Map<String, String> headMap = headerGenerate.generate();
+		Map<String, String> headMap = headerGenerate.generate(requestUrl, requestForm);
 		fillHttpRequestHeader(httpRequest, headMap);
 		HttpResponse httpResponse = httpRequest.execute();
 		if (httpResponse.getStatus() != 200) {
@@ -224,12 +225,6 @@ public class HttpSender implements ISender {
 	 */
 	protected RequestHeaderGenerate headerGenerate() {
 		return headerGenerate;
-	}
-
-	public interface RequestHeaderGenerate {
-
-		Map<String, String> generate();
-
 	}
 
 }

@@ -4,6 +4,7 @@ import cn.hutool.http.HttpException;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.relaxed.common.http.HttpSender;
+import com.relaxed.common.http.core.header.RequestHeaderGenerate;
 import com.relaxed.common.http.domain.HttpResponseWrapper;
 import com.relaxed.common.http.domain.IHttpResponse;
 import com.relaxed.common.http.domain.RequestForm;
@@ -39,7 +40,7 @@ public class CustomSender extends HttpSender {
 	@Override
 	protected <T extends IHttpResponse> T doExecute(String requestUrl, RequestForm requestForm) {
 		HttpRequest httpRequest = buildHttpRequest(requestUrl, requestForm);
-		Map<String, String> headMap = super.headerGenerate().generate();
+		Map<String, String> headMap = super.headerGenerate().generate(requestUrl, requestForm);
 		fillHttpRequestHeader(httpRequest, headMap);
 		HttpResponse httpResponse = httpRequest.execute();
 		if (httpResponse.getStatus() != 200) {

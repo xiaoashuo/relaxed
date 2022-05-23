@@ -5,6 +5,8 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import com.relaxed.common.http.HttpSender;
 
+import com.relaxed.common.http.core.header.RequestHeaderGenerate;
+import com.relaxed.common.http.domain.RequestForm;
 import com.relaxed.common.http.test.custom.CustomSender;
 import com.relaxed.common.http.test.example.create.CreateRequest;
 import com.relaxed.common.http.test.example.create.CreateResponse;
@@ -40,7 +42,8 @@ class SenderTest {
 
 	private final String baseUrl = "http://test.lovecyy.cn";
 
-	private HttpSender.RequestHeaderGenerate requestHeaderGenerate = () -> getRequestHeader();
+	private RequestHeaderGenerate requestHeaderGenerate = (requestUrl, requestForm) -> getRequestHeader(requestUrl,
+			requestForm);
 
 	@Test
 	public void testCustomSenderUpload() {
@@ -84,7 +87,7 @@ class SenderTest {
 		FileUtil.writeBytes(Base64.decode(fileContent), file);
 	}
 
-	private Map<String, String> getRequestHeader() {
+	private Map<String, String> getRequestHeader(String requestUrl, RequestForm requestForm) {
 		Map<String, String> map = new HashMap<>();
 		map.put("appId", "trust");
 		map.put("channel", "trust");
