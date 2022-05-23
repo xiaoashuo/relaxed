@@ -1,4 +1,4 @@
-package com.relaxed.common.http.core.header;
+package com.relaxed.common.http.core.provider;
 
 import com.relaxed.common.http.core.request.IRequest;
 import com.relaxed.common.http.domain.RequestForm;
@@ -12,7 +12,7 @@ import java.util.Map;
  * @date 2022/5/23 9:00
  * @Version 1.0
  */
-public interface RequestHeaderGenerate {
+public interface RequestHeaderProvider {
 
 	/**
 	 * 头生成器

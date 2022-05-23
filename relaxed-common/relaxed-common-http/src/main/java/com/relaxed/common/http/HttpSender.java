@@ -7,15 +7,12 @@ import cn.hutool.http.*;
 import com.relaxed.common.core.util.SpringUtils;
 
 import com.relaxed.common.http.core.ISender;
-import com.relaxed.common.http.core.header.RequestHeaderGenerate;
+import com.relaxed.common.http.core.provider.RequestConfigProvider;
+import com.relaxed.common.http.core.provider.RequestHeaderProvider;
 import com.relaxed.common.http.core.request.IRequest;
 import com.relaxed.common.http.core.response.IResponse;
-import com.relaxed.common.http.domain.HttpResponseWrapper;
+import com.relaxed.common.http.domain.*;
 
-import com.relaxed.common.http.domain.IHttpResponse;
-import com.relaxed.common.http.domain.RequestForm;
-
-import com.relaxed.common.http.domain.UploadFile;
 import com.relaxed.common.http.event.ReqReceiveEvent;
 import com.relaxed.common.http.exception.RequestException;
 import lombok.extern.slf4j.Slf4j;
@@ -37,16 +34,23 @@ public class HttpSender implements ISender {
 
 	private final String baseUrl;
 
-	private final RequestHeaderGenerate headerGenerate;
+	private final RequestHeaderProvider requestHeaderProvider;
+
+	private final RequestConfigProvider requestConfigProvider;
 
 	public HttpSender(String baseUrl) {
-		this.baseUrl = baseUrl;
-		this.headerGenerate = (url, requestForm) -> null;
+		this(baseUrl, (url, requestForm) -> null, () -> null);
 	}
 
-	public HttpSender(String baseUrl, RequestHeaderGenerate headerGenerate) {
+	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider) {
+		this(baseUrl, requestHeaderProvider, () -> null);
+	}
+
+	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider,
+			RequestConfigProvider requestConfigProvider) {
 		this.baseUrl = baseUrl;
-		this.headerGenerate = headerGenerate;
+		this.requestHeaderProvider = requestHeaderProvider;
+		this.requestConfigProvider = requestConfigProvider;
 	}
 
 	@Override
@@ -85,13 +89,30 @@ public class HttpSender implements ISender {
 	 */
 	protected <T extends IHttpResponse> T doExecute(String requestUrl, RequestForm requestForm) {
 		HttpRequest httpRequest = buildHttpRequest(requestUrl, requestForm);
-		Map<String, String> headMap = headerGenerate.generate(requestUrl, requestForm);
+		RequestConfig requestConfig = requestConfigProvider.provide();
+		fillHttpConfig(httpRequest, requestConfig);
+		Map<String, String> headMap = requestHeaderProvider.generate(requestUrl, requestForm);
 		fillHttpRequestHeader(httpRequest, headMap);
 		HttpResponse httpResponse = httpRequest.execute();
 		if (httpResponse.getStatus() != 200) {
 			throw new HttpException("{}", httpResponse.body());
 		}
 		return convertOriginalResponse(httpResponse);
+	}
+
+	/**
+	 * 填充http基本配置
+	 * @author yakir
+	 * @date 2022/5/23 10:10
+	 * @param httpRequest
+	 * @param requestConfig
+	 */
+	protected void fillHttpConfig(HttpRequest httpRequest, RequestConfig requestConfig) {
+		if (requestConfig == null) {
+			return;
+		}
+		httpRequest.setReadTimeout(requestConfig.getReadTimeout());
+		httpRequest.setConnectionTimeout(requestConfig.getConnectionTimeout());
 	}
 
 	/**
@@ -223,8 +244,18 @@ public class HttpSender implements ISender {
 	 * @date 2022/5/19 9:13
 	 * @return com.relaxed.common.http.HttpSender.RequestHeaderGenerate
 	 */
-	protected RequestHeaderGenerate headerGenerate() {
-		return headerGenerate;
+	protected RequestHeaderProvider getRequestHeaderProvider() {
+		return requestHeaderProvider;
+	}
+
+	/**
+	 * 获取请求配置信息
+	 * @author yakir
+	 * @date 2022/5/23 10:13
+	 * @return com.relaxed.common.http.core.provider.RequestConfigProvider
+	 */
+	protected RequestConfigProvider getRequestConfigProvider() {
+		return requestConfigProvider;
 	}
 
 }

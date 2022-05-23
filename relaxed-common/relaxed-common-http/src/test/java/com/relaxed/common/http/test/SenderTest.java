@@ -5,7 +5,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import com.relaxed.common.http.HttpSender;
 
-import com.relaxed.common.http.core.header.RequestHeaderGenerate;
+import com.relaxed.common.http.core.provider.RequestHeaderProvider;
 import com.relaxed.common.http.domain.RequestForm;
 import com.relaxed.common.http.test.custom.CustomSender;
 import com.relaxed.common.http.test.example.create.CreateRequest;
@@ -42,13 +42,13 @@ class SenderTest {
 
 	private final String baseUrl = "http://test.lovecyy.cn";
 
-	private RequestHeaderGenerate requestHeaderGenerate = (requestUrl, requestForm) -> getRequestHeader(requestUrl,
+	private RequestHeaderProvider requestHeaderProvider = (requestUrl, requestForm) -> getRequestHeader(requestUrl,
 			requestForm);
 
 	@Test
 	public void testCustomSenderUpload() {
 
-		CustomSender httpSender = new CustomSender(baseUrl, requestHeaderGenerate);
+		CustomSender httpSender = new CustomSender(baseUrl, requestHeaderProvider);
 		StampQueryRequest request = new StampQueryRequest();
 		request.setChannelNo("test");
 		request.setRequestMethod(RequestMethod.GET);
@@ -61,7 +61,7 @@ class SenderTest {
 	@Test
 	public void testUpload() {
 
-		HttpSender httpSender = new HttpSender(baseUrl, requestHeaderGenerate);
+		HttpSender httpSender = new HttpSender(baseUrl, requestHeaderProvider);
 		StampQueryRequest request = new StampQueryRequest();
 		request.setChannelNo("test");
 		request.setRequestMethod(RequestMethod.GET);
@@ -74,7 +74,7 @@ class SenderTest {
 	@Test
 	public void testDownload() {
 
-		HttpSender httpSender = new HttpSender(baseUrl, requestHeaderGenerate);
+		HttpSender httpSender = new HttpSender(baseUrl, requestHeaderProvider);
 		FileRequest request = new FileRequest();
 		request.setChannelNo("test");
 		request.setRequestMethod(RequestMethod.GET);
@@ -99,7 +99,7 @@ class SenderTest {
 	@Test
 	public void testCreate() {
 
-		HttpSender httpSender = new HttpSender(baseUrl, requestHeaderGenerate);
+		HttpSender httpSender = new HttpSender(baseUrl, requestHeaderProvider);
 		CreateRequest request = new CreateRequest();
 		request.setChannelNo("test");
 		request.setRequestMethod(RequestMethod.POST);
