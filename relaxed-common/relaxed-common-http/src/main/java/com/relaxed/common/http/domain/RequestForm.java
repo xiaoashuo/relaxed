@@ -1,5 +1,6 @@
 package com.relaxed.common.http.domain;
 
+import com.relaxed.common.http.core.resource.Resource;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,7 +29,7 @@ public class RequestForm {
 	/** 请求表单内容 */
 	private Map<String, Object> form;
 
-	/** 上传文件 */
-	private List<UploadFile> files;
+	/** 上传资源文件 */
+	private List<Resource> resources;
 
 }

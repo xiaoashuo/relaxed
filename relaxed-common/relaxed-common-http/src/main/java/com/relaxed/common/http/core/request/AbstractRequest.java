@@ -1,17 +1,24 @@
 package com.relaxed.common.http.core.request;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.json.JSONUtil;
 
+import com.relaxed.common.http.core.resource.ByteResource;
+import com.relaxed.common.http.core.resource.FileResource;
+import com.relaxed.common.http.core.resource.InputStreamResource;
+import com.relaxed.common.http.core.resource.Resource;
 import com.relaxed.common.http.core.response.IResponse;
 import com.relaxed.common.http.domain.HttpResponseWrapper;
 import com.relaxed.common.http.domain.IHttpResponse;
 import com.relaxed.common.http.domain.RequestForm;
 
-import com.relaxed.common.http.domain.UploadFile;
+import com.relaxed.common.http.exception.RequestException;
 import com.relaxed.common.http.util.ClassUtil;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,19 +42,47 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	/**
 	 * 上传文件
 	 */
-	private List<UploadFile> files;
+	private List<Resource> resources;
 
 	protected Class<R> responseClass = this.currentResponseClass();
 
 	/**
-	 * 添加上传文件
-	 * @param file
+	 * 添加资源
+	 * @param resource
 	 */
-	public void addFile(UploadFile file) {
-		if (this.files == null) {
-			this.files = new ArrayList<>();
+	public void addResource(Resource resource) {
+		if (this.resources == null) {
+			this.resources = new ArrayList<>();
 		}
-		this.files.add(file);
+		this.resources.add(resource);
+	}
+
+	/**
+	 * 添加文件
+	 * @author yakir
+	 * @date 2022/5/23 15:22
+	 * @param name
+	 * @param value
+	 */
+	public void addFile(String name, Object value) {
+		Resource resource;
+		if (value instanceof File) {
+			resource = new FileResource(name, (File) value);
+		}
+		else if (value instanceof byte[]) {
+			resource = new ByteResource(name, (byte[]) value);
+		}
+		else if (value instanceof InputStream) {
+			resource = new InputStreamResource(name, (InputStream) value);
+		}
+		else {
+			throw new RequestException("暂不支持此种方式文件上传");
+		}
+		addResource(resource);
+	}
+
+	public List<Resource> getResources() {
+		return resources;
 	}
 
 	public void setChannelNo(String channelNo) {
@@ -71,7 +106,7 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	public RequestForm generateRequestParam() {
 		RequestForm requestForm = new RequestForm();
 		requestForm.setRequestMethod(getRequestMethod());
-		requestForm.setFiles(requestForm.getFiles());
+		requestForm.setResources(this.getResources());
 		return fillRequestParam(requestForm);
 	}
 

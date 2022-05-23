@@ -1,7 +1,10 @@
 package com.relaxed.common.http;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.io.resource.BytesResource;
+import cn.hutool.core.io.resource.InputStreamResource;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.net.multipart.UploadFile;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.*;
 import com.relaxed.common.core.util.SpringUtils;
@@ -11,6 +14,7 @@ import com.relaxed.common.http.core.notify.RequestResultNotifier;
 import com.relaxed.common.http.core.provider.RequestConfigProvider;
 import com.relaxed.common.http.core.provider.RequestHeaderProvider;
 import com.relaxed.common.http.core.request.IRequest;
+import com.relaxed.common.http.core.resource.Resource;
 import com.relaxed.common.http.core.response.IResponse;
 import com.relaxed.common.http.domain.*;
 
@@ -19,6 +23,8 @@ import com.relaxed.common.http.exception.RequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -214,10 +220,12 @@ public class HttpSender implements ISender {
 			}
 			else {
 				httpRequest.form(requestForm.getForm());
-				List<UploadFile> files = requestForm.getFiles();
-				Optional.ofNullable(files).ifPresent(uploadFiles -> {
-					for (UploadFile uploadFile : uploadFiles) {
-						httpRequest.form(uploadFile.getFileName(), uploadFile.getFileData());
+				List<Resource> requestResources = requestForm.getResources();
+				Optional.ofNullable(requestResources).ifPresent(resources -> {
+					for (Resource resource : resources) {
+						httpRequest.form(resource.getName(),
+								new HttpResource(new InputStreamResource(resource.getStream(), resource.getFileName()),
+										resource.getContentType()));
 					}
 				});
 
