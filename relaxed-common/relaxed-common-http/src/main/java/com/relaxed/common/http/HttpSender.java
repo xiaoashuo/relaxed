@@ -7,6 +7,7 @@ import cn.hutool.http.*;
 import com.relaxed.common.core.util.SpringUtils;
 
 import com.relaxed.common.http.core.ISender;
+import com.relaxed.common.http.core.notify.RequestResultNotifier;
 import com.relaxed.common.http.core.provider.RequestConfigProvider;
 import com.relaxed.common.http.core.provider.RequestHeaderProvider;
 import com.relaxed.common.http.core.request.IRequest;
@@ -32,14 +33,28 @@ import java.util.Optional;
 @Slf4j
 public class HttpSender implements ISender {
 
+	/**
+	 * 基础url
+	 */
 	private final String baseUrl;
 
+	/**
+	 * 请求头提供者
+	 */
 	private final RequestHeaderProvider requestHeaderProvider;
 
+	/**
+	 * 请求配置提供者
+	 */
 	private final RequestConfigProvider requestConfigProvider;
 
+	/**
+	 * 请求结果通知器
+	 */
+	private final RequestResultNotifier requestResultNotifier;
+
 	public HttpSender(String baseUrl) {
-		this(baseUrl, (url, requestForm) -> null, () -> null);
+		this(baseUrl, (url, requestForm) -> null);
 	}
 
 	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider) {
@@ -48,9 +63,16 @@ public class HttpSender implements ISender {
 
 	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider,
 			RequestConfigProvider requestConfigProvider) {
+		this(baseUrl, requestHeaderProvider, requestConfigProvider,
+				(reqReceiveEvent) -> SpringUtils.publishEvent(reqReceiveEvent));
+	}
+
+	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider,
+			RequestConfigProvider requestConfigProvider, RequestResultNotifier requestResultNotifier) {
 		this.baseUrl = baseUrl;
 		this.requestHeaderProvider = requestHeaderProvider;
 		this.requestConfigProvider = requestConfigProvider;
+		this.requestResultNotifier = requestResultNotifier;
 	}
 
 	@Override
@@ -162,7 +184,7 @@ public class HttpSender implements ISender {
 			RequestForm requestForm, R response, Throwable throwable, Long startTime, Long endTime) {
 		ReqReceiveEvent event = new ReqReceiveEvent(channel, url, request, requestForm, response, throwable, startTime,
 				endTime);
-		SpringUtils.publishEvent(event);
+		getRequestResultNotifier().notify(event);
 	}
 
 	/**
@@ -256,6 +278,16 @@ public class HttpSender implements ISender {
 	 */
 	protected RequestConfigProvider getRequestConfigProvider() {
 		return requestConfigProvider;
+	}
+
+	/**
+	 * 请求结果通知者
+	 * @author yakir
+	 * @date 2022/5/23 11:06
+	 * @return com.relaxed.common.http.core.notify.RequestResultNotifier
+	 */
+	public RequestResultNotifier getRequestResultNotifier() {
+		return requestResultNotifier;
 	}
 
 }
