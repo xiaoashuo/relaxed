@@ -17,10 +17,6 @@ import springfox.documentation.spi.DocumentationType;
 public enum DocumentationTypeEnum {
 
 	/**
-	 * swagger 1.2
-	 */
-	SWAGGER_12(DocumentationType.SWAGGER_12),
-	/**
 	 * swagger2.0
 	 */
 	SWAGGER_2(DocumentationType.SWAGGER_2),

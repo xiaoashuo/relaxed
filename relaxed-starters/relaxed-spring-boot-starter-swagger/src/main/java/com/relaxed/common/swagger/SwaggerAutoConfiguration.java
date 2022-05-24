@@ -1,5 +1,8 @@
 package com.relaxed.common.swagger;
 
+import cn.hutool.core.util.StrUtil;
+import com.relaxed.common.swagger.builder.DocketBuildHelper;
+import com.relaxed.common.swagger.builder.MultiRequestHandlerSelectors;
 import com.relaxed.common.swagger.constant.SwaggerConstants;
 import com.relaxed.common.swagger.property.SecuritySchemaEnum;
 import com.relaxed.common.swagger.property.SwaggerProperties;
@@ -16,6 +19,7 @@ import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.OperationContext;
 import springfox.documentation.spi.service.contexts.SecurityContext;
+import springfox.documentation.spring.web.plugins.ApiSelectorBuilder;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.ArrayList;
@@ -41,123 +45,24 @@ public class SwaggerAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public Docket api() {
+		DocketBuildHelper helper = new DocketBuildHelper(swaggerProperties);
 		// 1. 文档信息构建
 		Docket docket = new Docket(swaggerProperties.getDocumentationType().getType()).host(swaggerProperties.getHost())
-				.groupName(swaggerProperties.getGroupName()).apiInfo(apiInfo()).enable(swaggerProperties.getEnabled());
+				.groupName(swaggerProperties.getGroupName()).apiInfo(helper.apiInfo())
+				.enable(swaggerProperties.getEnabled());
 		// 2.安全配置
-		docket.securitySchemes(securitySchema()).securityContexts(securityContext());
+		docket.securitySchemes(helper.securitySchema()).securityContexts(helper.securityContext());
 		// 3.selection by requestHandler and by paths
-		docket.select().apis(RequestHandlerSelectors.basePackage(swaggerProperties.getBasePackage())).paths(paths())
-				.build();
-
+		String basePackage = swaggerProperties.getBasePackage();
+		ApiSelectorBuilder select = docket.select();
+		if (StrUtil.isEmpty(basePackage)) {
+			select.apis(MultiRequestHandlerSelectors.any());
+		}
+		else {
+			select.apis(MultiRequestHandlerSelectors.basePackage(basePackage));
+		}
+		select.paths(helper.paths()).build();
 		return docket;
-	}
-
-	private List<SecurityScheme> securitySchema() {
-		SwaggerProperties.Authorization authorizationProps = swaggerProperties.getAuthorization();
-
-		DocumentationType documentationType = swaggerProperties.getDocumentationType().getType();
-		SecuritySchemaEnum schema = authorizationProps.getSchema();
-		String name = authorizationProps.getName();
-		List<SecurityScheme> securitySchemes = new ArrayList<>();
-		switch (schema) {
-		case OATH2:
-
-			List<AuthorizationScope> authorizationScopeList = authorizationProps.getAuthorizationScopeList().stream()
-					.map(scope -> new AuthorizationScope(scope.getScope(), scope.getDescription()))
-					.collect(Collectors.toList());
-			String tokenUrl = authorizationProps.getOauth2().getTokenUrl();
-			SecurityScheme securityScheme;
-			if (documentationType.equals(DocumentationType.SWAGGER_2)) {
-				// swagger2 OAuth2
-				List<GrantType> grantTypes = Collections
-						.singletonList(new ResourceOwnerPasswordCredentialsGrant(tokenUrl));
-				securityScheme = new OAuth(name, authorizationScopeList, grantTypes);
-			}
-			else {
-				// Swagger3 Oauth2
-				securityScheme = OAuth2Scheme.OAUTH2_PASSWORD_FLOW_BUILDER.name(name).tokenUrl(tokenUrl)
-						.scopes(authorizationScopeList).build();
-			}
-			securitySchemes = Collections.singletonList(securityScheme);
-			break;
-		case API_KEY:
-			SwaggerProperties.Authorization.ApiKey apiKey = authorizationProps.getApiKey();
-			securitySchemes = Collections.singletonList(new ApiKey(name, name, apiKey.getIn()));
-			break;
-		}
-
-		return securitySchemes;
-	}
-
-	/**
-	 * 配置默认的全局鉴权策略的开关，通过正则表达式进行匹配；默认匹配所有URL
-	 * @return SecurityContext
-	 */
-	private List<SecurityContext> securityContext() {
-		SecurityContext securityContext = SecurityContext.builder().securityReferences(defaultAuth())
-				.operationSelector(this::selector).build();
-		return Collections.singletonList(securityContext);
-	}
-
-	/**
-	 * 配置开启鉴权的url
-	 * @param operationContext
-	 * @return
-	 */
-	private boolean selector(OperationContext operationContext) {
-		String url = operationContext.requestMappingPattern();
-		// 这里可以写URL过滤规则
-		SwaggerProperties.Authorization authorization = swaggerProperties.getAuthorization();
-		return url.matches(authorization.getAuthRegex());
-	}
-
-	/**
-	 * 默认的全局鉴权策略
-	 * @return List<SecurityReference>
-	 */
-	private List<SecurityReference> defaultAuth() {
-		SwaggerProperties.Authorization authorization = swaggerProperties.getAuthorization();
-		List<AuthorizationScope> authorizationScopeList = authorization.getAuthorizationScopeList().stream()
-				.map(scope -> new AuthorizationScope(scope.getScope(), scope.getDescription()))
-				.collect(Collectors.toList());
-
-		AuthorizationScope[] authorizationScopes = new AuthorizationScope[authorizationScopeList.size()];
-
-		SecurityReference securityReference = SecurityReference.builder().reference(authorization.getName())
-				.scopes(authorizationScopeList.toArray(authorizationScopes)).build();
-
-		return Collections.singletonList(securityReference);
-	}
-
-	private Predicate<String> paths() {
-		// base-path 和 exclude-path 的默认值处理
-		if (swaggerProperties.getBasePath().isEmpty()) {
-			swaggerProperties.getBasePath().add(SwaggerConstants.DEFAULT_BASE_PATH);
-		}
-		if (swaggerProperties.getExcludePath().isEmpty()) {
-			swaggerProperties.getExcludePath().addAll(SwaggerConstants.DEFAULT_EXCLUDE_PATH);
-		}
-
-		List<Predicate<String>> basePath = new ArrayList<>();
-		for (String path : swaggerProperties.getBasePath()) {
-			basePath.add(PathSelectors.ant(path));
-		}
-		List<Predicate<String>> excludePath = new ArrayList<>();
-		for (String path : swaggerProperties.getExcludePath()) {
-			excludePath.add(PathSelectors.ant(path));
-		}
-		// 必须满足basePath 且不满足 exclude-path
-		return s -> basePath.stream().anyMatch(x -> x.test(s)) && excludePath.stream().noneMatch(x -> x.test(s));
-	}
-
-	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title(swaggerProperties.getTitle()).description(swaggerProperties.getDescription())
-				.license(swaggerProperties.getLicense()).licenseUrl(swaggerProperties.getLicenseUrl())
-				.termsOfServiceUrl(swaggerProperties.getTermsOfServiceUrl())
-				.contact(new Contact(swaggerProperties.getContact().getName(), swaggerProperties.getContact().getUrl(),
-						swaggerProperties.getContact().getEmail()))
-				.version(swaggerProperties.getVersion()).build();
 	}
 
 }
