@@ -1,8 +1,8 @@
 package com.relaxed.common.jsch.sftp.delegates;
 
-import com.relaxed.common.jsch.sftp.exception.SftpClientException;
+import com.relaxed.common.jsch.sftp.executor.ISftpExecutor;
+
 import com.relaxed.common.jsch.sftp.functions.Handler;
-import com.relaxed.common.jsch.sftp.factory.AbstractSftp;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -16,7 +16,7 @@ public class DelegateHandler implements Handler {
 	private final Handler target;
 
 	@Override
-	public void handle(AbstractSftp sftp) {
+	public void handle(ISftpExecutor sftp) {
 		target.handle(sftp);
 	}
 

@@ -1,5 +1,6 @@
 package com.relaxed.common.jsch.sftp.factory;
 
+import com.relaxed.common.jsch.sftp.executor.ISftpExecutor;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 
 /**
@@ -9,7 +10,7 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
  *
  * @author shuoyu
  */
-public class SftpPool extends GenericObjectPool<AbstractSftp> {
+public class SftpPool extends GenericObjectPool<ISftpExecutor> {
 
 	/**
 	 * Creates a new <code>GenericObjectPool</code> that tracks and destroys objects that

@@ -1,6 +1,7 @@
 package com.relaxed.common.jsch.sftp.factory;
 
 import com.relaxed.common.jsch.sftp.SftpProperties;
+import com.relaxed.common.jsch.sftp.executor.ISftpExecutor;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.pool2.impl.DefaultEvictionPolicy;
@@ -12,7 +13,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
  *
  * @author shuoyu
  */
-public class SftpPoolConfig extends GenericObjectPoolConfig<AbstractSftp> {
+public class SftpPoolConfig extends GenericObjectPoolConfig<ISftpExecutor> {
 
 	/**
 	 * 根据配置获得池配置
@@ -58,7 +59,7 @@ public class SftpPoolConfig extends GenericObjectPoolConfig<AbstractSftp> {
 
 		private int numTestsPerEvictionRun;
 
-		private EvictionPolicy<AbstractSftp> evictionPolicy; // 仅2.6.0版本commons-pool2需要设置
+		private EvictionPolicy<ISftpExecutor> evictionPolicy; // 仅2.6.0版本commons-pool2需要设置
 
 		private String evictionPolicyClassName;
 
@@ -156,7 +157,7 @@ public class SftpPoolConfig extends GenericObjectPoolConfig<AbstractSftp> {
 			return this;
 		}
 
-		public Builder evictionPolicy(EvictionPolicy<AbstractSftp> evictionPolicy) {
+		public Builder evictionPolicy(EvictionPolicy<ISftpExecutor> evictionPolicy) {
 			this.evictionPolicy = evictionPolicy;
 			return this;
 		}

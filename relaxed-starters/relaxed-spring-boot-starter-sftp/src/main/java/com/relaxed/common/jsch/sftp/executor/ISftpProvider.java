@@ -1,6 +1,7 @@
-package com.relaxed.common.jsch.sftp.factory;
+package com.relaxed.common.jsch.sftp.executor;
 
 import com.jcraft.jsch.ChannelSftp;
+import com.relaxed.common.jsch.sftp.executor.ISftpExecutor;
 
 /**
  * isfp 提供者
@@ -15,6 +16,6 @@ public interface ISftpProvider {
 	 * @param channelSftp
 	 * @return
 	 */
-	AbstractSftp provide(ChannelSftp channelSftp);
+	ISftpExecutor provide(ChannelSftp channelSftp);
 
 }

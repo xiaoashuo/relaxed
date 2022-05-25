@@ -1,13 +1,12 @@
 package com.relaxed.common.jsch.sftp.client;
 
 import com.relaxed.common.jsch.sftp.exception.SftpClientException;
+import com.relaxed.common.jsch.sftp.executor.ISftpExecutor;
 import com.relaxed.common.jsch.sftp.functions.Handler;
 import com.relaxed.common.jsch.sftp.delegates.DelegateHandler;
 import com.relaxed.common.jsch.sftp.delegates.DelegateSupplyHandler;
 import com.relaxed.common.jsch.sftp.factory.SftpPool;
 import com.relaxed.common.jsch.sftp.functions.SupplyHandler;
-import com.relaxed.common.jsch.sftp.factory.AbstractSftp;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -22,7 +21,7 @@ public class SftpClient implements ISftpClient {
 
 	@Override
 	public void open(Handler handler) {
-		AbstractSftp sftp = null;
+		ISftpExecutor sftp = null;
 		try {
 			sftp = sftpPool.borrowObject();
 			DelegateHandler policyHandler = new DelegateHandler(handler);
@@ -41,7 +40,7 @@ public class SftpClient implements ISftpClient {
 
 	@Override
 	public <T> T supplyOpen(SupplyHandler supplyHandler) {
-		AbstractSftp sftp = null;
+		ISftpExecutor sftp = null;
 		try {
 			sftp = sftpPool.borrowObject();
 			DelegateSupplyHandler policyHandler = new DelegateSupplyHandler(supplyHandler);

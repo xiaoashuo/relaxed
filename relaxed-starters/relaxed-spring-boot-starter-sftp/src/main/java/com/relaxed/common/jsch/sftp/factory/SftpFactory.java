@@ -3,6 +3,9 @@ package com.relaxed.common.jsch.sftp.factory;
 import com.jcraft.jsch.*;
 import com.relaxed.common.jsch.sftp.exception.SftpClientException;
 import com.relaxed.common.jsch.sftp.SftpProperties;
+import com.relaxed.common.jsch.sftp.executor.AbstractSftpExecutor;
+import com.relaxed.common.jsch.sftp.executor.ISftpExecutor;
+import com.relaxed.common.jsch.sftp.executor.ISftpProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.BasePooledObjectFactory;
@@ -18,7 +21,7 @@ import org.springframework.util.StringUtils;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class SftpFactory extends BasePooledObjectFactory<AbstractSftp> {
+public class SftpFactory extends BasePooledObjectFactory<ISftpExecutor> {
 
 	private static final String CHANNEL_TYPE = "sftp";
 
@@ -31,11 +34,11 @@ public class SftpFactory extends BasePooledObjectFactory<AbstractSftp> {
 	}
 
 	/**
-	 * 创建一个{@link AbstractSftp}子实例 这个方法必须支持并发多线程调用
-	 * @return {@link AbstractSftp}子实例
+	 * 创建一个{@link AbstractSftpExecutor}子实例 这个方法必须支持并发多线程调用
+	 * @return {@link AbstractSftpExecutor}子实例
 	 */
 	@Override
-	public AbstractSftp create() throws Exception {
+	public ISftpExecutor create() throws Exception {
 		try {
 			JSch jSch = new JSch();
 			Session session = jSch.getSession(sftpProperties.getUsername(), sftpProperties.getHost(),
@@ -64,7 +67,7 @@ public class SftpFactory extends BasePooledObjectFactory<AbstractSftp> {
 	 * @return 对象包装器
 	 */
 	@Override
-	public PooledObject<AbstractSftp> wrap(AbstractSftp abstractSftp) {
+	public PooledObject<ISftpExecutor> wrap(ISftpExecutor abstractSftp) {
 		return new DefaultPooledObject<>(abstractSftp);
 	}
 
@@ -73,9 +76,9 @@ public class SftpFactory extends BasePooledObjectFactory<AbstractSftp> {
 	 * @param p 对象包装器
 	 */
 	@Override
-	public void destroyObject(PooledObject<AbstractSftp> p) {
+	public void destroyObject(PooledObject<ISftpExecutor> p) {
 		if (p != null) {
-			AbstractSftp sftp = p.getObject();
+			ISftpExecutor sftp = p.getObject();
 			if (sftp != null) {
 				ChannelSftp channelSftp = sftp.getChannelSftp();
 				if (channelSftp != null) {
@@ -100,9 +103,9 @@ public class SftpFactory extends BasePooledObjectFactory<AbstractSftp> {
 	 * @return {@code true} 可用，{@code false} 不可用
 	 */
 	@Override
-	public boolean validateObject(PooledObject<AbstractSftp> p) {
+	public boolean validateObject(PooledObject<ISftpExecutor> p) {
 		if (p != null) {
-			AbstractSftp sftp = p.getObject();
+			ISftpExecutor sftp = p.getObject();
 			if (sftp != null) {
 				try {
 					sftp.getChannelSftp().cd("./");

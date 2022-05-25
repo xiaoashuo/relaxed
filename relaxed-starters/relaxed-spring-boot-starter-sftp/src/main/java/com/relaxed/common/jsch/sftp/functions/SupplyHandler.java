@@ -1,6 +1,6 @@
 package com.relaxed.common.jsch.sftp.functions;
 
-import com.relaxed.common.jsch.sftp.factory.AbstractSftp;
+import com.relaxed.common.jsch.sftp.executor.ISftpExecutor;
 
 /**
  * 处理带返回值动作
@@ -16,6 +16,6 @@ public interface SupplyHandler<T> {
 	 * @param <T>
 	 * @return
 	 */
-	T supplyHandle(AbstractSftp sftp);
+	T supplyHandle(ISftpExecutor sftp);
 
 }

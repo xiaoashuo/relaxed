@@ -2,15 +2,14 @@ package com.relaxed.common.jsch.sftp;
 
 import com.relaxed.common.jsch.sftp.client.ISftpClient;
 import com.relaxed.common.jsch.sftp.client.SftpClient;
+import com.relaxed.common.jsch.sftp.executor.ISftpProvider;
+import com.relaxed.common.jsch.sftp.executor.SftpExecutor;
 import com.relaxed.common.jsch.sftp.factory.*;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.pool2.impl.DefaultEvictionPolicy;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-
-import java.io.PrintWriter;
 
 /**
  * sftp 自动配置
@@ -28,7 +27,7 @@ public class SftpAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public ISftpProvider iSftpProvider() {
-		return channelSftp -> new DefaultSftp(channelSftp);
+		return channelSftp -> new SftpExecutor(channelSftp);
 	}
 
 	/**

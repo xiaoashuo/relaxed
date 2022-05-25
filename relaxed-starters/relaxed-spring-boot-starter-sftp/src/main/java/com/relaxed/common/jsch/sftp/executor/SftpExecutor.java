@@ -1,4 +1,4 @@
-package com.relaxed.common.jsch.sftp.factory;
+package com.relaxed.common.jsch.sftp.executor;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
@@ -17,9 +17,9 @@ import java.util.List;
  * @author shuoyu
  */
 @Slf4j
-public class DefaultSftp extends AbstractSftp {
+public class SftpExecutor extends AbstractSftpExecutor {
 
-	public DefaultSftp(ChannelSftp channelSftp) {
+	public SftpExecutor(ChannelSftp channelSftp) {
 		super(channelSftp);
 	}
 
@@ -70,21 +70,12 @@ public class DefaultSftp extends AbstractSftp {
 
 	@Override
 	public File download(String dir, String name, File file) {
-		try (FileOutputStream fos = new FileOutputStream(file)) {
-			if (!isExist(dir)) {
-				throw new SftpClientException(String.format("the directory (%s) does not exist.", dir));
-			}
-			String absoluteFilePath = dir + "/" + name;
-			if (!isExist(absoluteFilePath)) {
-				throw new SftpClientException(String.format("the file (%s) does not exist.", absoluteFilePath));
-			}
-			channelSftp.get(absoluteFilePath, fos);
-			return file;
+		if (!isExist(dir)) {
+			throw new SftpClientException(String.format("the directory (%s) does not exist.", dir));
 		}
-		catch (Exception e) {
-			throw new SftpClientException(
-					String.format("get remote file download exception params[dir=%s,name=%s]", dir, name), e);
-		}
+		String absoluteFilePath = dir + "/" + name;
+		return download(absoluteFilePath, file);
+
 	}
 
 	@Override
@@ -143,18 +134,21 @@ public class DefaultSftp extends AbstractSftp {
 	}
 
 	@Override
-	public void delete(String dir) {
-		if (!isDir(dir)) {
-			return;
-		}
-		if (!isExist(dir)) {
+	public void delete(String path) {
+		if (!isExist(path)) {
 			return;
 		}
 		try {
-			channelSftp.rmdir(dir);
+			if (isDir(path)) {
+				channelSftp.rmdir(path);
+			}
+			else {
+				channelSftp.rm(path);
+			}
+
 		}
 		catch (SftpException e) {
-			throw new SftpClientException(String.format("delete directory exception params[dir=%s]", dir), e);
+			throw new SftpClientException(String.format("delete path exception params[path=%s]", path), e);
 		}
 	}
 
