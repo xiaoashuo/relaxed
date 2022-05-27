@@ -9,4 +9,20 @@ package com.relaxed.common.http.core.response;
  */
 public interface IResponse {
 
+	/**
+	 * 获取响应码
+	 * @author yakir
+	 * @date 2022/5/27 15:33
+	 * @return java.lang.Integer
+	 */
+	Integer getCode();
+
+	/**
+	 * 获取响应消息
+	 * @author yakir
+	 * @date 2022/5/27 15:34
+	 * @return java.lang.String
+	 */
+	String getMessage();
+
 }
