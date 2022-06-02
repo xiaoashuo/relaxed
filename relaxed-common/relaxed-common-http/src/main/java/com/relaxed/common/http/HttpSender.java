@@ -141,6 +141,8 @@ public class HttpSender implements ISender {
 		}
 		httpRequest.setReadTimeout(requestConfig.getReadTimeout());
 		httpRequest.setConnectionTimeout(requestConfig.getConnectionTimeout());
+		httpRequest.setHostnameVerifier(requestConfig.getHostnameVerifier());
+		httpRequest.setSSLSocketFactory(requestConfig.getSslSocketFactory());
 	}
 
 	/**
