@@ -3,15 +3,20 @@ package com.relaxed.common.http.test;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.json.JSONUtil;
 import com.relaxed.common.http.HttpSender;
 
 import com.relaxed.common.http.core.provider.RequestHeaderProvider;
+import com.relaxed.common.http.core.resource.StringResource;
 import com.relaxed.common.http.domain.RequestForm;
 import com.relaxed.common.http.test.custom.CustomSender;
 import com.relaxed.common.http.test.example.create.CreateRequest;
 import com.relaxed.common.http.test.example.create.CreateResponse;
 import com.relaxed.common.http.test.example.file.FileRequest;
 import com.relaxed.common.http.test.example.file.FileResponse;
+import com.relaxed.common.http.test.example.part.PartRequest;
+import com.relaxed.common.http.test.example.part.PartResponse;
 import com.relaxed.common.http.test.example.query.StampQueryRequest;
 import com.relaxed.common.http.test.example.query.StampQueryResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -94,6 +99,28 @@ class SenderTest {
 		map.put("operatorId", "1");
 		map.put("operatorName", "seal");
 		return map;
+	}
+
+	@Test
+	public void testMultipart() {
+		HttpSender httpSender = new HttpSender(baseUrl, requestHeaderProvider);
+
+		PartRequest partRequest = new PartRequest();
+		PartRequest.Content stampApplyDTO = new PartRequest.Content();
+		stampApplyDTO.setBusinessId(RandomUtil.randomNumbers(16));
+		stampApplyDTO.setType(1);
+		stampApplyDTO.setSignCode("test0020");
+		stampApplyDTO.setCallbackUrl("");
+		stampApplyDTO.setProductCode("4000000");
+		stampApplyDTO.setTrustPlanCode("40000");
+		stampApplyDTO.setFileType("9");
+		StringResource stringResource = new StringResource("apply", "application/json", "utf-8",
+				JSONUtil.toJsonStr(stampApplyDTO));
+		partRequest.addResource(stringResource);
+		partRequest.addFile("file", new File("D:\\400701_6985565.pdf"));
+		log.info("请求参数:{}", partRequest);
+		PartResponse response = httpSender.send(partRequest);
+		log.info("请求响应:{}", response);
 	}
 
 	@Test

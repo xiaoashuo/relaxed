@@ -91,8 +91,8 @@ public class HttpSender implements ISender {
 		Throwable myThrowable = null;
 		try {
 			IHttpResponse responseWrapper = doExecute(requestUrl, requestForm);
-			log.debug("请求渠道:{} url:{} 参数:{} 响应:{}", channel, requestUrl, requestForm, responseWrapper);
 			response = request.convertToResponse(responseWrapper);
+			log.debug("请求渠道:{} url:{} 参数:{} 响应:{}", channel, requestUrl, requestForm, response);
 			return response;
 
 		}
