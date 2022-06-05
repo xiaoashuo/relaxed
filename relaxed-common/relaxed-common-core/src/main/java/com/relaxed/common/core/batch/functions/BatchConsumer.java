@@ -10,12 +10,12 @@ import com.relaxed.common.core.batch.params.BatchConsumerParam;
  * @Version 1.0
  */
 @FunctionalInterface
-public interface BatchConsumer<T extends BatchConsumerParam> {
+public interface BatchConsumer<T> {
 
 	/**
 	 * 数据消费者
 	 * @param data
 	 */
-	void consumer(T data);
+	void consumer(BatchConsumerParam<T> data);
 
 }
