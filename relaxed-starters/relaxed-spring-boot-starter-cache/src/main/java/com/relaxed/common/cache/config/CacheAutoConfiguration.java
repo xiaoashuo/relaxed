@@ -61,6 +61,19 @@ public class CacheAutoConfiguration {
 	}
 
 	/**
+	 * 缓存前缀key生成器 前缀key生成器
+	 * @author yakir
+	 * @date 2022/6/13 11:58
+	 * @return com.relaxed.common.cache.generate.KeyGenerator
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public KeyGenerator prefixKeyGenerator(CacheProperties cacheProperties) {
+		return new PrefixKeyGenerator(cacheProperties.getKeyPrefix());
+	}
+
+	/****************************** 基础缓存配置 *************************************/
+	/**
 	 * redis缓存操作者
 	 * @author yakir
 	 * @date 2022/6/13 11:59
@@ -74,18 +87,6 @@ public class CacheAutoConfiguration {
 	}
 
 	/**
-	 * 缓存前缀key生成器 前缀key生成器
-	 * @author yakir
-	 * @date 2022/6/13 11:58
-	 * @return com.relaxed.common.cache.generate.KeyGenerator
-	 */
-	@Bean
-	@ConditionalOnMissingBean
-	public KeyGenerator prefixKeyGenerator(CacheProperties cacheProperties) {
-		return new PrefixKeyGenerator(cacheProperties.getKeyPrefix());
-	}
-
-	/**
 	 * 缓存管理器
 	 * @author yakir
 	 * @date 2022/6/13 12:00
@@ -94,6 +95,7 @@ public class CacheAutoConfiguration {
 	 * @return com.relaxed.common.cache.CacheManage<java.lang.String>
 	 */
 	@Bean
+	@ConditionalOnMissingBean
 	public CacheManage<String> cacheManage(CacheOperator cacheOperator, KeyGenerator keyGenerator) {
 		return new CacheManage<>(cacheOperator, keyGenerator);
 	}
@@ -107,6 +109,7 @@ public class CacheAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean
 	public LockManage<String> lockManage(LockOperator lockOperator, KeyGenerator keyGenerator) {
 		return new LockManage<>(lockOperator, keyGenerator);
 	}
