@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.relaxed.common.cache.CacheOperator;
+import com.relaxed.common.cache.operator.CacheOperator;
 import com.relaxed.common.model.result.R;
 import com.relaxed.common.risk.engine.config.EngineProperties;
 import com.relaxed.common.risk.biz.distributor.risk.RiskEvalAsyncDistributor;
