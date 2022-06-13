@@ -1,5 +1,6 @@
-package com.relaxed.common.cache.operator;
+package com.relaxed.common.cache.operator.redis;
 
+import com.relaxed.common.cache.operator.redis.AbstractRedisCacheOperator;
 import org.springframework.data.redis.core.RedisTemplate;
 
 /**

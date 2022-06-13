@@ -11,6 +11,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * @author Yakir
@@ -67,6 +68,16 @@ public class SpELUtil {
 	 */
 	public static String parseValueToString(EvaluationContext context, String spEL) {
 		return getParser().parseExpression(spEL).getValue(context, String.class);
+	}
+
+	/**
+	 * 解析 spel 表达式
+	 * @param context spel 上下文
+	 * @param spelExpression spel 表达式
+	 * @return 解析后的 List<String>
+	 */
+	public static List<String> parseValueToStringList(EvaluationContext context, String spelExpression) {
+		return getParser().parseExpression(spelExpression).getValue(context, List.class);
 	}
 
 	/**

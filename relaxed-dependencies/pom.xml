@@ -266,6 +266,16 @@
                 <artifactId>relaxed-spring-boot-starter-log</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-extend-validate-code</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-spring-boot-starter-validate-code</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--web-->
             <dependency>
                 <groupId>com.lovecyy</groupId>

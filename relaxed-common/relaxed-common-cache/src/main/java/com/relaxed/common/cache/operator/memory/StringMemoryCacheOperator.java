@@ -1,6 +1,7 @@
-package com.relaxed.common.cache.operator;
+package com.relaxed.common.cache.operator.memory;
 
 import cn.hutool.cache.impl.TimedCache;
+import com.relaxed.common.cache.operator.memory.AbstractMemoryCacheOperator;
 
 /**
  * @author Yakir

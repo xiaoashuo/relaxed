@@ -1,7 +1,7 @@
-package com.relaxed.common.cache.operator;
+package com.relaxed.common.cache.operator.memory;
 
 import cn.hutool.cache.impl.TimedCache;
-import com.relaxed.common.cache.CacheOperator;
+import com.relaxed.common.cache.operator.CacheOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +18,7 @@ public abstract class AbstractMemoryCacheOperator<T> implements CacheOperator<T>
 
 	private final Logger log = LoggerFactory.getLogger(AbstractMemoryCacheOperator.class);
 
-	private final TimedCache<String, T> timedCache;
+	protected final TimedCache<String, T> timedCache;
 
 	public AbstractMemoryCacheOperator(TimedCache<String, T> timedCache) {
 		this.timedCache = timedCache;
@@ -68,35 +68,6 @@ public abstract class AbstractMemoryCacheOperator<T> implements CacheOperator<T>
 	@Override
 	public boolean contains(String key) {
 		return timedCache.containsKey(key);
-	}
-
-	@Override
-	public synchronized boolean lock(String key, T requestId) {
-		log.info("memory cache no implement...");
-		return false;
-	}
-
-	@Override
-	public synchronized boolean lock(String key, T requestId, Long ttl) {
-		log.info("memory cache no implement...");
-		return false;
-	}
-
-	@Override
-	public synchronized boolean lock(String key, T requestId, Long ttl, long timeout) {
-		log.info("memory cache no implement...");
-		return false;
-	}
-
-	@Override
-	public synchronized boolean releaseLock(String key, T requestId) {
-		log.info("memory cache no implement...");
-		return false;
-	}
-
-	@Override
-	public <O> O getOperator() {
-		return (O) timedCache;
 	}
 
 }

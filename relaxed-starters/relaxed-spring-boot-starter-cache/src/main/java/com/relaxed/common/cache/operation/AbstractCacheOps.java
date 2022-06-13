@@ -10,7 +10,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
  * @date 2021/7/23 18:08
  * @Version 1.0
  */
-public abstract class AbstractCacheOps implements CacheOps {
+public abstract class AbstractCacheOps {
 
 	protected AbstractCacheOps(ProceedingJoinPoint joinPoint) {
 		this.joinPoint = joinPoint;

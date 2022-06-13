@@ -1,20 +1,21 @@
 package com.relaxed.common.cache.core;
 
-import com.relaxed.common.cache.CacheOperator;
+import com.relaxed.common.cache.CacheManage;
+import com.relaxed.common.cache.lock.DistributedLock;
+import com.relaxed.common.cache.lock.LockManage;
+import com.relaxed.common.cache.operator.CacheOperator;
 import com.relaxed.common.cache.annotation.Cached;
 import com.relaxed.common.cache.annotation.CacheDel;
 import com.relaxed.common.cache.annotation.CachePut;
 import com.relaxed.common.cache.annotation.MetaCacheAnnotation;
 import com.relaxed.common.cache.config.CachePropertiesHolder;
-import com.relaxed.common.cache.model.CachedDelInfo;
-import com.relaxed.common.cache.model.CachedInfo;
-import com.relaxed.common.cache.model.CachedPutInfo;
-import com.relaxed.common.cache.model.MetaAnnotationInfo;
+
 import com.relaxed.common.cache.operation.CacheDelOps;
 import com.relaxed.common.cache.operation.CachePutOps;
 import com.relaxed.common.cache.operation.CachedOps;
 import com.relaxed.common.cache.operation.functions.VoidMethod;
 import com.relaxed.common.cache.serialize.CacheSerializer;
+import com.relaxed.common.core.util.SpELUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -47,11 +48,13 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 @Slf4j
 @Aspect
-public class CacheAspect {
+public class CacheStringAspect {
 
 	private final ApplicationContext applicationContext;
 
-	private final CacheOperator<String> cacheOperator;
+	private final CacheManage<String> cacheManage;
+
+	private final LockManage<String> lockManage;
 
 	private final CacheSerializer cacheSerializer;
 
@@ -68,53 +71,53 @@ public class CacheAspect {
 		log.trace("=======The string cache aop is executed! method : {}", method.getName());
 		Object target = point.getTarget();
 		Object[] arguments = point.getArgs();
+		KeyGenerator keyGenerator = new KeyGenerator(target, method, arguments);
+		// 未指定条件 or 条件通过 操作缓存
 		MetaCacheAnnotation metaAnnotation = AnnotatedElementUtils.findMergedAnnotation(method,
 				MetaCacheAnnotation.class);
-		CacheExpressionEvaluator cacheExpressionEvaluator = new CacheExpressionEvaluator(target, method, arguments);
-		if (!isConditionPassing(metaAnnotation.condition(), cacheExpressionEvaluator)) {
+		if (!isConditionPassing(metaAnnotation.condition(), keyGenerator)) {
 			// 条件未通过 直接执行结果返回
 			return point.proceed();
 		}
-		// 未指定条件 or 条件通过 操作缓存
 		// 获取注解对象
 		Cached cachedAnnotation = AnnotationUtils.getAnnotation(method, Cached.class);
 		if (cachedAnnotation != null) {
-			CachedInfo cachedInfo = CachedInfo.of(cachedAnnotation.prefix(), cachedAnnotation.key(),
-					cachedAnnotation.suffix(), cachedAnnotation.keyGenerator(), cachedAnnotation.condition(),
-					cachedAnnotation.ttl());
 			// 缓存key
-			String key = generateKey(cacheExpressionEvaluator, cachedInfo);
+			String key = keyGenerator.getKey(cachedAnnotation.prefix(), cachedAnnotation.keyJoint());
 			// redis 分布式锁的 key
 			String lockKey = key + CachePropertiesHolder.lockKeySuffix();
-			Supplier<String> cacheQuery = () -> cacheOperator.get(key);
+			Supplier<String> cacheQuery = () -> cacheManage.get(key);
 			// 失效时间控制
-			Consumer<Object> cachePut = prodCachePutFunction(cacheOperator, key, cachedAnnotation.ttl());
+			Consumer<Object> cachePut = prodCachePutFunction(cacheManage, key, cachedAnnotation.ttl());
 			return cached(new CachedOps(point, lockKey, cacheQuery, cachePut, method.getGenericReturnType()));
 
 		}
 		CachePut cachePutAnnotation = AnnotationUtils.getAnnotation(method, CachePut.class);
 		if (cachePutAnnotation != null) {
-			CachedPutInfo cachedInfo = CachedPutInfo.of(cachePutAnnotation.prefix(), cachePutAnnotation.key(),
-					cachePutAnnotation.suffix(), cachePutAnnotation.keyGenerator(), cachePutAnnotation.condition(),
-					cachePutAnnotation.ttl());
 			// 缓存key
-			String key = generateKey(cacheExpressionEvaluator, cachedInfo);
+			String key = keyGenerator.getKey(cachePutAnnotation.prefix(), cachePutAnnotation.keyJoint());
 			// 失效时间控制
-			Consumer<Object> cachePut = prodCachePutFunction(cacheOperator, key, cachePutAnnotation.ttl());
+			Consumer<Object> cachePut = prodCachePutFunction(cacheManage, key, cachePutAnnotation.ttl());
 			return cachePut(new CachePutOps(point, cachePut));
 
 		}
 		CacheDel cacheDelAnnotation = AnnotationUtils.getAnnotation(method, CacheDel.class);
 		if (cacheDelAnnotation != null) {
-			CachedDelInfo cachedInfo = CachedDelInfo.of(cacheDelAnnotation.prefix(), cacheDelAnnotation.key(),
-					cacheDelAnnotation.suffix(), cacheDelAnnotation.keyGenerator(), cacheDelAnnotation.condition());
 			// 缓存key
-			String key = generateKey(cacheExpressionEvaluator, cachedInfo);
-			VoidMethod cacheDel = () -> cacheOperator.remove(key);
+			String key = keyGenerator.getKey(cacheDelAnnotation.prefix(), cacheDelAnnotation.keyJoint());
+			VoidMethod cacheDel = () -> cacheManage.remove(key);
 			return cacheDel(new CacheDelOps(point, cacheDel));
 		}
 
 		return point.proceed();
+	}
+
+	protected boolean isConditionPassing(String condition, KeyGenerator keyGenerator) {
+		boolean conditionPassing = true;
+		if (StringUtils.hasText(condition)) {
+			conditionPassing = keyGenerator.condition(condition);
+		}
+		return conditionPassing;
 	}
 
 	/**
@@ -167,31 +170,19 @@ public class CacheAspect {
 		else if (cacheData != null) {
 			return cacheSerializer.deserialize(cacheData, dataClazz);
 		}
-
 		// 2.==========如果缓存为空 则需查询数据库并更新===============
-		Object dbData = null;
-		// 尝试获取锁，只允许一个线程更新缓存
-		String reqId = UUID.randomUUID().toString();
-		if (cacheOperator.lock(ops.lockKey(), reqId, CachePropertiesHolder.lockedTimeOut())) {
-			// 有可能其他线程已经更新缓存，这里再次判断缓存是否为空
-			cacheData = cacheQuery.get();
-			if (cacheData == null) {
+		cacheData = DistributedLock.<String>instance().action(ops.lockKey(), () -> {
+			String cacheValue = cacheQuery.get();
+			if (cacheValue == null) {
 				// 从数据库查询数据
-				dbData = ops.joinPoint().proceed();
+				Object dbValue = ops.joinPoint().proceed();
 				// 如果数据库中没数据，填充一个String，防止缓存击穿
-				cacheData = dbData == null ? CachePropertiesHolder.nullValue() : cacheSerializer.serialize(dbData);
+				cacheValue = dbValue == null ? CachePropertiesHolder.nullValue() : cacheSerializer.serialize(dbValue);
 				// 设置缓存
-				ops.cachePut().accept(cacheData);
+				ops.cachePut().accept(cacheValue);
 			}
-			// 解锁
-			cacheOperator.releaseLock(ops.lockKey(), reqId);
-			// 返回数据
-			return dbData;
-		}
-		else {
-			cacheData = cacheQuery.get();
-		}
-
+			return cacheValue;
+		}).lockManage(lockManage).onLockFail(cacheQuery).lock();
 		// 自旋时间内未获取到锁，或者数据库中数据为空，返回null
 		if (cacheData == null || ops.nullValue(cacheData)) {
 			return null;
@@ -199,51 +190,18 @@ public class CacheAspect {
 		return cacheSerializer.deserialize(cacheData, dataClazz);
 	}
 
-	private Consumer<Object> prodCachePutFunction(CacheOperator cacheOperator, String key, long ttl) {
+	private Consumer<Object> prodCachePutFunction(CacheManage cacheManage, String key, long ttl) {
 		Consumer<Object> cachePut;
 		if (ttl < 0) {
-			cachePut = value -> cacheOperator.set(key, value);
+			cachePut = value -> cacheManage.set(key, value);
 		}
 		else if (ttl == 0) {
-			cachePut = value -> cacheOperator.set(key, value, CachePropertiesHolder.expireTime(), TimeUnit.SECONDS);
+			cachePut = value -> cacheManage.set(key, value, CachePropertiesHolder.expireTime(), TimeUnit.SECONDS);
 		}
 		else {
-			cachePut = value -> cacheOperator.set(key, value, ttl, TimeUnit.SECONDS);
+			cachePut = value -> cacheManage.set(key, value, ttl, TimeUnit.SECONDS);
 		}
 		return cachePut;
-	}
-
-	/**
-	 * 生成缓存key
-	 * @param cacheExpressionEvaluator
-	 * @param metaAnnotationInfo
-	 * @return
-	 */
-	private String generateKey(CacheExpressionEvaluator cacheExpressionEvaluator,
-			MetaAnnotationInfo metaAnnotationInfo) {
-		String keyGenerate = metaAnnotationInfo.getKeyGenerate();
-		if (StringUtils.hasText(keyGenerate)) {
-			// 使用用户自定义key
-			KeyGenerator keyGenerator = getBean(keyGenerate, KeyGenerator.class);
-			return keyGenerator.generate(cacheExpressionEvaluator.getTarget(), cacheExpressionEvaluator.getMethod(),
-					cacheExpressionEvaluator.getArgs());
-		}
-
-		String key = cacheExpressionEvaluator.getKey(metaAnnotationInfo);
-		if (!StringUtils.hasText(key)) {
-			throw new IllegalArgumentException("Null key returned for cache operation");
-
-		}
-		return key;
-
-	}
-
-	protected boolean isConditionPassing(String condition, CacheExpressionEvaluator cacheExpressionEvaluator) {
-		boolean conditionPassing = true;
-		if (StringUtils.hasText(condition)) {
-			conditionPassing = cacheExpressionEvaluator.condition(condition);
-		}
-		return conditionPassing;
 	}
 
 	/**

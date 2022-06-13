@@ -24,22 +24,9 @@ public @interface CacheDel {
 	String prefix() default "";
 
 	/**
-	 * key name support SpEL
-	 * @return
+	 * 如果需要在key 后面拼接参数 则传入一个拼接数据的 SpEL 表达式
 	 */
-	String key() default "";
-
-	/**
-	 * key 后缀
-	 * @return
-	 */
-	String suffix() default "";
-
-	/**
-	 * key 生成bean 与 prefix 互斥 key 互斥
-	 * @return
-	 */
-	String keyGenerator() default "";
+	String keyJoint() default "";
 
 	/**
 	 * 条件筛选 符合条件才会缓存
