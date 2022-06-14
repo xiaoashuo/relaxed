@@ -39,9 +39,6 @@
         <diffutil.version>1.3.0</diffutil.version>
         <zjsonpatch.version>0.4.11</zjsonpatch.version>
         <javers-core.version>6.5.2</javers-core.version>
-
-        <!-- 跳过测试 -->
-        <skipTests>true</skipTests>
     </properties>
 
 
@@ -73,12 +70,15 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
             <!-- admin core-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-admin-core</artifactId>
                 <version>${reversion}</version>
             </dependency>
+
+
             <!--model 模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
@@ -330,6 +330,19 @@
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-easyexcel</artifactId>
                 <version>${reversion}</version>
+            </dependency>
+            <!--web 模块-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot.version}</version>
+                <exclusions>
+                    <!--排除tomcat依赖-->
+                    <exclusion>
+                        <artifactId>spring-boot-starter-tomcat</artifactId>
+                        <groupId>org.springframework.boot</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <!--mybatis plus extension,包含了mybatis plus core-->
             <dependency>
