@@ -17,7 +17,7 @@
         <module>relaxed-extend-mybatis</module>
         <module>relaxed-extend-mail</module>
         <module>relaxed-extend-dingtalk</module>
-        <module>relaxed-extend-validate-code</module>
+
     </modules>
 
 

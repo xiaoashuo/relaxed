@@ -29,7 +29,6 @@
          <module>relaxed-spring-boot-starter-exception</module>
          <module>relaxed-spring-boot-starter-download</module>
          <module>relaxed-spring-boot-starter-datascope</module>
-         <module>relaxed-spring-boot-starter-validate-code</module>
     </modules>
 
 
