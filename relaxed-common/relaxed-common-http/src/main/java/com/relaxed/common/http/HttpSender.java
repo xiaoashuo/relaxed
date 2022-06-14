@@ -98,7 +98,7 @@ public class HttpSender implements ISender {
 		}
 		catch (Throwable throwable) {
 			myThrowable = ExceptionUtil.unwrap(throwable);
-			throw new RequestException(myThrowable);
+			throw new RequestException(myThrowable.getMessage(), myThrowable);
 		}
 		finally {
 			// 结束时间
