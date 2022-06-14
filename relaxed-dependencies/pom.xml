@@ -10,11 +10,11 @@
     <packaging>pom</packaging>
     <properties>
         <reversion>1.0.0-SNAPSHOT</reversion>
-        <spring-boot.version>2.4.3</spring-boot.version>
+        <spring-boot.version>2.6.8</spring-boot.version>
         <spring-javaformat-checkstyle.version>0.0.27</spring-javaformat-checkstyle.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
         <lombok.version>1.18.20</lombok.version>
-        <hutool.version>5.8.0.M3</hutool.version>
+        <hutool.version>5.8.2</hutool.version>
         <xxl-job.version>2.2.0</xxl-job.version>
         <mybatis.version>3.5.5</mybatis.version>
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
@@ -266,16 +266,7 @@
                 <artifactId>relaxed-spring-boot-starter-log</artifactId>
                 <version>${reversion}</version>
             </dependency>
-            <dependency>
-                <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-extend-validate-code</artifactId>
-                <version>${reversion}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-spring-boot-starter-validate-code</artifactId>
-                <version>${reversion}</version>
-            </dependency>
+
             <!--web-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
