@@ -48,7 +48,6 @@ public class WechatTextMessage extends AbstractWechatMessage {
 
 	public WechatTextMessage atAll() {
 		mentionedList.add("@all");
-		mentionedMobileList.add("@all");
 		return this;
 	}
 
