@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
  * @Version 1.0
  */
 @RequiredArgsConstructor
-public class LockManage<T> implements LockOperator<T> {
+public class LockManage<T> {
 
 	private final LockOperator lockOperator;
 

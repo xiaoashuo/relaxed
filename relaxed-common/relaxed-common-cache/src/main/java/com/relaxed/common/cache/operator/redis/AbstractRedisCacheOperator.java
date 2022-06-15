@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -47,8 +48,8 @@ public class AbstractRedisCacheOperator<T> implements CacheOperator<T> {
 	}
 
 	@Override
-	public void remove(String... key) {
-		redisTemplate.delete(Arrays.asList(key));
+	public void remove(Collection<String> keys) {
+		redisTemplate.delete(keys);
 	}
 
 	@Override

@@ -34,4 +34,10 @@ public @interface CacheDel {
 	 */
 	String condition() default "";
 
+	/**
+	 * 清除多个 key，当值为 true 时，强制要求 keyJoint 有值，且 Spel 表达式解析结果为 Collection
+	 * @return boolean
+	 */
+	boolean multiDel() default false;
+
 }

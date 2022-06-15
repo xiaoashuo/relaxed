@@ -1,10 +1,12 @@
 package com.relaxed.common.cache.operator.memory;
 
 import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.core.collection.CollectionUtil;
 import com.relaxed.common.cache.operator.CacheOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -51,12 +53,14 @@ public abstract class AbstractMemoryCacheOperator<T> implements CacheOperator<T>
 	}
 
 	@Override
-	public void remove(String... key) {
-		if (key.length > 0) {
-			for (String itemKey : key) {
-				timedCache.remove(itemKey);
-			}
+	public void remove(Collection<String> keys) {
+		if (CollectionUtil.isEmpty(keys)) {
+			return;
 		}
+		for (String itemKey : keys) {
+			timedCache.remove(itemKey);
+		}
+
 	}
 
 	@Override

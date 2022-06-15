@@ -3,6 +3,7 @@ package com.relaxed.common.cache.operator;
 import com.relaxed.common.cache.CacheAction;
 import org.springframework.core.codec.AbstractDataBufferDecoder;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,7 +70,7 @@ public interface CacheOperator<T> {
 	 * @date 2021/9/1 16:46
 	 * @param keys
 	 */
-	void remove(String... keys);
+	void remove(Collection<String> keys);
 
 	/**
 	 * 设置过期时间 默认为 秒

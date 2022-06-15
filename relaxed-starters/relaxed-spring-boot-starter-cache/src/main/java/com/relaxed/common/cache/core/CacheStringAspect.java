@@ -32,6 +32,7 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -104,8 +105,17 @@ public class CacheStringAspect {
 		CacheDel cacheDelAnnotation = AnnotationUtils.getAnnotation(method, CacheDel.class);
 		if (cacheDelAnnotation != null) {
 			// 缓存key
-			String key = keyGenerator.getKey(cacheDelAnnotation.prefix(), cacheDelAnnotation.keyJoint());
-			VoidMethod cacheDel = () -> cacheManage.remove(key);
+			VoidMethod cacheDel;
+			if (cacheDelAnnotation.multiDel()) {
+				Collection<String> keys = keyGenerator.getKeys(cacheDelAnnotation.prefix(),
+						cacheDelAnnotation.keyJoint());
+				cacheDel = () -> cacheManage.remove(keys);
+			}
+			else {
+				// 缓存key
+				String key = keyGenerator.getKey(cacheDelAnnotation.prefix(), cacheDelAnnotation.keyJoint());
+				cacheDel = () -> cacheManage.remove(key);
+			}
 			return cacheDel(new CacheDelOps(point, cacheDel));
 		}
 
