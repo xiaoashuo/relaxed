@@ -39,6 +39,7 @@
         <diffutil.version>1.3.0</diffutil.version>
         <zjsonpatch.version>0.4.11</zjsonpatch.version>
         <javers-core.version>6.5.2</javers-core.version>
+        <springdoc-openapi.verison>1.6.7</springdoc-openapi.verison>
     </properties>
 
 
@@ -230,6 +231,12 @@
                 <artifactId>relaxed-extend-dingtalk</artifactId>
                 <version>${reversion}</version>
             </dependency>
+            <!--扩展wechat-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-extend-wechat</artifactId>
+                <version>${reversion}</version>
+            </dependency>
             <!--下载模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
@@ -246,6 +253,12 @@
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-dingtalk</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <!--wechat-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-spring-boot-starter-wechat</artifactId>
                 <version>${reversion}</version>
             </dependency>
             <!--分布式调度任务xxl-job-->
