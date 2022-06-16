@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+ com.relaxed.autoconfigure.web.exception.ExceptionConfiguration,\
+ com.relaxed.autoconfigure.web.servlet.WebMvcAutoConfiguration
+
+
+
