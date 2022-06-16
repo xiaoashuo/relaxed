@@ -1,5 +1,6 @@
 package com.relaxed.common.model.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.Collections;
@@ -11,22 +12,20 @@ import java.util.List;
  * @author Yakir
  */
 @Data
+@Schema(title = "分页返回结果")
 public class PageResult<T> {
-
-	/**
-	 * 当前页
-	 */
-	protected Long current = 1L;
-
-	/**
-	 * 总数
-	 */
-	protected Long total = 0L;
 
 	/**
 	 * 查询数据列表
 	 */
+	@Schema(title = "分页数据")
 	protected List<T> records = Collections.emptyList();
+
+	/**
+	 * 总数
+	 */
+	@Schema(title = "数据总量")
+	protected Long total = 0L;
 
 	public PageResult() {
 	}
@@ -38,12 +37,6 @@ public class PageResult<T> {
 	public PageResult(List<T> records, long total) {
 		this.records = records;
 		this.total = total;
-	}
-
-	public PageResult(long current, long total, List<T> records) {
-		this.current = current;
-		this.total = total;
-		this.records = records;
 	}
 
 }
