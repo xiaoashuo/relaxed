@@ -26,7 +26,7 @@ public class CreateRequest extends AbstractRequest<CreateResponse> {
 	@Override
 	protected RequestForm fillRequestParam(RequestForm requestForm) {
 		String json = JSONUtil.toJsonStr(this);
-		requestForm.setBody(json);
+		requestForm.body(json);
 		return requestForm;
 	}
 

@@ -40,9 +40,9 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	private RequestMethod requestMethod = RequestMethod.POST;
 
 	/**
-	 * 上传文件
+	 * 资源文件列表
 	 */
-	private List<Resource> resources;
+	private List<Resource> resources = new ArrayList<>();
 
 	protected Class<R> responseClass = this.currentResponseClass();
 
@@ -51,10 +51,15 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	 * @param resource
 	 */
 	public void addResource(Resource resource) {
-		if (this.resources == null) {
-			this.resources = new ArrayList<>();
-		}
 		this.resources.add(resource);
+	}
+
+	/**
+	 * 添加资源列表
+	 * @param resources
+	 */
+	public void addResources(List<Resource> resources) {
+		this.resources.addAll(resources);
 	}
 
 	/**
@@ -105,8 +110,8 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	@Override
 	public RequestForm generateRequestParam() {
 		RequestForm requestForm = new RequestForm();
-		requestForm.setRequestMethod(getRequestMethod());
-		requestForm.setResources(this.getResources());
+		requestForm.method(getRequestMethod());
+		requestForm.addResources(this.getResources());
 		return fillRequestParam(requestForm);
 	}
 
@@ -119,7 +124,7 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	 */
 	protected RequestForm fillRequestParam(RequestForm requestForm) {
 		Map<String, Object> paramMap = BeanUtil.beanToMap(this, false, true);
-		requestForm.setForm(paramMap);
+		requestForm.form(paramMap);
 		return requestForm;
 	}
 
