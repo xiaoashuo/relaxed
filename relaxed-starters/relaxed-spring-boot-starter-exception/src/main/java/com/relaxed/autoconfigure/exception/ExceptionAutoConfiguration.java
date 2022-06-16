@@ -11,6 +11,7 @@ import com.relaxed.common.exception.notifier.*;
 import com.relaxed.extend.dingtalk.request.DingTalkSender;
 import com.relaxed.extend.mail.sender.MailSender;
 
+import com.relaxed.extend.wechat.request.WechatSender;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -37,6 +38,8 @@ public class ExceptionAutoConfiguration {
 	private static final String DING_TALK = "DING_TALK";
 
 	private static final String MAIL = "MAIL";
+
+	private static final String WECHAT = "WECHAT";
 
 	@Value("${spring.application.name: unknown-application}")
 	private String applicationName;
@@ -88,6 +91,16 @@ public class ExceptionAutoConfiguration {
 		ExceptionHandleConfig exceptionHandleConfig = BeanUtil.toBean(exceptionHandleProperties,
 				ExceptionHandleConfig.class);
 		return new DefaultGlobalExceptionHandler(exceptionHandleConfig, exceptionNotifierHolder, applicationName);
+	}
+
+	/**
+	 * 微信消息通知的日志处理器
+	 *
+	 */
+	@Bean
+	@ConditionalOnProperty(prefix = "relaxed.exception.channels", name = WECHAT, havingValue = "true")
+	public ExceptionNotifier wechatGlobalExceptionNotifier(ApplicationContext context) {
+		return new WechatGlobalExceptionNotifier(WECHAT, applicationName, context.getBean(WechatSender.class));
 	}
 
 	/**

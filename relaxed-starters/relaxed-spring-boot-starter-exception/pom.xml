@@ -24,6 +24,11 @@
         </dependency>
         <dependency>
             <groupId>com.lovecyy</groupId>
+            <artifactId>relaxed-spring-boot-starter-wechat</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-mail</artifactId>
             <optional>true</optional>
         </dependency>
