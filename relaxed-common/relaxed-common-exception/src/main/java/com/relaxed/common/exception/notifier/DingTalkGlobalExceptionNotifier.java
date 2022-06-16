@@ -15,15 +15,14 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Getter
-public class DingTalkGlobalExceptionNotifier implements ExceptionNotifier {
-
-	private final String channel;
+public class DingTalkGlobalExceptionNotifier extends AbstractExceptionNotifier {
 
 	private final DingTalkSender sender;
 
-	public DingTalkGlobalExceptionNotifier(String channel, DingTalkSender sender) {
+	public DingTalkGlobalExceptionNotifier(String channel, String applicationName, DingTalkSender sender) {
+		super(channel, applicationName);
 		this.sender = sender;
-		this.channel = channel;
+
 	}
 
 	@Override

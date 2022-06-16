@@ -22,11 +22,6 @@ public class ExceptionHandleProperties {
 	private Map<String, Boolean> channels = new HashMap<>();
 
 	/**
-	 * 应用名称
-	 */
-	private String appName;
-
-	/**
 	 * 忽略指定异常，请注意：只会忽略填写的异常类，而不会忽略该异常类的子类
 	 */
 	private Set<Class<? extends Throwable>> ignoreExceptions = new HashSet<>();

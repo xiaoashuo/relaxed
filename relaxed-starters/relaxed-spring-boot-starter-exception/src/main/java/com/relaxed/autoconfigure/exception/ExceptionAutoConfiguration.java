@@ -38,7 +38,7 @@ public class ExceptionAutoConfiguration {
 
 	private static final String MAIL = "MAIL";
 
-	@Value("${spring.application.name}")
+	@Value("${spring.application.name: unknown-application}")
 	private String applicationName;
 
 	/**
@@ -87,8 +87,7 @@ public class ExceptionAutoConfiguration {
 			ExceptionNotifierHolder exceptionNotifierHolder) {
 		ExceptionHandleConfig exceptionHandleConfig = BeanUtil.toBean(exceptionHandleProperties,
 				ExceptionHandleConfig.class);
-		String appName = chooseAppName(exceptionHandleProperties);
-		return new DefaultGlobalExceptionHandler(exceptionHandleConfig, exceptionNotifierHolder, appName);
+		return new DefaultGlobalExceptionHandler(exceptionHandleConfig, exceptionNotifierHolder, applicationName);
 	}
 
 	/**
@@ -99,7 +98,7 @@ public class ExceptionAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(prefix = "relaxed.exception.channels", name = DING_TALK, havingValue = "true")
 	public ExceptionNotifier dingTalkGlobalExceptionNotifier(ApplicationContext context) {
-		return new DingTalkGlobalExceptionNotifier(DING_TALK, context.getBean(DingTalkSender.class));
+		return new DingTalkGlobalExceptionNotifier(DING_TALK, applicationName, context.getBean(DingTalkSender.class));
 	}
 
 	/**
@@ -111,13 +110,8 @@ public class ExceptionAutoConfiguration {
 	@ConditionalOnProperty(prefix = "relaxed.exception.channels", name = MAIL, havingValue = "true")
 	public ExceptionNotifier mailGlobalExceptionNotifier(ExceptionHandleProperties exceptionHandleProperties,
 			ApplicationContext context) {
-		return new MailGlobalExceptionNotifier(MAIL, context.getBean(MailSender.class),
+		return new MailGlobalExceptionNotifier(MAIL, applicationName, context.getBean(MailSender.class),
 				exceptionHandleProperties.getReceiveEmails());
-	}
-
-	private String chooseAppName(ExceptionHandleProperties exceptionHandleProperties) {
-		String appNameProperties = exceptionHandleProperties.getAppName();
-		return StrUtil.isEmpty(appNameProperties) ? applicationName : appNameProperties;
 	}
 
 }

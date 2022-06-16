@@ -33,8 +33,7 @@ public class ExceptionConfiguration {
 		return () -> {
 			Pointcut cpc = new AnnotationMatchingPointcut(ExceptionNotice.class, true);
 			Pointcut mpc = new AnnotationMethodPoint(ExceptionNotice.class);
-			Pointcut restMpc = new AnnotationMatchingPointcut(RestController.class);
-			return new ComposablePointcut(cpc).union(mpc).union(restMpc);
+			return new ComposablePointcut(cpc).union(mpc);
 		};
 	}
 
