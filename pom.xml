@@ -185,6 +185,7 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <skip>true</skip>
                     <!-- 参考注解处理器 http://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html-->
                     <annotationProcessorPaths>
                         <path>

@@ -18,6 +18,7 @@
         <module>relaxed-extend-mail</module>
         <module>relaxed-extend-dingtalk</module>
         <module>relaxed-extend-wechat</module>
+        <module>relaxed-extend-openapi</module>
 
     </modules>
 

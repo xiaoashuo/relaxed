@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    com.relaxed.extend.openapi.OpenApiConfiguration
+# Environment Post Processor
+org.springframework.boot.env.EnvironmentPostProcessor=\
+com.relaxed.extend.openapi.SwaggerEnabledStatusReplaceEnvironmentPostProcessor
