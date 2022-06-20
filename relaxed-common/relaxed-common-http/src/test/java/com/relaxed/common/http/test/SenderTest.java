@@ -129,6 +129,8 @@ class SenderTest {
 		HttpSender httpSender = new HttpSender(baseUrl, requestHeaderProvider);
 		CreateRequest request = new CreateRequest();
 		request.setChannelNo("test");
+		// 方法级请求头 优先级最高 会覆盖全局请求头里面相同key
+		request.addHeader("username", "1");
 		request.setRequestMethod(RequestMethod.POST);
 		request.setTemplateCode("1526743370016247808");
 		Map<String, String> data1 = new HashMap<>();

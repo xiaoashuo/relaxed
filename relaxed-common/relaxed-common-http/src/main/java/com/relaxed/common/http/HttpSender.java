@@ -24,10 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Yakir
@@ -120,6 +117,12 @@ public class HttpSender implements ISender {
 		RequestConfig requestConfig = requestConfigProvider.provide();
 		fillHttpConfig(httpRequest, requestConfig);
 		Map<String, String> headMap = requestHeaderProvider.generate(requestUrl, requestForm);
+		if (headMap != null) {
+			headMap.putAll(requestForm.getRequestHeaders());
+		}
+		else {
+			headMap = requestForm.getRequestHeaders();
+		}
 		fillHttpRequestHeader(httpRequest, headMap);
 		HttpResponse httpResponse = httpRequest.execute();
 		if (httpResponse.getStatus() != 200) {

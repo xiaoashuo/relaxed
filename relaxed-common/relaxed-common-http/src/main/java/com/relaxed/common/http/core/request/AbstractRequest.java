@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,27 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	 */
 	private List<Resource> resources = new ArrayList<>();
 
+	/** 请求头 */
+	private Map<String, String> requestHeaders = new HashMap<>();
+
 	protected Class<R> responseClass = this.currentResponseClass();
+
+	/**
+	 * 添加请求头
+	 * @param key
+	 * @param value
+	 */
+	public void addHeader(String key, String value) {
+		requestHeaders.put(key, value);
+	}
+
+	/**
+	 * 添加请求头 map
+	 * @param headers
+	 */
+	public void addHeaders(Map<String, String> headers) {
+		requestHeaders.putAll(headers);
+	}
 
 	/**
 	 * 添加资源
@@ -94,6 +115,10 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 		this.channelNo = channelNo;
 	}
 
+	public Map<String, String> getRequestHeaders() {
+		return requestHeaders;
+	}
+
 	@Override
 	public String getChannel() {
 		return channelNo;
@@ -111,6 +136,7 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	public RequestForm generateRequestParam() {
 		RequestForm requestForm = new RequestForm();
 		requestForm.method(getRequestMethod());
+		requestForm.headers(getRequestHeaders());
 		requestForm.addResources(this.getResources());
 		return fillRequestParam(requestForm);
 	}
