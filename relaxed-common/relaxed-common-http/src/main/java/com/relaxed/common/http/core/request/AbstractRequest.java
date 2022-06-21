@@ -1,7 +1,6 @@
 package com.relaxed.common.http.core.request;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.json.JSONUtil;
 
 import com.relaxed.common.http.core.resource.ByteResource;
@@ -9,7 +8,6 @@ import com.relaxed.common.http.core.resource.FileResource;
 import com.relaxed.common.http.core.resource.InputStreamResource;
 import com.relaxed.common.http.core.resource.Resource;
 import com.relaxed.common.http.core.response.IResponse;
-import com.relaxed.common.http.domain.HttpResponseWrapper;
 import com.relaxed.common.http.domain.IHttpResponse;
 import com.relaxed.common.http.domain.RequestForm;
 
@@ -46,7 +44,7 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	private List<Resource> resources = new ArrayList<>();
 
 	/** 请求头 */
-	private Map<String, String> requestHeaders = new HashMap<>();
+	private Map<String, String> headers = new HashMap<>();
 
 	protected Class<R> responseClass = this.currentResponseClass();
 
@@ -56,7 +54,7 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	 * @param value
 	 */
 	public void addHeader(String key, String value) {
-		requestHeaders.put(key, value);
+		headers.put(key, value);
 	}
 
 	/**
@@ -64,7 +62,7 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	 * @param headers
 	 */
 	public void addHeaders(Map<String, String> headers) {
-		requestHeaders.putAll(headers);
+		this.headers.putAll(headers);
 	}
 
 	/**
@@ -115,8 +113,8 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 		this.channelNo = channelNo;
 	}
 
-	public Map<String, String> getRequestHeaders() {
-		return requestHeaders;
+	public Map<String, String> getHeaders() {
+		return headers;
 	}
 
 	@Override
@@ -136,7 +134,7 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	public RequestForm generateRequestParam() {
 		RequestForm requestForm = new RequestForm();
 		requestForm.method(getRequestMethod());
-		requestForm.headers(getRequestHeaders());
+		requestForm.headers(getHeaders());
 		requestForm.addResources(this.getResources());
 		return fillRequestParam(requestForm);
 	}

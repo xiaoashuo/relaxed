@@ -1,10 +1,8 @@
 package com.relaxed.common.http;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.io.resource.BytesResource;
 import cn.hutool.core.io.resource.InputStreamResource;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.net.multipart.UploadFile;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.*;
 import com.relaxed.common.core.util.SpringUtils;
@@ -23,7 +21,6 @@ import com.relaxed.common.http.exception.RequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.io.File;
 import java.util.*;
 
 /**
@@ -66,8 +63,7 @@ public class HttpSender implements ISender {
 
 	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider,
 			RequestConfigProvider requestConfigProvider) {
-		this(baseUrl, requestHeaderProvider, requestConfigProvider,
-				(reqReceiveEvent) -> SpringUtils.publishEvent(reqReceiveEvent));
+		this(baseUrl, requestHeaderProvider, requestConfigProvider, SpringUtils::publishEvent);
 	}
 
 	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider,
@@ -89,15 +85,14 @@ public class HttpSender implements ISender {
 		try {
 			IHttpResponse responseWrapper = doExecute(requestUrl, requestForm);
 			response = request.convertToResponse(responseWrapper);
-			log.debug("请求渠道:{} url:{} 参数:{} 响应:{}", channel, requestUrl, requestForm, response);
 			return response;
-
 		}
 		catch (Throwable throwable) {
 			myThrowable = ExceptionUtil.unwrap(throwable);
 			throw new RequestException(myThrowable.getMessage(), myThrowable);
 		}
 		finally {
+			log.debug("请求渠道:{} url:{} 参数:{} 响应:{}", channel, requestUrl, requestForm, response);
 			// 结束时间
 			Long endTime = System.currentTimeMillis();
 			publishReqResEvent(channel, requestUrl, request, requestForm, response, myThrowable, startTime, endTime);
@@ -116,16 +111,12 @@ public class HttpSender implements ISender {
 		HttpRequest httpRequest = buildHttpRequest(requestUrl, requestForm);
 		RequestConfig requestConfig = requestConfigProvider.provide();
 		fillHttpConfig(httpRequest, requestConfig);
-		Map<String, String> headMap = requestHeaderProvider.generate(requestUrl, requestForm);
-		if (headMap != null) {
-			headMap.putAll(requestForm.getRequestHeaders());
-		}
-		else {
-			headMap = requestForm.getRequestHeaders();
-		}
+		Map<String, String> headMap = Optional.ofNullable(requestHeaderProvider.generate(requestUrl, requestForm))
+				.orElseGet(HashMap::new);
+		headMap.putAll(requestForm.getHeaders());
 		fillHttpRequestHeader(httpRequest, headMap);
 		HttpResponse httpResponse = httpRequest.execute();
-		if (httpResponse.getStatus() != 200) {
+		if (httpResponse.getStatus() != HttpStatus.HTTP_OK) {
 			throw new HttpException("{}", httpResponse.body());
 		}
 		return convertOriginalResponse(httpResponse);

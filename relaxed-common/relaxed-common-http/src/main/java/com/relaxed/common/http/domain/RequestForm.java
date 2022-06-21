@@ -1,9 +1,7 @@
 package com.relaxed.common.http.domain;
 
 import com.relaxed.common.http.core.resource.Resource;
-import lombok.Data;
 import lombok.Getter;
-import lombok.experimental.Accessors;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.ArrayList;
@@ -32,20 +30,20 @@ public class RequestForm {
 	private Map<String, Object> form;
 
 	/** 当前请求的请求头 */
-	private Map<String, String> requestHeaders = new HashMap<>();
+	private Map<String, String> headers = new HashMap<>();
 
 	/** 上传资源文件 */
 	private List<Resource> resources = new ArrayList<>();
 
 	/** 添加请求头 */
 	public RequestForm header(String key, String value) {
-		this.requestHeaders.put(key, value);
+		this.headers.put(key, value);
 		return this;
 	}
 
 	/** 添加请求头 */
 	public RequestForm headers(Map<String, String> requestHeaders) {
-		this.requestHeaders.putAll(requestHeaders);
+		this.headers.putAll(requestHeaders);
 		return this;
 	}
 
