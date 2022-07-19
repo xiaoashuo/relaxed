@@ -63,7 +63,7 @@ public class HttpSender implements ISender {
 
 	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider,
 			RequestConfigProvider requestConfigProvider) {
-		this(baseUrl, requestHeaderProvider, requestConfigProvider, SpringUtils::publishEvent);
+		this(baseUrl, requestHeaderProvider, requestConfigProvider, event->SpringUtils.getContext().publishEvent(event));
 	}
 
 	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider,
@@ -182,7 +182,7 @@ public class HttpSender implements ISender {
 	 * @param startTime
 	 * @param endTime
 	 */
-	private <R extends IResponse> void publishReqResEvent(String channel, String url, IRequest<R> request,
+	protected <R extends IResponse> void publishReqResEvent(String channel, String url, IRequest<R> request,
 			RequestForm requestForm, R response, Throwable throwable, Long startTime, Long endTime) {
 		ReqReceiveEvent event = new ReqReceiveEvent(channel, url, request, requestForm, response, throwable, startTime,
 				endTime);
@@ -262,6 +262,16 @@ public class HttpSender implements ISender {
 		}
 		return method;
 
+	}
+
+	/**
+	 * 获取请求基础地址
+	 * @author yakir
+	 * @date 2022/6/27 13:33
+	 * @return java.lang.String
+	 */
+	protected String getBaseUrl() {
+		return baseUrl;
 	}
 
 	/**

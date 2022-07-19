@@ -11,6 +11,10 @@ import com.relaxed.common.http.event.ReqReceiveEvent;
  */
 public interface RequestResultNotifier {
 
+	/**
+	 * 结果通知
+	 * @param reqReceiveEvent
+	 */
 	void notify(ReqReceiveEvent reqReceiveEvent);
 
 }
