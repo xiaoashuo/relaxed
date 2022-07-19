@@ -63,7 +63,8 @@ public class HttpSender implements ISender {
 
 	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider,
 			RequestConfigProvider requestConfigProvider) {
-		this(baseUrl, requestHeaderProvider, requestConfigProvider, event->SpringUtils.getContext().publishEvent(event));
+		this(baseUrl, requestHeaderProvider, requestConfigProvider,
+				event -> SpringUtils.getContext().publishEvent(event));
 	}
 
 	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider,

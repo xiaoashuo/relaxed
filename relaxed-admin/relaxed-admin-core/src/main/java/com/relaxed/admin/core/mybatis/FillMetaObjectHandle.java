@@ -13,10 +13,15 @@ import java.time.LocalDateTime;
  */
 @Slf4j
 public class FillMetaObjectHandle implements MetaObjectHandler {
+
 	private final static String CREATE_TIME = "createTime";
+
 	private final static String CREATED_TIME = "createdTime";
+
 	private final static String UPDATE_TIME = "updateTime";
+
 	private final static String UPDATED_TIME = "updatedTime";
+
 	@Override
 	public void insertFill(MetaObject metaObject) {
 		// 创建时间

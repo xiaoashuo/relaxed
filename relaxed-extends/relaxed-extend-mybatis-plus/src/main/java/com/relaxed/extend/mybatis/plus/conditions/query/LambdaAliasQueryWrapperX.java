@@ -69,6 +69,7 @@ public class LambdaAliasQueryWrapperX<T> extends LambdaQueryWrapperX<T> {
 		}
 		return allAliasSqlSelect;
 	}
+
 	/**
 	 * 用于生成嵌套 sql
 	 * <p>
@@ -79,6 +80,7 @@ public class LambdaAliasQueryWrapperX<T> extends LambdaQueryWrapperX<T> {
 	protected LambdaAliasQueryWrapperX<T> instance() {
 		return new LambdaAliasQueryWrapperX<>(getEntityClass());
 	}
+
 	/**
 	 * 查询条件构造时添加上表别名
 	 * @param column 字段Lambda
@@ -95,6 +97,4 @@ public class LambdaAliasQueryWrapperX<T> extends LambdaQueryWrapperX<T> {
 		return tableAlias == null ? columnName : tableAlias + "." + columnName;
 	}
 
-
-	
 }
