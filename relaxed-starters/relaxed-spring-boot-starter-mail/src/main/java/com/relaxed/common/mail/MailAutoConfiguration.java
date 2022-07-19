@@ -2,6 +2,7 @@ package com.relaxed.common.mail;
 
 import com.relaxed.extend.mail.sender.MailSender;
 import com.relaxed.extend.mail.sender.MailSenderImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -20,12 +21,15 @@ import org.springframework.mail.javamail.JavaMailSender;
 @Configuration(proxyBeanMethods = false)
 public class MailAutoConfiguration {
 
+	@Value("${spring.mail.properties.from}")
+	private String defaultForm;
+
 	@Bean
 	@ConditionalOnBean(JavaMailSender.class)
 	@ConditionalOnMissingBean(MailSender.class)
 	public MailSender mailSenderImpl(JavaMailSender javaMailSender,
 			ApplicationEventPublisher applicationEventPublisher) {
-		return new MailSenderImpl(javaMailSender, applicationEventPublisher);
+		return new MailSenderImpl(javaMailSender, applicationEventPublisher, defaultForm);
 	}
 
 }

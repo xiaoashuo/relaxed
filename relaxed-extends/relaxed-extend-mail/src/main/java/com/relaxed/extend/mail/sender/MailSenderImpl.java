@@ -31,8 +31,7 @@ public class MailSenderImpl implements MailSender {
 	/**
 	 * 配置文件中我的qq邮箱
 	 */
-	@Value("${spring.mail.properties.from}")
-	private String defaultFrom;
+	private final String defaultFrom;
 
 	/**
 	 * 发送邮件
