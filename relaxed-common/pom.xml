@@ -28,6 +28,7 @@
         <module>relaxed-common-exception</module>
         <module>relaxed-common-translation</module>
         <module>relaxed-common-http</module>
+        <module>relaxed-common-auth</module>
     </modules>
 
 
