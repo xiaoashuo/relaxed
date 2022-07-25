@@ -13,6 +13,7 @@ import com.relaxed.oauth2.auth.extension.captcha.CaptchaValidator;
 import com.relaxed.oauth2.auth.extension.mobile.SmsCodeAuthenticationProvider;
 import com.relaxed.oauth2.auth.extension.mobile.SmsCodeValidator;
 import com.relaxed.oauth2.auth.util.PasswordUtils;
+import com.relaxed.oauth2.common.handler.CustomAccessDeniedHandler;
 import com.relaxed.oauth2.common.handler.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -28,6 +29,7 @@ import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConv
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -93,6 +95,16 @@ public class AuthorizationAutoConfiguration {
 	@ConditionalOnMissingBean
 	public AuthenticationEntryPoint authenticationEntryPoint() {
 		return new CustomAuthenticationEntryPoint();
+	}
+
+	/**
+	 * 进入异常处理
+	 * @return
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public AccessDeniedHandler accessDeniedHandler() {
+		return new CustomAccessDeniedHandler();
 	}
 
 	/**

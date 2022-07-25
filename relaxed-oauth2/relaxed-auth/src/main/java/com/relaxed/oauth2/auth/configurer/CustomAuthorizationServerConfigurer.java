@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class CustomAuthorizationServerConfigurer extends AuthorizationServerConf
 	private final AuthenticationManager authenticationManager;
 
 	private final AuthenticationEntryPoint authenticationEntryPoint;
+
+	private final AccessDeniedHandler accessDeniedHandler;
 
 	private final TokenStore tokenStore;
 
@@ -61,8 +64,10 @@ public class CustomAuthorizationServerConfigurer extends AuthorizationServerConf
         security.tokenKeyAccess("permitAll()")  //开启 /oauth/token_key 的访问权限控制
                 .checkTokenAccess("isAuthenticated()")
                 .authenticationEntryPoint(authenticationEntryPoint)
+				.accessDeniedHandler(accessDeniedHandler)
                 //让/oauth/token支持client_id以及client_secret作登录认证，
                 .allowFormAuthenticationForClients()
+
 				// 处理使用 allowFormAuthenticationForClients 后，注册的过滤器异常处理不走自定义配置的问题
 				.addObjectPostProcessor(new ObjectPostProcessor<Object>() {
 					@Override
@@ -70,6 +75,7 @@ public class CustomAuthorizationServerConfigurer extends AuthorizationServerConf
 						if(object instanceof ClientCredentialsTokenEndpointFilter) {
 							ClientCredentialsTokenEndpointFilter filter = (ClientCredentialsTokenEndpointFilter) object;
 							filter.setAuthenticationEntryPoint(authenticationEntryPoint);
+
 						}
 						return object;
 					}

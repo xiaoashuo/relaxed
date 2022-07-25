@@ -4,7 +4,7 @@ import com.relaxed.oauth2.common.handler.CustomAuthenticationEntryPoint;
 import com.relaxed.oauth2.resource.CustomPermissionEvaluator;
 import com.relaxed.oauth2.resource.CustomRemoteTokenServices;
 import com.relaxed.oauth2.resource.RemoteTokenServiceProvider;
-import com.relaxed.oauth2.resource.handler.CustomAccessDeniedHandler;
+import com.relaxed.oauth2.common.handler.CustomAccessDeniedHandler;
 import com.relaxed.oauth2.resource.properties.ExtendResourceServerProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

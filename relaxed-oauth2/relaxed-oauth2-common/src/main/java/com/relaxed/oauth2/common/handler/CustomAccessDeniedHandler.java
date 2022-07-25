@@ -1,4 +1,4 @@
-package com.relaxed.oauth2.resource.handler;
+package com.relaxed.oauth2.common.handler;
 
 import cn.hutool.json.JSONUtil;
 import com.relaxed.common.model.result.R;
