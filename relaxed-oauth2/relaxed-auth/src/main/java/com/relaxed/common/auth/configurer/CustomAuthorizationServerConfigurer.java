@@ -71,7 +71,19 @@ public class CustomAuthorizationServerConfigurer extends AuthorizationServerConf
                 .authenticationEntryPoint(authenticationEntryPoint)
                 //让/oauth/token支持client_id以及client_secret作登录认证，
                 .allowFormAuthenticationForClients()
+				// 处理使用 allowFormAuthenticationForClients 后，注册的过滤器异常处理不走自定义配置的问题
+				.addObjectPostProcessor(new ObjectPostProcessor<Object>() {
+					@Override
+					public <O> O postProcess(O object) {
+						if(object instanceof ClientCredentialsTokenEndpointFilter) {
+							ClientCredentialsTokenEndpointFilter filter = (ClientCredentialsTokenEndpointFilter) object;
+							filter.setAuthenticationEntryPoint(authenticationEntryPoint);
+						}
+						return object;
+					}
+				});
         ;
+
         // @formatter:on
 	}
 

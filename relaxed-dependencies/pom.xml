@@ -88,7 +88,18 @@
                 <artifactId>relaxed-admin-core</artifactId>
                 <version>${reversion}</version>
             </dependency>
-
+            <!--鉴权模块-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-auth</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <!--鉴权模块-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-resource</artifactId>
+                <version>${reversion}</version>
+            </dependency>
 
             <!--model 模块-->
             <dependency>
@@ -102,12 +113,7 @@
                 <artifactId>relaxed-common-core</artifactId>
                 <version>${reversion}</version>
             </dependency>
-            <!--鉴权模块-->
-            <dependency>
-                <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-common-auth</artifactId>
-                <version>${reversion}</version>
-            </dependency>
+
             <!--IP模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>

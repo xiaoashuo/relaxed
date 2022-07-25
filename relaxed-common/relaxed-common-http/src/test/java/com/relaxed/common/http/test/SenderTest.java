@@ -40,9 +40,6 @@ import java.util.Map;
  * @Version 1.0
  */
 @Slf4j
-@SpringBootApplication(scanBasePackages = { "com.relaxed" })
-@SpringBootTest
-@ActiveProfiles("local")
 class SenderTest {
 
 	private final String baseUrl = "http://test.lovecyy.cn";
