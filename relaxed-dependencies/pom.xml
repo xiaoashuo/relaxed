@@ -91,6 +91,12 @@
             <!--鉴权模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-oauth2-common</artifactId>
+                <version>${reversion}</version>
+            </dependency>
+            <!--鉴权模块-->
+            <dependency>
+                <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-auth</artifactId>
                 <version>${reversion}</version>
             </dependency>

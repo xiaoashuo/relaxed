@@ -17,22 +17,12 @@
 
     <dependencies>
 
+
         <dependency>
             <groupId>com.lovecyy</groupId>
-            <artifactId>relaxed-common-core</artifactId>
+            <artifactId>relaxed-oauth2-common</artifactId>
         </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-oauth2 -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-oauth2</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-        </dependency>
     </dependencies>
 
 
