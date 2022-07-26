@@ -17,6 +17,7 @@ import com.relaxed.oauth2.common.handler.CustomAccessDeniedHandler;
 import com.relaxed.oauth2.common.handler.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.security.oauth2.authserver.AuthorizationServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
