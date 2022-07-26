@@ -43,27 +43,7 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	 */
 	private List<Resource> resources = new ArrayList<>();
 
-	/** 请求头 */
-	private Map<String, String> headers = new HashMap<>();
-
 	protected Class<R> responseClass = this.currentResponseClass();
-
-	/**
-	 * 添加请求头
-	 * @param key
-	 * @param value
-	 */
-	public void addHeader(String key, String value) {
-		headers.put(key, value);
-	}
-
-	/**
-	 * 添加请求头 map
-	 * @param headers
-	 */
-	public void addHeaders(Map<String, String> headers) {
-		this.headers.putAll(headers);
-	}
 
 	/**
 	 * 添加资源
@@ -113,10 +93,6 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 		this.channelNo = channelNo;
 	}
 
-	public Map<String, String> getHeaders() {
-		return headers;
-	}
-
 	@Override
 	public String getChannel() {
 		return channelNo;
@@ -134,7 +110,6 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	public RequestForm generateRequestParam() {
 		RequestForm requestForm = new RequestForm();
 		requestForm.method(getRequestMethod());
-		requestForm.headers(getHeaders());
 		requestForm.addResources(this.getResources());
 		return fillRequestParam(requestForm);
 	}

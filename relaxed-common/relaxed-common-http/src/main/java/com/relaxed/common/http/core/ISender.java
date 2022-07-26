@@ -2,6 +2,10 @@ package com.relaxed.common.http.core;
 
 import com.relaxed.common.http.core.request.IRequest;
 import com.relaxed.common.http.core.response.IResponse;
+import com.relaxed.common.model.result.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Yakir
@@ -10,7 +14,7 @@ import com.relaxed.common.http.core.response.IResponse;
  * @date 2022/5/18 8:33
  * @Version 1.0
  */
-public interface ISender {
+public interface ISender<C, CR> {
 
 	/**
 	 * 发送请求
@@ -19,6 +23,10 @@ public interface ISender {
 	 * @param request
 	 * @return R
 	 */
-	<R extends IResponse> R send(IRequest<R> request);
+	default <R extends IResponse> R send(IRequest<R> request) {
+		return send(request, null);
+	}
+
+	<R extends IResponse> R send(IRequest<R> request, Map<String, String> headerMap);
 
 }

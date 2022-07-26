@@ -8,6 +8,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.context.ApplicationEvent;
 
+import java.util.Map;
+
 /**
  * @author Yakir
  * @Topic ReqReceiveEvent
@@ -41,6 +43,11 @@ public class ReqReceiveEvent extends ApplicationEvent {
 	private final RequestForm requestForm;
 
 	/**
+	 * 请求上下文
+	 */
+	private final Map<String, Object> context;
+
+	/**
 	 * 转换后的响应
 	 */
 	private final IResponse response;
@@ -60,13 +67,14 @@ public class ReqReceiveEvent extends ApplicationEvent {
 	 */
 	private Long endTime;
 
-	public ReqReceiveEvent(String channel, String url, IRequest request, RequestForm requestForm, IResponse response,
-			Throwable throwable, Long startTime, Long endTime) {
+	public ReqReceiveEvent(String channel, String url, IRequest request, RequestForm requestForm,
+			Map<String, Object> context, IResponse response, Throwable throwable, Long startTime, Long endTime) {
 		super(url);
 		this.channel = channel;
 		this.url = url;
 		this.request = request;
 		this.requestForm = requestForm;
+		this.context = context;
 		this.response = response;
 		this.throwable = throwable;
 		this.startTime = startTime;

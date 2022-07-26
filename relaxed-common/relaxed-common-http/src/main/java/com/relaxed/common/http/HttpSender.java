@@ -3,13 +3,16 @@ package com.relaxed.common.http;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.resource.InputStreamResource;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ReferenceUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.*;
 import com.relaxed.common.core.util.SpringUtils;
 
 import com.relaxed.common.http.core.ISender;
+import com.relaxed.common.http.core.interceptor.RequestInterceptor;
 import com.relaxed.common.http.core.notify.RequestResultNotifier;
-import com.relaxed.common.http.core.provider.RequestConfigProvider;
+
 import com.relaxed.common.http.core.provider.RequestHeaderProvider;
 import com.relaxed.common.http.core.request.IRequest;
 import com.relaxed.common.http.core.resource.Resource;
@@ -18,7 +21,10 @@ import com.relaxed.common.http.domain.*;
 
 import com.relaxed.common.http.event.ReqReceiveEvent;
 import com.relaxed.common.http.exception.RequestException;
+import com.relaxed.common.http.util.GenericTypeUtils;
+import com.relaxed.common.model.result.R;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.*;
@@ -31,7 +37,7 @@ import java.util.*;
  * @Version 1.0
  */
 @Slf4j
-public class HttpSender implements ISender {
+public class HttpSender implements ISender<HttpRequest, HttpResponse> {
 
 	/**
 	 * 基础url
@@ -44,47 +50,59 @@ public class HttpSender implements ISender {
 	private final RequestHeaderProvider requestHeaderProvider;
 
 	/**
-	 * 请求配置提供者
-	 */
-	private final RequestConfigProvider requestConfigProvider;
-
-	/**
 	 * 请求结果通知器
 	 */
 	private final RequestResultNotifier requestResultNotifier;
+
+	/**
+	 * 请求响应拦截器
+	 */
+	private final RequestInterceptor<HttpRequest, HttpResponse> requestInterceptor;
+
+	private static RequestInterceptor<HttpRequest, HttpResponse> DEFAULT_REQUEST_INTERCEPTOR = new RequestInterceptor<HttpRequest, HttpResponse>() {
+		@Override
+		public HttpRequest requestInterceptor(HttpRequest request, RequestForm requestForm,
+				Map<String, Object> context) {
+			return request;
+		}
+
+		@Override
+		public HttpResponse responseInterceptor(HttpRequest request, HttpResponse response,
+				Map<String, Object> context) {
+			return response;
+		}
+	};
 
 	public HttpSender(String baseUrl) {
 		this(baseUrl, (url, requestForm) -> null);
 	}
 
 	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider) {
-		this(baseUrl, requestHeaderProvider, () -> null);
+		this(baseUrl, requestHeaderProvider, event -> SpringUtils.getContext().publishEvent(event),
+				DEFAULT_REQUEST_INTERCEPTOR);
 	}
 
 	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider,
-			RequestConfigProvider requestConfigProvider) {
-		this(baseUrl, requestHeaderProvider, requestConfigProvider,
-				event -> SpringUtils.getContext().publishEvent(event));
-	}
-
-	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider,
-			RequestConfigProvider requestConfigProvider, RequestResultNotifier requestResultNotifier) {
+			RequestResultNotifier requestResultNotifier,
+			RequestInterceptor<HttpRequest, HttpResponse> requestInterceptor) {
 		this.baseUrl = baseUrl;
 		this.requestHeaderProvider = requestHeaderProvider;
-		this.requestConfigProvider = requestConfigProvider;
 		this.requestResultNotifier = requestResultNotifier;
+		this.requestInterceptor = requestInterceptor;
 	}
 
 	@Override
-	public <R extends IResponse> R send(IRequest<R> request) {
+	public <R extends IResponse> R send(IRequest<R> request, Map<String, String> headerMap) {
 		String requestUrl = request.getUrl(baseUrl);
 		String channel = request.getChannel();
 		RequestForm requestForm = request.generateRequestParam();
 		Long startTime = System.currentTimeMillis();
+		Map<String, Object> context = new HashMap<>(16);
 		R response = null;
 		Throwable myThrowable = null;
 		try {
-			IHttpResponse responseWrapper = doExecute(requestUrl, requestForm);
+
+			IHttpResponse responseWrapper = doExecute(requestUrl, requestForm, headerMap, context);
 			response = request.convertToResponse(responseWrapper);
 			return response;
 		}
@@ -96,7 +114,8 @@ public class HttpSender implements ISender {
 			log.debug("请求渠道:{} url:{} 参数:{} 响应:{}", channel, requestUrl, requestForm, response);
 			// 结束时间
 			Long endTime = System.currentTimeMillis();
-			publishReqResEvent(channel, requestUrl, request, requestForm, response, myThrowable, startTime, endTime);
+			publishReqResEvent(channel, requestUrl, request, requestForm, context, response, myThrowable, startTime,
+					endTime);
 		}
 	}
 
@@ -106,38 +125,26 @@ public class HttpSender implements ISender {
 	 * @date 2022/5/18 17:52
 	 * @param requestUrl
 	 * @param requestForm
+	 * @param headerMap
 	 * @return T
 	 */
-	protected <T extends IHttpResponse> T doExecute(String requestUrl, RequestForm requestForm) {
+	protected <T extends IHttpResponse> T doExecute(String requestUrl, RequestForm requestForm,
+			Map<String, String> headerMap, Map<String, Object> context) {
 		HttpRequest httpRequest = buildHttpRequest(requestUrl, requestForm);
-		RequestConfig requestConfig = requestConfigProvider.provide();
-		fillHttpConfig(httpRequest, requestConfig);
-		Map<String, String> headMap = Optional.ofNullable(requestHeaderProvider.generate(requestUrl, requestForm))
-				.orElseGet(HashMap::new);
-		headMap.putAll(requestForm.getHeaders());
-		fillHttpRequestHeader(httpRequest, headMap);
-		HttpResponse httpResponse = httpRequest.execute();
+		// 获取用户定义的请求头 全局+局部
+		Map<String, String> requestHeadMap = Optional
+				.ofNullable(requestHeaderProvider.generate(requestUrl, requestForm)).orElseGet(HashMap::new);
+		if (headerMap != null) {
+			requestHeadMap.putAll(headerMap);
+		}
+		// 填充请求头
+		fillHttpRequestHeader(httpRequest, requestHeadMap);
+		HttpResponse httpResponse = requestInterceptor.responseInterceptor(httpRequest,
+				requestInterceptor.requestInterceptor(httpRequest, requestForm, context).execute(), context);
 		if (httpResponse.getStatus() != HttpStatus.HTTP_OK) {
 			throw new HttpException("{}", httpResponse.body());
 		}
 		return convertOriginalResponse(httpResponse);
-	}
-
-	/**
-	 * 填充http基本配置
-	 * @author yakir
-	 * @date 2022/5/23 10:10
-	 * @param httpRequest
-	 * @param requestConfig
-	 */
-	protected void fillHttpConfig(HttpRequest httpRequest, RequestConfig requestConfig) {
-		if (requestConfig == null) {
-			return;
-		}
-		httpRequest.setReadTimeout(requestConfig.getReadTimeout());
-		httpRequest.setConnectionTimeout(requestConfig.getConnectionTimeout());
-		httpRequest.setHostnameVerifier(requestConfig.getHostnameVerifier());
-		httpRequest.setSSLSocketFactory(requestConfig.getSslSocketFactory());
 	}
 
 	/**
@@ -178,15 +185,17 @@ public class HttpSender implements ISender {
 	 * @param url
 	 * @param request
 	 * @param requestForm
+	 * @param context
 	 * @param response
 	 * @param throwable
 	 * @param startTime
 	 * @param endTime
 	 */
 	protected <R extends IResponse> void publishReqResEvent(String channel, String url, IRequest<R> request,
-			RequestForm requestForm, R response, Throwable throwable, Long startTime, Long endTime) {
-		ReqReceiveEvent event = new ReqReceiveEvent(channel, url, request, requestForm, response, throwable, startTime,
-				endTime);
+			RequestForm requestForm, Map<String, Object> context, R response, Throwable throwable, Long startTime,
+			Long endTime) {
+		ReqReceiveEvent event = new ReqReceiveEvent(channel, url, request, requestForm, context, response, throwable,
+				startTime, endTime);
 		getRequestResultNotifier().notify(event);
 	}
 
@@ -283,16 +292,6 @@ public class HttpSender implements ISender {
 	 */
 	protected RequestHeaderProvider getRequestHeaderProvider() {
 		return requestHeaderProvider;
-	}
-
-	/**
-	 * 获取请求配置信息
-	 * @author yakir
-	 * @date 2022/5/23 10:13
-	 * @return com.relaxed.common.http.core.provider.RequestConfigProvider
-	 */
-	protected RequestConfigProvider getRequestConfigProvider() {
-		return requestConfigProvider;
 	}
 
 	/**

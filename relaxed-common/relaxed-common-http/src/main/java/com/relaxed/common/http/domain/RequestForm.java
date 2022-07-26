@@ -29,23 +29,8 @@ public class RequestForm {
 	/** 请求表单内容 */
 	private Map<String, Object> form;
 
-	/** 当前请求的请求头 */
-	private Map<String, String> headers = new HashMap<>();
-
 	/** 上传资源文件 */
 	private List<Resource> resources = new ArrayList<>();
-
-	/** 添加请求头 */
-	public RequestForm header(String key, String value) {
-		this.headers.put(key, value);
-		return this;
-	}
-
-	/** 添加请求头 */
-	public RequestForm headers(Map<String, String> requestHeaders) {
-		this.headers.putAll(requestHeaders);
-		return this;
-	}
 
 	/**
 	 * 设置请求方法

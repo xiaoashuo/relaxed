@@ -37,9 +37,9 @@ public class CustomSender extends HttpSender {
 	 * @return T
 	 */
 	@Override
-	protected <T extends IHttpResponse> T doExecute(String requestUrl, RequestForm requestForm) {
+	protected <T extends IHttpResponse> T doExecute(String requestUrl, RequestForm requestForm,
+			Map<String, String> headerMap, Map<String, Object> context) {
 		HttpRequest httpRequest = buildHttpRequest(requestUrl, requestForm);
-		fillHttpConfig(httpRequest, getRequestConfigProvider().provide());
 		Map<String, String> headMap = super.getRequestHeaderProvider().generate(requestUrl, requestForm);
 		fillHttpRequestHeader(httpRequest, headMap);
 		HttpResponse httpResponse = httpRequest.execute();

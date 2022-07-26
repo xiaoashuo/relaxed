@@ -21,7 +21,6 @@ public abstract class BaseRequest extends AbstractRequest<DetectAuthResponse> {
 	public RequestForm generateRequestParam() {
 		RequestForm requestForm = new RequestForm();
 		requestForm.method(getRequestMethod());
-		requestForm.headers(getHeaders());
 		requestForm.addResources(this.getResources());
 		return fillRequestParam(requestForm);
 	}
