@@ -5,13 +5,23 @@ import com.relaxed.oauth2.resource.CustomPermissionEvaluator;
 import com.relaxed.oauth2.resource.CustomRemoteTokenServices;
 import com.relaxed.oauth2.resource.RemoteTokenServiceProvider;
 import com.relaxed.oauth2.common.handler.CustomAccessDeniedHandler;
+
 import com.relaxed.oauth2.resource.properties.ExtendResourceServerProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionMessage;
+import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerTokenServicesConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ConditionContext;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
+import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.util.StringUtils;
 
 /**
  * @author Yakir
@@ -59,6 +69,7 @@ public class ResourceAutoConfiguration {
 	 * @return
 	 */
 	@Bean
+	@Conditional({ ResourceAutoConfiguration.TokenInfoCondition.class })
 	@ConditionalOnMissingBean
 	public RemoteTokenServiceProvider remoteTokenServiceProvider() {
 		return resource -> {
@@ -68,6 +79,37 @@ public class ResourceAutoConfiguration {
 			services.setClientSecret(resource.getClientSecret());
 			return services;
 		};
+	}
+
+	private static class TokenInfoCondition extends SpringBootCondition {
+
+		private TokenInfoCondition() {
+		}
+
+		@Override
+		public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
+			ConditionMessage.Builder message = ConditionMessage.forCondition("OAuth TokenInfo Condition",
+					new Object[0]);
+			Environment environment = context.getEnvironment();
+			Boolean preferTokenInfo = (Boolean) environment.getProperty("security.oauth2.resource.prefer-token-info",
+					Boolean.class);
+			if (preferTokenInfo == null) {
+				preferTokenInfo = environment.resolvePlaceholders("${OAUTH2_RESOURCE_PREFERTOKENINFO:true}")
+						.equals("true");
+			}
+
+			String tokenInfoUri = environment.getProperty("security.oauth2.resource.token-info-uri");
+			String userInfoUri = environment.getProperty("security.oauth2.resource.user-info-uri");
+			if (!StringUtils.hasLength(userInfoUri) && !StringUtils.hasLength(tokenInfoUri)) {
+				return ConditionOutcome.noMatch(message.didNotFind("user-info-uri property").atAll());
+			}
+			else {
+				return StringUtils.hasLength(tokenInfoUri) && preferTokenInfo
+						? ConditionOutcome.match(message.foundExactly("preferred token-info-uri property"))
+						: ConditionOutcome.noMatch(message.didNotFind("token info").atAll());
+			}
+		}
+
 	}
 
 }
