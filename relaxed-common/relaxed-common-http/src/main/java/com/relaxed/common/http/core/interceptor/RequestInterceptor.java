@@ -12,7 +12,7 @@ import java.util.Map;
  * @date 2022/7/26 17:53
  * @Version 1.0
  */
-public interface RequestInterceptor<C, R> {
+public interface RequestInterceptor<C, CR> {
 
 	/**
 	 * 拦截器
@@ -30,6 +30,6 @@ public interface RequestInterceptor<C, R> {
 	 * @param context 请求上下文
 	 * @return 响应客户端
 	 */
-	R responseInterceptor(C request, R response, Map<String, Object> context);
+	CR responseInterceptor(C request, CR response, Map<String, Object> context);
 
 }

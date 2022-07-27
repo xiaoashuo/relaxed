@@ -2,8 +2,11 @@ package com.relaxed.common.http.test;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.URLUtil;
+import cn.hutool.crypto.digest.MD5;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONUtil;
@@ -33,10 +36,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Yakir
@@ -48,7 +48,7 @@ import java.util.Map;
 @Slf4j
 class SenderTest {
 
-	private final String baseUrl = "http://test.lovecyy.cn/third-jg";
+	private final String baseUrl = "http://test.lovecyy.cn";
 
 	private RequestHeaderProvider requestHeaderProvider = (requestUrl, requestForm) -> getRequestHeader(requestUrl,
 			requestForm);
@@ -120,10 +120,10 @@ class SenderTest {
 
 	private Map<String, String> getRequestHeader(String requestUrl, RequestForm requestForm) {
 		Map<String, String> map = new HashMap<>();
-		map.put("appId", "MYWnRr1VJD");
-		map.put("channel", "MYWnRr1VJD");
-		map.put("timestamp", "1649297903891");
-		map.put("sign", "066d46909cdafd6480c1cafeeeeff384");
+		map.put("appId", "trust");
+		map.put("channel", "trust");
+		map.put("operatorId", "1");
+		map.put("operatorName", "seal");
 		return map;
 	}
 
@@ -152,7 +152,7 @@ class SenderTest {
 	@Test
 	public void testCreate() {
 
-		HttpSender httpSender = new HttpSender(baseUrl, requestHeaderProvider);
+		HttpSender httpSender = buildHttpSender();
 		CreateRequest request = new CreateRequest();
 		request.setChannelNo("test");
 		// 方法级请求头 优先级最高 会覆盖全局请求头里面相同key

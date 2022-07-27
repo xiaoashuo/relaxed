@@ -1,6 +1,7 @@
 package com.relaxed.common.http.core.request;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
 import com.relaxed.common.http.core.resource.ByteResource;
@@ -122,9 +123,34 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	 * @return com.relaxed.third.template.domain.RequestForm
 	 */
 	protected RequestForm fillRequestParam(RequestForm requestForm) {
-		Map<String, Object> paramMap = BeanUtil.beanToMap(this, false, true);
-		requestForm.form(paramMap);
+		requestForm.form(toFormRequestParam());
 		return requestForm;
+	}
+
+	/**
+	 * 转换成form请求参数
+	 * @author yakir
+	 * @date 2022/7/27 9:44
+	 * @return java.util.Map<java.lang.String,java.lang.Object>
+	 */
+	protected Map<String, Object> toFormRequestParam() {
+		Map<String, Object> paramMap = BeanUtil.beanToMap(this, false, true);
+		paramMap.remove("requestMethod");
+		paramMap.remove("resources");
+		return paramMap;
+	}
+
+	/**
+	 * 转换成JSON请求参数
+	 * @author yakir
+	 * @date 2022/7/27 9:44
+	 * @return java.lang.String
+	 */
+	protected String toJsonRequestParam() {
+		JSONObject jsonObject = JSONUtil.parseObj(this);
+		jsonObject.remove("requestMethod");
+		jsonObject.remove("resources");
+		return jsonObject.toString();
 	}
 
 	/**

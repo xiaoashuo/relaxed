@@ -97,7 +97,7 @@ public class HttpSender implements ISender<HttpRequest, HttpResponse> {
 		String channel = request.getChannel();
 		RequestForm requestForm = request.generateRequestParam();
 		Long startTime = System.currentTimeMillis();
-		Map<String, Object> context = new HashMap<>(16);
+		Map<String, Object> context = new HashMap<>(8);
 		R response = null;
 		Throwable myThrowable = null;
 		try {
