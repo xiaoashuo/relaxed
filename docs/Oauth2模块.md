@@ -776,25 +776,113 @@ https://www.baidu.com/?code=eTsADY&state=normal
 
 # 附:
 
-## 一、oauth_client_details
+## 一、附带sql
+
+### 1.oauth_client_details
+
+授权码 主要操作`oauth_client_details`表的类是`JdbcClientDetailsService.java`
 
 ```sql
+DROP TABLE IF EXISTS `oauth_client_details`;
 
 CREATE TABLE `oauth_client_details` (
-  `client_id` varchar(250) NOT NULL,
-  `resource_ids` varchar(256) DEFAULT NULL,
-  `client_secret` varchar(256) DEFAULT NULL,
-  `scope` varchar(256) DEFAULT NULL,
-  `authorized_grant_types` varchar(256) DEFAULT NULL,
-  `web_server_redirect_uri` varchar(256) DEFAULT NULL,
-  `authorities` varchar(256) DEFAULT NULL,
+  `client_id` varchar(255) NOT NULL COMMENT '客户端标识',
+  `resource_ids` varchar(255) DEFAULT NULL COMMENT '接入资源列表',
+  `client_secret` varchar(255) DEFAULT NULL COMMENT '客户端秘钥',
+  `scope` varchar(255) DEFAULT NULL, 
+  `authorized_grant_types` varchar(255) DEFAULT NULL,
+  `web_server_redirect_uri` varchar(255) DEFAULT NULL,
+  `authorities` varchar(255) DEFAULT NULL,
   `access_token_validity` int(11) DEFAULT NULL,
   `refresh_token_validity` int(11) DEFAULT NULL,
-  `additional_information` varchar(4096) DEFAULT NULL,
-  `autoapprove` varchar(256) DEFAULT NULL,
+  `additional_information` longtext,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `archived` tinyint(4) DEFAULT NULL,
+  `trusted` tinyint(4) DEFAULT NULL,
+  `autoapprove` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`client_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='OAuth客户端配置'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='接入客户端信息';
+
 ```
+
+
+
+| 字段名                  | 类型      | 描述                                                         |
+| ----------------------- | --------- | ------------------------------------------------------------ |
+| client_id               | varchar   | 主键,必须唯一,不能为空. 用于唯一标识每一个客户端(client);    |
+| resource_ids            | varchar   | 客户端所能访问的资源id集合,多个资源时用逗号(,),如果没设置，就是对所有的Resource Server都有访问权限。 |
+| client_secret           | varchar   | 用于指定客户端(client)的访问密匙                             |
+| scope                   | varchar   | 指定客户端申请的权限范围,可选值包括read,write,trust,all(可自定义）;若有多个权限范围用逗号(,)分隔,@EnableGlobalMethodSecurity(prePostEnabled = true)启用方法级权限控制 |
+| authorized_grant_types  | varchar   | 然后在方法上注解标识@PreAuthorize("#oauth2.hasScope('read')")就是5种授权模式：authorization_code,password,refresh_token,implicit,client_credentials, 若支持多个grant_type用逗号(,)分隔, |
+| web_server_redirect_uri | varchar   | 重定向地址，在oauth中会校验                                  |
+| authorities             | varchar   | 指定客户端所拥有的权限值,可选, 若有多个权限值,用逗号(,)分隔。若授权模式中不需要账户密码的建议设；若授权模式需要账户密码的，可以不设立 |
+| access_token_validity   | int       | 设定客户端的access_token的有效时间值(单位:秒) 【默认12小时】 |
+| refresh_token_validity  | int       | 设定客户端的refresh_token的有效时间值(单位:秒）【默认30天】  |
+| additional_information  | longtext  | 可以额外附带的信息，若赋值，则需要json规范                   |
+| create_time             | timestamp | 数据的创建时间,精确到秒,由数据库在插入数据时取当前系统时间自动生成(扩展字段) |
+| archived                | tinyint   | 标识是否存档，默认为0                                        |
+| trusted                 | tinyint   | 标识是否受信任，默认0（0-不信任，1-信任）                    |
+| autoapprove             | varchar   | 设置用户是否自动Approval操作，通常只在authorization_code 模式有效 |
+
+### 2.oauth_code
+
+支持授权码获取accessToken
+
+```sql
+CREATE TABLE IF NOT EXISTS `oauth_code` (
+  `code` VARCHAR(256) NULL DEFAULT NULL,
+  `authentication` BLOB NULL DEFAULT NULL)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+```
+
+### 3.oauth_access_token
+
+对`oauth_client_token`表的主要操作在`JdbcClientTokenServices.java`，实际上未使用到
+
+```sql
+CREATE TABLE IF NOT EXISTS `oauth_access_token` (
+  `token_id` VARCHAR(256) NULL DEFAULT NULL,
+  `token` BLOB NULL DEFAULT NULL,
+  `authentication_id` VARCHAR(128) NOT NULL,
+  `user_name` VARCHAR(256) NULL DEFAULT NULL,
+  `client_id` VARCHAR(256) NULL DEFAULT NULL,
+  `authentication` BLOB NULL DEFAULT NULL,
+  `refresh_token` VARCHAR(256) NULL DEFAULT NULL,
+  PRIMARY KEY (`authentication_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+```
+
+| 字段名            | 类型    | 描述                                                         |
+| ----------------- | ------- | ------------------------------------------------------------ |
+| token_id          | varchar | 从服务器端获取到的access_token的值.                          |
+| token             | BLOB    | 这是一个二进制的字段, 存储的数据OAuth2AccessToken.java对象序列化后的二进制数据. |
+| authentication_id | varchar | 该字段具有唯一性, 是根据当前的username(如果有),client_id与scope通过MD5加密生成的. 具体实现请参考DefaultClientKeyGenerator.java类. |
+| user_name         | varchar | 登录时的用户名                                               |
+| client_id         | varchar | 主键,必须唯一,不能为空. 用于唯一标识每一个客户端(client);    |
+| authentication    | varchar | 存储将OAuth2Authentication.java对象序列化后的二进制数据.     |
+| refresh_token     | varchar | 该字段的值是将refresh_token的值通过MD5加密后存储的.          |
+
+### 4.oauth_refresh_token
+
+```sql
+CREATE TABLE IF NOT EXISTS `oauth_refresh_token` (
+  `token_id` VARCHAR(256) NULL DEFAULT NULL,
+  `token` BLOB NULL DEFAULT NULL,
+  `authentication` BLOB NULL DEFAULT NULL)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+```
+
+| 字段名         | 类型    | 描述                                                         |
+| -------------- | ------- | ------------------------------------------------------------ |
+| token_id       | varchar | 从服务器端获取到的access_token的值.                          |
+| token          | BLOB    | 这是一个二进制的字段, 存储的数据OAuth2AccessToken.java对象序列化后的二进制数据. |
+| authentication | varchar | 存储将OAuth2Authentication.java对象序列化后的二进制数据.     |
 
 ## 二、扩展授权服务器
 
@@ -1163,15 +1251,16 @@ public class AuthController {
 + AuthRequestFilter.java
 
   ```java
-public class AuthRequestFilter extends OncePerRequestFilter implements Ordered {
+  public class AuthRequestFilter extends OncePerRequestFilter implements Ordered {
     private RedisTemplate redisTemplate;
-
+  
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+  ```
 
 
     }
-
+    
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String token = request.getHeaders(AuthConstants.JWT_TOKEN_HEADER);
@@ -1182,14 +1271,14 @@ public class AuthRequestFilter extends OncePerRequestFilter implements Ordered {
         token = token.replace(AuthConstants.JWT_TOKEN_PREFIX, Strings.EMPTY);
         JWSObject jwsObject = JWSObject.parse(token);
         String payload = jwsObject.getPayload().toString();
-
+    
         // 黑名单token(登出、修改密码)校验
         JSONObject jsonObject = JSONUtil.parseObj(payload);
         String jti = jsonObject.getStr("jti"); // JWT唯一标识
-
+    
         Boolean isBlack = redisTemplate.hasKey(AuthConstants.TOKEN_BLACKLIST_PREFIX + jti);
         if (isBlack) {
-
+    
             response.setStatusCode(HttpStatus.OK);
             response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
             response.setHeader("Access-Control-Allow-Origin", "*");
@@ -1202,9 +1291,9 @@ public class AuthRequestFilter extends OncePerRequestFilter implements Ordered {
 
 
         chain.doFilter(request,response);
-
+    
     }
-
+    
     @Override
     public int getOrder() {
         return 0;
@@ -1216,7 +1305,7 @@ public class AuthRequestFilter extends OncePerRequestFilter implements Ordered {
 
 + **AuthController.java**
 
-```java
+​```java
 @RestController
 @RequestMapping("/oauth")
 @RequiredArgsConstructor
@@ -1258,8 +1347,185 @@ public class AuthController {
 		return R.ok();
 	}
 
+  ```
+
+
+
+##  四、授权码模式页面定制
+
+#### 登录页面重定制
+
+默认的登录页面，如下图：
+
+![img](https://pics2.baidu.com/feed/314e251f95cad1c8136caadb6d7af703cb3d51c1.png?token=7f9dca6be98bb5c62ea0889115d76e7b)
+
+如何定制?
+
+1.定制页面
+
+![img](https://pics0.baidu.com/feed/9e3df8dcd100baa17da1146b59542918c9fc2e1b.png?token=b5e844a5adf80ada60489b231582ba03)
+
+使用thymeleaf进行渲染。
+
+2.定义跳转接口
+
+```java
+@ApiOperation(value = "表单登录跳转页面")@GetMapping("/oauth/login")public String loginPage(Model model){    //返回跳转页面   
+    return "oauth-login";}
 ```
 
+3.Spring Security 中配置 
 
+- loginProcessingUrl：这个是定义的form表单提交的url。
+- loginPage：这个是定义跳转登录页面的url。
 
- 
+```java
+	@Override
+	public void configure(HttpSecurity http) throws Exception {
+		http.csrf().disable().formLogin().loginPage("/oauth/login").loginProcessingUrl("/form/login").and().authorizeRequests().antMatchers(AUTHORIZE_ENDPOINT_PATH)
+				.authenticated();
+	}
+```
+
+4.查看效果
+
+![img](https://pics4.baidu.com/feed/908fa0ec08fa513d42f37fbb2a29c5f1b3fbd9cc.png?token=66021a4d978ae8501c5819eb9ac55431)
+
+#### 授权页面重定制
+
+默认的授权页面什么熊样，如下图:
+
+![img](https://pics7.baidu.com/feed/2934349b033b5bb55573043d2f974533b700bc1f.png?token=1437346ae67ce04fcbf81d1e67d12210)
+
+1.定制页面
+
+![img](https://pics1.baidu.com/feed/eaf81a4c510fd9f96ad388f73c6944202934a433.png?token=c3e1d103b0ed5f0822620aa31370ae2a)
+
+2.定义接口跳转
+
+授权页面的跳转接口url：/oauth/confirm_access，这个接口定义在org.springframework.security.oauth2.provider.endpoint.WhitelabelApprovalEndpoint中，如下：
+
+```java
+
+	@RequestMapping("/oauth/confirm_access")
+	public ModelAndView getAccessConfirmation(Map<String, Object> model, HttpServletRequest request) throws Exception {
+		final String approvalContent = createTemplate(model, request);
+		if (request.getAttribute("_csrf") != null) {
+			model.put("_csrf", request.getAttribute("_csrf"));
+		}
+		View approvalView = new View() {
+			@Override
+			public String getContentType() {
+				return "text/html";
+			}
+
+			@Override
+			public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+				response.setContentType(getContentType());
+				response.getWriter().append(approvalContent);
+			}
+		};
+		return new ModelAndView(approvalView, model);
+	}
+```
+
+自定义也很简单，只需要模仿这个接口自定义一个将其覆盖即可.
+
+注意：@SessionAttributes("authorizationRequest")这个注解一定要标注，授权请求信息是存储在session中。
+
+3.修改默认映射地址
+
+若不修改映射地址 ，则无需执行此步骤
+
+默认的跳转接口是：/oauth/confirm_access 若想变动则需要进行如下配置
+
+```java
+	@Override
+	public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+		//授权页面url
+		endpoints.pathMapping("/oauth/confirm_access","custom/confirm_access");
+    }
+```
+
+按照上述3个步骤即可轻松的实现授权页面自定义，效果如下
+
+![img](https://pics6.baidu.com/feed/a8ec8a13632762d08f2e9654bda898f0503dc693.png?token=7d816da7d148f406b86c1f4dcb32e4d3)
+
+#### 异常页面重定制
+
+异常页面什么意思呢?授权码的请求url如下
+
+```java
+http://localhost:9001/blog-auth-server/oauth/authorize?client_id=mugu&response_type=code&scope=all&redirect_uri=http://www.baidu.com
+
+```
+
+假设我将的租户id(client_id)修改成数据库中不存在的值，那么将会触犯异常页面，页面如下：
+
+![img](https://pics7.baidu.com/feed/c8ea15ce36d3d53905d13f2428c3795a342ab033.png?token=56f14401fd246335ac0529d2e968ea03)
+
+这个异常页面是不是不太符合系统的要求，肯定是要自定义的。
+
+1.定制页面
+
+![img](https://pics4.baidu.com/feed/77c6a7efce1b9d16da381294e99a24858d546412.png?token=09b553af186a75f9d1bbeafe6f00426b)
+
+2.定义跳转地址
+
+这个跳转的接口的逻辑在AuthorizationEndpoint中
+
+```java
+	private ModelAndView handleException(Exception e, ServletWebRequest webRequest) throws Exception {
+
+		ResponseEntity<OAuth2Exception> translate = getExceptionTranslator().translate(e);
+		webRequest.getResponse().setStatus(translate.getStatusCode().value());
+
+		if (e instanceof ClientAuthenticationException || e instanceof RedirectMismatchException) {
+			return new ModelAndView(errorPage, Collections.singletonMap("error", translate.getBody()));
+		}
+
+		AuthorizationRequest authorizationRequest = null;
+		try {
+			authorizationRequest = getAuthorizationRequestForError(webRequest);
+			String requestedRedirectParam = authorizationRequest.getRequestParameters().get(OAuth2Utils.REDIRECT_URI);
+			String requestedRedirect = redirectResolver.resolveRedirect(requestedRedirectParam,
+					getClientDetailsService().loadClientByClientId(authorizationRequest.getClientId()));
+			authorizationRequest.setRedirectUri(requestedRedirect);
+			String redirect = getUnsuccessfulRedirect(authorizationRequest, translate.getBody(), authorizationRequest
+					.getResponseTypes().contains("token"));
+			return new ModelAndView(new RedirectView(redirect, false, true, false));
+		}
+		catch (OAuth2Exception ex) {
+			// If an AuthorizationRequest cannot be created from the incoming parameters it must be
+			// an error. OAuth2Exception can be handled this way. Other exceptions will generate a standard 500
+			// response.
+			return new ModelAndView(errorPage, Collections.singletonMap("error", translate.getBody()));
+		}
+
+	}
+```
+
+因此只需要重新定义一个接口进行跳转即可，如下：
+
+```java
+@ApiOperation(value = "处理授权异常的跳转页面")@GetMapping("/oauth/error")public String error(Model model){    return "oauth-error";}
+
+```
+
+3.修改默认的映射地址
+
+若不修改映射地址 ，则无需执行此步骤
+
+默认的映射地址为/oauth/error，修改也很简单，只需要在OAuth2的认证服务的配置类：继承AuthorizationServerConfigurerAdapter的配置中修改一下配置
+
+```java
+	@Override
+	public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+		//授权页面url
+		endpoints.pathMapping("/oauth/error","custom/error");
+    }
+```
+
+按照上述3个步骤即可轻松的实现异常页面自定义，效果如下：
+
+![img](https://pics5.baidu.com/feed/96dda144ad345982e21da35917b0a1a7caef8430.png?token=0764967356509c142d772c03e249c3f8)
