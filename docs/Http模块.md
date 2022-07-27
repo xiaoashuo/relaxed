@@ -54,12 +54,10 @@ public class FileRequest extends AbstractRequest<FileResponse> {
         return baseUrl+"/file/create";
     }
 
+    //默认以form形式传参 若需要以json传参 需按如下要求重写此方法
     @Override
     protected RequestForm fillRequestParam(RequestForm requestForm) {
-        Map<String, Object> paramMap = BeanUtil.beanToMap(this, false, true);
-        requestForm.setForm(paramMap);
-        //若要发送json请求 需要将此设置为json
-        //requestForm.setBody(json);
+       requestForm.setBody(toJsonRequestParam());
         return requestForm;
     }
    //若是下载请求 此处需要返回true,并实现convertToResponse方法
@@ -85,7 +83,7 @@ public class FileRequest extends AbstractRequest<FileResponse> {
 ```java
 	@Test
 	public void testUpload() {
-        //1.创建发送者 此处使用默认的 用户可以自己实现
+        //1.创建发送者 此处使用默认的 用户可以自己定义。只需要实现ISenderr接口即可
         HttpSender httpSender = new HttpSender(baseUrl, requestHeaderGenerate);
         //2.创建请求参数
 		FileRequest request = new FileRequest();
@@ -101,55 +99,43 @@ public class FileRequest extends AbstractRequest<FileResponse> {
 
 ## 附:
 
-### 自定义发送者
+### 定义通知器,拦截器
 
-customSender 实现`ISender`接口即可
+#### 1.通知器`RequestResultNotifier`
 
 ```java
-/**
- * @author Yakir
- * @Topic CustomSender
- * @Description
- * @date 2022/5/18 17:55
- * @Version 1.0
- */
-public class CustomSender extends HttpSender {
+//接收事件通知
+RequestResultNotifier requestResultNotifier = reqReceiveEvent -> log.info("event {}", reqReceiveEvent);
 
-    public CustomSender(String baseUrl) {
-        super(baseUrl);
+```
 
-    }
+#### 2. 拦截器`RequestInterceptor.java`
 
-    public CustomSender(String baseUrl, RequestHeaderGenerate headerGenerate) {
-        super(baseUrl, headerGenerate);
-    }
+```java
 
-    /**
-     * 此方法 可以构建自己的http client
-     * @author yakir
-     * @date 2022/5/18 18:02
-     * @param requestUrl
-     * @param requestForm
-     * @return T
-     */
-    @Override
-    protected <T extends IHttpResponse> T doExecute(String requestUrl, RequestForm requestForm) {
-        HttpRequest httpRequest = buildHttpRequest(requestUrl, requestForm);
-        Map<String, String> headMap = super.headerGenerate().generate();
-        fillHttpRequestHeader(httpRequest, headMap);
-        HttpResponse httpResponse = httpRequest.execute();
-        if (httpResponse.getStatus() != 200) {
-            throw new HttpException("request failed -{}", httpResponse.body());
-        }
-        HttpResponseWrapper responseWrapper = new HttpResponseWrapper();
-        responseWrapper.setCharset(httpResponse.charset());
-        responseWrapper.setBodyBytes(httpResponse.bodyBytes());
-        return (T) responseWrapper;
-    }
+		RequestInterceptor<HttpRequest, HttpResponse> requestInterceptor = new RequestInterceptor<HttpRequest, HttpResponse>() {
+			@Override
+			public HttpRequest requestInterceptor(HttpRequest request, RequestForm requestForm,
+					Map<String, Object> context) {
+				request.setConnectionTimeout(10000);
+				request.setReadTimeout(10000);
+				return request;
+			}
 
-}
+			@Override
+			public HttpResponse responseInterceptor(HttpRequest request, HttpResponse response,
+					Map<String, Object> context) {
+				return response;
+			}
+		};
+```
 
+#### 3.注册发送器
 
+```java
+//指定 通知器 拦截器
+HttpSender httpSender = new HttpSender(baseUrl, requestHeaderProvider, requestResultNotifier,
+				requestInterceptor);
 ```
 
 ### 记录请求日志
@@ -186,23 +172,34 @@ public class ReqReceiveEvent extends ApplicationEvent {
 	 */
 	private final String channel;
 
+	/**
+	 * 请求地址
+	 */
 	private final String url;
-    /**
-     * 原始请求带参数
-     */
+
+	/**
+	 * 原始请求带参数
+	 */
 	private final IRequest request;
 
 	/**
 	 * 转换后的请求参数
 	 */
 	private final RequestForm requestForm;
-    /**
-     * 转换后的响应
-     */
+
+	/**
+	 * 请求上下文
+	 */
+	private final Map<String, Object> context;
+
+	/**
+	 * 转换后的响应
+	 */
 	private final IResponse response;
-    /**
-     * 异常信息
-     */
+
+	/**
+	 * 异常信息
+	 */
 	private Throwable throwable;
 
 	/**
@@ -214,7 +211,6 @@ public class ReqReceiveEvent extends ApplicationEvent {
 	 * 结束时间
 	 */
 	private Long endTime;
-
 }
 
 ```
