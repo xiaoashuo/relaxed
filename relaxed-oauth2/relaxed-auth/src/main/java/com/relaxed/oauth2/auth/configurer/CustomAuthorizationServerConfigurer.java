@@ -1,9 +1,15 @@
 package com.relaxed.oauth2.auth.configurer;
 
 import com.relaxed.oauth2.auth.builder.TokenGrantBuilder;
+import com.relaxed.oauth2.auth.builder.TokenServicesBuilder;
+import com.relaxed.oauth2.auth.extension.handler.AuthorizationInfoHandle;
+import com.relaxed.oauth2.auth.extension.refresh.CustomPreAuthenticatedUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
+import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -12,15 +18,15 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.client.ClientCredentialsTokenEndpointFilter;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
-import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.TokenEnhancer;
-import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
-import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.*;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,6 +58,8 @@ public class CustomAuthorizationServerConfigurer extends AuthorizationServerConf
 	private final WebResponseExceptionTranslator<OAuth2Exception> webResponseExceptionTranslator;
 
 	private final UserDetailsService userDetailsService;
+
+	private final TokenServicesBuilder tokenServicesBuilder;
 
 	/**
 	 * 定义资源权限控制的配置
@@ -106,12 +114,14 @@ public class CustomAuthorizationServerConfigurer extends AuthorizationServerConf
 				.tokenStore(tokenStore)
 				// 自定义tokenGranter
 				.tokenGranter(tokenGrantBuilder.build(endpoints))
+
 				// 使用自定义的 TokenConverter，方便在 checkToken 时，返回更多的信息
 				.accessTokenConverter(accessTokenConverter)
 				// TokenEnhancer作用是在OAuth2AccessToken里添加额外的信息。
 				.tokenEnhancer(enhancerChain)
 				// 自定义的认证时异常转换
-				.exceptionTranslator(webResponseExceptionTranslator);
+				.exceptionTranslator(webResponseExceptionTranslator)
+				.tokenServices(tokenServicesBuilder.build(endpoints));
 	}
 
 	/**

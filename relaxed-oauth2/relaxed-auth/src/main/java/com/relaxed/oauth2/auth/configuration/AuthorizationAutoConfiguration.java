@@ -2,6 +2,7 @@ package com.relaxed.oauth2.auth.configuration;
 
 import com.relaxed.oauth2.auth.builder.TokenGrantBuilder;
 import com.relaxed.oauth2.auth.builder.TokenGranterProvider;
+import com.relaxed.oauth2.auth.builder.TokenServicesBuilder;
 import com.relaxed.oauth2.auth.configurer.CustomAuthorizationServerConfigurer;
 import com.relaxed.oauth2.auth.configurer.CustomWebSecurityConfigurer;
 import com.relaxed.oauth2.auth.configurer.JdbcOauth2ClientConfigurer;
@@ -10,6 +11,7 @@ import com.relaxed.oauth2.auth.exception.CustomWebResponseExceptionTranslator;
 import com.relaxed.oauth2.auth.extension.captcha.CaptchaTokenGranter;
 import com.relaxed.oauth2.auth.extension.captcha.CaptchaValidator;
 
+import com.relaxed.oauth2.auth.extension.handler.AuthorizationInfoHandle;
 import com.relaxed.oauth2.auth.extension.mobile.SmsCodeAuthenticationProvider;
 import com.relaxed.oauth2.auth.extension.mobile.SmsCodeValidator;
 import com.relaxed.oauth2.auth.util.PasswordUtils;
@@ -17,7 +19,6 @@ import com.relaxed.oauth2.common.handler.CustomAccessDeniedHandler;
 import com.relaxed.oauth2.common.handler.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.security.oauth2.authserver.AuthorizationServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -161,6 +162,27 @@ public class AuthorizationAutoConfiguration {
 		SmsCodeAuthenticationProvider provider = new SmsCodeAuthenticationProvider(smsCodeValidator,
 				userDetailsService);
 		return provider;
+	}
+
+	/**
+	 * 授权信息处理器
+	 * @return
+	 */
+	@Bean
+	public AuthorizationInfoHandle authorizationInfoHandle() {
+		return new AuthorizationInfoHandle();
+	}
+
+	/**
+	 * token service 构建者
+	 * @param userDetailsService
+	 * @param authorizationInfoHandle
+	 * @return
+	 */
+	@Bean
+	public TokenServicesBuilder tokenServicesBuilder(UserDetailsService userDetailsService,
+			AuthorizationInfoHandle authorizationInfoHandle) {
+		return new TokenServicesBuilder(userDetailsService, authorizationInfoHandle);
 	}
 
 }

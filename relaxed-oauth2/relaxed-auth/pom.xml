@@ -19,6 +19,10 @@
 
 
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.lovecyy</groupId>
             <artifactId>relaxed-oauth2-common</artifactId>
         </dependency>
