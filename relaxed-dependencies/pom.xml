@@ -159,12 +159,7 @@
                 <artifactId>relaxed-common-tenant</artifactId>
                 <version>${reversion}</version>
             </dependency>
-            <!--Spring Security jwt-->
-            <dependency>
-                <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-common-security</artifactId>
-                <version>${reversion}</version>
-            </dependency>
+
             <!--cache-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
