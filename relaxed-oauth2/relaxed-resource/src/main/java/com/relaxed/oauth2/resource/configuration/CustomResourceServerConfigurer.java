@@ -2,9 +2,11 @@ package com.relaxed.oauth2.resource.configuration;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.relaxed.oauth2.common.constant.SecurityConstant;
-import com.relaxed.oauth2.resource.RemoteTokenServiceProvider;
+
 import com.relaxed.oauth2.resource.properties.ExtendResourceServerProperties;
+import com.relaxed.oauth2.resource.services.ResourceServiceTokenProvider;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,19 +32,19 @@ public class CustomResourceServerConfigurer extends ResourceServerConfigurerAdap
 
 	private final AccessDeniedHandler accessDeniedHandler;
 
-	private final ResourceServerProperties resource;
-
 	private final ExtendResourceServerProperties extendResource;
 
-	private RemoteTokenServiceProvider remoteTokenServiceProvider;
+	private final ResourceServerProperties resourceServerProperties;
+
+	private ResourceServiceTokenProvider resourceServiceTokenProvider;
 
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 		resources.resourceId(extendResource.getResourceId());
 		resources.authenticationEntryPoint(authenticationEntryPoint);
 		resources.accessDeniedHandler(accessDeniedHandler);
-		if (remoteTokenServiceProvider != null) {
-			ResourceServerTokenServices tokenServices = remoteTokenServiceProvider.provide(resource);
+		if (resourceServiceTokenProvider != null) {
+			ResourceServerTokenServices tokenServices = resourceServiceTokenProvider.provide(resourceServerProperties);
 			resources.tokenServices(tokenServices);
 		}
 	}
@@ -58,8 +60,8 @@ public class CustomResourceServerConfigurer extends ResourceServerConfigurerAdap
 	}
 
 	@Autowired(required = false)
-	public void setRemoteTokenServiceProvider(RemoteTokenServiceProvider remoteTokenServiceProvider) {
-		this.remoteTokenServiceProvider = remoteTokenServiceProvider;
+	public void setRemoteTokenServiceProvider(ResourceServiceTokenProvider remoteTokenServiceProvider) {
+		this.resourceServiceTokenProvider = remoteTokenServiceProvider;
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.relaxed.oauth2.resource;
+package com.relaxed.oauth2.resource.services;
 
 import com.relaxed.common.model.result.SysResultCode;
 import org.apache.commons.logging.Log;
