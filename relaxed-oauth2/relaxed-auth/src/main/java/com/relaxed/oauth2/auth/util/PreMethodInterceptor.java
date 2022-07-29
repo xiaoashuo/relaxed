@@ -1,5 +1,7 @@
 package com.relaxed.oauth2.auth.util;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.exceptions.UtilException;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.relaxed.oauth2.auth.handler.AuthorizationInfoHandle;
@@ -39,7 +41,14 @@ public class PreMethodInterceptor implements MethodInterceptor {
 		// 3.执行当前对应service的对应方法
 		Object result;
 		if (customService != null) {
-			result = ReflectUtil.invoke(customService, methodName, args);
+			try {
+				Method customMethod = ClassUtil.getMethod(customService.getClass(), methodName, args);
+				result = customMethod.invoke(customService, args);
+			}
+			catch (Exception e) {
+
+				throw ExceptionUtil.unwrap(e);
+			}
 		}
 		else {
 			result = methodProxy.invokeSuper(o, args);
