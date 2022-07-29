@@ -18,7 +18,7 @@ import java.util.Map;
 public class CustomClientHandlerConfigurer implements ClientHandlerConfigurer {
 
 	@Override
-	public void Client(Map<String, UserDetailsService> clientMap) {
+	public void client(Map<String, UserDetailsService> clientMap) {
 
 	}
 

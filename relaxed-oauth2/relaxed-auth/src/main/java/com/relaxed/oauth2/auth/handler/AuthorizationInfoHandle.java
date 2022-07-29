@@ -33,7 +33,7 @@ public class AuthorizationInfoHandle {
 	public void init() {
 		for (ClientHandlerConfigurer configurer : configurers) {
 			try {
-				configurer.Client(CLIENT_USER_HOLDER);
+				configurer.client(CLIENT_USER_HOLDER);
 				configurer.grantType(GRANT_TYPE_HANDLE_HOLDER);
 			}
 			catch (Exception e) {

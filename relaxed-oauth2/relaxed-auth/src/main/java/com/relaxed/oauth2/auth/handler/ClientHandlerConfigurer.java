@@ -20,7 +20,7 @@ public interface ClientHandlerConfigurer {
 	 * @date 2022/7/28 20:52
 	 * @param clientMap
 	 */
-	void Client(Map<String, UserDetailsService> clientMap);
+	void client(Map<String, UserDetailsService> clientMap);
 
 	/**
 	 * 配置授权类型对应的处理器
