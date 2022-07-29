@@ -1721,7 +1721,7 @@ AuthorizationServerConfig 配置重新设置 PreAuthenticatedAuthenticationProvi
 
 #### 思路2：
 
-1.注册`ClientHandlerConfigurer`的Bean
+##### 1.注册`ClientHandlerConfigurer`的Bean
 
 ```java
 @Component
@@ -1758,7 +1758,7 @@ grantTypeMap.put("password", new RetriveUserFunction() {
 
 ```
 
-2.注册 `UserDetailService`代理
+##### 2.注册 `UserDetailService`代理
 
 > 注:若不注册此代理 则多用户体系不生效
 
