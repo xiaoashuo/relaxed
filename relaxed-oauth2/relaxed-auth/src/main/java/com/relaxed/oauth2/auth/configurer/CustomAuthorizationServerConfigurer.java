@@ -2,14 +2,10 @@ package com.relaxed.oauth2.auth.configurer;
 
 import com.relaxed.oauth2.auth.builder.TokenGrantBuilder;
 import com.relaxed.oauth2.auth.builder.TokenServicesBuilder;
-import com.relaxed.oauth2.auth.extension.handler.AuthorizationInfoHandle;
-import com.relaxed.oauth2.auth.extension.refresh.CustomPreAuthenticatedUserDetailsService;
+import com.relaxed.oauth2.auth.handler.AuthorizationInfoHandle;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
-import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -21,12 +17,9 @@ import org.springframework.security.oauth2.provider.error.WebResponseExceptionTr
 import org.springframework.security.oauth2.provider.token.*;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -105,11 +98,6 @@ public class CustomAuthorizationServerConfigurer extends AuthorizationServerConf
 		}
 		enhancerChain.setTokenEnhancers(delegates);
 		endpoints.authenticationManager(authenticationManager).userDetailsService(userDetailsService)
-				// refresh_token有两种使用方式：重复使用(true)、非重复使用(false)，默认为true
-				// 1.重复使用：access_token过期刷新时， refresh token过期时间未改变，仍以初次生成的时间为准
-				// 2.非重复使用：access_token过期刷新时，
-				// refresh_token过期时间延续，在refresh_token有效期内刷新而无需失效再次登录
-				.reuseRefreshTokens(false)
 				// 配置令牌存储策略
 				.tokenStore(tokenStore)
 				// 自定义tokenGranter

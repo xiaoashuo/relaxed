@@ -1,11 +1,13 @@
 package com.relaxed.oauth2.auth.util;
 
 import cn.hutool.core.util.StrUtil;
+import com.relaxed.common.core.util.ServletUtils;
 import com.relaxed.oauth2.common.constant.SecurityConstant;
 import lombok.SneakyThrows;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import sun.security.util.SecurityConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
@@ -57,6 +59,17 @@ public class RequestUtil {
 			clientId = basicPlainText.split(":")[0]; // client:secret
 		}
 		return clientId;
+	}
+
+	/**
+	 * 获取刷新token
+	 * @author yakir
+	 * @date 2022/7/29 9:48
+	 * @return java.lang.String
+	 */
+	public static String getRefreshToken() {
+		String refreshToken = ServletUtils.getParameter(SecurityConstant.REFRESH_TOKEN_KEY);
+		return refreshToken;
 	}
 
 }

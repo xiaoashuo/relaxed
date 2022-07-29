@@ -31,6 +31,7 @@ public class ProxyFactory {
 
 	/**
 	 * 根据实例创建
+	 *
 	 * @author yakir
 	 * @date 2022/7/28 21:18
 	 * @param obj

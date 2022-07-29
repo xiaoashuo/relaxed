@@ -11,9 +11,10 @@ import com.relaxed.oauth2.auth.exception.CustomWebResponseExceptionTranslator;
 import com.relaxed.oauth2.auth.extension.captcha.CaptchaTokenGranter;
 import com.relaxed.oauth2.auth.extension.captcha.CaptchaValidator;
 
-import com.relaxed.oauth2.auth.extension.handler.AuthorizationInfoHandle;
+import com.relaxed.oauth2.auth.handler.AuthorizationInfoHandle;
 import com.relaxed.oauth2.auth.extension.mobile.SmsCodeAuthenticationProvider;
 import com.relaxed.oauth2.auth.extension.mobile.SmsCodeValidator;
+import com.relaxed.oauth2.auth.handler.CustomClientHandlerConfigurer;
 import com.relaxed.oauth2.auth.util.PasswordUtils;
 import com.relaxed.oauth2.common.handler.CustomAccessDeniedHandler;
 import com.relaxed.oauth2.common.handler.CustomAuthenticationEntryPoint;
@@ -165,6 +166,15 @@ public class AuthorizationAutoConfiguration {
 	}
 
 	/**
+	 * 默认的客户端处理逻辑配置
+	 * @return
+	 */
+	@Bean
+	public CustomClientHandlerConfigurer customClientHandlerConfigurer() {
+		return new CustomClientHandlerConfigurer();
+	}
+
+	/**
 	 * 授权信息处理器
 	 * @return
 	 */
@@ -180,9 +190,10 @@ public class AuthorizationAutoConfiguration {
 	 * @return
 	 */
 	@Bean
+	@ConditionalOnMissingBean
 	public TokenServicesBuilder tokenServicesBuilder(UserDetailsService userDetailsService,
-			AuthorizationInfoHandle authorizationInfoHandle) {
-		return new TokenServicesBuilder(userDetailsService, authorizationInfoHandle);
+			AuthorizationInfoHandle authorizationInfoHandle, TokenStore tokenStore) {
+		return new TokenServicesBuilder(userDetailsService, authorizationInfoHandle, tokenStore);
 	}
 
 }

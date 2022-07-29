@@ -32,4 +32,6 @@ public interface SecurityConstant {
 
 	String GRANT_TYPE_KEY = "grant_type";
 
+	String REFRESH_TOKEN_KEY = "refresh_token";
+
 }

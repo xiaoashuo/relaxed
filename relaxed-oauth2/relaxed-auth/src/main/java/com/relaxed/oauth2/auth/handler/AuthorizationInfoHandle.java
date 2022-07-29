@@ -1,9 +1,8 @@
-package com.relaxed.oauth2.auth.extension.handler;
+package com.relaxed.oauth2.auth.handler;
 
-import com.relaxed.oauth2.auth.extension.functions.RetriveUserFunction;
+import com.relaxed.oauth2.auth.functions.RetriveUserFunction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurer;
 
 import javax.annotation.PostConstruct;
 import java.util.Collections;
@@ -35,7 +34,7 @@ public class AuthorizationInfoHandle {
 		for (ClientHandlerConfigurer configurer : configurers) {
 			try {
 				configurer.Client(CLIENT_USER_HOLDER);
-				configurer.grantTyp(GRANT_TYPE_HANDLE_HOLDER);
+				configurer.grantType(GRANT_TYPE_HANDLE_HOLDER);
 			}
 			catch (Exception e) {
 				throw new IllegalStateException("Cannot configure enpdoints", e);

@@ -1,7 +1,7 @@
 package com.relaxed.oauth2.auth.extension.refresh;
 
-import com.relaxed.oauth2.auth.extension.functions.RetriveUserFunction;
-import com.relaxed.oauth2.auth.extension.handler.AuthorizationInfoHandle;
+import com.relaxed.oauth2.auth.functions.RetriveUserFunction;
+import com.relaxed.oauth2.auth.handler.AuthorizationInfoHandle;
 import com.relaxed.oauth2.auth.util.RequestUtil;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
@@ -10,6 +10,9 @@ import org.springframework.security.core.userdetails.AuthenticationUserDetailsSe
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.util.Assert;
 
 /**
@@ -31,11 +34,14 @@ public class CustomPreAuthenticatedUserDetailsService<T extends Authentication>
 
 	private AuthorizationInfoHandle authorizationInfoHandle;
 
+	private TokenStore tokenStore;
+
 	public CustomPreAuthenticatedUserDetailsService(UserDetailsService userDetailsService,
-			AuthorizationInfoHandle authorizationInfoHandle) {
+			AuthorizationInfoHandle authorizationInfoHandle, TokenStore tokenStore) {
 		Assert.notNull(userDetailsService, "UserDetailsService cannot be null.");
 		this.userDetailsService = userDetailsService;
 		this.authorizationInfoHandle = authorizationInfoHandle;
+		this.tokenStore = tokenStore;
 	}
 
 	@Override
@@ -52,7 +58,11 @@ public class CustomPreAuthenticatedUserDetailsService<T extends Authentication>
 	 */
 	@Override
 	public UserDetails loadUserDetails(T authentication) throws UsernameNotFoundException {
-		String grantType = RequestUtil.getGrantType();
+		String refreshToken = RequestUtil.getRefreshToken();
+		OAuth2Authentication oAuth2Authentication = tokenStore
+				.readAuthenticationForRefreshToken(tokenStore.readRefreshToken(refreshToken));
+		OAuth2Request oAuth2Request = oAuth2Authentication.getOAuth2Request();
+		String grantType = oAuth2Request.getGrantType();
 		RetriveUserFunction retriveUserFunction = authorizationInfoHandle.obtainFunction(grantType);
 		if (retriveUserFunction == null) {
 			return userDetailsService.loadUserByUsername(authentication.getName());

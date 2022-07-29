@@ -2,7 +2,7 @@ package com.relaxed.oauth2.auth.util;
 
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.relaxed.oauth2.auth.extension.handler.AuthorizationInfoHandle;
+import com.relaxed.oauth2.auth.handler.AuthorizationInfoHandle;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.proxy.MethodInterceptor;

@@ -1,6 +1,6 @@
-package com.relaxed.oauth2.auth.extension.handler;
+package com.relaxed.oauth2.auth.handler;
 
-import com.relaxed.oauth2.auth.extension.functions.RetriveUserFunction;
+import com.relaxed.oauth2.auth.functions.RetriveUserFunction;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Map;
@@ -26,6 +26,6 @@ public interface ClientHandlerConfigurer {
 	 * 配置授权类型对应的处理器
 	 * @param grantTypeMap
 	 */
-	void grantTyp(Map<String, RetriveUserFunction> grantTypeMap);
+	void grantType(Map<String, RetriveUserFunction> grantTypeMap);
 
 }
