@@ -1529,3 +1529,243 @@ http://localhost:9001/blog-auth-server/oauth/authorize?client_id=mugu&response_t
 按照上述3个步骤即可轻松的实现异常页面自定义，效果如下：
 
 ![img](https://pics5.baidu.com/feed/96dda144ad345982e21da35917b0a1a7caef8430.png?token=0764967356509c142d772c03e249c3f8)
+
+## 五、多用户体系刷新模式
+
+如果只是针对一种用户体系以及一种认证方式(用户名/手机号/openid)的话，比如`验证码` 模式的扩展，就不需要对`刷新模式`做调整。
+
+但是如果是多用户体系或者多种认证方式，就必须做些调整来适配。
+
+### 1. 原理
+
+`刷新模式` 时序图如下，相较于密码模式还只是 `Granter` 和 `Provider`的变动。
+
+![](https://cdn.jsdelivr.net/gh/xiaoashuo/pics/oauth2/20220729113135.png)
+
+着重说一下刷新模式的认证提供者 `PreAuthenticatedAuthenticationProvider` ，其 authenticate() 认证方法只做**用户状态校验**，check() 方法调用 AccountStatusUserDetailsChecker#check(UserDetails)。
+
+![](https://cdn.jsdelivr.net/gh/xiaoashuo/pics/oauth2/20220729113159.png)
+
+注意 下`this.preAuthenticatedUserDetailsService.loadUserDetails((PreAuthenticatedAuthenticationToken)authentication);` 的 `preAuthenticatedUserDetailsService` 用户服务。
+
+在没有进行授权模式扩展的时候，是下面这样设置的
+
+![](https://cdn.jsdelivr.net/gh/xiaoashuo/pics/oauth2/20220729113219.png)
+
+然后在 `AuthorizationServerEndpointsConfigurer#addUserDetailsService(DefaultTokenServices,UserDetailsService)` 构造 `PreAuthenticatedAuthenticationProvider` 里设置了 `UserDetailService`用户服务。
+
+![](https://cdn.jsdelivr.net/gh/xiaoashuo/pics/oauth2/20220729113256.png)
+
+
+
+这样在多用户体系认证下问题可想而知，用户分别有系统用户和会员用户，这里固定成一个用户服务肯定是行不通的。
+
+### 2.实战
+
+首先我们清楚一个 OAuth2 客户端基本对应的是一个用户体系
+
+| OAuth2 客户端名称 | OAuth2 客户端ID | 用户体系 |
+| ----------------- | --------------- | -------- |
+| 管理系统          | admin           | 系统用户 |
+| 移动端            | client          | 会员用户 |
+
+那就有一个很简单有效的思路，可以在系统内部维护一个如上表的映射关系 Map，然后根据传递的客户端ID去选择用户体系或刷新模式。
+
+#### 思路1： 
+
+#####    1.创建provider指定用户体系
+
+扩展授权模式创建 `Provider` 时可以指定具体的用户服务 `UserDetailService`，就如下面这样：
+
+![](https://cdn.jsdelivr.net/gh/xiaoashuo/pics/oauth2/20220729113315.png)
+
+##### 2.刷新模式指定客户体系调用
+
+你可以为每个授权模式扩展新增对应的刷新模式，但是这样的话比较麻烦，本文的实现方案核心图的是简单有效，所以这里使用的另一种方案，重新设置`PreAuthenticatedAuthenticationProvider` 的 preAuthenticatedUserDetailsService 属性，让其有判断选择用户体系和认证方式的能力。
+
+新增的 PreAuthenticatedUserDetailsService 可根据客户端和认证方式选择UserDetailService 和方法获取用户信息 UserDetail
+
+```java
+/**
+ * 刷新token再次认证 UserDetailsService
+ *
+ * @author <a href="mailto:xianrui0365@163.com">xianrui</a>
+ * @date 2021/10/2
+ */
+@NoArgsConstructor
+public class PreAuthenticatedUserDetailsService<T extends Authentication> implements AuthenticationUserDetailsService<T>, InitializingBean {
+
+    /**
+     * 客户端ID和用户服务 UserDetailService 的映射
+     *
+     * @see com.youlai.auth.security.config.AuthorizationServerConfig#tokenServices(AuthorizationServerEndpointsConfigurer)
+     */
+    private Map<String, UserDetailsService> userDetailsServiceMap;
+
+    public PreAuthenticatedUserDetailsService(Map<String, UserDetailsService> userDetailsServiceMap) {
+        Assert.notNull(userDetailsServiceMap, "userDetailsService cannot be null.");
+        this.userDetailsServiceMap = userDetailsServiceMap;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Assert.notNull(this.userDetailsServiceMap, "UserDetailsService must be set");
+    }
+
+    /**
+     * 重写PreAuthenticatedAuthenticationProvider 的 preAuthenticatedUserDetailsService 属性，可根据客户端和认证方式选择用户服务 UserDetailService 获取用户信息 UserDetail
+     *
+     * @param authentication
+     * @return
+     * @throws UsernameNotFoundException
+     */
+    @Override
+    public UserDetails loadUserDetails(T authentication) throws UsernameNotFoundException {
+        String clientId = RequestUtils.getOAuth2ClientId();
+        // 获取认证方式，默认是用户名 username
+        AuthenticationMethodEnum authenticationMethodEnum = AuthenticationMethodEnum.getByValue(RequestUtils.getAuthenticationMethod());
+        UserDetailsService userDetailsService = userDetailsServiceMap.get(clientId);
+        if (clientId.equals(SecurityConstants.APP_CLIENT_ID)) {
+            // 移动端的用户体系是会员，认证方式是通过手机号 mobile 认证
+            MemberUserDetailsServiceImpl memberUserDetailsService = (MemberUserDetailsServiceImpl) userDetailsService;
+            switch (authenticationMethodEnum) {
+                case MOBILE:
+                    return memberUserDetailsService.loadUserByMobile(authentication.getName());
+                default:
+                    return memberUserDetailsService.loadUserByUsername(authentication.getName());
+            }
+        }  else if (clientId.equals(SecurityConstants.ADMIN_CLIENT_ID)) {
+            // 管理系统的用户体系是系统用户，认证方式通过用户名 username 认证
+            switch (authenticationMethodEnum) {
+                default:
+                    return userDetailsService.loadUserByUsername(authentication.getName());
+            }
+        } else {
+            return userDetailsService.loadUserByUsername(authentication.getName());
+        }
+    }
+}
+```
+
+AuthorizationServerConfig 配置重新设置 PreAuthenticatedAuthenticationProvider 的 preAuthenticatedUserDetailsService 属性值
+
+```java
+  /**
+     * 配置授权（authorization）以及令牌（token）的访问端点和令牌服务(token services)
+     */
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+        // Token增强
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        List<TokenEnhancer> tokenEnhancers = new ArrayList<>();
+        tokenEnhancers.add(tokenEnhancer());
+        tokenEnhancers.add(jwtAccessTokenConverter());
+        tokenEnhancerChain.setTokenEnhancers(tokenEnhancers);
+
+        // 获取原有默认授权模式(授权码模式、密码模式、客户端模式、简化模式)的授权者
+        List<TokenGranter> granterList = new ArrayList<>(Arrays.asList(endpoints.getTokenGranter()));
+
+        // 添加验证码授权模式授权者
+        granterList.add(new CaptchaTokenGranter(endpoints.getTokenServices(), endpoints.getClientDetailsService(),
+                endpoints.getOAuth2RequestFactory(), authenticationManager, stringRedisTemplate
+        ));
+
+        // 添加手机短信验证码授权模式的授权者
+        granterList.add(new SmsCodeTokenGranter(endpoints.getTokenServices(), endpoints.getClientDetailsService(),
+                endpoints.getOAuth2RequestFactory(), authenticationManager
+        ));
+
+
+
+        CompositeTokenGranter compositeTokenGranter = new CompositeTokenGranter(granterList);
+        endpoints
+                .authenticationManager(authenticationManager)
+                .accessTokenConverter(jwtAccessTokenConverter())
+                .tokenEnhancer(tokenEnhancerChain)
+                .tokenGranter(compositeTokenGranter)
+                /** refresh token有两种使用方式：重复使用(true)、非重复使用(false)，默认为true
+                 *  1 重复使用：access token过期刷新时， refresh token过期时间未改变，仍以初次生成的时间为准
+                 *  2 非重复使用：access token过期刷新时， refresh token过期时间延续，在refresh token有效期内刷新便永不失效达到无需再次登录的目的
+                 */
+                .reuseRefreshTokens(true)
+                .tokenServices(tokenServices(endpoints))
+        ;
+    }
+
+
+    public DefaultTokenServices tokenServices(AuthorizationServerEndpointsConfigurer endpoints) {
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        List<TokenEnhancer> tokenEnhancers = new ArrayList<>();
+        tokenEnhancers.add(tokenEnhancer());
+        tokenEnhancers.add(jwtAccessTokenConverter());
+        tokenEnhancerChain.setTokenEnhancers(tokenEnhancers);
+
+        DefaultTokenServices tokenServices = new DefaultTokenServices();
+        tokenServices.setTokenStore(endpoints.getTokenStore());
+        tokenServices.setSupportRefreshToken(true);
+        tokenServices.setClientDetailsService(clientDetailsService);
+        tokenServices.setTokenEnhancer(tokenEnhancerChain);
+
+        // 多用户体系下，刷新token再次认证客户端ID和 UserDetailService 的映射Map
+        Map<String, UserDetailsService> clientUserDetailsServiceMap = new HashMap<>();
+        clientUserDetailsServiceMap.put(SecurityConstants.ADMIN_CLIENT_ID, sysUserDetailsService); // 管理系统客户端
+        clientUserDetailsServiceMap.put(SecurityConstants.APP_CLIENT_ID, memberUserDetailsService); // Android/IOS/H5 移动客户端
+
+        // 重新设置PreAuthenticatedAuthenticationProvider#preAuthenticatedUserDetailsService 能够根据客户端ID和认证方式区分用户体系获取认证用户信息
+        PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
+        provider.setPreAuthenticatedUserDetailsService(new PreAuthenticatedUserDetailsService<>(clientUserDetailsServiceMap));
+        tokenServices.setAuthenticationManager(new ProviderManager(Arrays.asList(provider)));
+        return tokenServices;
+    }
+```
+
+#### 思路2：
+
+1.注册`ClientHandlerConfigurer`的Bean
+
+```java
+@Component
+public class ClientInfoService implements ClientHandlerConfigurer {
+    @Override
+    public void Client(Map<String, UserDetailsService> clientMap) {
+        //客户端与用户体系的
+           clientMap.put("admin",new AdminUserService());
+        clientMap.put("client",new ClientUserService());
+    }
+
+    @Override
+    public void grantTyp(Map<String, RetriveUserFunction> grantTypeMap) {
+       //配置 授权方式 与对应的处理逻辑
+grantTypeMap.put("password", new RetriveUserFunction() {
+			@Override
+			public <T extends Authentication> UserDetails retrive(T authentication,
+					UserDetailsService userDetailsService) {
+				String name = authentication.getName();
+				return userDetailsService.loadUserByUsername(name);
+			}
+		});
+		grantTypeMap.put("sms_code", new RetriveUserFunction() {
+			@Override
+			public <T extends Authentication> UserDetails retrive(T authentication,
+					UserDetailsService userDetailsService) {
+				String name = authentication.getName();
+				ExtendUserDetailsService extendUserDetailsService = (ExtendUserDetailsService) userDetailsService;
+				return extendUserDetailsService.loginByMobile(name);
+			}
+		});
+    }
+}
+
+```
+
+2.注册 `UserDetailService`代理
+
+> 注:若不注册此代理 则多用户体系不生效
+
+```java
+	@Bean
+	public UserService userService(AuthorizationInfoHandle authorizationInfoHandle){
+		return ProxyFactory.create(UserService.class, new PreMethodInterceptor(authorizationInfoHandle));
+	}
+```
+
