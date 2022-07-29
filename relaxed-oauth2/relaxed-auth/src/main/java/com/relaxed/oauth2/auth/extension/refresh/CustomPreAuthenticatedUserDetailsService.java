@@ -58,7 +58,7 @@ public class CustomPreAuthenticatedUserDetailsService<T extends Authentication>
 	 */
 	@Override
 	public UserDetails loadUserDetails(T authentication) throws UsernameNotFoundException {
-		String refreshToken = RequestUtil.getRefreshToken();
+		String refreshToken = RequestUtil.getRequestRefreshToken();
 		OAuth2Authentication oAuth2Authentication = tokenStore
 				.readAuthenticationForRefreshToken(tokenStore.readRefreshToken(refreshToken));
 		OAuth2Request oAuth2Request = oAuth2Authentication.getOAuth2Request();

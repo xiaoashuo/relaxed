@@ -67,7 +67,7 @@ public class RequestUtil {
 	 * @date 2022/7/29 9:48
 	 * @return java.lang.String
 	 */
-	public static String getRefreshToken() {
+	public static String getRequestRefreshToken() {
 		String refreshToken = ServletUtils.getParameter(SecurityConstant.REFRESH_TOKEN_KEY);
 		return refreshToken;
 	}
