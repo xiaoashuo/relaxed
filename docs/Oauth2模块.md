@@ -1721,30 +1721,21 @@ AuthorizationServerConfig 配置重新设置 PreAuthenticatedAuthenticationProvi
 
 #### 思路2：
 
-##### 1.注册`ClientHandlerConfigurer`的Bean
+##### 1.注册授权信息处理
+
+> 支持多用户授权体系刷新模式，默认注册 password与sms_code 模式
 
 ```java
-@Component
-public class ClientInfoService implements ClientHandlerConfigurer {
-    @Override
-    public void Client(Map<String, UserDetailsService> clientMap) {
-        //客户端与用户体系的
-           clientMap.put("admin",new AdminUserService());
-        clientMap.put("client",new ClientUserService());
-    }
-
-    @Override
-    public void grantTyp(Map<String, RetriveUserFunction> grantTypeMap) {
-       //配置 授权方式 与对应的处理逻辑
-grantTypeMap.put("password", new RetriveUserFunction() {
+	@Bean
+	public AuthorizationInfoHandle authorizationInfoHandle() {
+		return new AuthorizationInfoHandle().grantType("password", new RetriveUserFunction() {
 			@Override
 			public <T extends Authentication> UserDetails retrive(T authentication,
 					UserDetailsService userDetailsService) {
 				String name = authentication.getName();
 				return userDetailsService.loadUserByUsername(name);
 			}
-		});
-		grantTypeMap.put("sms_code", new RetriveUserFunction() {
+		}).grantType("sms_code", new RetriveUserFunction() {
 			@Override
 			public <T extends Authentication> UserDetails retrive(T authentication,
 					UserDetailsService userDetailsService) {
@@ -1753,8 +1744,7 @@ grantTypeMap.put("password", new RetriveUserFunction() {
 				return extendUserDetailsService.loginByMobile(name);
 			}
 		});
-    }
-}
+	}
 
 ```
 
@@ -1763,7 +1753,9 @@ grantTypeMap.put("password", new RetriveUserFunction() {
 > 注:若不注册此代理 则多用户体系不生效
 
 ```java
-	@Bean
+	
+
+@Bean
 	public UserService userService(AuthorizationInfoHandle authorizationInfoHandle){
 		return ProxyFactory.create(UserService.class, new PreMethodInterceptor(authorizationInfoHandle));
 	}
