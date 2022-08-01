@@ -26,20 +26,24 @@ public class AuthorizationInfoHandle {
 	/** 授权类型处理器注册 */
 	private Map<String, RetriveUserFunction> GRANT_TYPE_HANDLE_HOLDER = new ConcurrentHashMap<>();
 
-	@Autowired
-	private List<ClientHandlerConfigurer> configurers = Collections.emptyList();
+	public AuthorizationInfoHandle client(String clientId, UserDetailsService userDetailsService) {
+		this.CLIENT_USER_HOLDER.put(clientId, userDetailsService);
+		return this;
+	}
 
-	@PostConstruct
-	public void init() {
-		for (ClientHandlerConfigurer configurer : configurers) {
-			try {
-				configurer.client(CLIENT_USER_HOLDER);
-				configurer.grantType(GRANT_TYPE_HANDLE_HOLDER);
-			}
-			catch (Exception e) {
-				throw new IllegalStateException("Cannot configure enpdoints", e);
-			}
-		}
+	public AuthorizationInfoHandle client(Map<String, UserDetailsService> clientMap) {
+		this.CLIENT_USER_HOLDER.putAll(clientMap);
+		return this;
+	}
+
+	public AuthorizationInfoHandle grantType(String grantType, RetriveUserFunction retriveUserFunction) {
+		this.GRANT_TYPE_HANDLE_HOLDER.put(grantType, retriveUserFunction);
+		return this;
+	}
+
+	public AuthorizationInfoHandle grantType(Map<String, RetriveUserFunction> grantTypeMap) {
+		this.GRANT_TYPE_HANDLE_HOLDER.putAll(grantTypeMap);
+		return this;
 	}
 
 	public RetriveUserFunction obtainFunction(String grantType) {

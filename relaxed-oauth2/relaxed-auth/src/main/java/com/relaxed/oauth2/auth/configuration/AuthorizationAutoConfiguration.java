@@ -8,13 +8,14 @@ import com.relaxed.oauth2.auth.configurer.CustomWebSecurityConfigurer;
 import com.relaxed.oauth2.auth.configurer.JdbcOauth2ClientConfigurer;
 import com.relaxed.oauth2.auth.configurer.OAuth2ClientConfigurer;
 import com.relaxed.oauth2.auth.exception.CustomWebResponseExceptionTranslator;
+import com.relaxed.oauth2.auth.extension.ExtendUserDetailsService;
 import com.relaxed.oauth2.auth.extension.captcha.CaptchaTokenGranter;
 import com.relaxed.oauth2.auth.extension.captcha.CaptchaValidator;
 
+import com.relaxed.oauth2.auth.functions.RetriveUserFunction;
 import com.relaxed.oauth2.auth.handler.AuthorizationInfoHandle;
 import com.relaxed.oauth2.auth.extension.mobile.SmsCodeAuthenticationProvider;
 import com.relaxed.oauth2.auth.extension.mobile.SmsCodeValidator;
-import com.relaxed.oauth2.auth.handler.CustomClientHandlerConfigurer;
 import com.relaxed.oauth2.auth.util.PasswordUtils;
 import com.relaxed.oauth2.common.handler.CustomAccessDeniedHandler;
 import com.relaxed.oauth2.common.handler.CustomAuthenticationEntryPoint;
@@ -24,6 +25,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
@@ -160,18 +163,7 @@ public class AuthorizationAutoConfiguration {
 	@Bean
 	public SmsCodeAuthenticationProvider smsCodeAuthenticationProvider(UserDetailsService userDetailsService,
 			@Autowired(required = false) SmsCodeValidator smsCodeValidator) {
-		SmsCodeAuthenticationProvider provider = new SmsCodeAuthenticationProvider(smsCodeValidator,
-				userDetailsService);
-		return provider;
-	}
-
-	/**
-	 * 默认的客户端处理逻辑配置
-	 * @return
-	 */
-	@Bean
-	public CustomClientHandlerConfigurer customClientHandlerConfigurer() {
-		return new CustomClientHandlerConfigurer();
+		return new SmsCodeAuthenticationProvider(smsCodeValidator, userDetailsService);
 	}
 
 	/**
@@ -179,8 +171,24 @@ public class AuthorizationAutoConfiguration {
 	 * @return
 	 */
 	@Bean
+	@ConditionalOnMissingBean
 	public AuthorizationInfoHandle authorizationInfoHandle() {
-		return new AuthorizationInfoHandle();
+		return new AuthorizationInfoHandle().grantType("password", new RetriveUserFunction() {
+			@Override
+			public <T extends Authentication> UserDetails retrive(T authentication,
+					UserDetailsService userDetailsService) {
+				String name = authentication.getName();
+				return userDetailsService.loadUserByUsername(name);
+			}
+		}).grantType("sms_code", new RetriveUserFunction() {
+			@Override
+			public <T extends Authentication> UserDetails retrive(T authentication,
+					UserDetailsService userDetailsService) {
+				String name = authentication.getName();
+				ExtendUserDetailsService extendUserDetailsService = (ExtendUserDetailsService) userDetailsService;
+				return extendUserDetailsService.loginByMobile(name);
+			}
+		});
 	}
 
 	/**
