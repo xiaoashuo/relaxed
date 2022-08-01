@@ -166,31 +166,7 @@
                 <artifactId>relaxed-common-cache</artifactId>
                 <version>${reversion}</version>
             </dependency>
-            <!--risk 模块-->
-            <!--risk model-->
-            <dependency>
-                <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-common-risk-model</artifactId>
-                <version>${reversion}</version>
-            </dependency>
-            <!--risk repository-->
-            <dependency>
-                <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-common-risk-repository</artifactId>
-                <version>${reversion}</version>
-            </dependency>
-            <!--risk biz-->
-            <dependency>
-                <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-common-risk-biz</artifactId>
-                <version>${reversion}</version>
-            </dependency>
-            <!--risk engine-->
-            <dependency>
-                <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-common-risk-engine</artifactId>
-                <version>${reversion}</version>
-            </dependency>
+
             <!--日志模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
@@ -345,12 +321,7 @@
                 <artifactId>relaxed-spring-boot-starter-datascope</artifactId>
                 <version>${reversion}</version>
             </dependency>
-            <!--swagger 接口文档 -->
-            <dependency>
-                <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-spring-boot-starter-swagger</artifactId>
-                <version>${reversion}</version>
-            </dependency>
+
             <!--缓存模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
@@ -503,17 +474,7 @@
                 <artifactId>swagger-models</artifactId>
                 <version>${io.swagger.v3.version}</version>
             </dependency>
-            <!--swagger v2-->
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-models</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
+
             <!-- SpringDoc -->
             <dependency>
                 <groupId>org.springdoc</groupId>
@@ -570,17 +531,7 @@
                 <artifactId>springdoc-openapi-javadoc</artifactId>
                 <version>${springdoc-openapi.verison}</version>
             </dependency>
-           <!--swagger 及其相关模块-->
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-boot-starter</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-bean-validators</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
+
 
             <dependency>
                 <groupId>com.googlecode.java-diff-utils</groupId>

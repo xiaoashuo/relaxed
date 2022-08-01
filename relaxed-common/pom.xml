@@ -19,7 +19,7 @@
         <module>relaxed-common-datasource</module>
         <module>relaxed-common-tenant</module>
         <module>relaxed-common-idempotent</module>
-        <module>relaxed-common-risk</module>
+
         <module>relaxed-common-ip</module>
         <module>relaxed-common-cache</module>
         <module>relaxed-common-util</module>
