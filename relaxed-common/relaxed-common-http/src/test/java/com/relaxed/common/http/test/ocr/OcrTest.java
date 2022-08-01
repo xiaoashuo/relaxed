@@ -2,7 +2,11 @@ package com.relaxed.common.http.test.ocr;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import com.relaxed.common.http.HttpSender;
+import com.relaxed.common.http.core.interceptor.RequestInterceptor;
+import com.relaxed.common.http.core.notify.RequestResultNotifier;
 import com.relaxed.common.http.core.provider.RequestHeaderProvider;
 import com.relaxed.common.http.domain.RequestForm;
 import com.relaxed.common.http.test.example.file.FileRequest;
@@ -44,10 +48,33 @@ public class OcrTest {
 		return map;
 	}
 
+	public HttpSender buildHttpSender() {
+		RequestResultNotifier requestResultNotifier = reqReceiveEvent -> log.info("event {}", reqReceiveEvent);
+
+		RequestInterceptor<HttpRequest, HttpResponse> requestInterceptor = new RequestInterceptor<HttpRequest, HttpResponse>() {
+			@Override
+			public HttpRequest requestInterceptor(HttpRequest request, RequestForm requestForm,
+					Map<String, Object> context) {
+				request.setConnectionTimeout(10000);
+				request.setReadTimeout(10000);
+				return request;
+			}
+
+			@Override
+			public HttpResponse responseInterceptor(HttpRequest request, HttpResponse response,
+					Map<String, Object> context) {
+				return response;
+			}
+		};
+		HttpSender httpSender = new HttpSender(baseUrl, requestHeaderProvider, requestResultNotifier,
+				requestInterceptor);
+		return httpSender;
+	}
+
 	@Test
 	public void testPersonFaceValid() {
 
-		HttpSender httpSender = new HttpSender(baseUrl, requestHeaderProvider);
+		HttpSender httpSender = buildHttpSender();
 		FileRequest request = new FileRequest();
 		request.setChannelNo("test");
 		request.setRequestMethod(RequestMethod.GET);
@@ -57,7 +84,7 @@ public class OcrTest {
 		log.info("请求响应:{}", response);
 		String fileContent = response.getFileContent();
 		File file = new File("test.pdf");
-		FileUtil.writeBytes(Base64.decode(fileContent), file);
+		// FileUtil.writeBytes(Base64.decode(fileContent), file);
 	}
 
 }
