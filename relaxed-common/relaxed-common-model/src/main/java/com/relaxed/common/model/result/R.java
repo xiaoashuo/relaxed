@@ -1,5 +1,6 @@
 package com.relaxed.common.model.result;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -17,14 +18,18 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
+@Schema(name = "返回响应")
 public class R<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@Schema(title = "返回状态码", description = "返回状态码", defaultValue = "0")
 	private int code;
 
+	@Schema(title = "返回信息", description = "返回信息", defaultValue = "Success")
 	private String message;
 
+	@Schema(title = "数据", description = "数据", nullable = true, defaultValue = "null")
 	private T data;
 
 	public static <T> R<T> ok() {
