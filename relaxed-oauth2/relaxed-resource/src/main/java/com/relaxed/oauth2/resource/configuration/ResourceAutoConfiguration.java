@@ -1,5 +1,6 @@
 package com.relaxed.oauth2.resource.configuration;
 
+import cn.hutool.core.util.BooleanUtil;
 import com.relaxed.oauth2.common.handler.CustomAuthenticationEntryPoint;
 import com.relaxed.oauth2.resource.CustomPermissionEvaluator;
 import com.relaxed.oauth2.resource.services.CustomRemoteTokenServices;
@@ -64,12 +65,12 @@ public class ResourceAutoConfiguration {
 	}
 
 	/**
-	 * 自定义token services 统一异常错误信息提取
+	 * 自定义token services prefer-token-info默认值为true，既优先使用token-info-uri校验token认证信息
 	 * @return
 	 */
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(name = "security.oauth2.resource.token-info-uri")
+	@Conditional(TokenInfoCondition.class)
 	public ResourceServiceTokenProvider remoteTokenServiceProvider() {
 		return resource -> {
 			CustomRemoteTokenServices services = new CustomRemoteTokenServices();
@@ -81,9 +82,16 @@ public class ResourceAutoConfiguration {
 
 	}
 
+	/**
+	 * prefer-token-info设置为false，或不配置token-info-uri则会使用user-info-uri，适用于需要获取userdetails信息的场景
+	 * @param restTemplateFactory
+	 * @param authoritiesExtractorProvider
+	 * @param principalExtractorProvider
+	 * @return
+	 */
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(name = "security.oauth2.resource.user-info-uri")
+	@Conditional(UserInfoCondition.class)
 	public ResourceServiceTokenProvider userInfoTokenServicesProvider(
 			@Autowired(required = false) UserInfoRestTemplateFactory restTemplateFactory,
 			ObjectProvider<AuthoritiesExtractor> authoritiesExtractorProvider,
@@ -105,6 +113,61 @@ public class ResourceAutoConfiguration {
 			return services;
 
 		};
+
+	}
+
+	private static class UserInfoCondition extends SpringBootCondition {
+
+		private UserInfoCondition() {
+		}
+
+		@Override
+		public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
+			ConditionMessage.Builder message = ConditionMessage.forCondition("OAuth UserInfo Condition", new Object[0]);
+			Environment environment = context.getEnvironment();
+			Boolean preferTokenInfo = (Boolean) environment.getProperty("security.oauth2.resource.prefer-token-info",
+					Boolean.class);
+			if (preferTokenInfo == null) {
+				preferTokenInfo = environment.resolvePlaceholders("${OAUTH2_RESOURCE_PREFERTOKENINFO:true}")
+						.equals("true");
+			}
+			String userInfoUri = environment.getProperty("security.oauth2.resource.user-info-uri");
+			if (BooleanUtil.isFalse(preferTokenInfo) && StringUtils.hasLength(userInfoUri)) {
+				return ConditionOutcome.match(message.foundExactly("preferred user-info-uri property"));
+			}
+			else {
+				return ConditionOutcome.noMatch(message.didNotFind("user info").atAll());
+			}
+		}
+
+	}
+
+	private static class TokenInfoCondition extends SpringBootCondition {
+
+		private TokenInfoCondition() {
+		}
+
+		@Override
+		public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
+			ConditionMessage.Builder message = ConditionMessage.forCondition("OAuth TokenInfo Condition",
+					new Object[0]);
+			Environment environment = context.getEnvironment();
+			Boolean preferTokenInfo = (Boolean) environment.getProperty("security.oauth2.resource.prefer-token-info",
+					Boolean.class);
+			if (preferTokenInfo == null) {
+				preferTokenInfo = environment.resolvePlaceholders("${OAUTH2_RESOURCE_PREFERTOKENINFO:true}")
+						.equals("true");
+			}
+
+			String tokenInfoUri = environment.getProperty("security.oauth2.resource.token-info-uri");
+			String userInfoUri = environment.getProperty("security.oauth2.resource.user-info-uri");
+			if (BooleanUtil.isTrue(preferTokenInfo) && StringUtils.hasLength(tokenInfoUri)) {
+				return ConditionOutcome.match(message.foundExactly("preferred token-info-uri property"));
+			}
+			else {
+				return ConditionOutcome.noMatch(message.didNotFind("token info").atAll());
+			}
+		}
 
 	}
 
