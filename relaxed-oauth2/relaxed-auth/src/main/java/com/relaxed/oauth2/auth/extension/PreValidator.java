@@ -1,15 +1,21 @@
-package com.relaxed.oauth2.auth.extension.captcha;
+package com.relaxed.oauth2.auth.extension;
 
 import java.util.Map;
 
 /**
  * @author Yakir
- * @Topic CaptchaValidator
+ * @Topic PreValidator
  * @Description
- * @date 2022/7/23 10:44
+ * @date 2022/8/16 17:06
  * @Version 1.0
  */
-public interface CaptchaValidator {
+public interface PreValidator {
+
+	/**
+	 * 支持验证类型
+	 * @return
+	 */
+	String supportType();
 
 	/**
 	 * 验证验证码正确性

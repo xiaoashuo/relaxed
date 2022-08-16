@@ -20,18 +20,12 @@ import java.util.HashSet;
 @Data
 public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
 
-	private final SmsCodeValidator smsCodeValidator;
-
 	private final UserDetailsService userDetailsService;
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		SmsCodeAuthenticationToken authenticationToken = (SmsCodeAuthenticationToken) authentication;
 		String mobile = (String) authenticationToken.getPrincipal();
-		String code = (String) authenticationToken.getCredentials();
-		Assert.notNull(smsCodeValidator, "短信验证器不能为空");
-		// 认证手机号验证码
-		smsCodeValidator.authenticate(mobile, code);
 		UserDetails userDetails = ((ExtendUserDetailsService) userDetailsService).loginByMobile(mobile);
 		SmsCodeAuthenticationToken result = new SmsCodeAuthenticationToken(userDetails, authentication.getCredentials(),
 				new HashSet<>());

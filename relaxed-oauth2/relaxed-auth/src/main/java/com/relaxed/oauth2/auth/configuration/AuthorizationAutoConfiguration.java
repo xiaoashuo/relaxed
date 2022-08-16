@@ -9,16 +9,19 @@ import com.relaxed.oauth2.auth.configurer.JdbcOauth2ClientConfigurer;
 import com.relaxed.oauth2.auth.configurer.OAuth2ClientConfigurer;
 import com.relaxed.oauth2.auth.exception.CustomWebResponseExceptionTranslator;
 import com.relaxed.oauth2.auth.extension.ExtendUserDetailsService;
+import com.relaxed.oauth2.auth.extension.PreValidator;
+import com.relaxed.oauth2.auth.extension.PreValidatorHolder;
 import com.relaxed.oauth2.auth.extension.captcha.CaptchaTokenGranter;
-import com.relaxed.oauth2.auth.extension.captcha.CaptchaValidator;
 
+import com.relaxed.oauth2.auth.extension.mobile.SmsCodeTokenGranter;
 import com.relaxed.oauth2.auth.functions.RetriveUserFunction;
 import com.relaxed.oauth2.auth.handler.AuthorizationInfoHandle;
 import com.relaxed.oauth2.auth.extension.mobile.SmsCodeAuthenticationProvider;
-import com.relaxed.oauth2.auth.extension.mobile.SmsCodeValidator;
+
 import com.relaxed.oauth2.auth.util.PasswordUtils;
 import com.relaxed.oauth2.common.handler.CustomAccessDeniedHandler;
 import com.relaxed.oauth2.common.handler.CustomAuthenticationEntryPoint;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -38,8 +41,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Yakir
@@ -124,6 +127,33 @@ public class AuthorizationAutoConfiguration {
 	}
 
 	/**
+	 * 预检查持有器
+	 * @param preValidatorProvider
+	 * @return
+	 */
+	@Bean
+	public PreValidatorHolder preValidatorHolder(ObjectProvider<PreValidator> preValidatorProvider) {
+		Map<String, PreValidator> preValidatorMap = new HashMap<>(8);
+		preValidatorProvider.forEach(e -> preValidatorMap.put(e.supportType(), e));
+		return new PreValidatorHolder(preValidatorMap);
+
+	}
+
+	private PreValidator buildDefaultValidator(String supportType) {
+		return new PreValidator() {
+			@Override
+			public String supportType() {
+				return supportType;
+			}
+
+			@Override
+			public void validate(Map<String, String> parameters) {
+				throw new RuntimeException(supportType + "前置验证器,未自定义");
+			}
+		};
+	}
+
+	/**
 	 * 授权类型建造者，默认处理了 OAuth2 规范的 5 种授权类型，用户可自定义添加其他授权类型，如手机号登录
 	 * @param authenticationManager 认证管理器
 	 * @return TokenGrantBuilder
@@ -131,14 +161,22 @@ public class AuthorizationAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public TokenGrantBuilder tokenGrantBuilder(AuthenticationManager authenticationManager,
-			@Autowired(required = false) CaptchaValidator captchaValidator) {
+			PreValidatorHolder preValidatorHolder) {
 
 		// 添加验证码授权模式授权者
 		TokenGranterProvider captchaTokenGranter = endpoints -> new CaptchaTokenGranter(endpoints.getTokenServices(),
 				endpoints.getClientDetailsService(), endpoints.getOAuth2RequestFactory(), authenticationManager,
-				captchaValidator);
+				Optional.ofNullable(preValidatorHolder.getByType(CaptchaTokenGranter.GRANT_TYPE))
+						.orElseGet(() -> buildDefaultValidator(CaptchaTokenGranter.GRANT_TYPE)));
+		// 添加手机短信验证码授权模式的授权者
+		// 添加验证码授权模式授权者
+		TokenGranterProvider smsCodeTokenGranter = endpoints -> new SmsCodeTokenGranter(endpoints.getTokenServices(),
+				endpoints.getClientDetailsService(), endpoints.getOAuth2RequestFactory(), authenticationManager,
+				Optional.ofNullable(preValidatorHolder.getByType(SmsCodeTokenGranter.GRANT_TYPE))
+						.orElseGet(() -> buildDefaultValidator(SmsCodeTokenGranter.GRANT_TYPE)));
 		List<TokenGranterProvider> tokenGranterProviderList = new ArrayList<>();
 		tokenGranterProviderList.add(captchaTokenGranter);
+		tokenGranterProviderList.add(smsCodeTokenGranter);
 		TokenGrantBuilder tokenGrantBuilder = new TokenGrantBuilder(authenticationManager, tokenGranterProviderList);
 		return tokenGrantBuilder;
 	}
@@ -161,9 +199,8 @@ public class AuthorizationAutoConfiguration {
 	 * @return
 	 */
 	@Bean
-	public SmsCodeAuthenticationProvider smsCodeAuthenticationProvider(UserDetailsService userDetailsService,
-			@Autowired(required = false) SmsCodeValidator smsCodeValidator) {
-		return new SmsCodeAuthenticationProvider(smsCodeValidator, userDetailsService);
+	public SmsCodeAuthenticationProvider smsCodeAuthenticationProvider(UserDetailsService userDetailsService) {
+		return new SmsCodeAuthenticationProvider(userDetailsService);
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package com.relaxed.oauth2.auth.extension.mobile;
 
+import com.relaxed.oauth2.auth.extension.PreValidator;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,6 +10,7 @@ import org.springframework.security.oauth2.common.exceptions.InvalidGrantExcepti
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.token.AbstractTokenGranter;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.util.Assert;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,25 +30,28 @@ public class SmsCodeTokenGranter extends AbstractTokenGranter {
 	 * @see CompositeTokenGranter#grant(String, TokenRequest)
 	 * @see AbstractTokenGranter#grant(String, TokenRequest)
 	 */
-	private static final String GRANT_TYPE = "sms_code";
+	public static final String GRANT_TYPE = "sms_code";
 
 	private final AuthenticationManager authenticationManager;
 
+	private final PreValidator preValidator;
+
 	public SmsCodeTokenGranter(AuthorizationServerTokenServices tokenServices,
 			ClientDetailsService clientDetailsService, OAuth2RequestFactory requestFactory,
-			AuthenticationManager authenticationManager) {
+			AuthenticationManager authenticationManager, PreValidator preValidator) {
 		super(tokenServices, clientDetailsService, requestFactory, GRANT_TYPE);
+		Assert.notNull(preValidator, "前置验证器不能为空-[sms_code]");
 		this.authenticationManager = authenticationManager;
+		this.preValidator = preValidator;
 	}
 
 	@Override
 	protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) {
 
 		Map<String, String> parameters = new LinkedHashMap(tokenRequest.getRequestParameters());
-
+		preValidator.validate(parameters);
 		String mobile = parameters.get("mobile"); // 手机号
 		String code = parameters.get("code"); // 短信验证码
-
 		parameters.remove("code");
 
 		Authentication userAuth = new SmsCodeAuthenticationToken(mobile, code);

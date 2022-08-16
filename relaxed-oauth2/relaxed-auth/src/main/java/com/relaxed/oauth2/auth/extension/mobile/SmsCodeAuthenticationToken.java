@@ -16,7 +16,7 @@ public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
 
 	private static final long serialVersionUID = 550L;
 
-	private final Object principal;
+	private Object principal;
 
 	private Object credentials;
 

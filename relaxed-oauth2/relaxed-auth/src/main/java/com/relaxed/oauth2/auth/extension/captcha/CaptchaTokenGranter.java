@@ -1,5 +1,6 @@
 package com.relaxed.oauth2.auth.extension.captcha;
 
+import com.relaxed.oauth2.auth.extension.PreValidator;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
@@ -26,27 +27,27 @@ public class CaptchaTokenGranter extends AbstractTokenGranter {
 	 * @see CompositeTokenGranter#grant(String, TokenRequest)
 	 * @see AbstractTokenGranter#grant(String, TokenRequest)
 	 */
-	private static final String GRANT_TYPE = "captcha";
+	public static final String GRANT_TYPE = "captcha";
 
 	private final AuthenticationManager authenticationManager;
 
-	private final CaptchaValidator captchaValidator;
+	private final PreValidator preValidator;
 
 	public CaptchaTokenGranter(AuthorizationServerTokenServices tokenServices,
 			ClientDetailsService clientDetailsService, OAuth2RequestFactory requestFactory,
-			AuthenticationManager authenticationManager, CaptchaValidator captchaValidator) {
+			AuthenticationManager authenticationManager, PreValidator preValidator) {
 		super(tokenServices, clientDetailsService, requestFactory, GRANT_TYPE);
+		Assert.notNull(preValidator, "前置验证器不能为空-[captcha]");
 		this.authenticationManager = authenticationManager;
-		this.captchaValidator = captchaValidator;
+		this.preValidator = preValidator;
 	}
 
 	@Override
 	protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) {
 
-		Assert.notNull(captchaValidator, "验证码验证其不能为空");
 		Map<String, String> parameters = new LinkedHashMap(tokenRequest.getRequestParameters());
 		// 验证验证码正确性
-		captchaValidator.validate(parameters);
+		preValidator.validate(parameters);
 		String username = parameters.get("username");
 		String password = parameters.get("password");
 		// 移除后续无用参数
