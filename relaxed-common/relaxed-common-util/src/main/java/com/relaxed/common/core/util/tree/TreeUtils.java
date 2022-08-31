@@ -26,7 +26,7 @@ public class TreeUtils {
 	 * @return 树列表
 	 */
 	public <T extends TreeNode<I>, I> List<T> buildTree(List<T> nodes, I rootId) {
-		return TreeUtils.buildTree(nodes, rootId, Function.identity(), null);
+		return TreeUtils.buildTree(nodes, rootId, Function.identity(), null, true);
 	}
 
 	/**
@@ -39,7 +39,7 @@ public class TreeUtils {
 	 * @return 树列表
 	 */
 	public <T extends TreeNode<I>, I> List<T> buildTree(List<T> nodes, I rootId, Comparator<? super T> comparator) {
-		return TreeUtils.buildTree(nodes, rootId, Function.identity(), comparator);
+		return TreeUtils.buildTree(nodes, rootId, Function.identity(), comparator, true);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class TreeUtils {
 	 * @return 树列表
 	 */
 	public <T extends TreeNode<I>, I, R> List<T> buildTree(List<R> list, I rootId, Function<R, T> convertToTree) {
-		return TreeUtils.buildTree(list, rootId, convertToTree, null);
+		return TreeUtils.buildTree(list, rootId, convertToTree, null, true);
 	}
 
 	/**
@@ -65,10 +65,11 @@ public class TreeUtils {
 	 * @param <T> TreeNode的子类
 	 * @param <I> TreeNodeId的类型
 	 * @param <R> 源数据类型
+	 * @param validExceptionData 验证异常数据 true 抛出异常 false 不抛出异常
 	 * @return 树列表
 	 */
 	public <T extends TreeNode<I>, I, R> List<T> buildTree(List<R> list, I rootId, Function<R, T> convertToTree,
-			Comparator<? super T> comparator) {
+			Comparator<? super T> comparator, boolean validExceptionData) {
 		if (list == null || list.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -86,7 +87,14 @@ public class TreeUtils {
 		// 根据根节点ID拿到一级节点
 		List<T> treeList = childrenMap.get(rootId);
 		// 异常数据校验
-		Assert.notEmpty(treeList, "错误的数据，找不到根节点的子节点");
+		if (CollectionUtil.isEmpty(treeList)) {
+			if (validExceptionData) {
+				throw new IllegalArgumentException("错误的数据，找不到根节点的子节点");
+			}
+			else {
+				return treeList;
+			}
+		}
 		// 遍历所有一级节点，赋值其子节点
 		treeList.forEach(node -> TreeUtils.setChildren(node, childrenMap));
 		return treeList;

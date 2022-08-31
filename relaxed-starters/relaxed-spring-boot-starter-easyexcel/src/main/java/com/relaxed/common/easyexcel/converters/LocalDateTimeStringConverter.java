@@ -27,6 +27,11 @@ public enum LocalDateTimeStringConverter implements Converter<LocalDateTime> {
 	private static final String MINUS = "-";
 
 	@Override
+	public Class supportJavaTypeKey() {
+		return LocalDateTime.class;
+	}
+
+	@Override
 	public CellDataTypeEnum supportExcelTypeKey() {
 		return CellDataTypeEnum.STRING;
 	}

@@ -17,7 +17,7 @@ public class SelectData<T> {
 	 * 显示的数据
 	 */
 	@Schema(title = "显示的数据", required = true)
-	private String name;
+	private String label;
 
 	/**
 	 * 选中获取的属性

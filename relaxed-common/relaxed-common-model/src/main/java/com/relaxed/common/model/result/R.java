@@ -18,7 +18,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@Schema(name = "返回响应")
+@Schema(title = "返回体结构")
 public class R<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
