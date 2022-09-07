@@ -1,7 +1,5 @@
 package com.relaxed.common.log.operation.annotation;
 
-import com.relaxed.common.log.operation.enums.OperationTypeEnum;
-
 import java.lang.annotation.*;
 
 /**
@@ -30,9 +28,9 @@ public @interface Log {
 
 	/**
 	 * 日志操作类型
-	 * @return 日志操作类型枚举
+	 * @return 日志操作类型
 	 */
-	OperationTypeEnum type();
+	int type();
 
 	/**
 	 * 是否保存方法入参

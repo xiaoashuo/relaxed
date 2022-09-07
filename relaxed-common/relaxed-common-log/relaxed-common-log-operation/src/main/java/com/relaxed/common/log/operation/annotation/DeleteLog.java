@@ -1,6 +1,6 @@
 package com.relaxed.common.log.operation.annotation;
 
-import com.relaxed.common.log.operation.enums.OperationTypeEnum;
+import com.relaxed.common.log.operation.enums.OperationTypes;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Log(type = OperationTypeEnum.DELETE)
+@Log(type = OperationTypes.DELETE)
 public @interface DeleteLog {
 
 	/**
