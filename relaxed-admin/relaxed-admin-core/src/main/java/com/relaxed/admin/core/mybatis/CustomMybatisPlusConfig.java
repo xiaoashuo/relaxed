@@ -24,7 +24,7 @@ import java.util.List;
  * @date 2020/04/19 默认配置MybatisPlus分页插件，通过conditional注解达到覆盖效用
  */
 @Configuration
-public class MybatisPlusConfig {
+public class CustomMybatisPlusConfig {
 
 	/**
 	 * MybatisPlusInterceptor 插件，默认提供分页插件</br>

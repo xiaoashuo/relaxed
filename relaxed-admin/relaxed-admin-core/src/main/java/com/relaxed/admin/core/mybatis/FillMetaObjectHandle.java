@@ -27,6 +27,8 @@ public class FillMetaObjectHandle implements MetaObjectHandler {
 		// 创建时间
 		this.strictInsertFill(metaObject, CREATE_TIME, LocalDateTime.class, LocalDateTime.now());
 		this.strictInsertFill(metaObject, CREATED_TIME, LocalDateTime.class, LocalDateTime.now());
+		this.strictInsertFill(metaObject, UPDATE_TIME, LocalDateTime.class, LocalDateTime.now());
+		this.strictInsertFill(metaObject, UPDATED_TIME, LocalDateTime.class, LocalDateTime.now());
 	}
 
 	@Override
