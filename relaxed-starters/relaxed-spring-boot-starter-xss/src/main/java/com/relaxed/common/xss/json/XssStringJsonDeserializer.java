@@ -3,7 +3,7 @@ package com.relaxed.common.xss.json;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.relaxed.common.core.util.ServletUtils;
+import com.relaxed.common.core.util.WebUtils;
 import com.relaxed.common.xss.config.XssProperties;
 import com.relaxed.common.xss.toolkit.HtmlKit;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class XssStringJsonDeserializer extends JsonDeserializer<String> {
 	@Override
 	public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
 		String value = p.getValueAsString();
-		if (xssProperties.shouldNotFilter(ServletUtils.getRequest())) {
+		if (xssProperties.shouldNotFilter(WebUtils.getRequest())) {
 			return value;
 		}
 		return value != null ? HtmlKit.cleanUnSafe(value) : null;

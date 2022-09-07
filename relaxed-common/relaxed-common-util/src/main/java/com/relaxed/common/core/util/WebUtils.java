@@ -7,8 +7,6 @@ import org.springframework.util.Assert;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.util.WebUtils;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +19,7 @@ import java.io.IOException;
  * @author ruoyi
  */
 @Slf4j
-public class ServletUtils {
+public class WebUtils extends org.springframework.web.util.WebUtils {
 
 	/**
 	 * 获取String参数
@@ -107,7 +105,7 @@ public class ServletUtils {
 	 * @return cookie value
 	 */
 	public String getCookieVal(HttpServletRequest request, String name) {
-		Cookie cookie = WebUtils.getCookie(request, name);
+		Cookie cookie = org.springframework.web.util.WebUtils.getCookie(request, name);
 		return cookie != null ? cookie.getValue() : null;
 	}
 

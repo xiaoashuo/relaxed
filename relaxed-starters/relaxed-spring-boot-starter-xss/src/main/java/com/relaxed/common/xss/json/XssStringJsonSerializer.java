@@ -3,7 +3,7 @@ package com.relaxed.common.xss.json;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.relaxed.common.core.util.ServletUtils;
+import com.relaxed.common.core.util.WebUtils;
 import com.relaxed.common.xss.config.XssProperties;
 import com.relaxed.common.xss.toolkit.HtmlKit;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class XssStringJsonSerializer extends JsonSerializer<String> {
 	public void serialize(String value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
 			throws IOException {
 		if (value != null) {
-			if (!xssProperties.shouldNotFilter(ServletUtils.getRequest())) {
+			if (!xssProperties.shouldNotFilter(WebUtils.getRequest())) {
 				value = HtmlKit.cleanUnSafe(value);
 			}
 			jsonGenerator.writeString(value);

@@ -1,13 +1,12 @@
 package com.relaxed.oauth2.auth.util;
 
 import cn.hutool.core.util.StrUtil;
-import com.relaxed.common.core.util.ServletUtils;
+import com.relaxed.common.core.util.WebUtils;
 import com.relaxed.oauth2.common.constant.SecurityConstant;
 import lombok.SneakyThrows;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import sun.security.util.SecurityConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
@@ -68,7 +67,7 @@ public class RequestUtil {
 	 * @return java.lang.String
 	 */
 	public static String getRequestRefreshToken() {
-		String refreshToken = ServletUtils.getParameter(SecurityConstant.REFRESH_TOKEN_KEY);
+		String refreshToken = WebUtils.getParameter(SecurityConstant.REFRESH_TOKEN_KEY);
 		return refreshToken;
 	}
 
