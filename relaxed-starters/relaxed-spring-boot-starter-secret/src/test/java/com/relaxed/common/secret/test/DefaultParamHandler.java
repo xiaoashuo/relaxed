@@ -1,7 +1,6 @@
 package com.relaxed.common.secret.test;
 
 import com.relaxed.common.secret.handler.SecretHandler;
-
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -23,7 +22,7 @@ public class DefaultParamHandler implements SecretHandler<BaseDto, BaseDto> {
 	}
 
 	@Override
-	public BaseDto decryptReqBody(BaseDto body) {
+	public BaseDto afterBodyRead(BaseDto body) {
 		body.setTest("ada");
 		return body;
 	}

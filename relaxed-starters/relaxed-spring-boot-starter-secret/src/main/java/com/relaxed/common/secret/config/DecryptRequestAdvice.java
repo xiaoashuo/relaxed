@@ -62,7 +62,7 @@ public class DecryptRequestAdvice extends RequestBodyAdviceAdapter {
 			methodAnnotation = methodParameter.getDeclaringClass().getAnnotation(RequestDecrypt.class);
 		}
 		if (methodAnnotation.post()) {
-			body = secretHandler.decryptReqBody(body);
+			body = secretHandler.afterBodyRead(body);
 		}
 
 		return super.afterBodyRead(body, inputMessage, methodParameter, targetType, converterType);
@@ -89,7 +89,7 @@ public class DecryptRequestAdvice extends RequestBodyAdviceAdapter {
 			HttpHeaders headers = inputMessage.getHeaders();
 			InputStream body = inputMessage.getBody();
 			String content = StreamUtils.copyToString(body, Charset.defaultCharset());
-			String decryptContent = secretHandler.decryptReqBody(content);
+			String decryptContent = secretHandler.beforeBodyRead(content);
 			// 返回处理后的消息体给messageConvert
 			return new SecretHttpMessage(new ByteArrayInputStream(decryptContent.getBytes()), headers);
 		}
