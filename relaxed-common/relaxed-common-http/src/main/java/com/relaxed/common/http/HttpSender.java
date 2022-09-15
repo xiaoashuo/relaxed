@@ -158,6 +158,7 @@ public class HttpSender implements ISender<HttpRequest, HttpResponse> {
 		HttpResponseWrapper responseWrapper = new HttpResponseWrapper();
 		responseWrapper.setCharset(httpResponse.charset());
 		responseWrapper.setBodyBytes(httpResponse.bodyBytes());
+		responseWrapper.setHeaders(httpResponse.headers());
 		return (T) responseWrapper;
 	}
 

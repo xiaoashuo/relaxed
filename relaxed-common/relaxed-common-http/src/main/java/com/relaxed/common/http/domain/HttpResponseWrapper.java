@@ -6,6 +6,9 @@ import cn.hutool.http.HttpUtil;
 import lombok.Data;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Yakir
@@ -24,6 +27,11 @@ public class HttpResponseWrapper implements IHttpResponse {
 	 */
 	private byte[] bodyBytes;
 
+	/**
+	 * 响应头
+	 */
+	private Map<String, List<String>> headers = new HashMap<>();
+
 	@Override
 	public String getCharset() {
 		return charset;
@@ -32,6 +40,11 @@ public class HttpResponseWrapper implements IHttpResponse {
 	@Override
 	public String body() {
 		return HttpUtil.getString(bodyBytes, CharsetUtil.charset(charset), charset == null);
+	}
+
+	@Override
+	public Map<String, List<String>> headers() {
+		return headers;
 	}
 
 	@Override

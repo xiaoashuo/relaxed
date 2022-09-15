@@ -5,6 +5,9 @@ import cn.hutool.http.HttpUtil;
 import com.relaxed.common.http.domain.IHttpResponse;
 import lombok.Data;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Yakir
  * @Topic HttpResponse
@@ -30,6 +33,11 @@ public class CustomHttpResponseWrapper implements IHttpResponse {
 	@Override
 	public String body() {
 		return HttpUtil.getString(bodyBytes, CharsetUtil.charset(charset), charset == null);
+	}
+
+	@Override
+	public Map<String, List<String>> headers() {
+		return null;
 	}
 
 	@Override

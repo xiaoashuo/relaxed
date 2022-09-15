@@ -1,5 +1,8 @@
 package com.relaxed.common.http.domain;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Yakir
  * @Topic IHttpResponse
@@ -32,5 +35,11 @@ public interface IHttpResponse {
 	 * @return java.lang.String
 	 */
 	String body();
+
+	/**
+	 * 响应头
+	 * @return
+	 */
+	Map<String, List<String>> headers();
 
 }
