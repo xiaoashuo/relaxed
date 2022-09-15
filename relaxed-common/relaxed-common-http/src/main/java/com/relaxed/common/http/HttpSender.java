@@ -10,6 +10,7 @@ import cn.hutool.http.*;
 import com.relaxed.common.core.util.SpringUtils;
 
 import com.relaxed.common.http.core.ISender;
+import com.relaxed.common.http.core.client.ClientResponse;
 import com.relaxed.common.http.core.interceptor.RequestInterceptor;
 import com.relaxed.common.http.core.notify.RequestResultNotifier;
 
@@ -20,6 +21,7 @@ import com.relaxed.common.http.core.response.IResponse;
 import com.relaxed.common.http.domain.*;
 
 import com.relaxed.common.http.event.ReqReceiveEvent;
+import com.relaxed.common.http.exception.ClientException;
 import com.relaxed.common.http.exception.RequestException;
 import com.relaxed.common.http.util.GenericTypeUtils;
 import com.relaxed.common.model.result.R;
@@ -102,8 +104,8 @@ public class HttpSender implements ISender<HttpRequest, HttpResponse> {
 		Throwable myThrowable = null;
 		try {
 
-			IHttpResponse responseWrapper = doExecute(requestUrl, requestForm, headerMap, context);
-			response = request.convertToResponse(responseWrapper);
+			ClientResponse clientResponse = doExecute(requestUrl, requestForm, headerMap, context);
+			response = request.convertToResponse(clientResponse);
 			return response;
 		}
 		catch (Throwable throwable) {
@@ -128,7 +130,7 @@ public class HttpSender implements ISender<HttpRequest, HttpResponse> {
 	 * @param headerMap
 	 * @return T
 	 */
-	protected <T extends IHttpResponse> T doExecute(String requestUrl, RequestForm requestForm,
+	protected <T extends ClientResponse> T doExecute(String requestUrl, RequestForm requestForm,
 			Map<String, String> headerMap, Map<String, Object> context) {
 		HttpRequest httpRequest = buildHttpRequest(requestUrl, requestForm);
 		// 获取用户定义的请求头 全局+局部
@@ -141,9 +143,6 @@ public class HttpSender implements ISender<HttpRequest, HttpResponse> {
 		fillHttpRequestHeader(httpRequest, requestHeadMap);
 		HttpResponse httpResponse = requestInterceptor.responseInterceptor(httpRequest,
 				requestInterceptor.requestInterceptor(httpRequest, requestForm, context).execute(), context);
-		if (httpResponse.getStatus() != HttpStatus.HTTP_OK) {
-			throw new HttpException("{}", httpResponse.body());
-		}
 		return convertOriginalResponse(httpResponse);
 	}
 
@@ -154,12 +153,12 @@ public class HttpSender implements ISender<HttpRequest, HttpResponse> {
 	 * @param httpResponse
 	 * @return T
 	 */
-	protected <T extends IHttpResponse> T convertOriginalResponse(HttpResponse httpResponse) {
-		HttpResponseWrapper responseWrapper = new HttpResponseWrapper();
-		responseWrapper.setCharset(httpResponse.charset());
-		responseWrapper.setBodyBytes(httpResponse.bodyBytes());
-		responseWrapper.setHeaders(httpResponse.headers());
-		return (T) responseWrapper;
+	protected <T extends ClientResponse> T convertOriginalResponse(HttpResponse httpResponse) {
+		if (httpResponse.getStatus() != HttpStatus.HTTP_OK) {
+			throw new ClientException(httpResponse.getStatus(), httpResponse.body());
+		}
+		return (T) new ClientResponse().header(httpResponse.headers()).charset(httpResponse.charset())
+				.bodyBytes(httpResponse.bodyBytes());
 	}
 
 	/**

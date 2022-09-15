@@ -17,7 +17,7 @@ public class StampQueryRequest extends AbstractRequest<StampQueryResponse> {
 
 	@Override
 	public String getUrl(String baseUrl) {
-		return baseUrl + "/stamp-app/stamp/query";
+		return baseUrl + "/third-jg/stamp/query";
 	}
 
 }

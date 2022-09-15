@@ -1,7 +1,7 @@
 package com.relaxed.common.http.core.request;
 
+import com.relaxed.common.http.core.client.ClientResponse;
 import com.relaxed.common.http.core.response.IResponse;
-import com.relaxed.common.http.domain.IHttpResponse;
 import com.relaxed.common.http.domain.RequestForm;
 
 /**
@@ -54,6 +54,6 @@ public interface IRequest<R extends IResponse> {
 	 * @param response
 	 * @return R
 	 */
-	R convertToResponse(IHttpResponse response);
+	R convertToResponse(ClientResponse response);
 
 }

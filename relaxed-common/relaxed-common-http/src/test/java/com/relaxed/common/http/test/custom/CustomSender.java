@@ -4,9 +4,11 @@ import cn.hutool.http.HttpException;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.relaxed.common.http.HttpSender;
+import com.relaxed.common.http.core.client.ClientResponse;
 import com.relaxed.common.http.core.provider.RequestHeaderProvider;
-import com.relaxed.common.http.domain.IHttpResponse;
+
 import com.relaxed.common.http.domain.RequestForm;
+import com.relaxed.common.http.exception.ClientException;
 
 import java.util.Map;
 
@@ -37,18 +39,18 @@ public class CustomSender extends HttpSender {
 	 * @return T
 	 */
 	@Override
-	protected <T extends IHttpResponse> T doExecute(String requestUrl, RequestForm requestForm,
+	protected <T extends ClientResponse> T doExecute(String requestUrl, RequestForm requestForm,
 			Map<String, String> headerMap, Map<String, Object> context) {
 		HttpRequest httpRequest = buildHttpRequest(requestUrl, requestForm);
 		Map<String, String> headMap = super.getRequestHeaderProvider().generate(requestUrl, requestForm);
 		fillHttpRequestHeader(httpRequest, headMap);
 		HttpResponse httpResponse = httpRequest.execute();
 		if (httpResponse.getStatus() != 200) {
-			throw new HttpException("request failed -{}", httpResponse.body());
+			throw new ClientException(httpResponse.getStatus(), httpResponse.body());
 		}
 		CustomHttpResponseWrapper responseWrapper = new CustomHttpResponseWrapper();
-		responseWrapper.setCharset(httpResponse.charset());
-		responseWrapper.setBodyBytes(httpResponse.bodyBytes());
+		responseWrapper.charset(httpResponse.charset());
+		responseWrapper.bodyBytes(httpResponse.bodyBytes());
 		return (T) responseWrapper;
 	}
 

@@ -2,7 +2,7 @@ package com.relaxed.common.http.test.custom;
 
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.http.HttpUtil;
-import com.relaxed.common.http.domain.IHttpResponse;
+import com.relaxed.common.http.core.client.ClientResponse;
 import lombok.Data;
 
 import java.util.List;
@@ -16,33 +16,6 @@ import java.util.Map;
  * @Version 1.0
  */
 @Data
-public class CustomHttpResponseWrapper implements IHttpResponse {
-
-	private String charset;
-
-	/**
-	 * 响应字节
-	 */
-	private byte[] bodyBytes;
-
-	@Override
-	public String getCharset() {
-		return charset;
-	}
-
-	@Override
-	public String body() {
-		return HttpUtil.getString(bodyBytes, CharsetUtil.charset(charset), charset == null);
-	}
-
-	@Override
-	public Map<String, List<String>> headers() {
-		return null;
-	}
-
-	@Override
-	public byte[] bodyBytes() {
-		return bodyBytes;
-	}
+public class CustomHttpResponseWrapper extends ClientResponse {
 
 }

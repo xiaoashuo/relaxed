@@ -4,12 +4,12 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
+import com.relaxed.common.http.core.client.ClientResponse;
 import com.relaxed.common.http.core.resource.ByteResource;
 import com.relaxed.common.http.core.resource.FileResource;
 import com.relaxed.common.http.core.resource.InputStreamResource;
 import com.relaxed.common.http.core.resource.Resource;
 import com.relaxed.common.http.core.response.IResponse;
-import com.relaxed.common.http.domain.IHttpResponse;
 import com.relaxed.common.http.domain.RequestForm;
 
 import com.relaxed.common.http.exception.RequestException;
@@ -161,7 +161,7 @@ public abstract class AbstractRequest<R extends IResponse> implements IRequest<R
 	 * @return R
 	 */
 	@Override
-	public R convertToResponse(IHttpResponse response) {
+	public R convertToResponse(ClientResponse response) {
 		return JSONUtil.toBean(response.body(), responseClass);
 	}
 
