@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
     <properties>
         <reversion>1.0.0-SNAPSHOT</reversion>
-        <spring-boot.version>2.6.8</spring-boot.version>
+        <spring-boot.version>2.7.4</spring-boot.version>
         <spring-javaformat-checkstyle.version>0.0.27</spring-javaformat-checkstyle.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
         <lombok.version>1.18.20</lombok.version>
@@ -163,7 +163,7 @@
             <!--cache-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-common-cache</artifactId>
+                <artifactId>relaxed-common-redis</artifactId>
                 <version>${reversion}</version>
             </dependency>
 

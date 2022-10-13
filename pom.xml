@@ -47,7 +47,7 @@
         <maven.compiler.target>8</maven.compiler.target>
 
         <maven-compiler-plugin.verison>3.8.0</maven-compiler-plugin.verison>
-        <spring-boot.version>2.6.8</spring-boot.version>
+        <spring-boot.version>2.7.4</spring-boot.version>
         <lombok.version>1.18.20</lombok.version>
         <spring-javaformat-checkstyle.version>0.0.27</spring-javaformat-checkstyle.version>
         <flatten-maven-plugin.version>1.2.5</flatten-maven-plugin.version>

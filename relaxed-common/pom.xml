@@ -22,6 +22,7 @@
 
         <module>relaxed-common-ip</module>
         <module>relaxed-common-cache</module>
+
         <module>relaxed-common-util</module>
         <module>relaxed-common-log</module>
         <module>relaxed-common-exception</module>
