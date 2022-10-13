@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import javax.annotation.PreDestroy;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
@@ -45,6 +46,17 @@ public class LockRenewalScheduledTask {
 		scheduler = new ScheduledThreadPoolExecutor(this.corePoolSize,
 				new BasicThreadFactory.Builder().namingPattern(this.threadPoolName).daemon(true).build());
 		initWatchDog();
+	}
+
+	@PreDestroy
+	public void destroy() {
+		try {
+			log.info("close thread pool  {}", threadPoolName);
+			this.scheduler.shutdown();
+		}
+		catch (Exception e) {
+			log.error("close thread pool exception", e);
+		}
 	}
 
 	private void initWatchDog() {
