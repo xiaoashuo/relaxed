@@ -46,16 +46,17 @@ public class LockRenewalScheduledTask {
 		scheduler = new ScheduledThreadPoolExecutor(this.corePoolSize,
 				new BasicThreadFactory.Builder().namingPattern(this.threadPoolName).daemon(true).build());
 		initWatchDog();
+		log.info("start daemon thread pool {}  success", threadPoolName);
 	}
 
 	@PreDestroy
 	public void destroy() {
 		try {
-			log.info("close thread pool  {}", threadPoolName);
+			log.info("close daemon thread pool  {}", threadPoolName);
 			this.scheduler.shutdown();
 		}
 		catch (Exception e) {
-			log.error("close thread pool exception", e);
+			log.error("close daemon thread pool exception", e);
 		}
 	}
 
