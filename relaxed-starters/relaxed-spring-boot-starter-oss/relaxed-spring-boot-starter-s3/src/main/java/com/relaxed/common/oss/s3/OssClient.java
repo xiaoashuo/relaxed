@@ -10,7 +10,9 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
@@ -98,7 +100,13 @@ public class OssClient implements DisposableBean {
 			builder.acl(acl);
 		}
 		// 返回eTag
-		getS3Client().putObject(builder.build(), RequestBody.fromInputStream(inputStream, size));
+		try {
+			getS3Client().putObject(builder.build(), RequestBody.fromInputStream(inputStream, size));
+		}
+		catch (Exception e) {
+			throw new OssException(e, "upload file error bucket:%s,path:%s", this.bucket, relativePath);
+
+		}
 		return getDownloadUrl(relativePath);
 	}
 
@@ -117,7 +125,12 @@ public class OssClient implements DisposableBean {
 			builder.acl(acl);
 		}
 		// 返回eTag
-		getS3Client().putObject(builder.build(), RequestBody.fromFile(file));
+		try {
+			getS3Client().putObject(builder.build(), RequestBody.fromFile(file));
+		}
+		catch (Exception e) {
+			throw new OssException(e, "upload file error bucket:%s,path:%s", this.bucket, relativePath);
+		}
 		return getDownloadUrl(relativePath);
 	}
 
@@ -163,8 +176,9 @@ public class OssClient implements DisposableBean {
 				return IoUtils.toByteArray(responseInputStream);
 			}
 		}
-		catch (IOException e) {
-			throw new OssException("download file error bucket:" + this.bucket + "path:" + relativePath, e);
+		catch (Exception e) {
+			throw new OssException(e, "download file error bucket:%s,path:%s", this.bucket, relativePath);
+
 		}
 	}
 
@@ -178,7 +192,12 @@ public class OssClient implements DisposableBean {
 		if (!StringUtils.hasText(path)) {
 			return;
 		}
-		getS3Client().deleteObject(builder -> builder.bucket(bucket).key(path));
+		try {
+			getS3Client().deleteObject(builder -> builder.bucket(bucket).key(path));
+		}
+		catch (Exception e) {
+			throw new OssException(e, "delete file error bucket:%s,path:%s", this.bucket, path);
+		}
 	}
 
 	/**
@@ -222,7 +241,14 @@ public class OssClient implements DisposableBean {
 				// 此处一定要指定原始命名空间
 				.sourceBucket(bucket).sourceKey(sourcePath).destinationBucket(bucket).destinationKey(toPath).build();
 
-		getS3Client().copyObject(copyObjRequest);
+		try {
+			getS3Client().copyObject(copyObjRequest);
+		}
+		catch (Exception e) {
+			throw new OssException(e, "copy file error bucket:%s,source path:%s,dest path:%s", this.bucket, sourcePath,
+					toPath);
+
+		}
 		return getDownloadUrl(toPath);
 
 	}
