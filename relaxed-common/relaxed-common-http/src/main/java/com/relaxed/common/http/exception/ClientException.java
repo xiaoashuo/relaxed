@@ -25,4 +25,12 @@ public class ClientException extends RuntimeException {
 		this.message = message;
 	}
 
+	public int getCode() {
+		return code;
+	}
+
+	@Override
+	public String getMessage() {
+		return message;
+	}
 }
