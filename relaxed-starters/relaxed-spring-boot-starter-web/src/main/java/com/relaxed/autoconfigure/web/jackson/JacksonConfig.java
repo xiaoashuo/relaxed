@@ -42,12 +42,20 @@ public class JacksonConfig {
 		// NULL值修改
 		objectMapper.setSerializerFactory(
 				objectMapper.getSerializerFactory().withSerializerModifier(new NullSerializerModifier()));
-		// 时间解析器
-		objectMapper.registerModule(new JavaTimeModule());
 		// 有特殊需要转义字符, 不报错
 		objectMapper.enable(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature());
 
 		return objectMapper;
+	}
+
+	/**
+	 * 注册自定义 的 jackson 时间格式，高优先级，用于覆盖默认的时间格式
+	 * @return CustomJavaTimeModule
+	 */
+	@Bean
+	@ConditionalOnMissingBean(JavaTimeModule.class)
+	public JavaTimeModule customJavaTimeModule() {
+		return new JavaTimeModule();
 	}
 
 	/**
