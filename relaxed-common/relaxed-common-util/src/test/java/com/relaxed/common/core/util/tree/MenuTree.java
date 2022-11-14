@@ -71,12 +71,12 @@ public class MenuTree implements TreeNode<Integer> {
 	private List<MenuTree> children;
 
 	@Override
-	public Integer getId() {
+	public Integer getKey() {
 		return id;
 	}
 
 	@Override
-	public Integer getParentId() {
+	public Integer getParentKey() {
 		return parentId;
 	}
 
