@@ -1,7 +1,10 @@
 package com.relaxed.common.core.batch.params;
 
+import cn.hutool.core.util.StrUtil;
+import com.relaxed.common.core.batch.BatchException;
 import com.relaxed.common.core.batch.functions.BatchConsumer;
 import com.relaxed.common.core.batch.functions.BatchSupplier;
+import com.relaxed.common.core.batch.functions.ExceptionHandler;
 import lombok.Data;
 
 /**
@@ -12,7 +15,7 @@ import lombok.Data;
  * @Version 1.0
  */
 @Data
-public class BatchParam {
+public class BatchParam<T> {
 
 	/**
 	 * 任务名称
@@ -27,17 +30,21 @@ public class BatchParam {
 	/**
 	 * 批处理消费者
 	 */
-	private BatchConsumer batchConsumer;
+	private BatchConsumer<T> batchConsumer;
 
 	/**
 	 * 批处理数据获取函数
 	 */
-	private BatchSupplier batchSupplier;
+	private BatchSupplier<T> batchSupplier;
 
 	/**
 	 * 是否开启异步
 	 */
 	private boolean async = false;
+
+	private ExceptionHandler<T> exceptionHandler = (taskName, dataWrapper, throwable) -> {
+		throw new BatchException(StrUtil.format("当前任务名称:{} 处理参数:{} ", taskName, dataWrapper), throwable);
+	};
 
 	private BatchParam() {
 	}

@@ -4,11 +4,12 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.core.batch.functions.BatchConsumer;
 import com.relaxed.common.core.batch.functions.BatchSupplier;
-import com.relaxed.common.core.batch.params.BatchConsumerParam;
-import com.relaxed.common.core.batch.params.BatchExceptionParam;
+import com.relaxed.common.core.batch.functions.ExceptionHandler;
+
 import com.relaxed.common.core.batch.params.BatchGroup;
 
 import com.relaxed.common.core.batch.params.BatchParam;
+import com.relaxed.common.core.batch.params.DataWrapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
@@ -34,20 +35,9 @@ import java.util.function.Supplier;
 public abstract class AbstractBatchOps {
 
 	/**
-	 * 错误处理器 错误处理回调运行在调用者线程，若不做特殊处理 则程序抛出异常中断
-	 *
-	 */
-	private Consumer<BatchExceptionParam> errorHandler = batchExceptionParam -> {
-		throw new BatchException(
-				StrUtil.format("当前任务名称:{} 当前位置:{} 批处理组:{}", batchExceptionParam.getTaskName(),
-						batchExceptionParam.getCurrentStepPosition(), batchExceptionParam.getBatchGroup()),
-				batchExceptionParam.getThrowable());
-	};
-
-	/**
 	 * 运行批处理
 	 */
-	public void runBatch(BatchParam batchParam) {
+	public <T> void runBatch(BatchParam<T> batchParam) {
 		Assert.notNull(batchParam, "batch param can not be null.");
 		// 基础参数获取
 		String taskName = batchParam.getTaskName();
@@ -57,29 +47,23 @@ public abstract class AbstractBatchOps {
 		int size = batchGroup.getSize();
 		long groupNum = batchGroup.getGroupNum();
 		// 数据提供者
-		BatchSupplier batchSupplier = batchParam.getBatchSupplier();
+		BatchSupplier<T> batchSupplier = batchParam.getBatchSupplier();
 		// 数据消费者
-		BatchConsumer batchConsumer = batchParam.getBatchConsumer();
+		BatchConsumer<T> batchConsumer = batchParam.getBatchConsumer();
+		ExceptionHandler<T> exceptionHandler = batchParam.getExceptionHandler();
 		log.info("{}-batch process start...", taskName);
 		StopWatch stopWatch = new StopWatch(taskName);
 		stopWatch.start();
 		List<CompletableFuture> completableFutures = new ArrayList<>();
 		for (int i = 1; i <= groupNum; i++) {
 			// 起始处理值
-			int currentStepPosition = computeStartPos(i, size);
+			int batchStartIndex = computeStartPos(i, size);
 			if (async) {
-				completableFutures
-						.add(runAsync(currentStepPosition, taskName, batchGroup, batchSupplier, batchConsumer));
+				completableFutures.add(runAsync(taskName, batchStartIndex, batchGroup, batchSupplier, batchConsumer,
+						exceptionHandler));
 			}
 			else {
-				try {
-					process(currentStepPosition, batchGroup, batchSupplier, batchConsumer);
-				}
-				catch (Exception throwable) {
-					BatchExceptionParam batchExceptionParam = BatchExceptionParam.of(taskName, currentStepPosition,
-							batchGroup, throwable);
-					errorHandler.accept(batchExceptionParam);
-				}
+				process(taskName, batchStartIndex, batchGroup, batchSupplier, batchConsumer, exceptionHandler);
 			}
 		}
 		// 异步任务时候 同步等待执行完成
@@ -92,19 +76,57 @@ public abstract class AbstractBatchOps {
 
 	/**
 	 * 处理步骤模板
-	 * @param currentStepPosition 起始pos
+	 * @param taskName 任务名称
+	 * @param batchStartIndex 起始pos
 	 * @param batchGroup 批处理组
 	 * @param batchSupplier 数据提供者
 	 * @param batchConsumer 数据消费者
 	 */
-	protected void process(int currentStepPosition, BatchGroup batchGroup, BatchSupplier batchSupplier,
-			BatchConsumer batchConsumer) {
+	protected <T> void process(String taskName, int batchStartIndex, BatchGroup batchGroup,
+			BatchSupplier<T> batchSupplier, BatchConsumer<T> batchConsumer, ExceptionHandler<T> exceptionHandler) {
 		// 获取数据
-		List list = batchSupplier.apply(currentStepPosition, batchGroup.getSize());
-		// 构造消费者入参
-		BatchConsumerParam consumerData = buildConsumerParam(currentStepPosition, batchGroup, list);
-		// 消费消费者
-		batchConsumer.consumer(consumerData);
+		List<T> dataList = getData(taskName, batchStartIndex, batchGroup, batchSupplier, exceptionHandler);
+		// 消费数据
+		consumerData(taskName, batchStartIndex, batchGroup, batchConsumer, exceptionHandler, dataList);
+
+	}
+
+	private <T> void consumerData(String taskName, int batchStartIndex, BatchGroup batchGroup,
+			BatchConsumer<T> batchConsumer, ExceptionHandler<T> exceptionHandler, List<T> dataList) {
+		if (dataList == null) {
+			return;
+		}
+		int batchSize = batchGroup.getSize();
+		for (int i = 0; i < batchSize; i++) {
+			T data = dataList.get(i);
+			int rangePosIndex = i + 1;
+			// 构造消费者入参
+			DataWrapper dataWrapper = new DataWrapper<T>().batchStartPosIndex(batchStartIndex).batchGroup(batchGroup)
+					.currentPosIndex(batchStartIndex + rangePosIndex).data(data);
+			try {
+				// 消费消费者
+				batchConsumer.consumer(dataWrapper);
+			}
+			catch (Exception e) {
+				exceptionHandler.collect(taskName, dataWrapper, e);
+			}
+		}
+	}
+
+	private <T> List<T> getData(String taskName, int batchStartIndex, BatchGroup batchGroup,
+			BatchSupplier<T> batchSupplier, ExceptionHandler<T> exceptionHandler) {
+		int batchSize = batchGroup.getSize();
+		List<T> dataList = null;
+		try {
+			dataList = batchSupplier.apply(batchStartIndex, batchSize);
+		}
+		catch (Exception e) {
+			// 构造消费者入参
+			DataWrapper dataWrapper = new DataWrapper<T>().batchStartPosIndex(batchStartIndex)
+					.currentPosIndex(batchStartIndex).batchGroup(batchGroup);
+			exceptionHandler.collect(taskName, dataWrapper, e);
+		}
+		return dataList;
 	}
 
 	/**
@@ -118,21 +140,6 @@ public abstract class AbstractBatchOps {
 	}
 
 	/**
-	 * 构建批处理消费者参数
-	 * @param currentStepPosition
-	 * @param batchGroup
-	 * @param list
-	 * @return
-	 */
-	protected BatchConsumerParam buildConsumerParam(Integer currentStepPosition, BatchGroup batchGroup, List list) {
-		BatchConsumerParam consumerData = new BatchConsumerParam<>();
-		consumerData.setBatchGroup(batchGroup);
-		consumerData.setCurrentStepPosition(currentStepPosition);
-		consumerData.setData(list);
-		return consumerData;
-	}
-
-	/**
 	 * 获取线程执行器
 	 * @return
 	 */
@@ -140,83 +147,18 @@ public abstract class AbstractBatchOps {
 
 	/**
 	 * 无返回值异步
-	 * @param currentStepPosition
 	 * @param taskName
+	 * @param batchStartIndex
 	 * @param batchGroup
-	 * @param batchSupplier
-	 * @param batchConsumer
 	 * @return
 	 */
-	private CompletableFuture<Void> runAsync(Integer currentStepPosition, String taskName, BatchGroup batchGroup,
-			BatchSupplier batchSupplier, BatchConsumer batchConsumer) {
-		return runAsync(currentStepPosition, taskName, batchGroup,
-				() -> process(currentStepPosition, batchGroup, batchSupplier, batchConsumer));
-	}
+	private <T> CompletableFuture<Void> runAsync(String taskName, Integer batchStartIndex, BatchGroup batchGroup,
+			BatchSupplier<T> batchSupplier, BatchConsumer<T> batchConsumer, ExceptionHandler<T> exceptionHandler) {
+		// 此处将异常自己捕获 忽略原始的异常捕获
+		return CompletableFuture.runAsync(
+				() -> process(taskName, batchStartIndex, batchGroup, batchSupplier, batchConsumer, exceptionHandler),
+				executor());
 
-	/**
-	 * 无返回值异步
-	 * @param currentStepPosition
-	 * @param taskName
-	 * @param batchGroup
-	 * @param runnable
-	 * @return
-	 */
-	private CompletableFuture<Void> runAsync(Integer currentStepPosition, String taskName, BatchGroup batchGroup,
-			Runnable runnable) {
-		return runAsync(currentStepPosition, taskName, batchGroup, runnable, errorHandler);
-	}
-
-	/**
-	 * 有返回值异步
-	 * @param currentStepPosition
-	 * @param taskName
-	 * @param batchGroup
-	 * @param supplier
-	 * @param <U>
-	 * @return
-	 */
-	private <U> CompletableFuture<U> supplyAsync(Integer currentStepPosition, String taskName, BatchGroup batchGroup,
-			Supplier<U> supplier) {
-		return supplyAsync(currentStepPosition, taskName, batchGroup, supplier, errorHandler);
-	}
-
-	/**
-	 * 无返回值异步
-	 * @param currentStepPosition
-	 * @param taskName
-	 * @param batchGroup
-	 * @param runnable
-	 * @param errorHandler
-	 * @return
-	 */
-	private CompletableFuture<Void> runAsync(Integer currentStepPosition, String taskName, BatchGroup batchGroup,
-			Runnable runnable, Consumer<BatchExceptionParam> errorHandler) {
-		return CompletableFuture.runAsync(runnable, executor()).exceptionally(throwable -> {
-			BatchExceptionParam batchExceptionParam = BatchExceptionParam.of(taskName, currentStepPosition, batchGroup,
-					throwable);
-			errorHandler.accept(batchExceptionParam);
-			return null;
-		});
-	}
-
-	/**
-	 * 有返回值异步
-	 * @param currentStepPosition
-	 * @param taskName
-	 * @param batchGroup
-	 * @param supplier
-	 * @param errorHandler
-	 * @param <U>
-	 * @return
-	 */
-	private <U> CompletableFuture<U> supplyAsync(Integer currentStepPosition, String taskName, BatchGroup batchGroup,
-			Supplier<U> supplier, Consumer<BatchExceptionParam> errorHandler) {
-		return CompletableFuture.supplyAsync(supplier, executor()).exceptionally(throwable -> {
-			BatchExceptionParam batchExceptionParam = BatchExceptionParam.of(taskName, currentStepPosition, batchGroup,
-					throwable);
-			errorHandler.accept(batchExceptionParam);
-			return null;
-		});
 	}
 
 }

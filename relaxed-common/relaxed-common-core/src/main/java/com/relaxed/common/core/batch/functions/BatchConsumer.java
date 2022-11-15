@@ -1,6 +1,6 @@
 package com.relaxed.common.core.batch.functions;
 
-import com.relaxed.common.core.batch.params.BatchConsumerParam;
+import com.relaxed.common.core.batch.params.DataWrapper;
 
 /**
  * @author Yakir
@@ -16,6 +16,6 @@ public interface BatchConsumer<T> {
 	 * 数据消费者
 	 * @param data
 	 */
-	void consumer(BatchConsumerParam<T> data);
+	void consumer(DataWrapper<T> data);
 
 }
