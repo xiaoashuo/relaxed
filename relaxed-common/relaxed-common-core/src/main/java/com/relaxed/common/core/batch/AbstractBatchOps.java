@@ -75,7 +75,7 @@ public abstract class AbstractBatchOps {
 	}
 
 	/**
-	 * 处理步骤模板
+	 * 处理步骤模板 //TODO 后续将 生产者 消费者 提供成 reader writer 增加监听 与此处解耦
 	 * @param taskName 任务名称
 	 * @param batchStartIndex 起始pos
 	 * @param batchGroup 批处理组
