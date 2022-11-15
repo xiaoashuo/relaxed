@@ -28,21 +28,13 @@ public class SimpleTreeNode<I> implements TreeNode<I> {
 	private List<SimpleTreeNode<I>> children;
 
 	@Override
-	public I getId() {
+	public I getKey() {
 		return id;
 	}
 
-	public void setId(I id) {
-		this.id = id;
-	}
-
 	@Override
-	public I getParentId() {
+	public I getParentKey() {
 		return parentId;
-	}
-
-	public void setParentId(I parentId) {
-		this.parentId = parentId;
 	}
 
 	@Override
