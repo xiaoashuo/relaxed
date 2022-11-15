@@ -96,7 +96,7 @@ public abstract class AbstractBatchOps {
 		if (dataList == null) {
 			return;
 		}
-		int batchSize = batchGroup.getSize();
+		int batchSize = Math.min(dataList.size(), batchGroup.getSize());
 		for (int i = 0; i < batchSize; i++) {
 			T data = dataList.get(i);
 			int rangePosIndex = i + 1;

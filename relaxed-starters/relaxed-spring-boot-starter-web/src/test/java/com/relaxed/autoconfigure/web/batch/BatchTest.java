@@ -27,7 +27,7 @@ public class BatchTest {
 
 	public static void main(String[] args) {
 
-		int total = 1000;
+		int total = 104;
 		int pageSize = 20;
 		List<String> dataList = new ArrayList<>();
 		for (int i = 0; i < total; i++) {
