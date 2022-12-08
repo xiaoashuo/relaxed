@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 /**
  * 默认实现
@@ -205,12 +206,25 @@ public class SftpExecutor extends AbstractSftpExecutor {
 
 	@Override
 	public List<String> list(String path) {
+		return this.list(path, (isDir, modifyTime) -> true);
+	}
+
+	@Override
+	public List<String> list(String path, BiFunction<Boolean, Long, Boolean> filterFunction) {
 		List<String> result = new ArrayList<>();
 		ChannelSftp.LsEntrySelector selector = lsEntry -> {
 			String filename = lsEntry.getFilename();
 			if (!".".equals(filename) && !"..".equals(filename)) {
-				result.add(filename);
+				SftpATTRS attrs = lsEntry.getAttrs();
+				boolean isDir = attrs.isDir();
+				// “atime”和“mtime”分别包含文件的访问和修改时间,它们表示为UTC 1970年1月1日起的秒数。
+				long modifyTime = attrs.getMTime() * 1000L;
+				Boolean isNeedStorage = filterFunction.apply(isDir, modifyTime);
+				if (isNeedStorage) {
+					result.add(filename);
+				}
 			}
+
 			return ChannelSftp.LsEntrySelector.CONTINUE;
 		};
 		try {

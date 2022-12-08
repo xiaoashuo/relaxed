@@ -5,6 +5,7 @@ import com.jcraft.jsch.ChannelSftp;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
+import java.util.function.BiFunction;
 
 /**
  * @author Yakir
@@ -118,6 +119,15 @@ public interface ISftpExecutor {
 	 * @return 目录下的文件和目录名称集合
 	 */
 	List<String> list(String path);
+
+	/**
+	 * 查看远程目录下的文件和目录
+	 * @param path 远程目录路径
+	 * @param filterFunction 过滤函数 (boolean isDir,long modifyTime)-> true ; 返回true
+	 * 则当前寻找到文件需要保存 返回false 则跳过当前文件目录存储
+	 * @return 目录下的文件和目录名称集合
+	 */
+	List<String> list(String path, BiFunction<Boolean, Long, Boolean> filterFunction);
 
 	/**
 	 * 移动或重命名文件
