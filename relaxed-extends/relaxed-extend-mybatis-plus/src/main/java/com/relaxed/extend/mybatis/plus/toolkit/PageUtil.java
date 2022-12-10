@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.relaxed.common.model.domain.PageParam;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Hccake 2021/1/19
@@ -24,11 +25,11 @@ public final class PageUtil {
 	 */
 	public static <V> IPage<V> prodPage(PageParam pageParam) {
 		Page<V> page = new Page<>(pageParam.getCurrent(), pageParam.getSize());
-		List<PageParam.Sort> sorts = pageParam.getSorts();
-		for (PageParam.Sort sort : sorts) {
-			OrderItem orderItem = sort.isAsc() ? OrderItem.asc(sort.getField()) : OrderItem.desc(sort.getField());
+		Map<String, Boolean> sortFieldMap = pageParam.getSort();
+		sortFieldMap.forEach((field, value) -> {
+			OrderItem orderItem = value ? OrderItem.asc(field) : OrderItem.desc(field);
 			page.addOrder(orderItem);
-		}
+		});
 		return page;
 	}
 

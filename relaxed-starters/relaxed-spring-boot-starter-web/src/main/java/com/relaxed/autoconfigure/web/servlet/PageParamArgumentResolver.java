@@ -8,12 +8,17 @@ import com.relaxed.common.model.domain.PageParam;
 import com.relaxed.common.model.domain.PageParamRequest;
 import com.relaxed.common.model.result.BaseResultCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.PropertyValue;
 import org.springframework.core.MethodParameter;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.ValidationAnnotationUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestParameterPropertyValues;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -22,10 +27,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 分页参数解析器
@@ -76,11 +78,6 @@ public class PageParamArgumentResolver implements HandlerMethodArgumentResolver 
 
 		HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
 
-		String current = request.getParameter("current");
-		String size = request.getParameter("size");
-		Map<String, String[]> parameterMap = request.getParameterMap();
-		String[] sort = parameterMap.get("sort");
-
 		PageParam pageParam;
 		try {
 			pageParam = (PageParam) parameter.getParameterType().newInstance();
@@ -89,109 +86,64 @@ public class PageParamArgumentResolver implements HandlerMethodArgumentResolver 
 			pageParam = new PageParam();
 		}
 
-		if (StrUtil.isNotBlank(current)) {
-			pageParam.setCurrent(Long.parseLong(current));
+		BeanWrapper pageParamBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(pageParam);
+		pageParamBeanWrapper.setExtractOldValueForEditor(true);
+		pageParamBeanWrapper.setAutoGrowNestedPaths(true);
+		pageParamBeanWrapper.setAutoGrowCollectionLimit(256);
+		WebDataBinder binder = null;
+		if (binderFactory != null) {
+			binder = binderFactory.createBinder(webRequest, pageParam, "pageParam");
+			validateIfApplicable(binder, parameter);
+			pageParamBeanWrapper.setConversionService(binder.getConversionService());
 		}
-		if (StrUtil.isNotBlank(size)) {
-			pageParam.setSize(Long.parseLong(size));
+		MutablePropertyValues pvs = new ServletRequestParameterPropertyValues(request);
+		List<PropertyValue> pageParamPropertyValues = new ArrayList<>();
+		List<PropertyValue> propertyValues = (pvs instanceof MutablePropertyValues ? pvs.getPropertyValueList()
+				: Arrays.asList(pvs.getPropertyValues()));
+		for (PropertyValue pv : propertyValues) {
+			String name = pv.getName();
+			if (name.equals("current") || name.equals("size")) {
+				pageParamPropertyValues.add(pv);
+			}
+			else if (name.startsWith("sort")) {
+				String value = (String) pv.getValue();
+				// 若排序字段 或规则 有一个为空 则不参与排序
+				if (StrUtil.isEmpty(name) || StrUtil.isEmpty(value)) {
+					continue;
+				}
+				pageParamPropertyValues.add(new PropertyValue(name, ASC.equalsIgnoreCase(value)));
+			}
+		}
+		for (PropertyValue pageParamPropertyValue : pageParamPropertyValues) {
+			pageParamBeanWrapper.setPropertyValue(pageParamPropertyValue);
 		}
 
-		List<PageParam.Sort> sorts;
-		if (ArrayUtil.isNotEmpty(sort)) {
-			sorts = getSortList(sort);
+		pageParam.setSort(convertToTargetFieldMap(pageParam));
+		if (binder != null) {
+			paramValidate(parameter, mavContainer, webRequest, binder, pageParam);
 		}
-		else {
-			String sortFields = request.getParameter("sortFields");
-			String sortOrders = request.getParameter("sortOrders");
-			sorts = getSortList(sortFields, sortOrders);
-		}
-		pageParam.setSorts(sorts);
-
-		paramValidate(parameter, mavContainer, webRequest, binderFactory, pageParam);
-
 		return pageParam;
 	}
 
 	/**
-	 * 封装排序规则
-	 * @param sort 排序规则字符串
-	 * @return List<PageParam.Sort>
+	 * 将前台侧排序字段 转为后台测
+	 * @param pageParam 前台侧业务参数
+	 * @return Map<String,Boolean> 参与排序字段
 	 */
-	protected List<PageParam.Sort> getSortList(String[] sort) {
-		List<PageParam.Sort> sorts = new ArrayList<>();
-
-		// 将排序规则转换为 Sort 对象
-		for (String sortRule : sort) {
-			if (sortRule == null) {
-				continue;
+	private Map<String, Boolean> convertToTargetFieldMap(PageParam pageParam) {
+		Map<String, Boolean> sortFieldMap = pageParam.getSort();
+		Map<String, Boolean> targetFieldMap = new HashMap<>();
+		Set<Map.Entry<String, Boolean>> sourceSortFieldEntry = sortFieldMap.entrySet();
+		for (Map.Entry<String, Boolean> entry : sourceSortFieldEntry) {
+			String field = entry.getKey();
+			Boolean value = entry.getValue();
+			// 验证排序字段 是否符合规范
+			if (validFieldName(field)) {
+				targetFieldMap.put(StrUtil.toUnderlineCase(field), value);
 			}
-
-			// 切割后必须是两位， a:b 的规则
-			String[] sortRuleArr = sortRule.split(",");
-
-			// 字段
-			String field = sortRuleArr[0];
-
-			// 排序规则，默认正序
-			String order;
-			if (sortRuleArr.length < 2) {
-				order = ASC;
-			}
-			else {
-				order = sortRuleArr[1];
-			}
-
-			fillValidSort(field, order, sorts);
 		}
 
-		return sorts;
-	}
-
-	/**
-	 * 封装排序规则
-	 * @param sortFields 排序字段，使用英文逗号分割
-	 * @param sortOrders 排序规则，使用英文逗号分割，与排序字段一一对应
-	 * @return List<PageParam.OrderItem>
-	 */
-	protected List<PageParam.Sort> getSortList(String sortFields, String sortOrders) {
-		List<PageParam.Sort> sorts = new ArrayList<>();
-
-		// 字段和规则都不能为空
-		if (StrUtil.isBlank(sortFields) || StrUtil.isBlank(sortOrders)) {
-			return sorts;
-		}
-
-		// 字段和规则不一一对应则不处理
-		String[] fieldArr = sortFields.split(StrUtil.COMMA);
-		String[] orderArr = sortOrders.split(StrUtil.COMMA);
-		if (fieldArr.length != orderArr.length) {
-			return sorts;
-		}
-
-		for (int i = 0; i < fieldArr.length; i++) {
-			String field = fieldArr[i];
-			String order = orderArr[i];
-			fillValidSort(field, order, sorts);
-		}
-
-		return sorts;
-	}
-
-	/**
-	 * 校验并填充有效的 sort 对象到指定集合忠
-	 * @param field 排序列
-	 * @param order 排序顺序
-	 * @param sorts sorts 集合
-	 */
-	protected void fillValidSort(String field, String order, List<PageParam.Sort> sorts) {
-		if (validFieldName(field)) {
-			PageParam.Sort sort = new PageParam.Sort();
-			// 驼峰转下划线
-			sort.setAsc(ASC.equalsIgnoreCase(order));
-			// 正序/倒序
-			sort.setField(StrUtil.toUnderlineCase(field));
-			sorts.add(sort);
-		}
+		return targetFieldMap;
 	}
 
 	/**
@@ -209,25 +161,23 @@ public class PageParamArgumentResolver implements HandlerMethodArgumentResolver 
 	}
 
 	protected void paramValidate(MethodParameter parameter, ModelAndViewContainer mavContainer,
-			NativeWebRequest webRequest, WebDataBinderFactory binderFactory, PageParam pageParam) throws Exception {
+			NativeWebRequest webRequest, WebDataBinder binder, PageParam pageParam) throws Exception {
 		// 数据校验处理
-		if (binderFactory != null) {
-			WebDataBinder binder = binderFactory.createBinder(webRequest, pageParam, "pageParam");
-			validateIfApplicable(binder, parameter);
-			BindingResult bindingResult = binder.getBindingResult();
 
-			long size = pageParam.getSize();
-			if (size > pageSizeLimit) {
-				bindingResult.addError(new ObjectError("size", "分页条数不能大于" + pageSizeLimit));
-			}
+		BindingResult bindingResult = binder.getBindingResult();
 
-			if (bindingResult.hasErrors() && isBindExceptionRequired(binder, parameter)) {
-				throw new MethodArgumentNotValidException(parameter, bindingResult);
-			}
-			if (mavContainer != null) {
-				mavContainer.addAttribute(BindingResult.MODEL_KEY_PREFIX + "pageParam", bindingResult);
-			}
+		long size = pageParam.getSize();
+		if (size > pageSizeLimit) {
+			bindingResult.addError(new ObjectError("size", "分页条数不能大于" + pageSizeLimit));
 		}
+
+		if (bindingResult.hasErrors() && isBindExceptionRequired(binder, parameter)) {
+			throw new MethodArgumentNotValidException(parameter, bindingResult);
+		}
+		if (mavContainer != null) {
+			mavContainer.addAttribute(BindingResult.MODEL_KEY_PREFIX + "pageParam", bindingResult);
+		}
+
 	}
 
 	protected void validateIfApplicable(WebDataBinder binder, MethodParameter parameter) {
