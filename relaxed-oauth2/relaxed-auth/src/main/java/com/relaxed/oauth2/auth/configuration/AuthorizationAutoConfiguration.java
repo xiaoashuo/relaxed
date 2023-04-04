@@ -186,6 +186,7 @@ public class AuthorizationAutoConfiguration {
 	 * @return
 	 */
 	@Bean
+	@ConditionalOnMissingBean
 	public DaoAuthenticationProvider daoAuthenticationProvider(PasswordEncoder passwordEncoder,
 			UserDetailsService userDetailsService) {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();

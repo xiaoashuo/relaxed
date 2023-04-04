@@ -1,16 +1,16 @@
-package com.relaxed.common.core.batch.params;
+package com.relaxed.common.core.batch;
 
-import lombok.Data;
+import lombok.Getter;
 import org.springframework.util.Assert;
 
 /**
  * @author Yakir
- * @Topic BatchPage
+ * @Topic BatchGroup
  * @Description
- * @date 2021/7/9 12:40
+ * @date 2023/4/3 14:56
  * @Version 1.0
  */
-@Data
+@Getter
 public class BatchGroup {
 
 	/**
