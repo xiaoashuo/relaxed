@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.lovecyy</groupId>
          <artifactId>relaxed</artifactId>
-         <version>${reversion}</version>
+         <version>${revision}</version>
     </parent>
 
     <artifactId>relaxed-common</artifactId>
@@ -28,7 +28,7 @@
         <module>relaxed-common-exception</module>
         <module>relaxed-common-translation</module>
         <module>relaxed-common-http</module>
-        <module>relaxed-common-i18n</module>
+<!--        <module>relaxed-common-i18n</module>-->
     </modules>
 
 

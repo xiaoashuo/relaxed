@@ -5,15 +5,21 @@
 
     <groupId>com.lovecyy</groupId>
     <artifactId>relaxed-dependencies</artifactId>
-    <version>${reversion}</version>
+    <version>${revision}</version>
 
     <packaging>pom</packaging>
     <properties>
-        <reversion>1.0.0-SNAPSHOT</reversion>
-        <spring-boot.version>2.7.4</spring-boot.version>
-        <spring-javaformat-checkstyle.version>0.0.27</spring-javaformat-checkstyle.version>
+        <revision>1.0.0-SNAPSHOT</revision>
+        <!--插件部分-->
+        <maven-compiler-plugin.verison>3.8.0</maven-compiler-plugin.verison>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
+        <spring-javaformat-checkstyle.version>0.0.27</spring-javaformat-checkstyle.version>
+        <flatten-maven-plugin.version>1.2.5</flatten-maven-plugin.version>
+
+        <!--依赖部分-->
+        <spring-boot.version>2.7.10</spring-boot.version>
         <lombok.version>1.18.20</lombok.version>
+        <mapstruct.version>1.4.2.Final</mapstruct.version>
         <hutool.version>5.8.2</hutool.version>
         <xxl-job.version>2.2.0</xxl-job.version>
         <mybatis.version>3.5.5</mybatis.version>
@@ -24,8 +30,6 @@
         <jsch.version>0.1.54</jsch.version>
         <easyexcel.version>3.0.5</easyexcel.version>
         <poi.version>5.2.2</poi.version>
-        <flatten-maven-plugin.version>1.2.5</flatten-maven-plugin.version>
-        <mapstruct.version>1.4.2.Final</mapstruct.version>
         <itext-font-asian.version>7.1.13</itext-font-asian.version>
         <itext-html-pdf.version>3.0.2</itext-html-pdf.version>
         <velocity.version>1.7</velocity.version>
@@ -86,70 +90,70 @@
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-admin-core</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--鉴权模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-oauth2-common</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--鉴权模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-auth</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--鉴权模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-resource</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
 
             <!--model 模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-model</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--核心模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-core</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
 
             <!--IP模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-ip</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
 
             <!--脱敏模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-desensitize</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--幂等模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-idempotent</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--Http模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-http</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--多数据源-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-datasource</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
 
 
@@ -157,182 +161,182 @@
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-tenant</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
 
             <!--cache-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-redis</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
 
             <!--日志模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-log-mdc</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-log-access</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-log-operation</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-log-action</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--通用工具类-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-util</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--通用异常处理-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-exception</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--翻译器-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-translation</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--扩展mybatis -->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-extend-mybatis</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--扩展mybatis plus-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-extend-mybatis-plus</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--扩展Mail-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-extend-mail</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--扩展ding talk-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-extend-dingtalk</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--扩展wechat-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-extend-wechat</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--扩展openapi-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-extend-openapi</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--下载模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-download</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--sftp客户端-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-sftp</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--ding talk-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-dingtalk</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--wechat-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-wechat</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--分布式调度任务xxl-job-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-job</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--邮件发送-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-mail</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--日志记录-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-log</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
 
             <!--web-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-web</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--xss 过滤-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-xss</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--exception-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-exception</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--secret 请求参数加解密-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-secret</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--oss s3 对象存储-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-s3</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--数据域-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-datascope</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
 
             <!--缓存模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-cache</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--EXCEL-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-easyexcel</artifactId>
-                <version>${reversion}</version>
+                <version>${revision}</version>
             </dependency>
             <!--web 模块-->
             <dependency>
@@ -403,12 +407,6 @@
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy</artifactId>
                 <version>${groovy.version}</version>
-            </dependency>
-            <!--机器学习-->
-            <dependency>
-                <groupId>org.tensorflow</groupId>
-                <artifactId>tensorflow</artifactId>
-                <version>${tensorflow.version}</version>
             </dependency>
 
             <!--easyExcel 处理-->
@@ -488,50 +486,9 @@
             </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-webflux-core</artifactId>
-                <version>${springdoc-openapi.verison}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-kotlin</artifactId>
-                <version>${springdoc-openapi.verison}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-hateoas</artifactId>
-                <version>${springdoc-openapi.verison}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-data-rest</artifactId>
-                <version>${springdoc-openapi.verison}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-security</artifactId>
-                <version>${springdoc-openapi.verison}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-groovy</artifactId>
-                <version>${springdoc-openapi.verison}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>${springdoc-openapi.verison}</version>
             </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-webflux-ui</artifactId>
-                <version>${springdoc-openapi.verison}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-javadoc</artifactId>
-                <version>${springdoc-openapi.verison}</version>
-            </dependency>
-
 
             <dependency>
                 <groupId>com.googlecode.java-diff-utils</groupId>

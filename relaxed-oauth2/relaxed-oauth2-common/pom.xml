@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.lovecyy</groupId>
          <artifactId>relaxed-oauth2</artifactId>
-         <version>${reversion}</version>
+         <version>${revision}</version>
     </parent>
 
     <artifactId>relaxed-oauth2-common</artifactId>

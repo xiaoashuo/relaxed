@@ -4,10 +4,16 @@
     <modelVersion>4.0.0</modelVersion>
 
 
+    <parent>
+        <groupId>com.lovecyy</groupId>
+        <artifactId>relaxed-dependencies</artifactId>
+        <version>${revision}</version>
+        <relativePath>relaxed-dependencies/pom.xml</relativePath>
+    </parent>
 
     <groupId>com.lovecyy</groupId>
     <artifactId>relaxed</artifactId>
-    <version>${reversion}</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -41,24 +47,23 @@
     </licenses>
 
     <properties>
-        <reversion>1.0.0-SNAPSHOT</reversion>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <maven-compiler-plugin.verison>3.8.0</maven-compiler-plugin.verison>
-        <spring-boot.version>2.7.4</spring-boot.version>
-        <lombok.version>1.18.20</lombok.version>
-        <spring-javaformat-checkstyle.version>0.0.27</spring-javaformat-checkstyle.version>
-        <flatten-maven-plugin.version>1.2.5</flatten-maven-plugin.version>
 
     </properties>
     <dependencies>
+        <!-- bean 转换工具类 -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
         <!-- lombok 代码简化处理器 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -71,18 +76,7 @@
     </dependencies>
 
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-dependencies</artifactId>
-                <version>${reversion}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
 
-        </dependencies>
-    </dependencyManagement>
 
     <distributionManagement>
         <snapshotRepository>
@@ -126,7 +120,6 @@
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${spring-boot.version}</version>
                     <executions>
                         <execution>
                             <goals>
@@ -142,7 +135,6 @@
             <plugin>
                 <groupId>io.spring.javaformat</groupId>
                 <artifactId>spring-javaformat-maven-plugin</artifactId>
-                <version>${spring-javaformat-checkstyle.version}</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -156,7 +148,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>${flatten-maven-plugin.version}</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>
@@ -184,7 +175,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.verison}</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>

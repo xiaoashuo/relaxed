@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.lovecyy</groupId>
         <artifactId>relaxed</artifactId>
-        <version>${reversion}</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>relaxed-extends</artifactId>

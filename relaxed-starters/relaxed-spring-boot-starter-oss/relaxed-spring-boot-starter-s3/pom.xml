@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.lovecyy</groupId>
         <artifactId>relaxed-spring-boot-starter-oss</artifactId>
-        <version>${reversion}</version>
+        <version>${revision}</version>
     </parent>
     <artifactId>relaxed-spring-boot-starter-s3</artifactId>
 
