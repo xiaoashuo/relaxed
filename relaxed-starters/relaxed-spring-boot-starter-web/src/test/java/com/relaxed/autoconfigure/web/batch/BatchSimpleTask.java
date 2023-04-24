@@ -71,7 +71,7 @@ public class BatchSimpleTask implements ITask<BatchLocation, String> {
 	public void exceptionCollect(BatchLocation extra, String data, Throwable throwable) {
 		log.info("当前定位处理异常,坐标{},数据{}", extra, data, throwable);
 		count.incrementAndGet();
-		// throw new IllegalArgumentException("invalid batch location");
+		throw new IllegalArgumentException("invalid batch location");
 	}
 
 	public AtomicInteger getCount() {

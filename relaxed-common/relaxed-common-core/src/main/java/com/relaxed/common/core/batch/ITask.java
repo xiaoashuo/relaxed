@@ -25,6 +25,20 @@ public interface ITask<T extends BatchLocation, M> {
 
 	void exceptionCollect(T extra, M data, Throwable throwable);
 
+	/**
+	 * 释放资源
+	 */
+	default void releaseResources() {
+
+	}
+
+	/**
+	 * 初始化
+	 */
+	default void init() {
+
+	}
+
 	@FunctionalInterface
 	interface BatchSupplier<T, M> {
 
