@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-
     <parent>
         <groupId>com.lovecyy</groupId>
         <artifactId>relaxed-dependencies</artifactId>
         <version>${revision}</version>
         <relativePath>relaxed-dependencies/pom.xml</relativePath>
     </parent>
-
-    <groupId>com.lovecyy</groupId>
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>relaxed</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
+    <name>relaxed</name>
+    <url>https://github.com/xiaoashuo/relaxed</url>
+    <description>项目基本脚手架</description>
 
     <modules>
         <module>relaxed-admin</module>
@@ -25,33 +24,17 @@
         <module>relaxed-dependencies</module>
     </modules>
 
-    <name>${project.artifactId}</name>
-    <description>项目基本脚手架</description>
-    <url>https://github.com/xiaoashuo/relaxed</url>
 
-    <developers>
-        <developer>
-            <name>yakir</name>
-            <email>yakir@foxmail.com</email>
-        </developer>
-    </developers>
-
-
-
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
 
     <properties>
+        <!-- maven 配置 -->
         <java.version>1.8</java.version>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+        <mapstruct-processor.version>1.4.2.Final</mapstruct-processor.version>
 
     </properties>
     <dependencies>
@@ -78,6 +61,34 @@
 
 
 
+
+    <!--环境变量-->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <profiles.active>dev</profiles.active>
+            </properties>
+            <activation>
+                <!-- 默认环境 -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <profiles.active>test</profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profiles.active>prod</profiles.active>
+            </properties>
+        </profile>
+
+    </profiles>
+
     <distributionManagement>
         <snapshotRepository>
             <id>release-snapshot-id</id>
@@ -89,32 +100,6 @@
         </repository>
     </distributionManagement>
     <build>
-        <finalName>${project.name}</finalName>
-        <!--重要 如果不设置resource 会导致application.yaml中的@@找不到pom文件中的配置-->
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <excludes>
-                    <exclude>static/report/**</exclude>
-                    <exclude>**/*.woff</exclude>
-                    <exclude>**/*.woff2</exclude>
-                    <exclude>**/*.ttf</exclude>
-                    <exclude>**/*.ico</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>static/report/**</include>
-                    <include>**/*.woff</include>
-                    <include>**/*.woff2</include>
-                    <include>**/*.ttf</include>
-                    <include>**/*.ico</include>
-                </includes>
-            </resource>
-        </resources>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -145,6 +130,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
@@ -176,9 +162,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                    <skip>true</skip>
                     <!-- 参考注解处理器 http://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html-->
                     <annotationProcessorPaths>
                         <path>
@@ -189,41 +172,67 @@
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
-                            <version>1.4.2.Final</version>
+                            <version>${mapstruct-processor.version}</version>
+                        </path>   <!-- spring-boot 配置处理 -->
+                        <path>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                            <version>${spring-boot.version}</version>
                         </path>
                     </annotationProcessorPaths>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
         </plugins>
+        <!--重要 如果不设置resource 会导致application.yaml中的@@找不到pom文件中的配置-->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>static/report/**</exclude>
+                    <exclude>**/*.woff</exclude>
+                    <exclude>**/*.woff2</exclude>
+                    <exclude>**/*.ttf</exclude>
+                    <exclude>**/*.ico</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>static/report/**</include>
+                    <include>**/*.woff</include>
+                    <include>**/*.woff2</include>
+                    <include>**/*.ttf</include>
+                    <include>**/*.ico</include>
+                </includes>
+            </resource>
+        </resources>
+
+
 
     </build>
 
-    <!--环境变量-->
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <properties>
-                <profiles.active>dev</profiles.active>
-            </properties>
-            <activation>
-                <!-- 默认环境 -->
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>test</id>
-            <properties>
-                <profiles.active>test</profiles.active>
-            </properties>
-        </profile>
-        <profile>
-            <id>prod</id>
-            <properties>
-                <profiles.active>prod</profiles.active>
-            </properties>
-        </profile>
 
-    </profiles>
+    <developers>
+        <developer>
+            <name>yakir</name>
+            <email>yakir@foxmail.com</email>
+        </developer>
+    </developers>
+
+
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
 
 
