@@ -13,6 +13,7 @@
         <!--插件部分-->
         <maven-compiler-plugin.verison>3.8.0</maven-compiler-plugin.verison>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
+        <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
         <spring-javaformat-checkstyle.version>0.0.27</spring-javaformat-checkstyle.version>
         <flatten-maven-plugin.version>1.2.5</flatten-maven-plugin.version>
 
@@ -542,6 +543,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.verison}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
