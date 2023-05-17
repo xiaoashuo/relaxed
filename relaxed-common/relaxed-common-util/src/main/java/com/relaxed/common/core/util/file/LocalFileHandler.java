@@ -16,56 +16,52 @@ import java.io.File;
  */
 public class LocalFileHandler implements FileHandler {
 
+	@Override
+	public String supportType() {
+		return FileConstants.DEFAULT_HANDLE_TYPE;
+	}
 
-    @Override
-    public String supportType() {
-        return FileConstants.DEFAULT_HANDLE_TYPE;
-    }
+	@SneakyThrows
+	@Override
+	public String upload(String dirPath, String filename, String separator, MultipartFile file) {
+		File desc = getAbsoluteFile(separator, dirPath, filename);
+		file.transferTo(desc);
+		String fileId = IdUtil.getSnowflakeNextId() + "";
+		return fileId;
+	}
 
-    @SneakyThrows
-    @Override
-    public String upload(String dirPath, String filename, String separator, MultipartFile file) {
-        File desc = getAbsoluteFile(separator,dirPath, filename);
-        file.transferTo(desc);
-        String
-                fileId = IdUtil.getSnowflakeNextId() + "";
-        return fileId;
-    }
+	@Override
+	public boolean delete(String rootPath, String relativePath) {
+		File file = FileUtil.file(rootPath + relativePath);
+		boolean result = FileUtil.del(file);
+		if (result) {
+			File parentFile = file.getParentFile();
+			if (parentFile.listFiles().length == 0) {
+				FileUtil.del(parentFile);
+			}
+		}
+		return result;
+	}
 
-    @Override
-    public boolean delete(String rootPath, String relativePath) {
-        File file = FileUtil.file(rootPath + relativePath);
-        boolean result = FileUtil.del(file);
-        if (result){
-            File parentFile = file.getParentFile();
-            if (parentFile.listFiles().length==0) {
-                FileUtil.del(parentFile);
-            }
-        }
-        return result;
-    }
+	@Override
+	public File downloadFile(String rootPath, String relativePath) {
+		return new File(rootPath, relativePath);
+	}
 
-    @Override
-    public File downloadFile(String rootPath, String relativePath) {
-        return new File(rootPath, relativePath);
-    }
+	@Override
+	public byte[] downloadByte(String rootPath, String relativePath) {
+		return FileUtil.readBytes(downloadFile(rootPath, relativePath));
+	}
 
-    @Override
-    public byte[] downloadByte(String rootPath, String relativePath) {
-        return FileUtil.readBytes(downloadFile(rootPath, relativePath));
-    }
+	private File getAbsoluteFile(String separator, String dirPath, String fileName) {
+		File desc = new File(dirPath + separator + fileName);
 
-    private File getAbsoluteFile(String separator, String dirPath, String fileName) {
-        File desc = new File(dirPath + separator + fileName);
-
-        if (!desc.exists()) {
-            if (!desc.getParentFile().exists()) {
-                desc.getParentFile().mkdirs();
-            }
-        }
-        return desc;
-    }
-
-
+		if (!desc.exists()) {
+			if (!desc.getParentFile().exists()) {
+				desc.getParentFile().mkdirs();
+			}
+		}
+		return desc;
+	}
 
 }

@@ -30,7 +30,6 @@ import java.util.Optional;
 @UtilityClass
 public class FileUtils {
 
-
 	/**
 	 * 文件上传
 	 * @param basePath
@@ -41,8 +40,9 @@ public class FileUtils {
 	 */
 	@SneakyThrows
 	public FileMeta upload(String basePath, String relativePath, MultipartFile file, FileConfig fileConfig) {
-		return upload(FileConstants.DEFAULT_HANDLE_TYPE,basePath, relativePath,file, fileConfig);
+		return upload(FileConstants.DEFAULT_HANDLE_TYPE, basePath, relativePath, file, fileConfig);
 	}
+
 	/**
 	 * 上传文件
 	 * @author yakir
@@ -55,7 +55,8 @@ public class FileUtils {
 	 * @return FileMeta 上传文件相关信息
 	 */
 	@SneakyThrows
-	public FileMeta upload(String handleType,String basePath, String relativePath, MultipartFile file, FileConfig fileConfig) {
+	public FileMeta upload(String handleType, String basePath, String relativePath, MultipartFile file,
+			FileConfig fileConfig) {
 		String originalFilename = file.getOriginalFilename();
 		int fileNameLength = originalFilename.length();
 		if (fileNameLength > fileConfig.getMaxFilenameLength()) {
@@ -73,16 +74,15 @@ public class FileUtils {
 		String relativeFilePath;
 		if (splitDate) {
 			String dateStr = LocalDate.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATE_PATTERN));
-			relativeFilePath = relativePath +separator + dateStr;
+			relativeFilePath = relativePath + separator + dateStr;
 		}
 		else {
 			relativeFilePath = relativePath;
 		}
-		String absolutePath = basePath + separator+ relativeFilePath;
-		String fileId = getFileHandler(handleType).upload(absolutePath, fileName,separator,file);
+		String absolutePath = basePath + separator + relativeFilePath;
+		String fileId = getFileHandler(handleType).upload(absolutePath, fileName, separator, file);
 		FileMeta fileMeta = new FileMeta().setOriginalFilename(originalFilename).setFilename(fileName)
-				.setSeperator(separator).setFileId(fileId)
-				.setBasePath(basePath).setRelativePath(relativeFilePath);
+				.setSeperator(separator).setFileId(fileId).setBasePath(basePath).setRelativePath(relativeFilePath);
 		return fileMeta;
 	}
 
@@ -93,17 +93,18 @@ public class FileUtils {
 	 * @return
 	 */
 	public static boolean delete(String basePath, String relativePath) {
-		return  delete(FileConstants.DEFAULT_HANDLE_TYPE,basePath,relativePath);
+		return delete(FileConstants.DEFAULT_HANDLE_TYPE, basePath, relativePath);
 	}
+
 	/**
 	 * 文件删除
 	 * @param handleType 文件处理类型 默认local 支持扩展
 	 * @param basePath 基础路径 /mnt
-	 * @param relativePath  相对文件路径 /child/123.pdf
+	 * @param relativePath 相对文件路径 /child/123.pdf
 	 * @return
 	 */
-	public static boolean delete(String handleType,String basePath, String relativePath) {
-		return  getFileHandler(handleType).delete(basePath , relativePath);
+	public static boolean delete(String handleType, String basePath, String relativePath) {
+		return getFileHandler(handleType).delete(basePath, relativePath);
 	}
 
 	/**
@@ -112,8 +113,8 @@ public class FileUtils {
 	 * @param relativePath
 	 * @return
 	 */
-	public static  File downloadFile(String basePath, String relativePath) {
-		return downloadFile(FileConstants.DEFAULT_HANDLE_TYPE,basePath,relativePath);
+	public static File downloadFile(String basePath, String relativePath) {
+		return downloadFile(FileConstants.DEFAULT_HANDLE_TYPE, basePath, relativePath);
 	}
 
 	/**
@@ -123,8 +124,8 @@ public class FileUtils {
 	 * @param relativePath 相对文件路径
 	 * @return 文件
 	 */
-	public static  File downloadFile(String handleType,String basePath, String relativePath) {
-		return getFileHandler(handleType).downloadFile(basePath , relativePath);
+	public static File downloadFile(String handleType, String basePath, String relativePath) {
+		return getFileHandler(handleType).downloadFile(basePath, relativePath);
 	}
 
 	/**
@@ -133,8 +134,8 @@ public class FileUtils {
 	 * @param relativePath
 	 * @return
 	 */
-	public static  byte[] downloadByte(String basePath, String relativePath) {
-		return downloadByte(FileConstants.DEFAULT_HANDLE_TYPE,basePath,relativePath);
+	public static byte[] downloadByte(String basePath, String relativePath) {
+		return downloadByte(FileConstants.DEFAULT_HANDLE_TYPE, basePath, relativePath);
 	}
 
 	/**
@@ -144,9 +145,10 @@ public class FileUtils {
 	 * @param relativePath 相对文件路径
 	 * @return 字节数组
 	 */
-	public static  byte[] downloadByte(String handleType,String basePath, String relativePath) {
-		return getFileHandler(handleType).downloadByte(basePath , relativePath);
+	public static byte[] downloadByte(String handleType, String basePath, String relativePath) {
+		return getFileHandler(handleType).downloadByte(basePath, relativePath);
 	}
+
 	/**
 	 * 编码文件名
 	 */
@@ -163,28 +165,27 @@ public class FileUtils {
 	 * @throws FileSizeLimitExceededException 如果超出最大大小
 	 */
 	private void assertAllowed(MultipartFile file, FileConfig fileConfig) throws FileSizeLimitExceededException {
-		//文件大小效验
+		// 文件大小效验
 		long size = file.getSize();
 		Assert.isTrue(size <= fileConfig.getMaxSize(),
 				() -> new FileSizeLimitExceededException(FileResultCode.FILE_PARAM_ERROR.getCode(),
 						fileConfig.getMaxSize() / 1024 / 1024));
 		String fileName = file.getOriginalFilename();
-		//扩展名效验
+		// 扩展名效验
 		String extension = FileUtil.getSuffix(fileName);
 		String[] allowedExtension = fileConfig.getAllowedExtension();
-		Assert.isTrue(ArrayUtil.contains(allowedExtension,extension),
-				() -> new InvalidExtensionException(FileResultCode.FILE_PARAM_ERROR.getCode(),
-						extension));
+		Assert.isTrue(ArrayUtil.contains(allowedExtension, extension),
+				() -> new InvalidExtensionException(FileResultCode.FILE_PARAM_ERROR.getCode(), extension));
 	}
 
-
-	private FileHandler getDefaultFileHandler(){
-	    return  getFileHandler(FileConstants.DEFAULT_HANDLE_TYPE);
+	private FileHandler getDefaultFileHandler() {
+		return getFileHandler(FileConstants.DEFAULT_HANDLE_TYPE);
 	}
 
-	private FileHandler getFileHandler(String supportType){
+	private FileHandler getFileHandler(String supportType) {
 		FileHandler load = FileHandlerLoader.load(supportType);
-		Assert.notNull(load, "["+supportType+"]文件处理器不存在");
+		Assert.notNull(load, "[" + supportType + "]文件处理器不存在");
 		return load;
 	}
+
 }

@@ -12,11 +12,12 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Getter
-public enum FileResultCode  {
+public enum FileResultCode {
 
-    FILE_PARAM_ERROR(400010,"文件参数异常"),
-    ;
-    private final Integer code;
+	FILE_PARAM_ERROR(400010, "文件参数异常"),;
 
-    private final String message;
+	private final Integer code;
+
+	private final String message;
+
 }

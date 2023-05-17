@@ -1,6 +1,5 @@
 package com.relaxed.common.core.util.file.exception;
 
-
 import cn.hutool.core.util.StrUtil;
 
 /**
@@ -13,14 +12,15 @@ import cn.hutool.core.util.StrUtil;
 public class FileException extends RuntimeException {
 
 	private final String message;
-	private final int code;
 
+	private final int code;
 
 	public FileException(int code, String message) {
 		super(message);
 		this.code = code;
 		this.message = message;
 	}
+
 	public FileException(int code, String messageTemplate, Object... args) {
 		this(code, StrUtil.format(messageTemplate, args));
 	}
@@ -33,4 +33,5 @@ public class FileException extends RuntimeException {
 	public int getCode() {
 		return code;
 	}
+
 }

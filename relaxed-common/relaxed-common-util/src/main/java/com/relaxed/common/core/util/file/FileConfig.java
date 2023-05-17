@@ -52,11 +52,9 @@ public class FileConfig {
 	private String separator = File.separator;
 
 	/**
-	 *  文件名称转换器
+	 * 文件名称转换器
 	 */
 	private FileNameConverter fileNameConverter;
-
-
 
 	public static FileConfig create() {
 		return new FileConfig();
@@ -66,7 +64,8 @@ public class FileConfig {
 		this.splitDate = splitDate;
 		return this;
 	}
-	public FileConfig separator(String  separator) {
+
+	public FileConfig separator(String separator) {
 		this.separator = separator;
 		return this;
 	}
@@ -90,7 +89,5 @@ public class FileConfig {
 		this.fileNameConverter = fileNameConverter;
 		return this;
 	}
-
-
 
 }

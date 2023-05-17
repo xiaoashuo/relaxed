@@ -8,5 +8,7 @@ package com.relaxed.common.core.util.file;
  * @Version 1.0
  */
 public interface FileConstants {
-    String DEFAULT_HANDLE_TYPE="local";
+
+	String DEFAULT_HANDLE_TYPE = "local";
+
 }

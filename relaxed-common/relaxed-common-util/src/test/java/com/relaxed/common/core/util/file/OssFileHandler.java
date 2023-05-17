@@ -12,28 +12,30 @@ import java.io.File;
  * @Version 1.0
  */
 public class OssFileHandler implements FileHandler {
-    @Override
-    public String supportType() {
-        return "oss";
-    }
 
-    @Override
-    public String upload(String dirPath, String filename, String separator, MultipartFile file) {
-        return null;
-    }
+	@Override
+	public String supportType() {
+		return "oss";
+	}
 
-    @Override
-    public boolean delete(String rootPath, String relativePath) {
-        return false;
-    }
+	@Override
+	public String upload(String dirPath, String filename, String separator, MultipartFile file) {
+		return null;
+	}
 
-    @Override
-    public File downloadFile(String rootPath, String relativePath) {
-        return null;
-    }
+	@Override
+	public boolean delete(String rootPath, String relativePath) {
+		return false;
+	}
 
-    @Override
-    public byte[] downloadByte(String rootPath, String relativePath) {
-        return new byte[0];
-    }
+	@Override
+	public File downloadFile(String rootPath, String relativePath) {
+		return null;
+	}
+
+	@Override
+	public byte[] downloadByte(String rootPath, String relativePath) {
+		return new byte[0];
+	}
+
 }
