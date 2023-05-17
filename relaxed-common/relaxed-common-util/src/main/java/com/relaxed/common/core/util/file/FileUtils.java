@@ -31,8 +31,18 @@ import java.util.Optional;
 public class FileUtils {
 
 
-
-
+	/**
+	 * 文件上传
+	 * @param basePath
+	 * @param relativePath
+	 * @param file
+	 * @param fileConfig
+	 * @return
+	 */
+	@SneakyThrows
+	public FileMeta upload(String basePath, String relativePath, MultipartFile file, FileConfig fileConfig) {
+		return upload(FileConstants.DEFAULT_HANDLE_TYPE,basePath, relativePath,file, fileConfig);
+	}
 	/**
 	 * 上传文件
 	 * @author yakir
@@ -76,7 +86,15 @@ public class FileUtils {
 		return fileMeta;
 	}
 
-
+	/**
+	 * 文件删除
+	 * @param basePath
+	 * @param relativePath
+	 * @return
+	 */
+	public static boolean delete(String basePath, String relativePath) {
+		return  delete(FileConstants.DEFAULT_HANDLE_TYPE,basePath,relativePath);
+	}
 	/**
 	 * 文件删除
 	 * @param handleType 文件处理类型 默认local 支持扩展
@@ -87,8 +105,47 @@ public class FileUtils {
 	public static boolean delete(String handleType,String basePath, String relativePath) {
 		return  getFileHandler(handleType).delete(basePath , relativePath);
 	}
-	public static  File download(String handleType,String basePath, String relativePath) {
-		return new File(basePath, relativePath);
+
+	/**
+	 * 下载文件
+	 * @param basePath
+	 * @param relativePath
+	 * @return
+	 */
+	public static  File downloadFile(String basePath, String relativePath) {
+		return downloadFile(FileConstants.DEFAULT_HANDLE_TYPE,basePath,relativePath);
+	}
+
+	/**
+	 * 下载文件
+	 * @param handleType 文件类型处理器
+	 * @param basePath 基础路径
+	 * @param relativePath 相对文件路径
+	 * @return 文件
+	 */
+	public static  File downloadFile(String handleType,String basePath, String relativePath) {
+		return getFileHandler(handleType).downloadFile(basePath , relativePath);
+	}
+
+	/**
+	 * 下载字节
+	 * @param basePath
+	 * @param relativePath
+	 * @return
+	 */
+	public static  byte[] downloadByte(String basePath, String relativePath) {
+		return downloadByte(FileConstants.DEFAULT_HANDLE_TYPE,basePath,relativePath);
+	}
+
+	/**
+	 * 下载字节
+	 * @param handleType 文件类型处理器
+	 * @param basePath 基础路径
+	 * @param relativePath 相对文件路径
+	 * @return 字节数组
+	 */
+	public static  byte[] downloadByte(String handleType,String basePath, String relativePath) {
+		return getFileHandler(handleType).downloadByte(basePath , relativePath);
 	}
 	/**
 	 * 编码文件名
@@ -121,6 +178,9 @@ public class FileUtils {
 	}
 
 
+	private FileHandler getDefaultFileHandler(){
+	    return  getFileHandler(FileConstants.DEFAULT_HANDLE_TYPE);
+	}
 
 	private FileHandler getFileHandler(String supportType){
 		FileHandler load = FileHandlerLoader.load(supportType);

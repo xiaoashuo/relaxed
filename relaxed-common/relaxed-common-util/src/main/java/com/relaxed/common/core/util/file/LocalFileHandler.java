@@ -33,8 +33,16 @@ public class LocalFileHandler implements FileHandler {
     }
 
     @Override
-    public boolean delete(String rootPath, String filename) {
-        return FileUtil.del(rootPath + filename);
+    public boolean delete(String rootPath, String relativePath) {
+        File file = FileUtil.file(rootPath + relativePath);
+        boolean result = FileUtil.del(file);
+        if (result){
+            File parentFile = file.getParentFile();
+            if (parentFile.listFiles().length==0) {
+                FileUtil.del(parentFile);
+            }
+        }
+        return result;
     }
 
     @Override
