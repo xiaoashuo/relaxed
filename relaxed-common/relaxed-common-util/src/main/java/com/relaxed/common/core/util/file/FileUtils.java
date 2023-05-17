@@ -31,16 +31,13 @@ import java.util.Optional;
 public class FileUtils {
 
 
-	private FileHandler getFileHandler(String supportType){
-		FileHandler load = FileHandlerLoader.load(supportType);
-		Assert.notNull(load, "["+supportType+"]文件处理器不存在");
-		return load;
-	}
+
 
 	/**
 	 * 上传文件
 	 * @author yakir
 	 * @date 2022/11/27 15:21
+	 * @param handleType 文件处理类型 默认local 支持扩展
 	 * @param basePath 基础存储路径 eg： /mnt/profile
 	 * @param relativePath 相对文件存储路径 upload
 	 * @param file
@@ -80,7 +77,19 @@ public class FileUtils {
 	}
 
 
-
+	/**
+	 * 文件删除
+	 * @param handleType 文件处理类型 默认local 支持扩展
+	 * @param basePath 基础路径 /mnt
+	 * @param relativePath  相对文件路径 /child/123.pdf
+	 * @return
+	 */
+	public static boolean delete(String handleType,String basePath, String relativePath) {
+		return  getFileHandler(handleType).delete(basePath , relativePath);
+	}
+	public static  File download(String handleType,String basePath, String relativePath) {
+		return new File(basePath, relativePath);
+	}
 	/**
 	 * 编码文件名
 	 */
@@ -111,13 +120,11 @@ public class FileUtils {
 						extension));
 	}
 
-	public static File download(String basePath, String relativePath) {
-		return new File(basePath, relativePath);
+
+
+	private FileHandler getFileHandler(String supportType){
+		FileHandler load = FileHandlerLoader.load(supportType);
+		Assert.notNull(load, "["+supportType+"]文件处理器不存在");
+		return load;
 	}
-
-
-	public static boolean delete(String handleType,String basePath, String relativePath) {
-		return  getFileHandler(handleType).delete(basePath , relativePath);
-	}
-
 }

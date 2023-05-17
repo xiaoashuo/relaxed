@@ -15,10 +15,7 @@ import java.io.File;
  * @Version 1.0
  */
 public class LocalFileHandler implements FileHandler {
-    @Override
-    public boolean delete(String rootPath, String filename) {
-        return FileUtil.del(rootPath + filename);
-    }
+
 
     @Override
     public String supportType() {
@@ -35,6 +32,20 @@ public class LocalFileHandler implements FileHandler {
         return fileId;
     }
 
+    @Override
+    public boolean delete(String rootPath, String filename) {
+        return FileUtil.del(rootPath + filename);
+    }
+
+    @Override
+    public File downloadFile(String rootPath, String relativePath) {
+        return new File(rootPath, relativePath);
+    }
+
+    @Override
+    public byte[] downloadByte(String rootPath, String relativePath) {
+        return FileUtil.readBytes(downloadFile(rootPath, relativePath));
+    }
 
     private File getAbsoluteFile(String separator, String dirPath, String fileName) {
         File desc = new File(dirPath + separator + fileName);
@@ -46,4 +57,7 @@ public class LocalFileHandler implements FileHandler {
         }
         return desc;
     }
+
+
+
 }

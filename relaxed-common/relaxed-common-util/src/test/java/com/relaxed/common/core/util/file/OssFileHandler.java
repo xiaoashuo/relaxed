@@ -2,6 +2,8 @@ package com.relaxed.common.core.util.file;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+
 /**
  * @author Yakir
  * @Topic OssFileHandler
@@ -23,5 +25,15 @@ public class OssFileHandler implements FileHandler {
     @Override
     public boolean delete(String rootPath, String relativePath) {
         return false;
+    }
+
+    @Override
+    public File downloadFile(String rootPath, String relativePath) {
+        return null;
+    }
+
+    @Override
+    public byte[] downloadByte(String rootPath, String relativePath) {
+        return new byte[0];
     }
 }

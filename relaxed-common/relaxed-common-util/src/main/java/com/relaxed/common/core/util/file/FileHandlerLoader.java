@@ -28,7 +28,7 @@ public class FileHandlerLoader {
             log.info("文件处理器已加载类型{},全路径名称{}",supportType,drive.getClass());
         }
         if (FILE_HANDLER_HOLDER.size()==0){
-            log.info("文件处理器未加载到拓展处理器,默认使用本地处理器");
+            log.info("文件处理器未加载到拓展处理器,默认使用本地处理器,类型{}",FileConstants.DEFAULT_HANDLE_TYPE);
             FILE_HANDLER_HOLDER.put(FileConstants.DEFAULT_HANDLE_TYPE,new LocalFileHandler());
         }
 

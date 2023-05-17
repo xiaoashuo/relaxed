@@ -2,6 +2,8 @@ package com.relaxed.common.core.util.file;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+
 /**
  * @author Yakir
  * @Topic FileHandler
@@ -44,4 +46,8 @@ public interface FileHandler {
      * @return boolean 是否成功true|false
      */
     boolean delete(String rootPath, String relativePath);
+
+    File downloadFile(String rootPath, String relativePath);
+
+    byte[] downloadByte(String rootPath, String relativePath);
 }
