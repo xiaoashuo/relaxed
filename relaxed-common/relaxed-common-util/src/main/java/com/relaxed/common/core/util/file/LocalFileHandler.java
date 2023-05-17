@@ -1,11 +1,15 @@
 package com.relaxed.common.core.util.file;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.IdUtil;
 import lombok.SneakyThrows;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
 
 /**
  * @author Yakir
@@ -43,14 +47,23 @@ public class LocalFileHandler implements FileHandler {
 		return result;
 	}
 
+	@SneakyThrows
 	@Override
-	public File downloadFile(String rootPath, String relativePath) {
-		return new File(rootPath, relativePath);
+	public void writeToStream(String rootPath, String relativePath, OutputStream outputStream) {
+		File file = new File(rootPath, relativePath);
+		try (FileInputStream inputStream = new FileInputStream(file); OutputStream tmp = outputStream) {
+			IoUtil.copy(inputStream, tmp);
+		}
+		catch (Exception e) {
+			throw e;
+		}
 	}
 
 	@Override
 	public byte[] downloadByte(String rootPath, String relativePath) {
-		return FileUtil.readBytes(downloadFile(rootPath, relativePath));
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		writeToStream(rootPath, relativePath, outputStream);
+		return outputStream.toByteArray();
 	}
 
 	private File getAbsoluteFile(String separator, String dirPath, String fileName) {

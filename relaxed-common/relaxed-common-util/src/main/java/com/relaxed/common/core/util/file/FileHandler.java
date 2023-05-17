@@ -3,6 +3,7 @@ package com.relaxed.common.core.util.file;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.OutputStream;
 
 /**
  * @author Yakir
@@ -45,8 +46,20 @@ public interface FileHandler {
 	 */
 	boolean delete(String rootPath, String relativePath);
 
-	File downloadFile(String rootPath, String relativePath);
+	/**
+	 * 写入到流
+	 * @param rootPath 根目录路径 /mnt
+	 * @param relativePath 文件全相对路径 /child/test.pdf
+	 * @param outputStream
+	 */
+	void writeToStream(String rootPath, String relativePath, OutputStream outputStream);
 
+	/**
+	 * 写入到字节
+	 * @param rootPath
+	 * @param relativePath
+	 * @return
+	 */
 	byte[] downloadByte(String rootPath, String relativePath);
 
 }

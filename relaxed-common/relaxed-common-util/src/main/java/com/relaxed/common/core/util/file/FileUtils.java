@@ -16,6 +16,7 @@ import lombok.experimental.UtilityClass;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -113,8 +114,8 @@ public class FileUtils {
 	 * @param relativePath
 	 * @return
 	 */
-	public static File downloadFile(String basePath, String relativePath) {
-		return downloadFile(FileConstants.DEFAULT_HANDLE_TYPE, basePath, relativePath);
+	public static void writeToStream(String basePath, String relativePath, OutputStream outputStream) {
+		writeToStream(FileConstants.DEFAULT_HANDLE_TYPE, basePath, relativePath, outputStream);
 	}
 
 	/**
@@ -122,10 +123,10 @@ public class FileUtils {
 	 * @param handleType 文件类型处理器
 	 * @param basePath 基础路径
 	 * @param relativePath 相对文件路径
-	 * @return 文件
 	 */
-	public static File downloadFile(String handleType, String basePath, String relativePath) {
-		return getFileHandler(handleType).downloadFile(basePath, relativePath);
+	public static void writeToStream(String handleType, String basePath, String relativePath,
+			OutputStream outputStream) {
+		getFileHandler(handleType).writeToStream(basePath, relativePath, outputStream);
 	}
 
 	/**

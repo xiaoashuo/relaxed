@@ -3,6 +3,7 @@ package com.relaxed.common.core.util.file;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.OutputStream;
 
 /**
  * @author Yakir
@@ -29,8 +30,8 @@ public class OssFileHandler implements FileHandler {
 	}
 
 	@Override
-	public File downloadFile(String rootPath, String relativePath) {
-		return null;
+	public void writeToStream(String rootPath, String relativePath, OutputStream outputStream) {
+
 	}
 
 	@Override
