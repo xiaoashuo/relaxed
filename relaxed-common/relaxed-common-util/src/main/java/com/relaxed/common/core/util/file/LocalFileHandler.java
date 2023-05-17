@@ -1,5 +1,6 @@
 package com.relaxed.common.core.util.file;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import lombok.SneakyThrows;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,12 +15,23 @@ import java.io.File;
  * @Version 1.0
  */
 public class LocalFileHandler implements FileHandler {
+    @Override
+    public boolean delete(String rootPath, String filename) {
+        return FileUtil.del(rootPath + filename);
+    }
+
+    @Override
+    public String supportType() {
+        return FileConstants.DEFAULT_HANDLE_TYPE;
+    }
+
     @SneakyThrows
     @Override
-    public String upload(String basePath, String filename, String separator, MultipartFile file) {
-        File desc = getAbsoluteFile(separator,basePath, filename);
+    public String upload(String dirPath, String filename, String separator, MultipartFile file) {
+        File desc = getAbsoluteFile(separator,dirPath, filename);
         file.transferTo(desc);
-        String fileId = IdUtil.getSnowflakeNextId() + "";
+        String
+                fileId = IdUtil.getSnowflakeNextId() + "";
         return fileId;
     }
 

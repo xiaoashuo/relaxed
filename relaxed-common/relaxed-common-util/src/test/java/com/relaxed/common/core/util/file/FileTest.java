@@ -23,7 +23,7 @@ public class FileTest {
         String relativePath="file";
         String uploadFilePath="D:\\other\\100000\\jieqingzhengming_131331131313.pdf";
         FileMultipartFile fileMultipartFile = new FileMultipartFile("file", new File(uploadFilePath));
-        FileMeta fileMeta = FileUtils.upload(rootPath, relativePath, fileMultipartFile, FileConfig.create().separator("/"));
+        FileMeta fileMeta = FileUtils.upload("local",rootPath, relativePath, fileMultipartFile, FileConfig.create().splitDate(true));
         log.info("upload  successfully,result:[{}] ,相对路径[{}],完整路径[{}]", JSONUtil.toJsonStr(fileMeta),fileMeta.getRelativeFilePath(),fileMeta.getFullFilePath());
     }
 
@@ -31,7 +31,13 @@ public class FileTest {
     void fileDelete(){
         String rootPath="D:\\other\\100000";
         String relativePath="/file/DKTcIx7EZKm8FvB5k_wgX.pdf";
-        boolean deleted = FileUtils.delete(rootPath, relativePath);
+        boolean deleted = FileUtils.delete("local",rootPath, relativePath);
         log.info("deleted  successfully,result:[{}]", deleted);
+    }
+
+    @Test
+    void fileLoad(){
+        FileHandler test = FileHandlerLoader.load(FileConstants.DEFAULT_HANDLE_TYPE);
+        System.out.println(test);
     }
 }

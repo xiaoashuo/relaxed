@@ -56,10 +56,7 @@ public class FileConfig {
 	 */
 	private FileNameConverter fileNameConverter;
 
-	/**
-	 * 文件处理器
-	 */
-	private FileHandler fileHandler;
+
 
 	public static FileConfig create() {
 		return new FileConfig();
@@ -93,5 +90,7 @@ public class FileConfig {
 		this.fileNameConverter = fileNameConverter;
 		return this;
 	}
+
+
 
 }

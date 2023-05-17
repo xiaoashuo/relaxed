@@ -30,6 +30,13 @@ import java.util.Optional;
 @UtilityClass
 public class FileUtils {
 
+
+	private FileHandler getFileHandler(String supportType){
+		FileHandler load = FileHandlerLoader.load(supportType);
+		Assert.notNull(load, "["+supportType+"]文件处理器不存在");
+		return load;
+	}
+
 	/**
 	 * 上传文件
 	 * @author yakir
@@ -41,7 +48,7 @@ public class FileUtils {
 	 * @return FileMeta 上传文件相关信息
 	 */
 	@SneakyThrows
-	public FileMeta upload(String basePath, String relativePath, MultipartFile file, FileConfig fileConfig) {
+	public FileMeta upload(String handleType,String basePath, String relativePath, MultipartFile file, FileConfig fileConfig) {
 		String originalFilename = file.getOriginalFilename();
 		int fileNameLength = originalFilename.length();
 		if (fileNameLength > fileConfig.getMaxFilenameLength()) {
@@ -65,26 +72,14 @@ public class FileUtils {
 			relativeFilePath = relativePath;
 		}
 		String absolutePath = basePath + separator+ relativeFilePath;
-		File desc = getAbsoluteFile(separator,absolutePath, fileName);
-		file.transferTo(desc);
-		//fileConfig.getFileHandler().upload(absolutePath, fileName,separator,file);
-		String fileId = IdUtil.getSnowflakeNextId() + "";
+		String fileId = getFileHandler(handleType).upload(absolutePath, fileName,separator,file);
 		FileMeta fileMeta = new FileMeta().setOriginalFilename(originalFilename).setFilename(fileName)
 				.setSeperator(separator).setFileId(fileId)
 				.setBasePath(basePath).setRelativePath(relativeFilePath);
 		return fileMeta;
 	}
 
-	private File getAbsoluteFile(String separator,String dirPath, String fileName) {
-		File desc = new File(dirPath + separator + fileName);
 
-		if (!desc.exists()) {
-			if (!desc.getParentFile().exists()) {
-				desc.getParentFile().mkdirs();
-			}
-		}
-		return desc;
-	}
 
 	/**
 	 * 编码文件名
@@ -114,16 +109,15 @@ public class FileUtils {
 		Assert.isTrue(ArrayUtil.contains(allowedExtension,extension),
 				() -> new InvalidExtensionException(FileResultCode.FILE_PARAM_ERROR.getCode(),
 						extension));
-
-
 	}
 
 	public static File download(String basePath, String relativePath) {
 		return new File(basePath, relativePath);
 	}
 
-	public static boolean delete(String basePath, String relativePath) {
-		return FileUtil.del(basePath + relativePath);
+
+	public static boolean delete(String handleType,String basePath, String relativePath) {
+		return  getFileHandler(handleType).delete(basePath , relativePath);
 	}
 
 }
