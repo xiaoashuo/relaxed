@@ -186,11 +186,6 @@
             <!--日志模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-common-log-mdc</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-log-access</artifactId>
                 <version>${revision}</version>
             </dependency>

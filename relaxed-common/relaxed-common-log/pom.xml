@@ -15,7 +15,6 @@
 
     <modules>
        <module>relaxed-common-log-access</module>
-       <module>relaxed-common-log-mdc</module>
        <module>relaxed-common-log-operation</module>
        <module>relaxed-common-log-action</module>
     </modules>

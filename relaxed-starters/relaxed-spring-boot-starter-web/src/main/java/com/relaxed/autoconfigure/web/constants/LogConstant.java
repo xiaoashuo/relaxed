@@ -1,4 +1,4 @@
-package com.relaxed.common.log.mdc.constant;
+package com.relaxed.autoconfigure.web.constants;
 
 /**
  * @author Hccake

@@ -1,7 +1,7 @@
-package com.relaxed.common.log.mdc;
+package com.relaxed.autoconfigure.web.filter;
 
 import cn.hutool.core.util.IdUtil;
-import com.relaxed.common.log.mdc.constant.LogConstant;
+import com.relaxed.autoconfigure.web.constants.LogConstant;
 import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
 

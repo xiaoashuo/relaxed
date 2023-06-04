@@ -1,10 +1,13 @@
 package com.relaxed.autoconfigure.web.servlet;
 
+import com.relaxed.autoconfigure.web.filter.TraceIdFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -43,6 +46,17 @@ public class WebMvcAutoConfiguration {
 			argumentResolvers.add(pageParamArgumentResolver);
 		}
 
+	}
+
+	/**
+	 * trace id 过滤器
+	 * @return
+	 */
+	@Bean
+	public FilterRegistrationBean<TraceIdFilter> traceIdFilterRegistrationBean() {
+		FilterRegistrationBean<TraceIdFilter> registrationBean = new FilterRegistrationBean<>(new TraceIdFilter());
+		registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+		return registrationBean;
 	}
 
 }

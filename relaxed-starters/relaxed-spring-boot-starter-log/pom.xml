@@ -13,10 +13,7 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>com.lovecyy</groupId>
-            <artifactId>relaxed-common-log-mdc</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>com.lovecyy</groupId>
             <artifactId>relaxed-common-log-access</artifactId>
