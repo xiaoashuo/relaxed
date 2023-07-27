@@ -20,31 +20,12 @@ public class SftpClient implements ISftpClient {
 	private final SftpPool sftpPool;
 
 	@Override
-	public void open(Handler handler) {
+	public <U> U exec(SupplyHandler<U> supplyHandler) {
 		ISftpExecutor sftp = null;
 		try {
 			sftp = sftpPool.borrowObject();
-			DelegateHandler policyHandler = new DelegateHandler(handler);
-			policyHandler.handle(sftp);
-		}
-		catch (Exception e) {
-			throw new SftpClientException(e.getMessage(), e);
-		}
-		finally {
-			if (sftp != null) {
-				sftpPool.returnObject(sftp);
-			}
-		}
-
-	}
-
-	@Override
-	public <T> T supplyOpen(SupplyHandler supplyHandler) {
-		ISftpExecutor sftp = null;
-		try {
-			sftp = sftpPool.borrowObject();
-			DelegateSupplyHandler policyHandler = new DelegateSupplyHandler(supplyHandler);
-			return (T) policyHandler.supplyHandle(sftp);
+			DelegateSupplyHandler<U> policyHandler = new DelegateSupplyHandler(supplyHandler);
+			return policyHandler.supplyHandle(sftp);
 
 		}
 		catch (Exception e) {

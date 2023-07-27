@@ -11,13 +11,13 @@ import lombok.RequiredArgsConstructor;
  * @author shuoyu
  */
 @RequiredArgsConstructor
-public class DelegateSupplyHandler<T> implements SupplyHandler {
+public class DelegateSupplyHandler<U> implements SupplyHandler<U> {
 
-	private final SupplyHandler target;
+	private final SupplyHandler<U> target;
 
 	@Override
-	public T supplyHandle(ISftpExecutor sftp) {
-		return (T) target.supplyHandle(sftp);
+	public U supplyHandle(ISftpExecutor sftp) {
+		return target.supplyHandle(sftp);
 	}
 
 }

@@ -27,7 +27,7 @@ public class SftpAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public ISftpProvider iSftpProvider() {
-		return channelSftp -> new SftpExecutor(channelSftp);
+		return SftpExecutor::new;
 	}
 
 	/**

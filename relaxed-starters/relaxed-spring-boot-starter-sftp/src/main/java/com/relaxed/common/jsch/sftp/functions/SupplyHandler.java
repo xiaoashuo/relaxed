@@ -8,14 +8,13 @@ import com.relaxed.common.jsch.sftp.executor.ISftpExecutor;
  * @author shuoyu
  */
 @FunctionalInterface
-public interface SupplyHandler<T> {
+public interface SupplyHandler<U> {
 
 	/**
 	 * 带返回值的
 	 * @param sftp
-	 * @param <T>
 	 * @return
 	 */
-	T supplyHandle(ISftpExecutor sftp);
+	U supplyHandle(ISftpExecutor sftp);
 
 }

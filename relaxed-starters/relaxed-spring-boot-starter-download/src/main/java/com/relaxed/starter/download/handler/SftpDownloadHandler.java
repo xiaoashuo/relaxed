@@ -35,7 +35,7 @@ public class SftpDownloadHandler extends AbstractDownloadHandler {
 	protected void write(DownloadModel downloadModel, HttpServletResponse response, ResponseDownload responseDownload) {
 		String parentPath = downloadModel.getParentPath();
 		String fileName = downloadModel.getFileName();
-		try (InputStream inputStream = iSftpClient.supplyOpen(sftp -> sftp.getInputStream(parentPath, fileName))) {
+		try (InputStream inputStream = iSftpClient.exec(sftp -> sftp.getInputStream(parentPath, fileName))) {
 			ServletUtil.write(response, inputStream);
 		}
 		catch (Exception e) {
