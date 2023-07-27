@@ -2,8 +2,6 @@ package com.relaxed.common.jsch.sftp.client;
 
 import com.relaxed.common.jsch.sftp.exception.SftpClientException;
 import com.relaxed.common.jsch.sftp.executor.ISftpExecutor;
-import com.relaxed.common.jsch.sftp.functions.Handler;
-import com.relaxed.common.jsch.sftp.delegates.DelegateHandler;
 import com.relaxed.common.jsch.sftp.delegates.DelegateSupplyHandler;
 import com.relaxed.common.jsch.sftp.factory.SftpPool;
 import com.relaxed.common.jsch.sftp.functions.SupplyHandler;
@@ -20,7 +18,12 @@ public class SftpClient implements ISftpClient {
 	private final SftpPool sftpPool;
 
 	@Override
-	public <U> U exec(SupplyHandler<U> supplyHandler) {
+	public void open(SupplyHandler<Void> supplyHandler) {
+		this.supplyOpen(supplyHandler);
+	}
+
+	@Override
+	public <U> U supplyOpen(SupplyHandler<U> supplyHandler) {
 		ISftpExecutor sftp = null;
 		try {
 			sftp = sftpPool.borrowObject();

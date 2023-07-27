@@ -11,10 +11,16 @@ import com.relaxed.common.jsch.sftp.functions.SupplyHandler;
 public interface ISftpClient {
 
 	/**
+	 * 打开sftp 执行操作
+	 * @param supplyHandler
+	 */
+	void open(SupplyHandler<Void> supplyHandler);
+
+	/**
 	 * 打开sftp 执行操作 带返回值
 	 * @param supplyHandler
 	 * @return
 	 */
-	<U> U exec(SupplyHandler<U> supplyHandler);
+	<U> U supplyOpen(SupplyHandler<U> supplyHandler);
 
 }
