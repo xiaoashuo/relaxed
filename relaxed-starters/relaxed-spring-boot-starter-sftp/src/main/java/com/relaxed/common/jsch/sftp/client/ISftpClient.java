@@ -14,7 +14,7 @@ public interface ISftpClient {
 	 * 打开sftp 执行操作
 	 * @param supplyHandler
 	 */
-	void open(SupplyHandler<Void> supplyHandler);
+	void open(Handler handler);
 
 	/**
 	 * 打开sftp 执行操作 带返回值
