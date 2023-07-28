@@ -8,12 +8,14 @@ import lombok.Data;
  *
  * @author shuoyu
  */
-@AllArgsConstructor
-@Data
 public class SftpClientException extends RuntimeException {
 
 	public SftpClientException(String message) {
 		super(message);
+	}
+
+	public SftpClientException(Throwable cause) {
+		super(cause);
 	}
 
 	public SftpClientException(String message, Throwable cause) {
