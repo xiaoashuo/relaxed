@@ -101,6 +101,12 @@ public class SftpExecutor extends AbstractSftpExecutor {
 	}
 
 	@Override
+	public byte[] download(String absoluteFilePath) {
+		InputStream in = getInputStream(absoluteFilePath);
+		return ByteUtil.inputStreamToByteArray(in);
+	}
+
+	@Override
 	public void upload(String dir, String name, InputStream in) {
 		try {
 			mkdirs(dir);

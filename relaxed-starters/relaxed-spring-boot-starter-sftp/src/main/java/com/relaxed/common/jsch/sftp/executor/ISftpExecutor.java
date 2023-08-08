@@ -40,6 +40,13 @@ public interface ISftpExecutor {
 	byte[] download(String dir, String name);
 
 	/**
+	 * 下载远程文件
+	 * @param absoluteFilePath 全名称文件路径
+	 * @return 文件字节数组
+	 */
+	byte[] download(String absoluteFilePath);
+
+	/**
 	 * 下载远程文件 到指定文件
 	 * @param dir 远程目录
 	 * @param name 远程文件名
