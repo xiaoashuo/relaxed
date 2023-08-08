@@ -11,6 +11,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
+import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -21,6 +22,7 @@ import software.amazon.awssdk.utils.IoUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -172,13 +174,34 @@ public class OssClient implements DisposableBean {
 	public byte[] download(String relativePath) {
 		try {
 			GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucket).key(relativePath).build();
-			try (ResponseInputStream<GetObjectResponse> responseInputStream = s3Client.getObject(getObjectRequest)) {
-				return IoUtils.toByteArray(responseInputStream);
-			}
+			ResponseBytes<GetObjectResponse> objectBytes = s3Client.getObjectAsBytes(getObjectRequest);
+			return objectBytes.asByteArray();
 		}
 		catch (Exception e) {
 			throw new OssException(e, "download file error bucket:%s,path:%s", this.bucket, relativePath);
 
+		}
+	}
+
+	/**
+	 * 下载文件到流
+	 * @param relativePath 相对路径 test/img.png
+	 * @param outputStream 内容流
+	 */
+	public void download(String relativePath, OutputStream outputStream) {
+		try {
+			GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucket).key(relativePath).build();
+			try (ResponseInputStream<GetObjectResponse> object = s3Client.getObject(getObjectRequest)) {
+				IoUtils.copy(object, outputStream);
+			}
+			finally {
+				if (outputStream != null) {
+					outputStream.close();
+				}
+			}
+		}
+		catch (Exception e) {
+			throw new OssException(e, "download file error bucket:%s,path:%s", this.bucket, relativePath);
 		}
 	}
 
