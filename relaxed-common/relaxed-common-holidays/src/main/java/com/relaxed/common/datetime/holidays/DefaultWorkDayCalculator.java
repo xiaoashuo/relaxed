@@ -1,11 +1,9 @@
 package com.relaxed.common.datetime.holidays;
 
-import cn.hutool.core.date.DatePattern;
 import com.relaxed.common.datetime.holidays.storage.HolidayStorage;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 /**
  * @author Yakir
@@ -21,11 +19,7 @@ public class DefaultWorkDayCalculator implements WorkdayCalculator {
 
 	@Override
 	public boolean isHoliday(LocalDate date) {
-		return holidayStorage.contains(formatNormalDateStr(date));
-	}
-
-	private static String formatNormalDateStr(LocalDate date) {
-		return date.format(DateTimeFormatter.ofPattern(DatePattern.NORM_DATE_PATTERN));
+		return holidayStorage.isHoliday(date);
 	}
 
 	@Override

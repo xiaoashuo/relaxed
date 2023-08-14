@@ -1,14 +1,11 @@
 package com.relaxed.common.datetime.holidays;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.watch.SimpleWatcher;
 import cn.hutool.core.io.watch.WatchMonitor;
 import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.StrUtil;
-import com.relaxed.common.datetime.holidays.storage.HolidayStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +37,7 @@ public class LocalHolidayLoader {
 	@Value("${holiday.localPath}")
 	private String localPath;
 
-	private final HolidayStorage holidayStorage;
+	private final LocalHolidayStorage holidayStorage;
 
 	private static WatchMonitor eventModify;
 
@@ -51,7 +48,8 @@ public class LocalHolidayLoader {
 		String result = FileUtil.readString(file, Charset.forName("UTF-8"));
 		if (StrUtil.isNotEmpty(result)) {
 			List<String> dates = StrUtil.split(result, ",");
-			holidayStorage.addAll(dates);
+			holidayStorage.addOriginData(dates);
+
 		}
 		eventModify = WatchMonitor.createAll(file, new SimpleWatcher() {
 			@Override
@@ -61,11 +59,11 @@ public class LocalHolidayLoader {
 				if (StrUtil.isNotEmpty(result)) {
 					// 此处仅支持新增,若删除或修改，则需要比较修改后与修改前的差值,且将修改后全量加入，在删除差值数据，不允许直接clear在添加
 					// 会导致瞬时数据为空
-					Collection<String> list = holidayStorage.list();
+					Collection<String> list = holidayStorage.getOriginData();
 					List<String> dates = StrUtil.split(result, ",");
 					Collection<String> colList = CollUtil.subtract(list, dates);
-					holidayStorage.delAll(colList);
-					holidayStorage.addAll(dates);
+					holidayStorage.delOriginData(colList);
+					holidayStorage.addOriginData(dates);
 				}
 			}
 		});
@@ -81,7 +79,8 @@ public class LocalHolidayLoader {
 
 	public static void main(String[] args) {
 
-		File file = new File("D:\\idea\\source\\company\\doc\\滴滴abc\\holidays.txt");
+		File file = new File(
+				"D:\\idea\\source\\person\\relaxed\\relaxed-common\\relaxed-common-holidays\\src\\test\\resources\\holidays.txt");
 		String result = FileUtil.readString(file, Charset.forName("UTF-8"));
 		System.out.println(result);
 		List<String> dates = StrUtil.split(result, ",");
