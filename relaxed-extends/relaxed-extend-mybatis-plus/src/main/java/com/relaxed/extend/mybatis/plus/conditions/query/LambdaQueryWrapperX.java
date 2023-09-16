@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.SharedString;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
+import com.baomidou.mybatisplus.core.enums.SqlKeyword;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.ArrayUtils;
@@ -166,24 +167,90 @@ public class LambdaQueryWrapperX<T> extends AbstractLambdaWrapper<T, LambdaQuery
 		return super.eq(isPresent(val), column, val);
 	}
 
+	public LambdaQueryWrapperX<T> eqIfCondition(boolean condition, SFunction<T, ?> column1, SFunction<T, ?> column2) {
+		String col1 = this.columnToString(column1);
+		String col2 = this.columnToString(column2);
+		return super.apply(condition, col1 + SqlKeyword.EQ.getSqlSegment() + col2);
+
+	}
+
+	public LambdaQueryWrapperX<T> eq(SFunction<T, ?> column1, SFunction<T, ?> column2) {
+		return eqIfCondition(true, column1, column2);
+	}
+
 	public LambdaQueryWrapperX<T> neIfPresent(SFunction<T, ?> column, Object val) {
 		return super.ne(isPresent(val), column, val);
+	}
+
+	public LambdaQueryWrapperX<T> neIfCondition(boolean condition, SFunction<T, ?> column1, SFunction<T, ?> column2) {
+		String col1 = this.columnToString(column1);
+		String col2 = this.columnToString(column2);
+		return super.apply(condition, col1 + SqlKeyword.NE.getSqlSegment() + col2);
+
+	}
+
+	public LambdaQueryWrapperX<T> ne(SFunction<T, ?> column1, SFunction<T, ?> column2) {
+		return neIfCondition(true, column1, column2);
 	}
 
 	public LambdaQueryWrapperX<T> gtIfPresent(SFunction<T, ?> column, Object val) {
 		return super.gt(isPresent(val), column, val);
 	}
 
+	public LambdaQueryWrapperX<T> gtIfCondition(boolean condition, SFunction<T, ?> column1, SFunction<T, ?> column2) {
+		String col1 = this.columnToString(column1);
+		String col2 = this.columnToString(column2);
+		return super.apply(condition, col1 + SqlKeyword.GT.getSqlSegment() + col2);
+
+	}
+
+	public LambdaQueryWrapperX<T> gt(SFunction<T, ?> column1, SFunction<T, ?> column2) {
+		return gtIfCondition(true, column1, column2);
+	}
+
 	public LambdaQueryWrapperX<T> geIfPresent(SFunction<T, ?> column, Object val) {
 		return super.ge(isPresent(val), column, val);
+	}
+
+	public LambdaQueryWrapperX<T> geIfCondition(boolean condition, SFunction<T, ?> column1, SFunction<T, ?> column2) {
+		String col1 = this.columnToString(column1);
+		String col2 = this.columnToString(column2);
+		return super.apply(condition, col1 + SqlKeyword.GE.getSqlSegment() + col2);
+
+	}
+
+	public LambdaQueryWrapperX<T> ge(SFunction<T, ?> column1, SFunction<T, ?> column2) {
+		return geIfCondition(true, column1, column2);
 	}
 
 	public LambdaQueryWrapperX<T> ltIfPresent(SFunction<T, ?> column, Object val) {
 		return super.lt(isPresent(val), column, val);
 	}
 
+	public LambdaQueryWrapperX<T> ltIfCondition(boolean condition, SFunction<T, ?> column1, SFunction<T, ?> column2) {
+		String col1 = this.columnToString(column1);
+		String col2 = this.columnToString(column2);
+		return super.apply(condition, col1 + SqlKeyword.LT.getSqlSegment() + col2);
+
+	}
+
+	public LambdaQueryWrapperX<T> lt(SFunction<T, ?> column1, SFunction<T, ?> column2) {
+		return ltIfCondition(true, column1, column2);
+	}
+
 	public LambdaQueryWrapperX<T> leIfPresent(SFunction<T, ?> column, Object val) {
 		return super.le(isPresent(val), column, val);
+	}
+
+	public LambdaQueryWrapperX<T> leIfCondition(boolean condition, SFunction<T, ?> column1, SFunction<T, ?> column2) {
+		String col1 = this.columnToString(column1);
+		String col2 = this.columnToString(column2);
+		return super.apply(condition, col1 + SqlKeyword.LE.getSqlSegment() + col2);
+
+	}
+
+	public LambdaQueryWrapperX<T> le(SFunction<T, ?> column1, SFunction<T, ?> column2) {
+		return leIfCondition(true, column1, column2);
 	}
 
 	public LambdaQueryWrapperX<T> likeIfPresent(SFunction<T, ?> column, Object val) {
