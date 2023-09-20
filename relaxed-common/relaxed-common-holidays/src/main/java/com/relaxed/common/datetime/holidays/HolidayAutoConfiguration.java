@@ -1,5 +1,6 @@
 package com.relaxed.common.datetime.holidays;
 
+import com.relaxed.common.datetime.holidays.extension.MultiWorkdayCalculator;
 import com.relaxed.common.datetime.holidays.storage.HolidayStorage;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +22,7 @@ public class HolidayAutoConfiguration {
 	 * @return
 	 */
 	@Bean
-	@ConditionalOnMissingBean
+	@ConditionalOnMissingBean(value = { WorkdayCalculator.class, MultiWorkdayCalculator.class })
 	public WorkdayCalculator workDayCalculator(HolidayStorage holidayStorage) {
 		return new DefaultWorkDayCalculator(holidayStorage);
 	}
