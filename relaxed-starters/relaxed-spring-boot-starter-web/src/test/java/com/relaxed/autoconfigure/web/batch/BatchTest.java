@@ -33,35 +33,26 @@ public class BatchTest {
 		List<UserEntity> dataList = getDataList(batchSize);
 		AtomicInteger count = new AtomicInteger(0);
 		Step<UserEntity> step = new Step<UserEntity>().async(true).batch(batchSize, 10).taskName("测试批处理任务")
-				.supplier(new DataProvider<UserEntity>() {
-					@Override
-					public List<UserEntity> get(BatchMeta batchMeta) {
-						Integer startIndex = batchMeta.getStartIndex();
-						if (batchMeta.getGroupNo() == 2) {
-							throw new RuntimeException("mock 异常");
-						}
-						return ListUtil.sub(dataList, startIndex, startIndex + batchMeta.getSize());
+				.supplier(batchMeta -> {
+					Integer startIndex = batchMeta.getStartIndex();
+					// if (batchMeta.getGroupNo() == 2) {
+					// throw new RuntimeException("mock 异常");
+					// }
+					return ListUtil.sub(dataList, startIndex, startIndex + batchMeta.getSize());
+				}).consumer((batchMeta, innerRow, data) -> {
+					// System.out.println(StrUtil.format("当前线程{}分组编号{},批次索引{},大小{},内部行号{},数据{}",
+					// Thread.currentThread().getName(), batchMeta.getGroupNo(),
+					// batchMeta.getStartIndex(),
+					// batchMeta.getSize(), innerRow, data));
+					ThreadUtil.sleep(100);
+					if (innerRow % 5 == 0) {
+						throw new RuntimeException("mock 消费异常");
 					}
-				}).consumer(new DataConsumer<UserEntity>() {
-					@Override
-					public void accept(BatchMeta batchMeta, Integer innerRow, UserEntity data) {
-						System.out.println(StrUtil.format("当前线程{}分组编号{},批次索引{},大小{},内部行号{},数据{}",
-								Thread.currentThread().getName(), batchMeta.getGroupNo(), batchMeta.getStartIndex(),
-								batchMeta.getSize(), innerRow, data));
-						ThreadUtil.sleep(100);
-						// if (innerRow%5==0){
-						// throw new RuntimeException("mock 消费异常");
-						// }
-					}
-				}).exp(new ExceptionHandler() {
-					@Override
-					public void handle(Throwable throwable) {
-						count.incrementAndGet();
-						// throw new IllegalArgumentException("invalid batch location");
-					}
+				}).exp(throwable -> {
+					count.incrementAndGet();
+					// throw new IllegalArgumentException("invalid batch location");
 				});
-		BatchExec batchExec = new BatchExec(step);
-		batchExec.exec();
+		new BatchExec(step).exec();
 		log.info("任务报错数目:" + count.get());
 		ThreadUtil.sleep(200000);
 	}
