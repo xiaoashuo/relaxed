@@ -1,17 +1,17 @@
-package com.relaxed.common.core.batch;
+package com.relaxed.common.core.batch.base;
 
 import lombok.Getter;
 import org.springframework.util.Assert;
 
 /**
  * @author Yakir
- * @Topic BatchGroup
+ * @Topic GroupMeta
  * @Description
- * @date 2023/4/3 14:56
+ * @date 2023/9/22 14:58
  * @Version 1.0
  */
 @Getter
-public class BatchGroup {
+public class GroupMeta {
 
 	/**
 	 * 分组数
@@ -28,7 +28,7 @@ public class BatchGroup {
 	 */
 	private long total;
 
-	public BatchGroup(long total, int size) {
+	public GroupMeta(long total, int size) {
 		Assert.isTrue(total > 0, "total must not be less 0");
 		Assert.isTrue(size > 0, "size must not be less 0");
 		this.total = total;
