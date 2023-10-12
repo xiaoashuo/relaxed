@@ -1,6 +1,7 @@
 package com.relaxed.common.core.batch;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.thread.NamedThreadFactory;
 import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.core.batch.base.BatchMeta;
@@ -118,21 +119,21 @@ public class BatchExec {
 			consumer.accept(batchMeta, rowIndex, data);
 		}
 		catch (Exception e) {
-			log.error("消费数据异常,线程名称{},分组编号{},起始坐标{},批次大小{},数据行编号{}", Thread.currentThread().getName(),
+			log.error("消费数据异常,线程ID{},分组编号{},起始坐标{},批次大小{},数据行编号{}", Thread.currentThread().getId(),
 					batchMeta.getGroupNo(), batchMeta.getStartIndex(), batchMeta.getSize(), rowIndex, e);
-			step.getExceptionHandler().handle(e);
+			step.getExceptionHandler().handle(batchMeta, MapUtil.of("rowIndex", rowIndex), e);
 		}
 	}
 
-	private static List getDataList(Step step, BatchMeta providerMeta) {
+	private static List getDataList(Step step, BatchMeta batchMeta) {
 		List dataList = null;
 		try {
-			dataList = step.getDataByProviderMeta(providerMeta);
+			dataList = step.getDataByProviderMeta(batchMeta);
 		}
 		catch (Exception e) {
-			log.error("获取数据异常,线程名称{},分组编号{},起始坐标{},批次大小{}", Thread.currentThread().getName(), providerMeta.getGroupNo(),
-					providerMeta.getStartIndex(), providerMeta.getSize(), e);
-			step.getExceptionHandler().handle(e);
+			log.error("获取数据异常,线程ID{},分组编号{},起始坐标{},批次大小{}", Thread.currentThread().getId(), batchMeta.getGroupNo(),
+					batchMeta.getStartIndex(), batchMeta.getSize(), e);
+			step.getExceptionHandler().handle(batchMeta, MapUtil.empty(), e);
 		}
 		return dataList;
 	}

@@ -1,6 +1,7 @@
 package com.relaxed.common.core.batch.base;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Yakir
@@ -105,7 +106,8 @@ public class Step<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <E extends Throwable> void throwException(Throwable t) throws E {
+	private static <E extends Throwable> void throwException(BatchMeta batchMeta, Map<String, Object> extParam,
+			Throwable t) throws E {
 		throw (E) t;
 	}
 

@@ -35,9 +35,9 @@ public class BatchTest {
 		Step<UserEntity> step = new Step<UserEntity>().async(true).batch(batchSize, 10).taskName("测试批处理任务")
 				.supplier(batchMeta -> {
 					Integer startIndex = batchMeta.getStartIndex();
-					// if (batchMeta.getGroupNo() == 2) {
-					// throw new RuntimeException("mock 异常");
-					// }
+					if (batchMeta.getGroupNo() == 2) {
+						throw new RuntimeException("mock 异常");
+					}
 					return ListUtil.sub(dataList, startIndex, startIndex + batchMeta.getSize());
 				}).consumer((batchMeta, innerRow, data) -> {
 					// System.out.println(StrUtil.format("当前线程{}分组编号{},批次索引{},大小{},内部行号{},数据{}",
@@ -48,7 +48,7 @@ public class BatchTest {
 					if (innerRow % 5 == 0) {
 						throw new RuntimeException("mock 消费异常");
 					}
-				}).exp(throwable -> {
+				}).exp((batchMeta, extParam, throwable) -> {
 					count.incrementAndGet();
 					// throw new IllegalArgumentException("invalid batch location");
 				});
