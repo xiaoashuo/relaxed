@@ -23,8 +23,8 @@
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <hutool.version>5.8.2</hutool.version>
         <xxl-job.version>2.2.0</xxl-job.version>
-        <mybatis.version>3.5.5</mybatis.version>
-        <mybatis-plus.version>3.5.1</mybatis-plus.version>
+        <mybatis.version>3.5.13</mybatis.version>
+        <mybatis-plus.version>3.5.4.1</mybatis-plus.version>
         <jsqlparse.version>4.3</jsqlparse.version>
         <dynamic-datasource.version>3.5.0</dynamic-datasource.version>
         <jasypt.version>2.1.0</jasypt.version>

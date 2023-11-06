@@ -13,9 +13,11 @@ import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.ArrayUtils;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -83,16 +85,18 @@ public class LambdaQueryWrapperX<T> extends AbstractLambdaWrapper<T, LambdaQuery
 	}
 
 	/**
-	 * SELECT 部分 SQL 设置
-	 * @param columns 查询字段
+	 * @since 3.5.4
 	 */
-	@SafeVarargs
-	@Override
-	public final LambdaQueryWrapperX<T> select(SFunction<T, ?>... columns) {
-		if (ArrayUtils.isNotEmpty(columns)) {
+	protected LambdaQueryWrapperX<T> doSelect(boolean condition, List<SFunction<T, ?>> columns) {
+		if (condition && CollectionUtils.isNotEmpty(columns)) {
 			this.sqlSelect.setStringValue(columnsToString(false, columns));
 		}
 		return typedThis;
+	}
+
+	@Override
+	public LambdaQueryWrapperX<T> select(boolean condition, List<SFunction<T, ?>> columns) {
+		return doSelect(condition, columns);
 	}
 
 	/**
@@ -126,6 +130,21 @@ public class LambdaQueryWrapperX<T> extends AbstractLambdaWrapper<T, LambdaQuery
 		Assert.notNull(entityClass, "entityClass can not be null");
 		this.sqlSelect.setStringValue(TableInfoHelper.getTableInfo(entityClass).chooseSelect(predicate));
 		return typedThis;
+	}
+
+	/**
+	 * SELECT 部分 SQL 设置
+	 * @param columns 查询字段
+	 */
+	@SafeVarargs
+	@Override
+	public final LambdaQueryWrapperX<T> select(SFunction<T, ?>... columns) {
+		return doSelect(true, CollectionUtils.toList(columns));
+	}
+
+	@Override
+	public LambdaQueryWrapperX<T> select(boolean condition, SFunction<T, ?>... columns) {
+		return doSelect(condition, CollectionUtils.toList(columns));
 	}
 
 	@Override

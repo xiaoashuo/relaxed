@@ -53,6 +53,7 @@ public abstract class AbstractInsertBatch extends AbstractMethod {
 				}
 			}
 		}
+
 		String sql = String.format(getSql(), tableInfo.getTableName(), prepareFieldSql(tableInfo),
 				prepareValuesSqlForMysqlBatch(tableInfo));
 		SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
@@ -66,22 +67,17 @@ public abstract class AbstractInsertBatch extends AbstractMethod {
 
 	protected String prepareFieldSql(TableInfo tableInfo) {
 		List<TableFieldInfo> fieldList = tableInfo.getFieldList();
-		String columnFields = tableInfo.getKeyInsertSqlColumn(true, false)
+		String columnFields = tableInfo.getKeyInsertSqlColumn(true, null, false)
 				+ fieldList.stream().map(AbstractInsertBatch::getInsertSqlColumn).collect(Collectors.joining(NEWLINE));
 		return SqlScriptUtils.convertTrim(columnFields, LEFT_BRACKET, RIGHT_BRACKET, null, COMMA);
 	}
 
 	protected String prepareValuesSqlForMysqlBatch(TableInfo tableInfo) {
 		List<TableFieldInfo> fieldList = tableInfo.getFieldList();
-		StringBuilder valueSql = new StringBuilder();
-		valueSql.append("<foreach collection=\"" + ExtendConstants.COLLECTION + "\" item=\"" + ENTITY
-				+ "\" index=\"index\"  separator=\",\" >");
-		String valueList = tableInfo.getKeyInsertSqlProperty(true, ENTITY_DOT, true) + fieldList.stream()
+		String insertSqlProperty = tableInfo.getKeyInsertSqlProperty(true, ENTITY_DOT, true) + fieldList.stream()
 				.map(AbstractInsertBatch::getInsertSqlPropertyMaybeIf).collect(Collectors.joining(NEWLINE));
-		valueSql.append(SqlScriptUtils.convertTrim(valueList, LEFT_BRACKET, RIGHT_BRACKET, null, COMMA));
-		valueSql.append("</foreach>");
-
-		return valueSql.toString();
+		String valuesScript = SqlScriptUtils.convertForeach(insertSqlProperty, "collection", null, ENTITY, COMMA);
+		return valuesScript;
 	}
 
 	/**

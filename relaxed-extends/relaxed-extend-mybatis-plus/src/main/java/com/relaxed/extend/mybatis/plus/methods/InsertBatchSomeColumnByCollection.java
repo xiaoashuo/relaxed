@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.sql.SqlScriptUtils;
+import com.baomidou.mybatisplus.extension.injector.methods.InsertBatchSomeColumn;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -56,7 +57,7 @@ public class InsertBatchSomeColumnByCollection extends AbstractMethod {
 		KeyGenerator keyGenerator = new NoKeyGenerator();
 		SqlMethod sqlMethod = SqlMethod.INSERT_ONE;
 		List<TableFieldInfo> fieldList = tableInfo.getFieldList();
-		String insertSqlColumn = tableInfo.getKeyInsertSqlColumn(true, false)
+		String insertSqlColumn = tableInfo.getKeyInsertSqlColumn(true, null, false)
 				+ this.filterTableFieldInfo(fieldList, predicate, TableFieldInfo::getInsertSqlColumn, EMPTY);
 		String columnScript = LEFT_BRACKET + insertSqlColumn.substring(0, insertSqlColumn.length() - 1) + RIGHT_BRACKET;
 		String insertSqlProperty = tableInfo.getKeyInsertSqlProperty(true, ENTITY_DOT, false)
@@ -77,7 +78,7 @@ public class InsertBatchSomeColumnByCollection extends AbstractMethod {
 			}
 			else {
 				if (null != tableInfo.getKeySequence()) {
-					keyGenerator = TableInfoHelper.genKeyGenerator(getMethod(sqlMethod), tableInfo, builderAssistant);
+					keyGenerator = TableInfoHelper.genKeyGenerator(this.methodName, tableInfo, builderAssistant);
 					keyProperty = tableInfo.getKeyProperty();
 					keyColumn = tableInfo.getKeyColumn();
 				}
@@ -85,7 +86,7 @@ public class InsertBatchSomeColumnByCollection extends AbstractMethod {
 		}
 		String sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(), columnScript, valuesScript);
 		SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
-		return this.addInsertMappedStatement(mapperClass, modelClass, getMethod(sqlMethod), sqlSource, keyGenerator,
+		return this.addInsertMappedStatement(mapperClass, modelClass, this.methodName, sqlSource, keyGenerator,
 				keyProperty, keyColumn);
 	}
 

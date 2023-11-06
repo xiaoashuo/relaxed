@@ -1,5 +1,6 @@
 package com.relaxed.common.log.access.utils;
 
+import cn.hutool.json.JSONUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -94,6 +96,24 @@ public class LogUtils {
 	public HttpServletRequest getHttpServletRequest() {
 		return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
 				.getRequest();
+	}
+
+	/**
+	 * 获取参数信息
+	 * @param request 请求信息
+	 * @return 请求参数
+	 */
+	public String getParams(HttpServletRequest request) {
+		String params;
+		try {
+			Map<String, String[]> parameterMap = request.getParameterMap();
+			params = JSONUtil.toJsonStr(parameterMap);
+		}
+		catch (Exception e) {
+			params = "记录参数异常";
+			log.error("[prodLog]，参数获取序列化异常", e);
+		}
+		return params;
 	}
 
 }
