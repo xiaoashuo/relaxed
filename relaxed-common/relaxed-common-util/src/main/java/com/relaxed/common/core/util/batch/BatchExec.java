@@ -1,14 +1,14 @@
-package com.relaxed.common.core.batch;
+package com.relaxed.common.core.util.batch;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.thread.NamedThreadFactory;
-import cn.hutool.core.util.StrUtil;
-import com.relaxed.common.core.batch.base.BatchMeta;
-import com.relaxed.common.core.batch.base.DataConsumer;
-import com.relaxed.common.core.batch.base.GroupMeta;
-import com.relaxed.common.core.batch.base.LocationComputer;
-import com.relaxed.common.core.batch.base.Step;
+
+import com.relaxed.common.core.util.batch.funcs.DataConsumer;
+import com.relaxed.common.core.util.batch.funcs.LocationComputer;
+import com.relaxed.common.core.util.batch.meta.BatchMeta;
+import com.relaxed.common.core.util.batch.meta.GroupMeta;
+import com.relaxed.common.core.util.batch.meta.Step;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;

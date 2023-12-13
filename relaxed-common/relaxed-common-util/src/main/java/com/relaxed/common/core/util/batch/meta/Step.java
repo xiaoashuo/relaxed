@@ -1,4 +1,9 @@
-package com.relaxed.common.core.batch.base;
+package com.relaxed.common.core.util.batch.meta;
+
+import com.relaxed.common.core.util.batch.funcs.DataConsumer;
+import com.relaxed.common.core.util.batch.funcs.DataProvider;
+import com.relaxed.common.core.util.batch.funcs.ExceptionHandler;
+import com.relaxed.common.core.util.batch.funcs.LocationComputer;
 
 import java.util.List;
 import java.util.Map;

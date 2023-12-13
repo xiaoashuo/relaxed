@@ -74,9 +74,10 @@ public abstract class AbstractInsertBatch extends AbstractMethod {
 
 	protected String prepareValuesSqlForMysqlBatch(TableInfo tableInfo) {
 		List<TableFieldInfo> fieldList = tableInfo.getFieldList();
-		String insertSqlProperty = tableInfo.getKeyInsertSqlProperty(true, ENTITY_DOT, true) + fieldList.stream()
+		String valueList = tableInfo.getKeyInsertSqlProperty(true, ENTITY_DOT, true) + fieldList.stream()
 				.map(AbstractInsertBatch::getInsertSqlPropertyMaybeIf).collect(Collectors.joining(NEWLINE));
-		String valuesScript = SqlScriptUtils.convertForeach(insertSqlProperty, "collection", null, ENTITY, COMMA);
+		String valueSql = SqlScriptUtils.convertTrim(valueList, LEFT_BRACKET, RIGHT_BRACKET, null, COMMA);
+		String valuesScript = SqlScriptUtils.convertForeach(valueSql, "collection", null, ENTITY, COMMA);
 		return valuesScript;
 	}
 

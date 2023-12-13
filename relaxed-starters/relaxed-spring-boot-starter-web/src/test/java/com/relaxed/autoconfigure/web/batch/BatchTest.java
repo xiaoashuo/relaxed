@@ -2,19 +2,12 @@ package com.relaxed.autoconfigure.web.batch;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.core.util.StrUtil;
-import com.relaxed.common.core.batch.BatchExec;
-import com.relaxed.common.core.batch.base.BatchMeta;
-import com.relaxed.common.core.batch.base.DataConsumer;
-import com.relaxed.common.core.batch.base.DataProvider;
-import com.relaxed.common.core.batch.base.ExceptionHandler;
-import com.relaxed.common.core.batch.base.Step;
+import com.relaxed.common.core.util.batch.BatchExec;
+import com.relaxed.common.core.util.batch.meta.Step;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**

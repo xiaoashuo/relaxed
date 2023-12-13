@@ -1,4 +1,6 @@
-package com.relaxed.common.core.batch.base;
+package com.relaxed.common.core.util.batch.funcs;
+
+import com.relaxed.common.core.util.batch.meta.BatchMeta;
 
 import java.util.List;
 

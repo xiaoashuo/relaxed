@@ -1,4 +1,4 @@
-package com.relaxed.common.core.batch.base;
+package com.relaxed.common.core.util.batch.funcs;
 
 /**
  * @author Yakir
