@@ -31,7 +31,7 @@ public class SftpExecutor extends AbstractSftpExecutor {
 			return true;
 		}
 		catch (SftpException e) {
-			log.error("isExist exception params[{}]", path, e);
+			log.debug("isExist exception params[{}]", path, e);
 			return false;
 		}
 	}
@@ -294,6 +294,25 @@ public class SftpExecutor extends AbstractSftpExecutor {
 				throw new SftpClientException(
 						String.format("modify permissions exception params[perm=%s,path=%s]", permissions, path), e);
 			}
+		}
+
+	}
+
+	@Override
+	public long filesize(String path) {
+		if (path == null) {
+			throw new SftpClientException("file path can not be empty.");
+		}
+		boolean isDir = isDir(path);
+		if (isDir) {
+			throw new SftpClientException("dir size not support.");
+		}
+		try {
+			SftpATTRS lstat = getChannelSftp().lstat(path);
+			return lstat.getSize();
+		}
+		catch (SftpException e) {
+			throw new SftpClientException("get file size exception", e);
 		}
 
 	}

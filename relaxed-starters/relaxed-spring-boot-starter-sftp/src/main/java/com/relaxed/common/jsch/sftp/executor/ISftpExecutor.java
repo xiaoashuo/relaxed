@@ -159,6 +159,13 @@ public interface ISftpExecutor {
 	void chmod(String permissions, String path);
 
 	/**
+	 * 获取文件大小
+	 * @param path
+	 * @return
+	 */
+	long filesize(String path);
+
+	/**
 	 * 获取channel sftp 仅允许 同包路径或子类调用
 	 * @return
 	 */
