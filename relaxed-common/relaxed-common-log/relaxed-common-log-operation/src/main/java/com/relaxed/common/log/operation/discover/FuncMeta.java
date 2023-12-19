@@ -97,24 +97,9 @@ public class FuncMeta {
             if (arguments != null && arguments.length > 0) {
                 Method orgMethod = funcMeta.getMethod();
                 String orgMethodName = orgMethod.getName();
-//                Object targetFuncObj = funcMeta.getTarget();
-//                Class<?>[] parameterTypes = funcMeta.getParameterTypes();
                 try {
                     Object result = LogRecordFuncDiscover.invokeFunc(orgMethodName, arguments);
                     return new TypedValue(result);
-//                    if (funcMeta.isStatic()){
-//                        //静态方法执行
-//                        Class target = (Class) targetFuncObj;
-//                        Method method = target.getMethod(orgMethodName, parameterTypes);
-//                        Object result = method.invoke(target, arguments);
-//                        return new TypedValue(result);
-//
-//                }else{
-//                    Method method = targetFuncObj.getClass().getMethod(orgMethodName, parameterTypes);
-//
-//                    Object result = ReflectUtil.invokeRaw(targetFuncObj,method,arguments);
-//                    return new TypedValue(result);
-//                }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

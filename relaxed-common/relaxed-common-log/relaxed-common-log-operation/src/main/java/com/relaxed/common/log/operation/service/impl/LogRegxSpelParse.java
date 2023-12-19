@@ -59,12 +59,26 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware {
      * 拿到beanFactory后便可以获取容器中的bean,用于SpEl表达式的解析
      */
     private BeanFactory beanFactory;
+
+
+
     @Override
-    public LogBizInfo beforeResolve(Object target, Method method, Object[] args, BizLog bizLog) {
+    public boolean isRecordLog(LogSpelEvaluationContext context,String conditionSpel) {
+        String isRecordLog = resolveExpression(conditionSpel, context);
+        return Boolean.TRUE.toString().equals(isRecordLog);
+    }
+
+    @Override
+    public LogSpelEvaluationContext buildContext(Object target, Method method, Object[] args) {
+        LogSpelEvaluationContext logRecordContext = buildSpelContext(target, method, args);
+        return logRecordContext;
+    }
+
+    @Override
+    public LogBizInfo beforeResolve(LogSpelEvaluationContext logSpelContext, BizLog bizLog) {
         //等待解析得模板
         List<String> waitExpressTemplate = getExpressTemplate(bizLog);
         //记录log上下文
-        LogSpelEvaluationContext logRecordContext = buildSpelContext(target, method, args);
         HashMap<String, String> map = new HashMap<>();
 
         for (String template : waitExpressTemplate) {
@@ -72,9 +86,11 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware {
             if (!template.contains("{")) {
                 continue;
             }
+
             Matcher matcher = PATTERN.matcher(template);
             while (matcher.find()) {
                 String paramName = matcher.group(2);
+                //前置参数无结果 和错误信息
                 if (paramName.contains(LogRecordConstants.POUND_KEY + LogRecordConstants.ERR_MSG) || paramName.contains(LogRecordConstants.POUND_KEY + LogRecordConstants.RESULT)) {
                     continue;
                 }
@@ -82,9 +98,7 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware {
 
                 //如果为函数 且 是前置函数 则此处调用执行
                 if (StrUtil.isNotBlank(funcName)&& LogRecordFuncDiscover.isBeforeExec(funcName)) {
-                    Object value = LogSeplUtil.parseExpression(paramName, logRecordContext);
-                 //   Object value = cachedExpressionEvaluator.parseExpression(paramName, elementKey, evaluationContext);
-
+                    Object value = LogSeplUtil.parseExpression(paramName, logSpelContext);
                     String funcVal = LogRecordFuncDiscover.invokeFuncToStr(funcName, value);
                     map.put(getFunctionMapKey(funcName, paramName), funcVal);
                 }
@@ -116,70 +130,25 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware {
     }
 
     @Override
-    public LogBizInfo afterResolve(LogBizInfo logBizOp, Object target, Method method, Object[] args, BizLog bizLog) {
+    public LogBizInfo afterResolve(LogBizInfo logBizOp, LogSpelEvaluationContext spelContext, BizLog bizLog) {
         HashMap<String, String> map = new HashMap<>();
         //等待解析得模板
         List<String> waitExpressTemplate = getExpressTemplate(bizLog);
-        LogSpelEvaluationContext logRecordContext = buildSpelContext(target, method, args);
 
         Map<String, String> funcResMap = logBizOp.getFuncResMap();
-
         for (String template : waitExpressTemplate) {
-            //从缓存获取
-
             //解析后得表达式值
-            String expressionValue = resolveExpression(template, logRecordContext, funcResMap);
-
-            if (template.contains("{")) {
-                Matcher matcher = PATTERN.matcher(template);
-                StringBuffer parsedStr = new StringBuffer();
-                while (matcher.find()) {
-                    String paramName = matcher.group(2);
-                    String funcName = matcher.group(1);
-
-                    if (StrUtil.isBlank(funcName)){
-                        //函数名为空 说明不是函数
-                        Object value = LogSeplUtil.parseExpression(paramName,logRecordContext);
-                        String param = value == null ? "" : value.toString();
-                        String funcVal= param;
-                        matcher.appendReplacement(parsedStr, funcVal);
-                    }else{
-                        //是函数
-                        Object[] funcArgs=null;
-                        if (StrUtil.isNotBlank(paramName)){
-                            String[] paramNameExps = paramName.split(StrUtil.COMMA);
-                            funcArgs=new Object[paramNameExps.length];
-                            for (int i = 0; i < paramNameExps.length; i++) {
-                                funcArgs[i]=LogSeplUtil.parseExpression(paramNameExps[i],logRecordContext);
-                            }
-                        }
-
-                        String funcVal = getFuncVal(funcResMap, funcName, paramName, funcArgs);
-                        matcher.appendReplacement(parsedStr, funcVal);
-                        funcResMap.put(getFunctionMapKey(funcName,paramName),funcVal);
-                    }
-                }
-                matcher.appendTail(parsedStr);
-                map.put(template, parsedStr.toString());
-            } else {
-                Object value;
-                try {
-                    value =  LogSeplUtil.parseExpression(template,logRecordContext) ;
-                } catch (Exception e) {
-                    throw new LogRecordException(method.getDeclaringClass().getName() + "." + method.getName() + "下 BizLog 解析失败: [" + template + "], 请检查是否符合SpEl表达式规范！");
-                }
-                map.put(template, value == null ? "" : value.toString());
-            }
+            String expressionValue = resolveExpression(template, spelContext);
+            map.put(template, expressionValue);
         }
         //
-        logBizOp.setFieldMap(map);
+        logBizOp.setExpressionMap(map);
         logBizOp.setFuncResMap(funcResMap);
         return logBizOp;
     }
 
 
-    public String resolveExpression(String template,LogSpelEvaluationContext logRecordContext,Map<String,String> funcCache ){
-
+    public String resolveExpression(String template,LogSpelEvaluationContext logRecordContext ){
         String value;
         if (template.contains("{")) {
             //模板搜寻匹配 若模板包含 左花括号 及支持正则匹配提取
@@ -203,9 +172,8 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware {
                             funcArgs[i]=LogSeplUtil.parseExpression(paramNameExps[i],logRecordContext);
                         }
                     }
-                    String funcVal = getFuncVal(funcCache, funcName, paramName, funcArgs);
+                    String funcVal = getFuncVal( funcName, paramName, funcArgs);
                     matcher.appendReplacement(parsedStr, funcVal);
-                    funcCache.put(getFunctionMapKey(funcName,paramName),funcVal);
                 }
             }
             matcher.appendTail(parsedStr);
@@ -226,15 +194,8 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware {
      * @param param                     函数参数
      * @return {@link String} 返回结果
      */
-    public String getFuncVal(Map<String, String> funcValBeforeExecutionMap, String funcName, String paramName, Object[] params) {
-        String val = null;
-        if (!CollectionUtils.isEmpty(funcValBeforeExecutionMap)) {
-            val = funcValBeforeExecutionMap.get(getFunctionMapKey(funcName, paramName));
-        }
-        if (ObjectUtils.isEmpty(val)) {
-            val = LogRecordFuncDiscover.invokeFuncToStr(funcName, params);
-        }
-
+    public String getFuncVal(String funcName, String paramName, Object[] params) {
+        String val = LogRecordFuncDiscover.invokeFuncToStr(funcName, params);
         return val;
     }
     @Override

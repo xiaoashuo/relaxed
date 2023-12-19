@@ -15,13 +15,32 @@ import java.lang.reflect.Method;
  */
 public class LogSpelEvaluationContext extends MethodBasedEvaluationContext {
 
+    private Object target;
+    private Method method;
+    private Object[] arguments;
+
     public LogSpelEvaluationContext( Method method, Object[] arguments, ParameterNameDiscoverer parameterNameDiscoverer) {
         this(null, method, arguments, parameterNameDiscoverer);
     }
     public LogSpelEvaluationContext(Object rootObject, Method method, Object[] arguments, ParameterNameDiscoverer parameterNameDiscoverer) {
         super(rootObject, method, arguments, parameterNameDiscoverer);
+        this.target=rootObject;
+        this.method=method;
+        this.arguments=arguments;
     }
 
+
+    public Object getTarget() {
+        return target;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public Object[] getArguments() {
+        return arguments;
+    }
 
     /**
      * 将方法执行结果放入上下文中

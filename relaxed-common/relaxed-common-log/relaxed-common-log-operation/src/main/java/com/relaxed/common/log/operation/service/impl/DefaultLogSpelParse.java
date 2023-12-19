@@ -55,19 +55,24 @@ public class DefaultLogSpelParse  implements ILogParse , BeanFactoryAware {
      */
     private BeanFactory beanFactory;
     private final SpelExpressionParser parser = new SpelExpressionParser();
+
     @Override
-    public LogBizInfo beforeResolve(Object target, Method method, Object[] args, BizLog bizLog) {
-        LogSpelEvaluationContext spElContext = buildSpelContext(target, method, args);
+    public boolean isRecordLog(LogSpelEvaluationContext context, String conditionSpel) {
+        boolean conditionPassed = parseParamToBoolean(conditionSpel, context);
+        return conditionPassed;
+
+    }
+
+    @Override
+    public LogSpelEvaluationContext buildContext(Object target, Method method, Object[] args) {
+        return buildSpelContext(target, method, args);
+    }
+
+    @Override
+    public LogBizInfo beforeResolve(LogSpelEvaluationContext spElContext, BizLog bizLog) {
+
         //执行解析
         //1.判断是否需要记录日志
-        String conditionSpel = bizLog.condition();
-        if (StrUtil.isNotBlank(conditionSpel)){
-            boolean conditionPassed = parseParamToBoolean(conditionSpel, spElContext);
-            if (!conditionPassed){
-                return null;
-            }
-        }
-
         String operatorSpel = bizLog.operator();
         String bizNoSpel = bizLog.bizNo();
         String typeSpel = bizLog.type();
@@ -115,8 +120,7 @@ public class DefaultLogSpelParse  implements ILogParse , BeanFactoryAware {
 
 
     @Override
-    public LogBizInfo afterResolve(LogBizInfo logBizOp, Object target, Method method, Object[] args, BizLog bizLog) {
-        LogSpelEvaluationContext spElContext = buildSpelContext(target, method, args);
+    public LogBizInfo afterResolve(LogBizInfo logBizOp, LogSpelEvaluationContext spElContext,  BizLog bizLog) {
         //格式化详情文件
         String detailExpression = bizLog.detail();
         String detailText = parseParamToStringOrJson(detailExpression, spElContext);

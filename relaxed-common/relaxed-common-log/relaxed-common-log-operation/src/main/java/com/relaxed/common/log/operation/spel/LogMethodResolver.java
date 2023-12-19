@@ -23,24 +23,12 @@ public class LogMethodResolver implements MethodResolver {
     @Override
     public MethodExecutor resolve(EvaluationContext context, Object targetObject, String methodName, List<TypeDescriptor> argumentTypes) throws AccessException {
 
-        if ("myNullMethod".equals(methodName)){
-            return new EmptyMethodExecutor();
-        }
         FuncMeta functionMeta = LogRecordFuncDiscover.getFunctionMeta(methodName);
         return functionMeta==null?null:functionMeta.getMethodExecutor();
 
 
     }
 
-    private static class EmptyMethodExecutor implements MethodExecutor {
-        private String originalExpression;
 
-        @Override
-        public TypedValue execute(EvaluationContext context, Object target, Object... arguments) throws AccessException {
-            // 返回空值
-            return new TypedValue(originalExpression);
-
-        }
-    }
 
 }

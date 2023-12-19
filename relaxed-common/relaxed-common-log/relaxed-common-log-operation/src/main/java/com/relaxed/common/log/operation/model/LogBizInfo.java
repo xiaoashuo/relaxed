@@ -14,6 +14,10 @@ import java.util.Map;
  */
 @Data
 public class LogBizInfo {
+
+    private String className;
+    private String methodName;
+
     /**
      * 操作者
      */
@@ -34,9 +38,13 @@ public class LogBizInfo {
     private String content;
 
     /**
-     * 操作时间 时间戳单位：ms
+     * 开始时间 时间戳单位：ms
      */
-    private Long operateTime;
+    private Long startTime;
+    /**
+     * 结束时间 时间戳单位：ms
+     */
+    private Long endTime;
 
     /**
      * 操作花费的时间 单位：ms
@@ -73,7 +81,7 @@ public class LogBizInfo {
 
     private Throwable throwable;
 
-    private Map<String,String> fieldMap;
+    private Map<String,String> expressionMap;
 
     /**
      * 函数执行结果map

@@ -32,9 +32,9 @@ public class UserAService {
         LogOperatorContext.push("userA","finish");
         user.setStatus(2);
         userBService.updateUserStatus(user);
-        if (true){
-            throw new RuntimeException("错误产生");
-        }
+//        if (true){
+//            throw new RuntimeException("错误产生");
+//        }
 
         return "";
     }
