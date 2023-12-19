@@ -71,6 +71,15 @@ public class SpELUtil {
 	}
 
 	/**
+	 * 格式化值 到Boolean类型
+	 * @param context
+	 * @param spEL
+	 * @return
+	 */
+	public static boolean parseValueToBool(EvaluationContext context, String spEL) {
+		return Boolean.TRUE.equals(getParser().parseExpression(spEL).getValue(context, Boolean.class));
+	}
+	/**
 	 * 解析 spel 表达式
 	 * @param context spel 上下文
 	 * @param spelExpression spel 表达式
@@ -107,7 +116,7 @@ public class SpELUtil {
 	 * @param args
 	 * @return
 	 */
-	public static EvaluationContext getSpElContext(Object target, Method method, Object[] args) {
+	public static StandardEvaluationContext getSpElContext(Object target, Method method, Object[] args) {
 		StandardEvaluationContext standardEvaluationContext = new MethodBasedEvaluationContext(target, method, args,
 				getParameterNameDiscoverer());
 
