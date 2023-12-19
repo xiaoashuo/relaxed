@@ -52,7 +52,8 @@ public class LogOperatorAdvice implements MethodInterceptor {
 	}
 
 	private Object execute(MethodInvocation invoker, Object target, Method method, Object[] args) throws Throwable {
-
+		// 放入一个空标签,存储当前方法临时参数
+		LogOperatorContext.putEmptySpan();
 		//获取操作日志注解
 		BizLog bizLog = AnnotationUtil.getAnnotation(method, BizLog.class);
 
@@ -61,10 +62,13 @@ public class LogOperatorAdvice implements MethodInterceptor {
 		boolean isRecordLog = logParse.isRecordLog(logSpelContext, bizLog.condition());
 		//不需要记录日志 直接执行方法
 		if (!isRecordLog){
-			return invoker.proceed();
+			try {
+				return invoker.proceed();
+			}finally {
+				LogOperatorContext.poll();
+			}
 		}
-		// 放入一个空标签,存储当前方法临时参数
-		LogOperatorContext.putEmptySpan();
+
 		LogBizInfo logBizOp= logParse.beforeResolve(logSpelContext,bizLog);
 		//记录类名 方法名
 		logBizOp.setClassName(target.getClass().getName());
