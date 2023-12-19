@@ -1,7 +1,5 @@
-package com.relaxed.common.log.operation.discover;
+package com.relaxed.common.log.operation.discover.func;
 
-import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.ReflectUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.expression.AccessException;
@@ -9,7 +7,6 @@ import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.MethodExecutor;
 import org.springframework.expression.TypedValue;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -53,17 +50,16 @@ public class FuncMeta {
 
     private Class<?>[] parameterTypes;
 
-    public FuncMeta() {
 
-    }
 
     public FuncMeta(String regFuncName, boolean isStatic, Object target, Method method) {
         this.regFuncName = regFuncName;
         this.isStatic = isStatic;
         this.target = target;
         this.method = method;
-        this.methodExecutor=initMethodExecutor(this);
         this.parameterTypes= method.getParameterTypes();
+        this.methodExecutor=initMethodExecutor(this);
+
     }
 
     public MethodExecutor getMethodExecutor() {
@@ -71,23 +67,12 @@ public class FuncMeta {
     }
 
     private MethodExecutor initMethodExecutor(FuncMeta funcMeta) {
-        // 自定义 MethodExecutor
-//        return new MethodExecutor() {
-//            @Override
-//            public TypedValue execute(EvaluationContext context, Object target, Object... arguments) throws AccessException {
-//                // 在这里编写方法的实际逻辑
-//                if (arguments != null && arguments.length > 0) {
-//                    String argument = (String) arguments[0];
-//
-//                    return new TypedValue("Modified: " + argument);
-//                }
-//                throw new AccessException("Invalid arguments for myMethod");
-//            }
-//        };
         return new MyMethodExecutor(funcMeta);
     }
 
-    // 自定义 MethodExecutor
+    /**
+     * 自定义 MethodExecutor
+     */
     @RequiredArgsConstructor
      class MyMethodExecutor implements MethodExecutor {
         public final FuncMeta funcMeta;

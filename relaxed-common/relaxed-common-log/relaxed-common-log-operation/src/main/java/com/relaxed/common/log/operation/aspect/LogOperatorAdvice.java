@@ -5,8 +5,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.operation.annotation.BizLog;
 import com.relaxed.common.log.operation.constants.LogRecordConstants;
+import com.relaxed.common.log.operation.context.LogOperatorContext;
 import com.relaxed.common.log.operation.model.LogBizInfo;
-import com.relaxed.common.log.operation.model.LogBizOp;
 import com.relaxed.common.log.operation.service.ILogParse;
 import com.relaxed.common.log.operation.service.ILogRecordService;
 import com.relaxed.common.log.operation.spel.LogSpelEvaluationContext;
@@ -14,16 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Yakir
@@ -104,38 +96,12 @@ public class LogOperatorAdvice implements MethodInterceptor {
 
 
 
-	/**
-	 * 获取不为空的待解析模板
-	 * 从这个List里面我们也可以知道，哪些参数需要符合SpEl表达式
-	 *
-	 * @param logBizOps
-	 * @return
-	 */
-
-	private List<String> getExpressTemplate(List<LogBizOp> logBizOps) {
-		Set<String> set = new HashSet<>();
-		for (LogBizOp logBizOp : logBizOps) {
-			set.addAll(Arrays.asList(logBizOp.getBizNo(), logBizOp.getDetails(),
-					logBizOp.getOperator(), logBizOp.getSuccess(), logBizOp.getFail(),
-					logBizOp.getCondition()));
-		}
-		return set.stream().filter(s -> !ObjectUtils.isEmpty(s)).collect(Collectors.toList());
-	}
 
 
 
-	private void recordExecute(Object ret, Method method, Object[] args, Collection<LogOperatorOps> operations,
-			Class<?> targetClass, boolean success, String msg, Map<String, String> functionNameAndReturnMap) {
 
-	}
 
-	private List<String> getBeforeExecuteFunctionTemplate(Collection<LogOperatorOps> operations) {
-		return null;
-	}
 
-	private Map<String, String> processBeforeExecuteFunctionTemplate(List<String> spElTemplates, Class<?> targetClass,
-			Method method, Object[] args) {
-		return null;
-	}
+
 
 }

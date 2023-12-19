@@ -3,8 +3,7 @@ package com.relaxed.common.log.operation.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.log.operation.annotation.BizLog;
 import com.relaxed.common.log.operation.constants.LogRecordConstants;
-import com.relaxed.common.log.operation.discover.LogRecordFuncDiscover;
-import com.relaxed.common.log.operation.exception.LogRecordException;
+import com.relaxed.common.log.operation.discover.func.LogRecordFuncDiscover;
 import com.relaxed.common.log.operation.model.LogBizInfo;
 import com.relaxed.common.log.operation.service.ILogParse;
 import com.relaxed.common.log.operation.spel.LogSeplUtil;
@@ -13,7 +12,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.context.expression.BeanFactoryResolver;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.Method;
@@ -100,24 +98,15 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware {
                 if (StrUtil.isNotBlank(funcName)&& LogRecordFuncDiscover.isBeforeExec(funcName)) {
                     Object value = LogSeplUtil.parseExpression(paramName, logSpelContext);
                     String funcVal = LogRecordFuncDiscover.invokeFuncToStr(funcName, value);
-                    map.put(getFunctionMapKey(funcName, paramName), funcVal);
+                    map.put(template, funcVal);
                 }
             }
         }
         LogBizInfo logBizInfo = new LogBizInfo();
-        logBizInfo.setFuncResMap(map);
+        logBizInfo.setExpressionMap(map);
         return logBizInfo;
     }
-    /**
-     * 获取前置函数映射的 key
-     *
-     * @param funcName 方法名
-     * @param param    参数
-     * @return {@link String} 返回结果
-     */
-    private String getFunctionMapKey(String funcName, String param) {
-        return funcName + param;
-    }
+
 
     private LogSpelEvaluationContext buildSpelContext(Object target, Method method, Object[] args) {
         LogSpelEvaluationContext logRecordContext = LogSeplUtil.buildSpelContext(target, method, args);
@@ -131,19 +120,17 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware {
 
     @Override
     public LogBizInfo afterResolve(LogBizInfo logBizOp, LogSpelEvaluationContext spelContext, BizLog bizLog) {
-        HashMap<String, String> map = new HashMap<>();
+
         //等待解析得模板
         List<String> waitExpressTemplate = getExpressTemplate(bizLog);
-
-        Map<String, String> funcResMap = logBizOp.getFuncResMap();
+        //表达式map
+        Map<String, String> expressionMap = logBizOp.getExpressionMap();
         for (String template : waitExpressTemplate) {
             //解析后得表达式值
             String expressionValue = resolveExpression(template, spelContext);
-            map.put(template, expressionValue);
+            expressionMap.put(template, expressionValue);
         }
-        //
-        logBizOp.setExpressionMap(map);
-        logBizOp.setFuncResMap(funcResMap);
+
         return logBizOp;
     }
 

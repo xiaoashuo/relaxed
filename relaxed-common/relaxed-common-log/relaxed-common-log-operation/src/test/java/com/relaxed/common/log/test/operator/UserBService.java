@@ -1,7 +1,6 @@
 package com.relaxed.common.log.test.operator;
 
-import com.relaxed.common.log.operation.annotation.BizLog;
-import com.relaxed.common.log.operation.aspect.LogOperatorContext;
+import com.relaxed.common.log.operation.context.LogOperatorContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

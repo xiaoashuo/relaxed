@@ -83,10 +83,7 @@ public class LogBizInfo {
 
     private Map<String,String> expressionMap;
 
-    /**
-     * 函数执行结果map
-     */
-    private Map<String,String> funcResMap;
+
 
     public class FuncRes{
 

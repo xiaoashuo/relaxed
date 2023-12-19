@@ -1,15 +1,12 @@
-package com.relaxed.common.log.operation.aspect;
+package com.relaxed.common.log.operation.context;
 
 import cn.hutool.core.map.MapUtil;
 import org.springframework.core.NamedThreadLocal;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Stack;
 
 /**
  * @author Yakir

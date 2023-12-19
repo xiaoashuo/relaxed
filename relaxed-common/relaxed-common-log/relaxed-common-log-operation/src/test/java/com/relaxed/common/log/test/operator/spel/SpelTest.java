@@ -1,7 +1,7 @@
 package com.relaxed.common.log.test.operator.spel;
 
-import com.relaxed.common.log.operation.discover.FuncMeta;
-import com.relaxed.common.log.operation.discover.LogRecordFuncDiscover;
+import com.relaxed.common.log.operation.discover.func.FuncMeta;
+import com.relaxed.common.log.operation.discover.func.LogRecordFuncDiscover;
 import com.relaxed.common.log.operation.spel.LogMethodResolver;
 import com.relaxed.common.log.test.operator.User;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
