@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserBService {
 
+	// @BizLog(success = "商品信息更新成功",bizNo = "#user.bizNo",category = "user",
+	// detail = "'将'+#user.username+'的商品状态,修改为了 '+#user.status+ifunc_test(#user.status)")
+	public void updateUserStatus(User user) {
+		LogOperatorContext.push("userB", "finish");
+		log.info("UserB-service修改了用户状态");
 
-//    @BizLog(success = "商品信息更新成功",bizNo = "#user.bizNo",category = "user",
-//            detail = "'将'+#user.username+'的商品状态,修改为了 '+#user.status+ifunc_test(#user.status)")
-    public void updateUserStatus(User user) {
-        LogOperatorContext.push("userB","finish");
-        log.info("UserB-service修改了用户状态");
+	}
 
-    }
 }

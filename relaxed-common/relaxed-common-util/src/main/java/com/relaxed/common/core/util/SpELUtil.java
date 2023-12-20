@@ -79,6 +79,7 @@ public class SpELUtil {
 	public static boolean parseValueToBool(EvaluationContext context, String spEL) {
 		return Boolean.TRUE.equals(getParser().parseExpression(spEL).getValue(context, Boolean.class));
 	}
+
 	/**
 	 * 解析 spel 表达式
 	 * @param context spel 上下文

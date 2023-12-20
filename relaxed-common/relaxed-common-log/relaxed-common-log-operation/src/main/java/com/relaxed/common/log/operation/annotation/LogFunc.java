@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  * @date 2023/12/14 11:11
  * @Version 1.0
  */
-@Target({ElementType.METHOD,ElementType.TYPE})
+@Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
@@ -24,8 +24,16 @@ public @interface LogFunc {
 	 * 命名空间
 	 */
 	String namespace() default "";
+
 	/**
 	 * 方法名
 	 */
 	String funcName() default "";
+
+	/**
+	 * 执行时机
+	 * @return
+	 */
+	String around() default "";
+
 }

@@ -11,17 +11,20 @@ import lombok.Data;
  */
 @Data
 public class User {
-    /**
-     * 用户名称
-     */
-    private String username;
-    /**
-     * 状态 1 待发货 2 发货中 3 待收货 4 待评价 5已完成
-     */
-    private Integer status;
 
-    /**
-     * 物流单号
-     */
-    private String bizNo;
+	/**
+	 * 用户名称
+	 */
+	private String username;
+
+	/**
+	 * 状态 1 待发货 2 发货中 3 待收货 4 待评价 5已完成
+	 */
+	private Integer status;
+
+	/**
+	 * 物流单号
+	 */
+	private String bizNo;
+
 }

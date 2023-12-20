@@ -15,8 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DefaultLogRecordService implements ILogRecordService {
 
-    @Override
-    public void record(LogBizInfo logBizInfo) {
-        log.info("[触发默认业务日志记录]=====>log={}", JSONUtil.toJsonStr(logBizInfo));
-    }
+	@Override
+	public void record(LogBizInfo logBizInfo) {
+		log.info("[触发默认业务日志记录]=====>log={}", JSONUtil.toJsonStr(logBizInfo));
+	}
+
 }

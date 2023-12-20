@@ -13,20 +13,20 @@ import java.util.List;
 /**
  * @author Yakir
  * @Topic LogMethodResolver
- * @Description  参考 {@link org.springframework.expression.spel.support.ReflectiveMethodResolver}
+ * @Description 参考
+ * {@link org.springframework.expression.spel.support.ReflectiveMethodResolver}
  * @date 2023/12/19 9:29
  * @Version 1.0
  */
 public class LogMethodResolver implements MethodResolver {
-    @Override
-    public MethodExecutor resolve(EvaluationContext context, Object targetObject, String methodName, List<TypeDescriptor> argumentTypes) throws AccessException {
 
-        FuncMeta functionMeta = LogRecordFuncDiscover.getFunctionMeta(methodName);
-        return functionMeta==null?null:functionMeta.getMethodExecutor();
+	@Override
+	public MethodExecutor resolve(EvaluationContext context, Object targetObject, String methodName,
+			List<TypeDescriptor> argumentTypes) throws AccessException {
 
+		FuncMeta functionMeta = LogRecordFuncDiscover.getFunctionMeta(methodName);
+		return functionMeta == null ? null : functionMeta.getMethodExecutor();
 
-    }
-
-
+	}
 
 }

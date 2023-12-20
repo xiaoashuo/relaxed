@@ -17,7 +17,8 @@ import java.util.Map;
  */
 public class LogOperatorContext {
 
-	private static final ThreadLocal<Deque<Map<String, Object>>> variableMapStack = new NamedThreadLocal<Deque<Map<String, Object>>>("log-operator"){
+	private static final ThreadLocal<Deque<Map<String, Object>>> variableMapStack = new NamedThreadLocal<Deque<Map<String, Object>>>(
+			"log-operator") {
 		@Override
 		protected Deque<Map<String, Object>> initialValue() {
 			return new ArrayDeque();
@@ -28,14 +29,13 @@ public class LogOperatorContext {
 		return variableMapStack.get().peek();
 	}
 
-
 	public static void putEmptySpan() {
 		Deque<Map<String, Object>> deque = variableMapStack.get();
 		deque.push(new HashMap<>(8));
 	}
 
 	public static void push(String key, Object val) {
-	    Map<String, Object> peek = peek();
+		Map<String, Object> peek = peek();
 		peek.put(key, val);
 	}
 
@@ -52,18 +52,18 @@ public class LogOperatorContext {
 		variableMapStack.remove();
 	}
 
-
 	public static void main(String[] args) {
 		LogOperatorContext.putEmptySpan();
-		LogOperatorContext.push("user1","a");
-		LogOperatorContext.push("user1-1","a");
+		LogOperatorContext.push("user1", "a");
+		LogOperatorContext.push("user1-1", "a");
 		System.out.println(LogOperatorContext.peek());
 		LogOperatorContext.putEmptySpan();
-		LogOperatorContext.push("user2","b");
+		LogOperatorContext.push("user2", "b");
 		System.out.println(LogOperatorContext.peek());
 
 		// 创建一个使用 LinkedList 实现的 Deque
-		ThreadLocal<Deque<Map<String, Object>>> variableMapStack = new NamedThreadLocal<Deque<Map<String, Object>>>("xx"){
+		ThreadLocal<Deque<Map<String, Object>>> variableMapStack = new NamedThreadLocal<Deque<Map<String, Object>>>(
+				"xx") {
 			@Override
 			protected Deque<Map<String, Object>> initialValue() {
 				return new ArrayDeque();
@@ -77,21 +77,20 @@ public class LogOperatorContext {
 		Map<String, Object> map2 = MapUtil.newHashMap();
 		variableMapStack.get().push(map2);
 		Map<String, Object> peekMap2 = variableMapStack.get().peek();
-		peekMap2.put("user2","b");
-		peekMap2.put("user2-2","b");
+		peekMap2.put("user2", "b");
+		peekMap2.put("user2-2", "b");
 		Map<String, Object> map3 = MapUtil.newHashMap();
 		variableMapStack.get().push(map3);
 		Map<String, Object> peekMap3 = variableMapStack.get().peek();
-		peekMap3.put("user3","c");
+		peekMap3.put("user3", "c");
 
 		// 使用 peek 查看栈顶元素，但不弹出
 		Map<String, Object> peekedMap = variableMapStack.get().peek();
 		System.out.println("Peeked Map: " + peekedMap);
-		 variableMapStack.get().poll();
+		variableMapStack.get().poll();
 		Map<String, Object> peekedMap2 = variableMapStack.get().peek();
 		System.out.println("Peeked Map: " + peekedMap2);
 
-
-
 	}
+
 }

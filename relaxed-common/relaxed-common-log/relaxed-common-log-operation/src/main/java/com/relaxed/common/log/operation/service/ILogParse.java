@@ -15,37 +15,37 @@ import java.lang.reflect.Method;
  */
 public interface ILogParse {
 
+	/**
+	 * 是否记录日志
+	 * @param conditionSpel
+	 * @return
+	 */
+	boolean isRecordLog(LogSpelEvaluationContext context, String conditionSpel);
 
+	/**
+	 * 构建spel解析上下文
+	 * @param target
+	 * @param method
+	 * @param args
+	 * @return
+	 */
+	LogSpelEvaluationContext buildContext(Object target, Method method, Object[] args);
 
-    /**
-     * 是否记录日志
-     * @param conditionSpel
-     * @return
-     */
-    boolean isRecordLog(LogSpelEvaluationContext context,String conditionSpel);
+	/**
+	 * 前置业务解析器
+	 * @param logSpelContext
+	 * @param bizLog
+	 * @return
+	 */
+	LogBizInfo beforeResolve(LogSpelEvaluationContext logSpelContext, BizLog bizLog);
 
-    /**
-     * 构建spel解析上下文
-     * @param target
-     * @param method
-     * @param args
-     * @return
-     */
-    LogSpelEvaluationContext buildContext(Object target, Method method, Object[] args);
-    /**
-     * 前置业务解析器
-     * @param logSpelContext
-     * @param bizLog
-     * @return
-     */
-    LogBizInfo beforeResolve(LogSpelEvaluationContext logSpelContext , BizLog bizLog);
+	/**
+	 * 后置参数解析
+	 * @param logBizOp
+	 * @param logSpelContext
+	 * @param bizLog
+	 * @return logBizOp
+	 */
+	LogBizInfo afterResolve(LogBizInfo logBizOp, LogSpelEvaluationContext logSpelContext, BizLog bizLog);
 
-    /**
-     * 后置参数解析
-     * @param logBizOp
-     * @param logSpelContext
-     * @param bizLog
-     * @return logBizOp
-     */
-    LogBizInfo afterResolve(LogBizInfo logBizOp, LogSpelEvaluationContext logSpelContext, BizLog bizLog);
 }

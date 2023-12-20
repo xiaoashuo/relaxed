@@ -10,8 +10,10 @@ import com.relaxed.common.log.operation.service.IOperatorGetService;
  * @Version 1.0
  */
 public class DefaultOperatorGetServiceImpl implements IOperatorGetService {
-    @Override
-    public String getOperatorId() {
-        return null;
-    }
+
+	@Override
+	public String getOperatorId() {
+		return null;
+	}
+
 }

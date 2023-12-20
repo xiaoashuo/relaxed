@@ -16,23 +16,20 @@ import java.util.List;
  */
 @Component
 public class CusIParseFunc implements IParseFunc {
-    @Override
-    public String namespace() {
-        return "ifunc";
-    }
 
-    @Override
-    public String name() {
-        return "test";
-    }
+	@Override
+	public String namespace() {
+		return "ifunc";
+	}
 
-    @Override
-    public String apply(Object[] args) {
-        return "i func test success,params"+ StrUtil.join(",",args);
-    }
+	@Override
+	public String name() {
+		return "test";
+	}
 
+	// @Override
+	public String apply(Object[] args) {
+		return "i func test success,params" + StrUtil.join(",", args);
+	}
 
-    public String applyList(String param,String[] args) {
-        return "i func test success,params"+ StrUtil.join(",",args,param);
-    }
 }

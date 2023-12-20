@@ -21,9 +21,16 @@ import java.lang.annotation.Target;
 public @interface BizLog {
 
 	/**
+	 * 系统名称
+	 * @return
+	 */
+	String systemName() default "";
+
+	/**
 	 * 操作日志成功得文本模板 require true
 	 */
 	String success();
+
 	/**
 	 * 操作日志执行人 require false
 	 */
@@ -33,19 +40,16 @@ public @interface BizLog {
 	 * 操作类型：比如增删改查
 	 */
 	String type() default "";
+
 	/**
 	 * 操作日志失败的文本模板 require false
 	 */
 	String fail() default "";
 
-
-
 	/**
 	 * 操作日志绑定的业务标识对象 require true
 	 */
 	String bizNo();
-
-
 
 	/**
 	 * 扩展参数 记录操作日志的修改详情 require false
@@ -57,10 +61,9 @@ public @interface BizLog {
 	 * @return
 	 */
 	String condition() default "true";
+
 	/**
-	 * 是否记录返回值
-	 * true: 记录返回值
-	 * false: 不记录返回值
+	 * 是否记录返回值 true: 记录返回值 false: 不记录返回值
 	 */
 	boolean recordReturnValue() default true;
 

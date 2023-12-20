@@ -14,13 +14,14 @@ import org.springframework.stereotype.Component;
 @LogFunc
 public class CusAnFunc {
 
-    @LogFunc
-    public static String testAnnotation(Integer arg){
-        return "test annotation method success"+arg;
-    }
+	@LogFunc
+	public static String testAnnotation(Integer arg) {
+		return "test annotation method success" + arg;
+	}
 
-//    @LogFunc
-    public  String testAnnotationNoStatic(){
-        return "test annotation non static method success";
-    }
+	// @LogFunc
+	public String testAnnotationNoStatic() {
+		return "test annotation non static method success";
+	}
+
 }

@@ -15,41 +15,45 @@ import java.lang.reflect.Method;
  */
 public class LogSpelEvaluationContext extends MethodBasedEvaluationContext {
 
-    private Object target;
-    private Method method;
-    private Object[] arguments;
+	private Object target;
 
-    public LogSpelEvaluationContext( Method method, Object[] arguments, ParameterNameDiscoverer parameterNameDiscoverer) {
-        this(null, method, arguments, parameterNameDiscoverer);
-    }
-    public LogSpelEvaluationContext(Object rootObject, Method method, Object[] arguments, ParameterNameDiscoverer parameterNameDiscoverer) {
-        super(rootObject, method, arguments, parameterNameDiscoverer);
-        this.target=rootObject;
-        this.method=method;
-        this.arguments=arguments;
-    }
+	private Method method;
 
+	private Object[] arguments;
 
-    public Object getTarget() {
-        return target;
-    }
+	public LogSpelEvaluationContext(Method method, Object[] arguments,
+			ParameterNameDiscoverer parameterNameDiscoverer) {
+		this(null, method, arguments, parameterNameDiscoverer);
+	}
 
-    public Method getMethod() {
-        return method;
-    }
+	public LogSpelEvaluationContext(Object rootObject, Method method, Object[] arguments,
+			ParameterNameDiscoverer parameterNameDiscoverer) {
+		super(rootObject, method, arguments, parameterNameDiscoverer);
+		this.target = rootObject;
+		this.method = method;
+		this.arguments = arguments;
+	}
 
-    public Object[] getArguments() {
-        return arguments;
-    }
+	public Object getTarget() {
+		return target;
+	}
 
-    /**
-     * 将方法执行结果放入上下文中
-     *
-     * @param errMsg 错误信息
-     * @param result 返回结果
-     */
-    public void putResult(String errMsg, Object result) {
-        super.setVariable(LogRecordConstants.ERR_MSG, errMsg);
-        super.setVariable(LogRecordConstants.RESULT, result);
-    }
+	public Method getMethod() {
+		return method;
+	}
+
+	public Object[] getArguments() {
+		return arguments;
+	}
+
+	/**
+	 * 将方法执行结果放入上下文中
+	 * @param errMsg 错误信息
+	 * @param result 返回结果
+	 */
+	public void putResult(String errMsg, Object result) {
+		super.setVariable(LogRecordConstants.ERR_MSG, errMsg);
+		super.setVariable(LogRecordConstants.RESULT, result);
+	}
+
 }

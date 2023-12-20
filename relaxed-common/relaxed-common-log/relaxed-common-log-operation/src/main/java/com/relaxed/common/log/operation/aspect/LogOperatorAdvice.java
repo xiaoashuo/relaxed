@@ -28,10 +28,6 @@ import java.lang.reflect.Method;
 @Slf4j
 public class LogOperatorAdvice implements MethodInterceptor {
 
-
-
-
-
 	private final ILogParse logParse;
 
 	private final ILogRecordService logRecordService;
@@ -46,39 +42,43 @@ public class LogOperatorAdvice implements MethodInterceptor {
 	private Object execute(MethodInvocation invoker, Object target, Method method, Object[] args) throws Throwable {
 		// 放入一个空标签,存储当前方法临时参数
 		LogOperatorContext.putEmptySpan();
-		//获取操作日志注解
+		// 获取操作日志注解
 		BizLog bizLog = AnnotationUtil.getAnnotation(method, BizLog.class);
 
-	    //spel解析 业务日志注解
+		// spel解析 业务日志注解
 		LogSpelEvaluationContext logSpelContext = logParse.buildContext(target, method, args);
 		boolean isRecordLog = logParse.isRecordLog(logSpelContext, bizLog.condition());
-		//不需要记录日志 直接执行方法
-		if (!isRecordLog){
+		// 不需要记录日志 直接执行方法
+		if (!isRecordLog) {
 			try {
 				return invoker.proceed();
-			}finally {
+			}
+			finally {
 				LogOperatorContext.poll();
 			}
 		}
 
-		LogBizInfo logBizOp= logParse.beforeResolve(logSpelContext,bizLog);
-		LogOperatorContext.push(LogRecordConstants.S_TIME,System.currentTimeMillis());
+		LogBizInfo logBizOp = logParse.beforeResolve(logSpelContext, bizLog);
+		LogOperatorContext.push(LogRecordConstants.S_TIME, System.currentTimeMillis());
 		Object result;
 		try {
-			result=invoker.proceed();
-			//记录当前执行result
-			LogOperatorContext.push(LogRecordConstants.RESULT,result);
-		}catch (Throwable throwable){
-			LogOperatorContext.push(LogRecordConstants.ERR_MSG,StrUtil.maxLength(throwable.getMessage(),200));
+			result = invoker.proceed();
+			// 记录当前执行result
+			LogOperatorContext.push(LogRecordConstants.RESULT, result);
+		}
+		catch (Throwable throwable) {
+			LogOperatorContext.push(LogRecordConstants.ERR_MSG, StrUtil.maxLength(throwable.getMessage(), 200));
 			// 这里要把目标方法的结果抛出来，不然会吞掉异常
 			throw throwable;
-		}finally {
+		}
+		finally {
 			try {
-				LogOperatorContext.push(LogRecordConstants.E_TIME,System.currentTimeMillis());
-				logBizOp=logParse.afterResolve(logBizOp,logSpelContext,bizLog);
-				//记录业务日志
+				LogOperatorContext.push(LogRecordConstants.E_TIME, System.currentTimeMillis());
+				logBizOp = logParse.afterResolve(logBizOp, logSpelContext, bizLog);
+				// 记录业务日志
 				logRecordService.record(logBizOp);
-			} finally {
+			}
+			finally {
 				LogOperatorContext.poll();
 			}
 
@@ -86,15 +86,5 @@ public class LogOperatorAdvice implements MethodInterceptor {
 
 		return result;
 	}
-
-
-
-
-
-
-
-
-
-
 
 }

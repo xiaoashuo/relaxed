@@ -21,21 +21,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 public class LogBizAutoConfiguration {
 
-
-
 	@Bean
-	public ILogRecordService logRecordService(){
+	public ILogRecordService logRecordService() {
 		return new DefaultLogRecordService();
 	}
 
-
 	@Bean
-	public ILogParse regxLogParse(){
+	public ILogParse regxLogParse() {
 		return new LogRegxSpelParse(new DefaultOperatorGetServiceImpl());
 	}
+
 	@Bean
-	public LogOperatorAdvice logOperatorAdvice(ILogParse logParse,ILogRecordService logRecordService) {
-		return new LogOperatorAdvice(logParse,logRecordService);
+	public LogOperatorAdvice logOperatorAdvice(ILogParse logParse, ILogRecordService logRecordService) {
+		return new LogOperatorAdvice(logParse, logRecordService);
 	}
 
 	@Bean
