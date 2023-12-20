@@ -5,9 +5,11 @@ import com.relaxed.common.log.biz.aspect.LogOperatorAdvice;
 import com.relaxed.common.log.biz.aspect.LogOperatorAdvisor;
 import com.relaxed.common.log.biz.service.ILogParse;
 import com.relaxed.common.log.biz.service.ILogRecordService;
+import com.relaxed.common.log.biz.service.IOperatorGetService;
 import com.relaxed.common.log.biz.service.impl.DefaultLogRecordService;
 import com.relaxed.common.log.biz.service.impl.DefaultOperatorGetServiceImpl;
 import com.relaxed.common.log.biz.service.impl.LogRegxSpelParse;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,15 +23,42 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 public class LogBizAutoConfiguration {
 
+	/**
+	 * 日志记录上报器方法
+	 * @return
+	 */
 	@Bean
+	@ConditionalOnMissingBean
 	public ILogRecordService logRecordService() {
 		return new DefaultLogRecordService();
 	}
 
+	/**
+	 * 操作者id提取器
+	 * @return
+	 */
 	@Bean
-	public ILogParse regxLogParse() {
-		return new LogRegxSpelParse(new DefaultOperatorGetServiceImpl());
+	@ConditionalOnMissingBean
+	public IOperatorGetService operatorGetService() {
+		return new DefaultOperatorGetServiceImpl();
 	}
+
+	/**
+	 * 正则spel 日志解析器
+	 * @param iOperatorGetService
+	 * @return
+	 */
+	@Bean
+	public ILogParse regxLogParse(IOperatorGetService iOperatorGetService) {
+		return new LogRegxSpelParse(iOperatorGetService);
+	}
+
+	/**
+	 * log 切面
+	 * @param logParse
+	 * @param logRecordService
+	 * @return
+	 */
 
 	@Bean
 	public LogOperatorAdvice logOperatorAdvice(ILogParse logParse, ILogRecordService logRecordService) {

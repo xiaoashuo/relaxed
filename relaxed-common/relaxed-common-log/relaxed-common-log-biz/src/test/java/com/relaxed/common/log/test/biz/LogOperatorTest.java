@@ -44,7 +44,9 @@ public class LogOperatorTest {
 		// 执行前置函数
 		// bizLogService.simpleMethodCustomBeforFunc(user);
 		// 测试方法执行失败
-		bizLogService.simpleMethodFail(user);
+		// bizLogService.simpleMethodFail(user);
+		// 测试方法嵌套日志
+		bizLogService.simpleMethodNested(user);
 	}
 
 	@Test

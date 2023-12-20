@@ -81,8 +81,7 @@ public class FuncMeta {
 				throws AccessException {
 			// 在这里编写方法的实际逻辑
 			if (arguments != null && arguments.length > 0) {
-				Method orgMethod = funcMeta.getMethod();
-				String orgMethodName = orgMethod.getName();
+				String orgMethodName = funcMeta.getRegFuncName();
 				try {
 					Object result = LogRecordFuncDiscover.invokeFunc(orgMethodName, arguments);
 					return new TypedValue(result);

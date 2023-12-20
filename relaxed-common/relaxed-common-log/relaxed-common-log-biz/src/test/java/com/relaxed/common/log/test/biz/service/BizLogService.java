@@ -4,6 +4,7 @@ import cn.hutool.core.util.IdUtil;
 import com.relaxed.common.log.biz.annotation.BizLog;
 import com.relaxed.common.log.biz.context.LogOperatorContext;
 import com.relaxed.common.log.test.biz.domain.LogUser;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,8 +14,11 @@ import org.springframework.stereotype.Service;
  * @date 2023/12/20 15:25
  * @Version 1.0
  */
+@RequiredArgsConstructor
 @Service
 public class BizLogService {
+
+	private final UserAService userAService;
 
 	/**
 	 * 简单注解
@@ -36,6 +40,12 @@ public class BizLogService {
 		if (true) {
 			throw new RuntimeException("测试方法执行失败日志记录");
 		}
+		return "method [simpleMethod] exec success!!!";
+	}
+
+	@BizLog(success = "'simpleMethod方法嵌套执行成功'", bizNo = "{{#logUser.bizNo}}")
+	public String simpleMethodNested(LogUser logUser) {
+		userAService.sendGoods(logUser);
 		return "method [simpleMethod] exec success!!!";
 	}
 
