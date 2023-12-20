@@ -1,8 +1,11 @@
 package com.relaxed.common.log.test.operator;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.operation.discover.func.IParseFunc;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author Yakir
@@ -25,6 +28,11 @@ public class CusIParseFunc implements IParseFunc {
 
     @Override
     public String apply(Object[] args) {
-        return "i func test success,params"+ JSONUtil.toJsonStr(args);
+        return "i func test success,params"+ StrUtil.join(",",args);
+    }
+
+
+    public String applyList(String param,String[] args) {
+        return "i func test success,params"+ StrUtil.join(",",args,param);
     }
 }

@@ -1,8 +1,11 @@
 package com.relaxed.common.log.test.operator;
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ReflectUtil;
 import com.relaxed.common.log.operation.discover.func.FuncMeta;
 import com.relaxed.common.log.operation.discover.func.LogRecordFuncDiscover;
+import com.relaxed.common.log.operation.util.LogClassUtil;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,33 +50,31 @@ public class LogOperatorTest {
 
     }
 
+
+
     public static String qu(String username){
         return "123";
     }
     @SneakyThrows
     public static void main(String[] args) {
-        // spel 表达式 https://itmyhome.com/spring/expressions.html#expressions-language-ref
-        Method method = LogOperatorTest.class.getMethod("qu",String.class);
-        User user = new User();
-        user.setUsername("张三");
-        user.setStatus(1);
+        CusIParseFunc cusIParseFunc = new CusIParseFunc();
+        Method orgMethod = cusIParseFunc.getClass().getMethod("apply",Object[].class);
+        Method[] methods = cusIParseFunc.getClass().getMethods();
 
-        ExpressionParser expressionParser = new SpelExpressionParser();
+        Class<?>[] parameterTypes = orgMethod.getParameterTypes();
+        Method method = cusIParseFunc.getClass().getMethod("apply", parameterTypes);
 
-        // 创建上下文
-        StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
-        evaluationContext.registerFunction("queryState",method);
-        // 设置root变量
-        evaluationContext.setRootObject(user);
-        // 添加自定义变量（非root变量）
-        evaluationContext.setVariable("username", "zhangsan");
-        evaluationContext.setVariable("age", 24);
-        String spel = "'将'+{queryState{username}}";
-        TemplateParserContext context = new TemplateParserContext("{","}");
+       Object[] arguments = {1, 2, 3};;
+        Object result = LogClassUtil.invokeRaw(cusIParseFunc,method,  arguments);
+        System.out.println(result);
 
-        Expression expression = expressionParser.parseExpression(spel, context);
-        String value = expression.getValue(evaluationContext, String.class);
-        System.out.println(value);
+        Object orgResult = LogClassUtil.invokeRaw(cusIParseFunc,orgMethod,(Object)arguments);
+        System.out.println(orgResult);
+
+        Method orgListMethod = cusIParseFunc.getClass().getMethod("applyList",String.class, String[].class);
+        Object listresult = LogClassUtil.invokeRaw(cusIParseFunc,orgListMethod,"a", arguments);
+        System.out.println(listresult);
+
     }
 
 

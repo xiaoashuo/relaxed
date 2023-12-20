@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.operation.annotation.LogFunc;
 import com.relaxed.common.log.operation.constants.LogRecordConstants;
+import com.relaxed.common.log.operation.util.LogClassUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -138,7 +139,7 @@ public class LogRecordFuncDiscover implements ApplicationContextAware {
             }else{
                 Method method = targetFuncObj.getClass().getMethod(orgMethodName, parameterTypes);
 
-                Object result = ReflectUtil.invokeRaw(targetFuncObj,method,arguments);
+                Object result = LogClassUtil.invokeRaw(targetFuncObj,method,arguments);
                 return result;
             }
         } catch (Exception e) {
