@@ -15,7 +15,18 @@ import java.util.Map;
 @Data
 public class LogBizInfo {
 
+    /**
+     * 系统，默认取spring-application-name
+     */
+    private String systemName;
+
+    /**
+     * 类路径
+     */
     private String className;
+    /**
+     * 方法名
+     */
     private String methodName;
 
     /**
@@ -32,10 +43,6 @@ public class LogBizInfo {
      */
     private String type;
 
-    /**
-     * 成功操作内容
-     */
-    private String content;
 
     /**
      * 开始时间 时间戳单位：ms
@@ -79,7 +86,7 @@ public class LogBizInfo {
      */
     private String details;
 
-    private Throwable throwable;
+
 
     private Map<String,String> expressionMap;
 

@@ -57,7 +57,16 @@ public class LogClassUtil {
             if (parameterTypes.length==1&&parameterTypes[0].isArray()){
                 //判断参数是否为1 个 若1个直接赋值 否则 强制转换
                 if (args.length==1){
-                    actualArgs[0] = args[0];
+                    if (false == parameterTypes[0].isAssignableFrom(args[0].getClass())) {
+                        //对于类型不同的字段，尝试转换，转换失败则使用原对象类型
+                        final Object targetValue = Convert.convert(parameterTypes[0], args[0]);
+                        if (null != targetValue) {
+                            actualArgs[0] = targetValue;
+                        }
+                    }else{
+                        actualArgs[0] = args[0];
+                    }
+
                 }else{
                     actualArgs[0]=ArrayUtil.addAll(args);
                 }

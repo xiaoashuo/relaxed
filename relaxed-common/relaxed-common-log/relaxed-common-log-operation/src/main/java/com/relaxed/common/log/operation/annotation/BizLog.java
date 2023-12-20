@@ -57,5 +57,11 @@ public @interface BizLog {
 	 * @return
 	 */
 	String condition() default "true";
+	/**
+	 * 是否记录返回值
+	 * true: 记录返回值
+	 * false: 不记录返回值
+	 */
+	boolean recordReturnValue() default true;
 
 }

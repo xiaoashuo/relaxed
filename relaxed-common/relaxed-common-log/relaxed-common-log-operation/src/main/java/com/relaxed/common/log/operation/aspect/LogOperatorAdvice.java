@@ -62,10 +62,7 @@ public class LogOperatorAdvice implements MethodInterceptor {
 		}
 
 		LogBizInfo logBizOp= logParse.beforeResolve(logSpelContext,bizLog);
-		//记录类名 方法名
-		logBizOp.setClassName(target.getClass().getName());
-		logBizOp.setMethodName(method.getName());
-		logBizOp.setStartTime(System.currentTimeMillis());
+		LogOperatorContext.push(LogRecordConstants.S_TIME,System.currentTimeMillis());
 		Object result;
 		try {
 			result=invoker.proceed();
@@ -77,8 +74,8 @@ public class LogOperatorAdvice implements MethodInterceptor {
 			throw throwable;
 		}finally {
 			try {
+				LogOperatorContext.push(LogRecordConstants.E_TIME,System.currentTimeMillis());
 				logBizOp=logParse.afterResolve(logBizOp,logSpelContext,bizLog);
-				logBizOp.setEndTime(System.currentTimeMillis());
 				//记录业务日志
 				logRecordService.record(logBizOp);
 			} finally {

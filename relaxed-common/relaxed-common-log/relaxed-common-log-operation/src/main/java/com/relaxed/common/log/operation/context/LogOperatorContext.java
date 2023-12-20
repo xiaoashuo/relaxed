@@ -28,6 +28,7 @@ public class LogOperatorContext {
 		return variableMapStack.get().peek();
 	}
 
+
 	public static void putEmptySpan() {
 		Deque<Map<String, Object>> deque = variableMapStack.get();
 		deque.push(new HashMap<>(8));

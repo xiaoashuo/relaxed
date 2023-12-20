@@ -6,6 +6,7 @@ import com.relaxed.common.log.operation.aspect.LogOperatorAdvisor;
 import com.relaxed.common.log.operation.service.ILogParse;
 import com.relaxed.common.log.operation.service.ILogRecordService;
 import com.relaxed.common.log.operation.service.impl.DefaultLogRecordService;
+import com.relaxed.common.log.operation.service.impl.DefaultOperatorGetServiceImpl;
 import com.relaxed.common.log.operation.service.impl.LogRegxSpelParse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,14 +27,11 @@ public class LogBizAutoConfiguration {
 	public ILogRecordService logRecordService(){
 		return new DefaultLogRecordService();
 	}
-//	@Bean
-//	public ILogParse logParse(){
-//		return new DefaultLogSpelParse();
-//	}
+
 
 	@Bean
 	public ILogParse regxLogParse(){
-		return new LogRegxSpelParse();
+		return new LogRegxSpelParse(new DefaultOperatorGetServiceImpl());
 	}
 	@Bean
 	public LogOperatorAdvice logOperatorAdvice(ILogParse logParse,ILogRecordService logRecordService) {

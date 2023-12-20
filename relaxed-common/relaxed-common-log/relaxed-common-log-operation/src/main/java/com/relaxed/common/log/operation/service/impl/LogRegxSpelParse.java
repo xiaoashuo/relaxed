@@ -1,17 +1,26 @@
 package com.relaxed.common.log.operation.service.impl;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.operation.annotation.BizLog;
 import com.relaxed.common.log.operation.constants.LogRecordConstants;
+import com.relaxed.common.log.operation.context.LogOperatorContext;
 import com.relaxed.common.log.operation.discover.func.LogRecordFuncDiscover;
 import com.relaxed.common.log.operation.model.LogBizInfo;
 import com.relaxed.common.log.operation.service.ILogParse;
+import com.relaxed.common.log.operation.service.IOperatorGetService;
 import com.relaxed.common.log.operation.spel.LogSeplUtil;
 import com.relaxed.common.log.operation.spel.LogSpelEvaluationContext;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.expression.BeanFactoryResolver;
+import org.springframework.core.env.Environment;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.Method;
@@ -32,7 +41,7 @@ import java.util.stream.Collectors;
  * @date 2023/12/19 14:26
  * @Version 1.0
  */
-public class LogRegxSpelParse implements ILogParse, BeanFactoryAware {
+public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, ApplicationContextAware {
     /**
      * 这个正则表达式的含义为：
      * 匹配一个包含在花括号中的字符串，其中花括号中可以包含任意数量的空白字符（包括空格、制表符、换行符等），
@@ -57,8 +66,13 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware {
      * 拿到beanFactory后便可以获取容器中的bean,用于SpEl表达式的解析
      */
     private BeanFactory beanFactory;
+    private ApplicationContext applicationContext;
 
+    private final IOperatorGetService operatorGetService;
 
+    public LogRegxSpelParse(IOperatorGetService operatorGetService) {
+        this.operatorGetService = operatorGetService;
+    }
 
     @Override
     public boolean isRecordLog(LogSpelEvaluationContext context,String conditionSpel) {
@@ -102,7 +116,14 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware {
                 }
             }
         }
+        String systemName = getEnvironment().getProperty("spring.application.name");
+        Object target = logSpelContext.getTarget();
+        Method method = logSpelContext.getMethod();
         LogBizInfo logBizInfo = new LogBizInfo();
+        //记录类名 方法名
+        logBizInfo.setSystemName(systemName);
+        logBizInfo.setClassName(target.getClass().getName());
+        logBizInfo.setMethodName(method.getName());
         logBizInfo.setExpressionMap(map);
         return logBizInfo;
     }
@@ -130,7 +151,32 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware {
             String expressionValue = resolveExpression(template, spelContext);
             expressionMap.put(template, expressionValue);
         }
-
+        //补充后置参数
+        // operatorId 处理：优先级 注解传入 > 自定义接口实现
+        String operatorId= expressionMap.getOrDefault(bizLog.operator(),operatorGetService.getOperatorId());
+        logBizOp.setOperator(operatorId);
+        // bizId 处理：SpEL解析 必须符合表达式
+        String bizId=expressionMap.get(bizLog.bizNo());
+        logBizOp.setBizNo(bizId);
+        //操作类型
+        String type=expressionMap.get(bizLog.type());
+        logBizOp.setType(type);
+        //判断是否需要记录结果
+        if (bizLog.recordReturnValue()){
+            Object result = LogOperatorContext.peek().get(LogRecordConstants.RESULT);
+            logBizOp.setResult(JSONUtil.toJsonStr(result));
+        }
+        Long startTime = Convert.toLong(LogOperatorContext.peek().get(LogRecordConstants.S_TIME));
+        Long endTime = Convert.toLong(LogOperatorContext.peek().get(LogRecordConstants.E_TIME));
+        String errorMsg = Convert.toStr(LogOperatorContext.peek().get(LogRecordConstants.ERR_MSG));
+        boolean isSuccess=StrUtil.isNotBlank(errorMsg);
+        logBizOp.setSuccess(isSuccess);
+        logBizOp.setErrorMsg(errorMsg);
+        logBizOp.setStartTime(startTime);
+        logBizOp.setEndTime(endTime);
+        logBizOp.setDetails(expressionMap.get(bizLog.detail()));
+        logBizOp.setSuccessText(expressionMap.get(bizLog.success()));
+        logBizOp.setFailText(expressionMap.get(bizLog.fail()));
         return logBizOp;
     }
 
@@ -185,6 +231,7 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware {
         String val = LogRecordFuncDiscover.invokeFuncToStr(funcName, params);
         return val;
     }
+
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory=beanFactory;
@@ -201,6 +248,15 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware {
         set.addAll(Arrays.asList(bizLog.bizNo(), bizLog.detail(),
                 bizLog.operator(), bizLog.success(), bizLog.fail(),
                 bizLog.condition()));
-        return set.stream().filter(s -> !ObjectUtils.isEmpty(s)).collect(Collectors.toList());
+        return set.stream().filter(s -> !ObjectUtils.isEmpty(s)&&String.class.isAssignableFrom(s.getClass())).collect(Collectors.toList());
+    }
+
+
+    private Environment getEnvironment (){
+        return applicationContext.getEnvironment();
+    }
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext=applicationContext;
     }
 }

@@ -20,8 +20,15 @@ public class LogRecordConstants {
      * 内置参数：结果
      */
     public static final String RESULT = "_result";
+    /**
+     * 开始时间
+     */
+    public static final String S_TIME = "_stime";
+    /**
+     * 结束时间
+     */
+    public static final String E_TIME = "_etime";
+
     public static final String BEFORE_FUNC = "before";
     public static final String AFTER_FUNC = "after";
-
-
 }
