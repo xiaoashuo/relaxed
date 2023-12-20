@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @Version 1.0
  */
 @Component
-public class CusIParseFunc implements IParseFunc {
+public class CustomInterfaceFunc implements IParseFunc {
 
 	@Override
 	public String namespace() {
@@ -25,8 +25,13 @@ public class CusIParseFunc implements IParseFunc {
 	}
 
 	@Override
+	public String around() {
+		return "";
+	}
+
+	@Override
 	public String apply(Object[] args) {
-		return "i func test success,params" + StrUtil.join(",", args);
+		return "i func test success,params " + StrUtil.join(",", args);
 	}
 
 }

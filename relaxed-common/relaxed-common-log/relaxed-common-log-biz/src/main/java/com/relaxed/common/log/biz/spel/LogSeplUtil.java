@@ -95,16 +95,4 @@ public class LogSeplUtil {
 		return null;
 	}
 
-	public static boolean checkParseString(String spel, StandardEvaluationContext context) {
-		try {
-			Expression bizIdExpression = parser.parseRaw(spel);
-			return true;
-		} catch (Exception e) {
-			 return false;
-		}
-
-	}
-
-
-
 }

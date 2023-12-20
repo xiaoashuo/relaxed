@@ -130,7 +130,7 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 
 	@Override
 	public LogBizInfo afterResolve(LogBizInfo logBizOp, LogSpelEvaluationContext spelContext, BizLog bizLog) {
-		//后置全局变量注册,增加中间过程产生的
+		// 后置全局变量注册,增加中间过程产生的
 		LogSeplUtil.registerGlobalParam(spelContext);
 		// 等待解析得模板
 		List<String> waitExpressTemplate = getExpressTemplate(bizLog);
@@ -243,16 +243,12 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 			}
 			else {
 				// 走默认spel表达式提取
-				if (LogSeplUtil.checkParseString(template, logRecordContext)){
-					value = LogSeplUtil.parseParamToString(template, logRecordContext);
-				}else{
-					value=template;
-				}
-
+				value = LogSeplUtil.parseParamToString(template, logRecordContext);
 			}
-		} catch (Exception e) {
-			log.error("解析表达式[{}],出现异常",template,e);
-			value=template;
+		}
+		catch (Exception e) {
+			log.error("解析表达式[{}],出现异常", template, e);
+			value = template;
 		}
 		return value;
 	}
@@ -269,8 +265,7 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 	 */
 	private List<String> getExpressTemplate(BizLog bizLog) {
 		Set<String> set = new HashSet<>();
-		set.addAll(Arrays.asList(bizLog.bizNo(), bizLog.detail(), bizLog.operator(), bizLog.success(), bizLog.fail(),
-				bizLog.condition()));
+		set.addAll(Arrays.asList(bizLog.bizNo(), bizLog.detail(), bizLog.operator(), bizLog.success(), bizLog.fail()));
 		return set.stream().filter(s -> !ObjectUtils.isEmpty(s) && String.class.isAssignableFrom(s.getClass()))
 				.collect(Collectors.toList());
 	}

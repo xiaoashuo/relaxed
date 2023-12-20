@@ -128,9 +128,8 @@ public class LogRecordFuncDiscover implements ApplicationContextAware {
 		try {
 			if (funcMeta.isStatic()) {
 				// 静态方法执行
-				Class target = (Class) targetFuncObj;
-				Method method = target.getMethod(orgMethodName, parameterTypes);
-				Object result = method.invoke(target, arguments);
+				Method method = targetFuncObj.getClass().getMethod(orgMethodName, parameterTypes);
+				Object result = LogClassUtil.invokeRaw(targetFuncObj, method, arguments);
 				return result;
 
 			}

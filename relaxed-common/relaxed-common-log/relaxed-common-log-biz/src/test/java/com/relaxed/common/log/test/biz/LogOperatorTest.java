@@ -33,12 +33,18 @@ public class LogOperatorTest {
 	private BizLogService bizLogService;
 
 	@Test
-	public void testLogRecord(){
+	public void testLogRecord() {
 		LogUser user = getLogUser();
-		//简单方法
-		//bizLogService.simpleMethod(user);
-		//上下文变量方法
-		bizLogService.simpleMethodContext(user);
+		// 简单方法
+		// bizLogService.simpleMethod(user);
+		// 上下文变量方法
+		// bizLogService.simpleMethodContext(user);
+		// 自定义函数方法
+		// bizLogService.simpleMethodCustomFunc(user);
+		// 执行前置函数
+		// bizLogService.simpleMethodCustomBeforFunc(user);
+		// 测试方法执行失败
+		bizLogService.simpleMethodFail(user);
 	}
 
 	@Test
