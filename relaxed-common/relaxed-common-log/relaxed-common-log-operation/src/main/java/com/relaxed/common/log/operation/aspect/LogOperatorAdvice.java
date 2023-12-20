@@ -71,14 +71,10 @@ public class LogOperatorAdvice implements MethodInterceptor {
 			result=invoker.proceed();
 			//记录当前执行result
 			LogOperatorContext.push(LogRecordConstants.RESULT,result);
-			logBizOp.setSuccess(true);
-			logBizOp.setResult(JSONUtil.toJsonStr(result));
-		}catch (Throwable e){
-			logBizOp.setSuccess(false);
-			logBizOp.setThrowable(e);
-			LogOperatorContext.push(LogRecordConstants.ERR_MSG,StrUtil.maxLength(e.getMessage(),200));
+		}catch (Throwable throwable){
+			LogOperatorContext.push(LogRecordConstants.ERR_MSG,StrUtil.maxLength(throwable.getMessage(),200));
 			// 这里要把目标方法的结果抛出来，不然会吞掉异常
-			throw e;
+			throw throwable;
 		}finally {
 			try {
 				logBizOp=logParse.afterResolve(logBizOp,logSpelContext,bizLog);
