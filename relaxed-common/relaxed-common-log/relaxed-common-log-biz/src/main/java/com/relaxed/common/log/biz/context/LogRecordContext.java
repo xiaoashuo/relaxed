@@ -15,7 +15,7 @@ import java.util.Map;
  * @date 2023/12/14 11:26
  * @Version 1.0
  */
-public class LogOperatorContext {
+public class LogRecordContext {
 
 	private static final ThreadLocal<Deque<Map<String, Object>>> variableMapStack = new NamedThreadLocal<Deque<Map<String, Object>>>(
 			"log-operator") {
@@ -53,13 +53,13 @@ public class LogOperatorContext {
 	}
 
 	public static void main(String[] args) {
-		LogOperatorContext.putEmptySpan();
-		LogOperatorContext.push("user1", "a");
-		LogOperatorContext.push("user1-1", "a");
-		System.out.println(LogOperatorContext.peek());
-		LogOperatorContext.putEmptySpan();
-		LogOperatorContext.push("user2", "b");
-		System.out.println(LogOperatorContext.peek());
+		LogRecordContext.putEmptySpan();
+		LogRecordContext.push("user1", "a");
+		LogRecordContext.push("user1-1", "a");
+		System.out.println(LogRecordContext.peek());
+		LogRecordContext.putEmptySpan();
+		LogRecordContext.push("user2", "b");
+		System.out.println(LogRecordContext.peek());
 
 		// 创建一个使用 LinkedList 实现的 Deque
 		ThreadLocal<Deque<Map<String, Object>>> variableMapStack = new NamedThreadLocal<Deque<Map<String, Object>>>(

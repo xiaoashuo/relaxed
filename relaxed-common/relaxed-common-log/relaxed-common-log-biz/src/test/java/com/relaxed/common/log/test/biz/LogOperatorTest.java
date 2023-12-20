@@ -2,11 +2,13 @@ package com.relaxed.common.log.test.biz;
 
 import cn.hutool.core.util.IdUtil;
 
+import com.relaxed.common.log.biz.constant.LogRecordConstants;
 import com.relaxed.common.log.test.biz.domain.LogUser;
 import com.relaxed.common.log.test.biz.service.BizLogService;
 import com.relaxed.common.log.test.biz.service.UserAService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,19 +36,27 @@ public class LogOperatorTest {
 
 	@Test
 	public void testLogRecord() {
-		LogUser user = getLogUser();
-		// 简单方法
-		// bizLogService.simpleMethod(user);
-		// 上下文变量方法
-		// bizLogService.simpleMethodContext(user);
-		// 自定义函数方法
-		// bizLogService.simpleMethodCustomFunc(user);
-		// 执行前置函数
-		// bizLogService.simpleMethodCustomBeforFunc(user);
-		// 测试方法执行失败
-		// bizLogService.simpleMethodFail(user);
-		// 测试方法嵌套日志
-		bizLogService.simpleMethodNested(user);
+		MDC.put(LogRecordConstants.TRACE_ID, IdUtil.objectId());
+		try {
+			LogUser user = getLogUser();
+			// 简单方法
+			// bizLogService.simpleMethod(user);
+			// 上下文变量方法
+			// bizLogService.simpleMethodContext(user);
+			// 自定义函数方法
+			// bizLogService.simpleMethodCustomFunc(user);
+			// 执行前置函数
+			// bizLogService.simpleMethodCustomBeforFunc(user);
+			// 测试方法执行失败
+			// bizLogService.simpleMethodFail(user);
+			// 测试方法嵌套日志
+			bizLogService.simpleMethodNested(user);
+
+		}
+		finally {
+			MDC.remove(LogRecordConstants.TRACE_ID);
+		}
+
 	}
 
 	@Test

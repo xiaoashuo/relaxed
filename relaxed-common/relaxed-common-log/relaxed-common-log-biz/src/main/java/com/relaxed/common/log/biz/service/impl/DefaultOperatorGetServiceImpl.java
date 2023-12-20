@@ -12,7 +12,7 @@ import com.relaxed.common.log.biz.service.IOperatorGetService;
 public class DefaultOperatorGetServiceImpl implements IOperatorGetService {
 
 	@Override
-	public String getOperatorId() {
+	public String getOperator() {
 		return null;
 	}
 

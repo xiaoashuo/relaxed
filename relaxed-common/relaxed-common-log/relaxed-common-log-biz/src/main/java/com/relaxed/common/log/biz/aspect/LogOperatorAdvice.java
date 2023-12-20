@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 
 import com.relaxed.common.log.biz.annotation.BizLog;
 import com.relaxed.common.log.biz.constant.LogRecordConstants;
-import com.relaxed.common.log.biz.context.LogOperatorContext;
+import com.relaxed.common.log.biz.context.LogRecordContext;
 import com.relaxed.common.log.biz.model.LogBizInfo;
 import com.relaxed.common.log.biz.service.ILogParse;
 import com.relaxed.common.log.biz.service.ILogRecordService;
@@ -41,7 +41,7 @@ public class LogOperatorAdvice implements MethodInterceptor {
 
 	private Object execute(MethodInvocation invoker, Object target, Method method, Object[] args) throws Throwable {
 		// 放入一个空标签,存储当前方法临时参数
-		LogOperatorContext.putEmptySpan();
+		LogRecordContext.putEmptySpan();
 		// 获取操作日志注解
 		BizLog bizLog = AnnotationUtil.getAnnotation(method, BizLog.class);
 
@@ -54,32 +54,32 @@ public class LogOperatorAdvice implements MethodInterceptor {
 				return invoker.proceed();
 			}
 			finally {
-				LogOperatorContext.poll();
+				LogRecordContext.poll();
 			}
 		}
 
 		LogBizInfo logBizOp = logParse.beforeResolve(logSpelContext, bizLog);
-		LogOperatorContext.push(LogRecordConstants.S_TIME, System.currentTimeMillis());
+		LogRecordContext.push(LogRecordConstants.S_TIME, System.currentTimeMillis());
 		Object result;
 		try {
 			result = invoker.proceed();
 			// 记录当前执行result
-			LogOperatorContext.push(LogRecordConstants.RESULT, result);
+			LogRecordContext.push(LogRecordConstants.RESULT, result);
 		}
 		catch (Throwable throwable) {
-			LogOperatorContext.push(LogRecordConstants.ERR_MSG, StrUtil.maxLength(throwable.getMessage(), 200));
+			LogRecordContext.push(LogRecordConstants.ERR_MSG, StrUtil.maxLength(throwable.getMessage(), 200));
 			// 这里要把目标方法的结果抛出来，不然会吞掉异常
 			throw throwable;
 		}
 		finally {
 			try {
-				LogOperatorContext.push(LogRecordConstants.E_TIME, System.currentTimeMillis());
+				LogRecordContext.push(LogRecordConstants.E_TIME, System.currentTimeMillis());
 				logBizOp = logParse.afterResolve(logBizOp, logSpelContext, bizLog);
 				// 记录业务日志
 				logRecordService.record(logBizOp);
 			}
 			finally {
-				LogOperatorContext.poll();
+				LogRecordContext.poll();
 			}
 
 		}

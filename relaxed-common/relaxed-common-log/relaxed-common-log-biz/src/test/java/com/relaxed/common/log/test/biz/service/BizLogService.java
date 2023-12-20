@@ -1,8 +1,7 @@
 package com.relaxed.common.log.test.biz.service;
 
-import cn.hutool.core.util.IdUtil;
 import com.relaxed.common.log.biz.annotation.BizLog;
-import com.relaxed.common.log.biz.context.LogOperatorContext;
+import com.relaxed.common.log.biz.context.LogRecordContext;
 import com.relaxed.common.log.test.biz.domain.LogUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -57,7 +56,7 @@ public class BizLogService {
 	@BizLog(success = "'simpleMethod上下文变量执行成功'", bizNo = "{{#logUser.bizNo}}", detail = "物流投递到{{#deliveryAddress}}")
 	public String simpleMethodContext(LogUser logUser) {
 		String deliveryAddress = "上海市普陀区长寿路1888号";
-		LogOperatorContext.push("deliveryAddress", deliveryAddress);
+		LogRecordContext.push("deliveryAddress", deliveryAddress);
 		return "method [simpleMethodContext] exec success!!!";
 	}
 

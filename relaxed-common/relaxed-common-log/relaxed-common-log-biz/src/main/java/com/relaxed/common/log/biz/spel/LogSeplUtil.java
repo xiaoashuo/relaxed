@@ -1,12 +1,10 @@
 package com.relaxed.common.log.biz.spel;
 
 import cn.hutool.json.JSONUtil;
-import com.relaxed.common.log.biz.context.LogOperatorContext;
+import com.relaxed.common.log.biz.context.LogRecordContext;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.ParseException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
@@ -58,7 +56,7 @@ public class LogSeplUtil {
 	 */
 	public static void registerGlobalParam(StandardEvaluationContext logRecordContext) {
 		// 把 LogRecordContext 中的变量都放到 RootObject 中
-		Map<String, Object> variables = LogOperatorContext.peek();
+		Map<String, Object> variables = LogRecordContext.peek();
 		if (variables != null && variables.size() > 0) {
 			for (Map.Entry<String, Object> entry : variables.entrySet()) {
 				logRecordContext.setVariable(entry.getKey(), entry.getValue());

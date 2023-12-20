@@ -6,7 +6,7 @@ import cn.hutool.json.JSONUtil;
 
 import com.relaxed.common.log.biz.annotation.BizLog;
 import com.relaxed.common.log.biz.constant.LogRecordConstants;
-import com.relaxed.common.log.biz.context.LogOperatorContext;
+import com.relaxed.common.log.biz.context.LogRecordContext;
 import com.relaxed.common.log.biz.discover.LogRecordFuncDiscover;
 import com.relaxed.common.log.biz.function.FuncEval;
 import com.relaxed.common.log.biz.model.LogBizInfo;
@@ -15,6 +15,7 @@ import com.relaxed.common.log.biz.service.IOperatorGetService;
 import com.relaxed.common.log.biz.spel.LogSeplUtil;
 import com.relaxed.common.log.biz.spel.LogSpelEvaluationContext;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -143,8 +144,10 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 			expressionMap.put(template, expressionValue);
 		}
 		// 补充后置参数
+		String traceId = MDC.get(LogRecordConstants.TRACE_ID);
+		logBizOp.setTraceId(traceId);
 		// operatorId 处理：优先级 注解传入 > 自定义接口实现
-		String operatorId = expressionMap.getOrDefault(bizLog.operator(), operatorGetService.getOperatorId());
+		String operatorId = expressionMap.getOrDefault(bizLog.operator(), operatorGetService.getOperator());
 		logBizOp.setOperator(operatorId);
 		// bizId 处理：SpEL解析 必须符合表达式
 		String bizId = expressionMap.get(bizLog.bizNo());
@@ -154,12 +157,12 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 		logBizOp.setType(type);
 		// 判断是否需要记录结果
 		if (bizLog.recordReturnValue()) {
-			Object result = LogOperatorContext.peek().get(LogRecordConstants.RESULT);
+			Object result = LogRecordContext.peek().get(LogRecordConstants.RESULT);
 			logBizOp.setResult(JSONUtil.toJsonStr(result));
 		}
-		Long startTime = Convert.toLong(LogOperatorContext.peek().get(LogRecordConstants.S_TIME));
-		Long endTime = Convert.toLong(LogOperatorContext.peek().get(LogRecordConstants.E_TIME));
-		String errorMsg = Convert.toStr(LogOperatorContext.peek().get(LogRecordConstants.ERR_MSG));
+		Long startTime = Convert.toLong(LogRecordContext.peek().get(LogRecordConstants.S_TIME));
+		Long endTime = Convert.toLong(LogRecordContext.peek().get(LogRecordConstants.E_TIME));
+		String errorMsg = Convert.toStr(LogRecordContext.peek().get(LogRecordConstants.ERR_MSG));
 		boolean isSuccess = StrUtil.isBlank(errorMsg);
 		logBizOp.setSuccess(isSuccess);
 		logBizOp.setErrorMsg(errorMsg);

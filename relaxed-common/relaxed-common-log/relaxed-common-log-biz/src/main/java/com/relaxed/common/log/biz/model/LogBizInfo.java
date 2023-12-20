@@ -22,6 +22,11 @@ public class LogBizInfo {
 	private String systemName;
 
 	/**
+	 * traceId 跟踪id
+	 */
+	private String traceId;
+
+	/**
 	 * 类路径
 	 */
 	private String className;

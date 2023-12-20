@@ -15,6 +15,11 @@ public class LogRecordConstants {
 	public static final String POUND_KEY = "#";
 
 	/**
+	 * 跟踪ID，用于一次请求或执行方法时，产生的各种日志间的数据关联
+	 */
+	public static final String TRACE_ID = "traceId";
+
+	/**
 	 * 内置参数：错误信息
 	 */
 	public static final String ERR_MSG = "_errMsg";

@@ -1,7 +1,7 @@
 package com.relaxed.common.log.test.biz.service;
 
 import com.relaxed.common.log.biz.annotation.BizLog;
-import com.relaxed.common.log.biz.context.LogOperatorContext;
+import com.relaxed.common.log.biz.context.LogRecordContext;
 import com.relaxed.common.log.test.biz.domain.LogUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class UserAService {
 			detail = "'将{ifunc_test{#user.status,#user.username}}测试数据{ifunc_test{#user.status}}")
 	public String sendGoods(LogUser user) {
 		log.info("UserA-service修改了用户状态");
-		LogOperatorContext.push("userA", "finish");
+		LogRecordContext.push("userA", "finish");
 		user.setStatus(2);
 		userBService.updateUserStatus(user);
 		// if (true){

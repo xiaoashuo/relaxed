@@ -15,6 +15,6 @@ public interface IOperatorGetService {
 	 * 获取操作者信息
 	 * @return
 	 */
-	String getOperatorId();
+	String getOperator();
 
 }
