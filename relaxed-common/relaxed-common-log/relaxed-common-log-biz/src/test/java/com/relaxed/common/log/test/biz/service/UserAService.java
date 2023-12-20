@@ -26,7 +26,7 @@ public class UserAService {
 	 * @param user
 	 * @return
 	 */
-	@BizLog(systemName = "通讯系统", success = "'商品信息更新成功'", bizNo = "#user.bizNo", type = "'创建用户'", fail = "'商品购买失败'",
+	@BizLog(systemName = "", success = "'商品信息更新成功'", bizNo = "#user.bizNo", type = "'创建用户'", fail = "'商品购买失败'",
 			operator = "{{#user.username}}", condition = "true", recordReturnValue = false,
 			detail = "'将{ifunc_test{#user.status,#user.username}}测试数据{ifunc_test{#user.status}}")
 	public String sendGoods(LogUser user) {

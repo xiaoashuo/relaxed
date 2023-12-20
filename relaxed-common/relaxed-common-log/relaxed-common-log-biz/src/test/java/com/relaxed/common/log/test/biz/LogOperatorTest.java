@@ -3,6 +3,7 @@ package com.relaxed.common.log.test.biz;
 import cn.hutool.core.util.IdUtil;
 
 import com.relaxed.common.log.test.biz.domain.LogUser;
+import com.relaxed.common.log.test.biz.service.BizLogService;
 import com.relaxed.common.log.test.biz.service.UserAService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -28,14 +29,31 @@ public class LogOperatorTest {
 	@Autowired
 	private UserAService userAService;
 
+	@Autowired
+	private BizLogService bizLogService;
+
+	@Test
+	public void testLogRecord(){
+		LogUser user = getLogUser();
+		//简单方法
+		//bizLogService.simpleMethod(user);
+		//上下文变量方法
+		bizLogService.simpleMethodContext(user);
+	}
+
 	@Test
 	public void testModify() {
+		LogUser user = getLogUser();
+		userAService.sendGoods(user);
+
+	}
+
+	private static LogUser getLogUser() {
 		LogUser user = new LogUser();
 		user.setUsername("张三");
 		user.setStatus(1);
 		user.setBizNo(IdUtil.getSnowflakeNextIdStr());
-		userAService.sendGoods(user);
-
+		return user;
 	}
 
 	public static String qu(String username) {

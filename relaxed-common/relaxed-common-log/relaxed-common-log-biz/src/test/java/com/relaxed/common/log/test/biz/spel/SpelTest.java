@@ -27,6 +27,7 @@ public class SpelTest {
 	}
 
 	public static void main(String[] args) throws Exception {
+
 		Method myMethod = SpelTest.class.getMethod("myMethod", String.class);
 		Method nonStaticMethod = SpelTest.class.getMethod("nonStaticMethod", String.class, String.class);
 		FuncMeta staticFuncMeta = new FuncMeta("myMethod", true, SpelTest.class, myMethod, "");

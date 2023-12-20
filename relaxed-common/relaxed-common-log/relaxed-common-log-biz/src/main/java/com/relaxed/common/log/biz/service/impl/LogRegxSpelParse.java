@@ -14,6 +14,7 @@ import com.relaxed.common.log.biz.service.ILogParse;
 import com.relaxed.common.log.biz.service.IOperatorGetService;
 import com.relaxed.common.log.biz.spel.LogSeplUtil;
 import com.relaxed.common.log.biz.spel.LogSpelEvaluationContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -41,6 +42,7 @@ import java.util.stream.Collectors;
  * @date 2023/12/19 14:26
  * @Version 1.0
  */
+@Slf4j
 public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, ApplicationContextAware {
 
 	/**
@@ -128,7 +130,8 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 
 	@Override
 	public LogBizInfo afterResolve(LogBizInfo logBizOp, LogSpelEvaluationContext spelContext, BizLog bizLog) {
-
+		//后置全局变量注册,增加中间过程产生的
+		LogSeplUtil.registerGlobalParam(spelContext);
 		// 等待解析得模板
 		List<String> waitExpressTemplate = getExpressTemplate(bizLog);
 		// 表达式map
@@ -208,39 +211,48 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 
 	public String resolveExpression(String template, LogSpelEvaluationContext logRecordContext, FuncEval funcEval) {
 		String value;
-		if (template.contains("{")) {
-			// 模板搜寻匹配 若模板包含 左花括号 及支持正则匹配提取
-			Matcher matcher = PATTERN.matcher(template);
-			StringBuffer parsedStr = new StringBuffer();
-			while (matcher.find()) {
-				String paramName = matcher.group(2);
-				String funcName = matcher.group(1);
-				// 函数名为空 说明不是函数
-				if (StrUtil.isBlank(funcName)) {
-					String paramValue = LogSeplUtil.parseParamToString(paramName, logRecordContext);
-					matcher.appendReplacement(parsedStr, paramValue);
-				}
-				else {
-					// 是函数 解析参数值
-					Object[] funcArgs = null;
-					if (StrUtil.isNotBlank(paramName)) {
-						String[] paramNameExps = paramName.split(StrUtil.COMMA);
-						funcArgs = new Object[paramNameExps.length];
-						for (int i = 0; i < paramNameExps.length; i++) {
-							funcArgs[i] = LogSeplUtil.parseExpression(paramNameExps[i], logRecordContext);
-						}
+		try {
+			if (template.contains("{")) {
+				// 模板搜寻匹配 若模板包含 左花括号 及支持正则匹配提取
+				Matcher matcher = PATTERN.matcher(template);
+				StringBuffer parsedStr = new StringBuffer();
+				while (matcher.find()) {
+					String paramName = matcher.group(2);
+					String funcName = matcher.group(1);
+					// 函数名为空 说明不是函数
+					if (StrUtil.isBlank(funcName)) {
+						String paramValue = LogSeplUtil.parseParamToString(paramName, logRecordContext);
+						matcher.appendReplacement(parsedStr, paramValue);
 					}
-					String funcVal = funcEval.evalFunc(funcName, paramName, funcArgs);
-					matcher.appendReplacement(parsedStr, funcVal);
+					else {
+						// 是函数 解析参数值
+						Object[] funcArgs = null;
+						if (StrUtil.isNotBlank(paramName)) {
+							String[] paramNameExps = paramName.split(StrUtil.COMMA);
+							funcArgs = new Object[paramNameExps.length];
+							for (int i = 0; i < paramNameExps.length; i++) {
+								funcArgs[i] = LogSeplUtil.parseExpression(paramNameExps[i], logRecordContext);
+							}
+						}
+						String funcVal = funcEval.evalFunc(funcName, paramName, funcArgs);
+						matcher.appendReplacement(parsedStr, funcVal);
+					}
 				}
+				matcher.appendTail(parsedStr);
+				value = parsedStr.toString();
 			}
-			matcher.appendTail(parsedStr);
-			value = parsedStr.toString();
-		}
-		else {
-			// 走默认spel表达式提取
-			value = LogSeplUtil.parseParamToString(template, logRecordContext);
+			else {
+				// 走默认spel表达式提取
+				if (LogSeplUtil.checkParseString(template, logRecordContext)){
+					value = LogSeplUtil.parseParamToString(template, logRecordContext);
+				}else{
+					value=template;
+				}
 
+			}
+		} catch (Exception e) {
+			log.error("解析表达式[{}],出现异常",template,e);
+			value=template;
 		}
 		return value;
 	}

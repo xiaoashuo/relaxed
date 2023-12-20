@@ -5,6 +5,8 @@ import com.relaxed.common.log.biz.context.LogOperatorContext;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.ParseException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
@@ -54,7 +56,7 @@ public class LogSeplUtil {
 	 * 注册全局变量参数
 	 * @param logRecordContext
 	 */
-	private static void registerGlobalParam(StandardEvaluationContext logRecordContext) {
+	public static void registerGlobalParam(StandardEvaluationContext logRecordContext) {
 		// 把 LogRecordContext 中的变量都放到 RootObject 中
 		Map<String, Object> variables = LogOperatorContext.peek();
 		if (variables != null && variables.size() > 0) {
@@ -92,5 +94,17 @@ public class LogSeplUtil {
 		}
 		return null;
 	}
+
+	public static boolean checkParseString(String spel, StandardEvaluationContext context) {
+		try {
+			Expression bizIdExpression = parser.parseRaw(spel);
+			return true;
+		} catch (Exception e) {
+			 return false;
+		}
+
+	}
+
+
 
 }
