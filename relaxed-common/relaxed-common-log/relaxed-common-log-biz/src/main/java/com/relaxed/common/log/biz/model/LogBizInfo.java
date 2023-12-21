@@ -22,6 +22,11 @@ public class LogBizInfo {
 	private String systemName;
 
 	/**
+	 * 某个操作模块
+	 */
+	private String moduleName;
+
+	/**
 	 * traceId 跟踪id
 	 */
 	private String traceId;
@@ -96,16 +101,19 @@ public class LogBizInfo {
 	 */
 	private String details;
 
+	/**
+	 * 表达式结果
+	 */
 	private Map<String, String> expressionMap = new HashMap<>();
 
+	/**
+	 * 函数解析结果
+	 */
 	private Map<String, String> funcValMap = new HashMap<>();
 
-	public class FuncRes {
-
-		private Class ReturnType;
-
-		private Object val;
-
-	}
+	/**
+	 * 日志增强数据存放
+	 */
+	private Map<String, Object> enhanceData = new HashMap<>();
 
 }

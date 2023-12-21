@@ -22,9 +22,13 @@ public @interface BizLog {
 
 	/**
 	 * 系统名称
-	 * @return
 	 */
 	String systemName() default "";
+
+	/**
+	 * 模块
+	 */
+	String moduleName() default "";
 
 	/**
 	 * 操作日志成功得文本模板 require true

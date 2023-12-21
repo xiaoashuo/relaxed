@@ -54,7 +54,7 @@ public class SpelTest {
 		// // 打印结果
 		// System.out.println("Property Result: " + propertyResult);
 		// 定义一个包含方法的表达式
-		String expression = "'测试'+myMethod('Hello')+'测试2'+myNullMethod('Hello')";
+		String expression = "之大会";
 
 		// 解析并计算表达式的值
 		String result = parser.parseExpression(expression).getValue(context, String.class);

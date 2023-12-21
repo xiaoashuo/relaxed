@@ -76,13 +76,16 @@ public class LogRecordFuncDiscover implements ApplicationContextAware {
 					// 静态方法直接注册
 					FuncMeta funcMeta = new FuncMeta(regFuncName, true, value, method, around);
 					functionMap.put(regFuncName, funcMeta);
-					log.info("LogRecord register static custom function [{}] as name [{}]", method, regFuncName);
+					log.info("LogRecord register function type[annotation] alias[{}] func_address[{}] static method",
+							regFuncName, method);
 				}
 				else {
 					// 非静态方法包装成静态方法 推荐使用 Javassist 此处换种方式 保留原始对象与方法的引用
 					FuncMeta funcMeta = new FuncMeta(regFuncName, false, value, method, around);
 					functionMap.put(regFuncName, funcMeta);
-					log.info("LogRecord register non static custom function [{}] as name [{}]", method, regFuncName);
+					log.info(
+							"LogRecord register function type[annotation] alias[{}] func_address[{}] non static method",
+							regFuncName, method);
 				}
 			});
 
@@ -98,7 +101,7 @@ public class LogRecordFuncDiscover implements ApplicationContextAware {
 			FuncMeta funcMeta = new FuncMeta(fullFuncName, false, func, method, func.around());
 			functionMap.put(fullFuncName, funcMeta);
 			/// iFuncServiceMap.put(fullFuncName,func);
-			log.info("LogRecord register interface impl custom function [{}] as name [{}]", func, fullFuncName);
+			log.info("LogRecord register function type[interface] alias[{}] func_address[{}]", fullFuncName, func);
 
 		}
 	}

@@ -10,6 +10,7 @@ import com.relaxed.common.log.biz.context.LogRecordContext;
 import com.relaxed.common.log.biz.discover.LogRecordFuncDiscover;
 import com.relaxed.common.log.biz.function.FuncEval;
 import com.relaxed.common.log.biz.model.LogBizInfo;
+import com.relaxed.common.log.biz.service.ILogBizEnhance;
 import com.relaxed.common.log.biz.service.ILogParse;
 import com.relaxed.common.log.biz.service.IOperatorGetService;
 import com.relaxed.common.log.biz.spel.LogSeplUtil;
@@ -68,8 +69,11 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 
 	private final IOperatorGetService operatorGetService;
 
-	public LogRegxSpelParse(IOperatorGetService operatorGetService) {
+	private final ILogBizEnhance iLogBizEnhance;
+
+	public LogRegxSpelParse(IOperatorGetService operatorGetService, ILogBizEnhance iLogBizEnhance) {
 		this.operatorGetService = operatorGetService;
+		this.iLogBizEnhance = iLogBizEnhance;
 	}
 
 	@Override
@@ -118,11 +122,13 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 		}
 		String systemName = StrUtil.isBlank(bizLog.systemName())
 				? getEnvironment().getProperty("spring.application.name") : bizLog.systemName();
+		String moduleName = bizLog.moduleName();
 		Object target = logSpelContext.getTarget();
 		Method method = logSpelContext.getMethod();
 		LogBizInfo logBizInfo = new LogBizInfo();
 		// 记录类名 方法名
 		logBizInfo.setSystemName(systemName);
+		logBizInfo.setModuleName(moduleName);
 		logBizInfo.setClassName(target.getClass().getName());
 		logBizInfo.setMethodName(method.getName());
 		logBizInfo.setFuncValMap(funcMap);
@@ -171,6 +177,8 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 		logBizOp.setDetails(expressionMap.get(bizLog.detail()));
 		logBizOp.setSuccessText(expressionMap.get(bizLog.success()));
 		logBizOp.setFailText(expressionMap.get(bizLog.fail()));
+		// 日志信息 增强
+		iLogBizEnhance.enhance(logBizOp, spelContext);
 		return logBizOp;
 	}
 

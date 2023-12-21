@@ -3,9 +3,11 @@ package com.relaxed.common.log.biz;
 import com.relaxed.common.log.biz.annotation.BizLog;
 import com.relaxed.common.log.biz.aspect.LogOperatorAdvice;
 import com.relaxed.common.log.biz.aspect.LogOperatorAdvisor;
+import com.relaxed.common.log.biz.service.ILogBizEnhance;
 import com.relaxed.common.log.biz.service.ILogParse;
 import com.relaxed.common.log.biz.service.ILogRecordService;
 import com.relaxed.common.log.biz.service.IOperatorGetService;
+import com.relaxed.common.log.biz.service.impl.DefaultLogBizEnhance;
 import com.relaxed.common.log.biz.service.impl.DefaultLogRecordService;
 import com.relaxed.common.log.biz.service.impl.DefaultOperatorGetServiceImpl;
 import com.relaxed.common.log.biz.service.impl.LogRegxSpelParse;
@@ -44,13 +46,23 @@ public class LogBizAutoConfiguration {
 	}
 
 	/**
+	 * 业务日志增强器
+	 * @return
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public ILogBizEnhance logBizEnhance() {
+		return new DefaultLogBizEnhance();
+	}
+
+	/**
 	 * 正则spel 日志解析器
 	 * @param iOperatorGetService
 	 * @return
 	 */
 	@Bean
-	public ILogParse regxLogParse(IOperatorGetService iOperatorGetService) {
-		return new LogRegxSpelParse(iOperatorGetService);
+	public ILogParse regxLogParse(IOperatorGetService iOperatorGetService, ILogBizEnhance logBizEnhance) {
+		return new LogRegxSpelParse(iOperatorGetService, logBizEnhance);
 	}
 
 	/**
