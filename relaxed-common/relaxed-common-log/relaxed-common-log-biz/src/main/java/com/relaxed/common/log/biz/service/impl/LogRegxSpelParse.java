@@ -1,5 +1,6 @@
 package com.relaxed.common.log.biz.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
@@ -9,7 +10,10 @@ import com.relaxed.common.log.biz.constant.LogRecordConstants;
 import com.relaxed.common.log.biz.context.LogRecordContext;
 import com.relaxed.common.log.biz.discover.LogRecordFuncDiscover;
 import com.relaxed.common.log.biz.function.FuncEval;
+import com.relaxed.common.log.biz.model.AttributeModel;
+import com.relaxed.common.log.biz.model.DiffMeta;
 import com.relaxed.common.log.biz.model.LogBizInfo;
+import com.relaxed.common.log.biz.service.IDataHandler;
 import com.relaxed.common.log.biz.service.ILogBizEnhance;
 import com.relaxed.common.log.biz.service.ILogParse;
 import com.relaxed.common.log.biz.service.IOperatorGetService;
@@ -71,9 +75,13 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 
 	private final ILogBizEnhance iLogBizEnhance;
 
-	public LogRegxSpelParse(IOperatorGetService operatorGetService, ILogBizEnhance iLogBizEnhance) {
+	private final IDataHandler dataHandler;
+
+	public LogRegxSpelParse(IOperatorGetService operatorGetService, ILogBizEnhance iLogBizEnhance,
+			IDataHandler dataHandler) {
 		this.operatorGetService = operatorGetService;
 		this.iLogBizEnhance = iLogBizEnhance;
+		this.dataHandler = dataHandler;
 	}
 
 	@Override
@@ -177,8 +185,19 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 		logBizOp.setDetails(expressionMap.get(bizLog.detail()));
 		logBizOp.setSuccessText(expressionMap.get(bizLog.success()));
 		logBizOp.setFailText(expressionMap.get(bizLog.fail()));
+
+		// 差异对象提取
+		List<DiffMeta> diffMetaList = (List<DiffMeta>) LogRecordContext.peek().get(LogRecordConstants.DIFF_KEY);
+		if (CollectionUtil.isNotEmpty(diffMetaList)) {
+			for (DiffMeta diffMeta : diffMetaList) {
+				List<AttributeModel> attributeModels = dataHandler.diffObject(diffMeta);
+				logBizOp.getDiffList().put(diffMeta.getDiffKey(), attributeModels);
+			}
+		}
+
 		// 日志信息 增强
 		iLogBizEnhance.enhance(logBizOp, spelContext);
+
 		return logBizOp;
 	}
 

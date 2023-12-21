@@ -4,6 +4,7 @@ import lombok.Data;
 import sun.reflect.generics.tree.ReturnType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -115,5 +116,10 @@ public class LogBizInfo {
 	 * 日志增强数据存放
 	 */
 	private Map<String, Object> enhanceData = new HashMap<>();
+
+	/**
+	 * 差异列表
+	 */
+	private Map<String, List<AttributeModel>> diffList = new HashMap<>();
 
 }

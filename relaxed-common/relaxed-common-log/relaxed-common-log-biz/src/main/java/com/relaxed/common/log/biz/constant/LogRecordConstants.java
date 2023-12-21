@@ -20,6 +20,11 @@ public class LogRecordConstants {
 	public static final String TRACE_ID = "traceId";
 
 	/**
+	 * diff key
+	 */
+	public static final String DIFF_KEY = "_diff_key";
+
+	/**
 	 * 内置参数：错误信息
 	 */
 	public static final String ERR_MSG = "_errMsg";

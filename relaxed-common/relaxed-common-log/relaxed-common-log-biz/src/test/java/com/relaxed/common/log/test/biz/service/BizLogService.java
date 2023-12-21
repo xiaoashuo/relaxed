@@ -1,5 +1,6 @@
 package com.relaxed.common.log.test.biz.service;
 
+import cn.hutool.core.util.IdUtil;
 import com.relaxed.common.log.biz.annotation.BizLog;
 import com.relaxed.common.log.biz.context.LogRecordContext;
 import com.relaxed.common.log.test.biz.domain.LogUser;
@@ -45,6 +46,16 @@ public class BizLogService {
 	@BizLog(success = "'simpleMethod方法嵌套执行成功'", bizNo = "{{#logUser.bizNo}}")
 	public String simpleMethodNested(LogUser logUser) {
 		userAService.sendGoods(logUser);
+		return "method [simpleMethod] exec success!!!";
+	}
+
+	@BizLog(success = "'simpleMethod差异比对执行成功'", bizNo = "{{#oldUser.bizNo}}")
+	public String simpleMethodDiff(LogUser oldUser) {
+		LogUser newUser = new LogUser();
+		newUser.setUsername("王麻子");
+		newUser.setStatus(3);
+		newUser.setBizNo(IdUtil.getSnowflakeNextIdStr());
+		LogRecordContext.putDiff(oldUser, newUser);
 		return "method [simpleMethod] exec success!!!";
 	}
 

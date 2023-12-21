@@ -1,5 +1,6 @@
 package com.relaxed.common.log.action.handler.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.action.handler.RecordHandler;
 import com.relaxed.common.log.action.model.OperationModel;
 import com.relaxed.common.log.action.model.ReportModel;
@@ -17,7 +18,7 @@ public class DefaultRecordHandler implements RecordHandler {
 
 	@Override
 	public void report(ReportModel reportModel) {
-		log.info("接收到上报数据{}", reportModel);
+		log.info("接收到上报数据{}", JSONUtil.toJsonStr(reportModel));
 	}
 
 }

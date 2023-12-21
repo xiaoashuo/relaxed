@@ -1,11 +1,16 @@
 package com.relaxed.common.log.biz.context;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
+import com.relaxed.common.log.biz.constant.LogRecordConstants;
+import com.relaxed.common.log.biz.model.DiffMeta;
 import org.springframework.core.NamedThreadLocal;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,7 +26,7 @@ public class LogRecordContext {
 			"log-operator") {
 		@Override
 		protected Deque<Map<String, Object>> initialValue() {
-			return new ArrayDeque();
+			return new ArrayDeque<>();
 		}
 	};
 
@@ -48,6 +53,30 @@ public class LogRecordContext {
 
 	}
 
+	/**
+	 * 放入需要差异比对对象
+	 * @param diffKey
+	 * @param source
+	 * @param target
+	 */
+	public static void putDiff(String diffKey, Object source, Object target) {
+		Map<String, Object> peek = peek();
+		List<DiffMeta> diffMetaList = (List<DiffMeta>) peek.get(LogRecordConstants.DIFF_KEY);
+		if (CollectionUtil.isEmpty(diffMetaList)) {
+			diffMetaList = new ArrayList<>();
+			peek.put(LogRecordConstants.DIFF_KEY, diffMetaList);
+		}
+		diffMetaList.add(new DiffMeta(diffKey, source, target));
+	}
+
+	/**
+	 * @param source
+	 * @param target
+	 */
+	public static void putDiff(Object source, Object target) {
+		putDiff(source.getClass().getSimpleName(), source, target);
+	}
+
 	public static void clear() {
 		variableMapStack.remove();
 	}
@@ -66,7 +95,7 @@ public class LogRecordContext {
 				"xx") {
 			@Override
 			protected Deque<Map<String, Object>> initialValue() {
-				return new ArrayDeque();
+				return new ArrayDeque<>();
 			}
 		};
 		Map<String, Object> map1 = MapUtil.newHashMap();
