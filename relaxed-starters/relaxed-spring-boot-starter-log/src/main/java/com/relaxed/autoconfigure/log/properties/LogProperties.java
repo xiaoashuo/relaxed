@@ -21,11 +21,11 @@ public class LogProperties {
 
 	public static final String ROOT_PREFIX = "relaxed.log";
 
-	private Access access;
+	private Access access = new Access();
 
-	private Operation operation;
+	private Operation operation = new Operation();
 
-	private Biz biz;
+	private Biz biz = new Biz();
 
 	@Data
 	public class Access {

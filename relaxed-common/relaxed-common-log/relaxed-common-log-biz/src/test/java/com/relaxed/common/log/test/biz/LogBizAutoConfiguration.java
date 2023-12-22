@@ -109,7 +109,7 @@ public class LogBizAutoConfiguration {
 	}
 
 	@Bean
-	public LogOperatorAdvisor exceptionAnnotationAdvisor(LogOperatorAdvice logOperatorAdvice) {
+	public LogOperatorAdvisor logOperatorAdvisor(LogOperatorAdvice logOperatorAdvice) {
 		LogOperatorAdvisor advisor = new LogOperatorAdvisor(logOperatorAdvice, BizLog.class);
 		return advisor;
 	}

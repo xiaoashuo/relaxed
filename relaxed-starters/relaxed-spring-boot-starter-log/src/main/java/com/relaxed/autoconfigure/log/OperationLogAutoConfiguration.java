@@ -16,8 +16,7 @@ import org.springframework.context.annotation.Configuration;
  * @Version 1.0
  */
 @Configuration
-@ConditionalOnProperty(prefix = LogProperties.Operation.PREFIX, name = "enabled", havingValue = "true",
-		matchIfMissing = true)
+@ConditionalOnProperty(prefix = LogProperties.Operation.PREFIX, name = "enabled", havingValue = "true")
 public class OperationLogAutoConfiguration {
 
 	/**

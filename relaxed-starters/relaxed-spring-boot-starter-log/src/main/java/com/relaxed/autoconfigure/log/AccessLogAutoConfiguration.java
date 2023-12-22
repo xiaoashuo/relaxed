@@ -10,16 +10,19 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Hccake
  * @version 1.0
  * @date 2019/10/15 18:20
  */
+@Configuration
 @Slf4j
 @ConditionalOnWebApplication
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = LogProperties.Access.PREFIX, name = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = LogProperties.Access.PREFIX, name = "enabled", havingValue = "true",
+		matchIfMissing = true)
 public class AccessLogAutoConfiguration {
 
 	private final AccessLogHandler<?> accessLogHandler;
