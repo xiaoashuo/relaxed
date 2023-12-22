@@ -120,6 +120,6 @@ public class LogBizInfo {
 	/**
 	 * 差异列表
 	 */
-	private Map<String, List<AttributeModel>> diffList = new HashMap<>();
+	private Map<String, List<AttributeModel>> diffResult = new HashMap<>();
 
 }

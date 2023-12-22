@@ -188,10 +188,16 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 
 		// 差异对象提取
 		List<DiffMeta> diffMetaList = (List<DiffMeta>) LogRecordContext.peek().get(LogRecordConstants.DIFF_KEY);
+		Map<String, List<AttributeModel>> diffResult = logBizOp.getDiffResult();
 		if (CollectionUtil.isNotEmpty(diffMetaList)) {
 			for (DiffMeta diffMeta : diffMetaList) {
+				String diffKey = diffMeta.getDiffKey();
+				// 若包含diff key 则直接跳过
+				if (diffResult.containsKey(diffKey)) {
+					continue;
+				}
 				List<AttributeModel> attributeModels = dataHandler.diffObject(diffMeta);
-				logBizOp.getDiffList().put(diffMeta.getDiffKey(), attributeModels);
+				diffResult.put(diffKey, attributeModels);
 			}
 		}
 
@@ -265,6 +271,7 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 							}
 						}
 						String funcVal = funcEval.evalFunc(funcName, paramName, funcArgs);
+						funcVal = funcVal == null ? "" : funcVal;
 						matcher.appendReplacement(parsedStr, funcVal);
 					}
 				}

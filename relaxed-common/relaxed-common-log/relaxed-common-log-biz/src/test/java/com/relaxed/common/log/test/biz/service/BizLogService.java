@@ -4,6 +4,7 @@ import cn.hutool.core.util.IdUtil;
 import com.relaxed.common.log.biz.annotation.BizLog;
 import com.relaxed.common.log.biz.context.LogRecordContext;
 import com.relaxed.common.log.test.biz.domain.LogUser;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -49,14 +50,14 @@ public class BizLogService {
 		return "method [simpleMethod] exec success!!!";
 	}
 
-	@BizLog(success = "'simpleMethod差异比对执行成功'", bizNo = "{{#oldUser.bizNo}}")
-	public String simpleMethodDiff(LogUser oldUser) {
+	@BizLog(success = "'simpleMethod差异比对执行成功'", bizNo = "{{#oldUser.bizNo}}", detail = "{__DIFF{#oldUser,#_result}}")
+	public LogUser simpleMethodDiff(LogUser oldUser) {
 		LogUser newUser = new LogUser();
 		newUser.setUsername("王麻子");
 		newUser.setStatus(3);
 		newUser.setBizNo(IdUtil.getSnowflakeNextIdStr());
 		LogRecordContext.putDiff(oldUser, newUser);
-		return "method [simpleMethod] exec success!!!";
+		return newUser;
 	}
 
 	/**

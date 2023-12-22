@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  * @date 2023/12/14 11:11
  * @Version 1.0
  */
-@Target(ElementType.METHOD)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
@@ -31,9 +31,9 @@ public @interface BizLog {
 	String moduleName() default "";
 
 	/**
-	 * 操作日志成功得文本模板 require true
+	 * 操作日志成功得文本模板
 	 */
-	String success();
+	String success() default "";
 
 	/**
 	 * 操作日志失败的文本模板 require false
@@ -53,7 +53,7 @@ public @interface BizLog {
 	/**
 	 * 操作日志绑定的业务标识对象 require true
 	 */
-	String bizNo();
+	String bizNo() default "";
 
 	/**
 	 * 扩展参数 记录操作日志的修改详情 require false
