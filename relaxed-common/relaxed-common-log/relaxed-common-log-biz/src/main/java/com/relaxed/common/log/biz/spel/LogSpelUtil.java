@@ -1,5 +1,6 @@
 package com.relaxed.common.log.biz.spel;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.biz.context.LogRecordContext;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
@@ -18,7 +19,7 @@ import java.util.Map;
  * @date 2023/12/19 14:39
  * @Version 1.0
  */
-public class LogSeplUtil {
+public class LogSpelUtil {
 
 	/**
 	 * 方法参数获取
@@ -91,6 +92,24 @@ public class LogSeplUtil {
 			return obj instanceof String ? (String) obj : JSONUtil.toJsonStr(obj);
 		}
 		return null;
+	}
+
+	/**
+	 * 参数字符串转为参数值数组
+	 * @param logRecordContext
+	 * @param paramNames 参数名字符串,分割
+	 * @return 参数数组的值
+	 */
+	public static Object[] parseParamStrToValArr(LogSpelEvaluationContext logRecordContext, String paramNames) {
+		Object[] funcArgs = null;
+		if (StrUtil.isNotBlank(paramNames)) {
+			String[] paramNameExps = paramNames.split(StrUtil.COMMA);
+			funcArgs = new Object[paramNameExps.length];
+			for (int i = 0; i < paramNameExps.length; i++) {
+				funcArgs[i] = LogSpelUtil.parseExpression(paramNameExps[i], logRecordContext);
+			}
+		}
+		return funcArgs;
 	}
 
 }

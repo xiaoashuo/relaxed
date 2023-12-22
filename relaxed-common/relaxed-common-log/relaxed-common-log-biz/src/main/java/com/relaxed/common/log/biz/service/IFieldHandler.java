@@ -23,7 +23,8 @@ public interface IFieldHandler {
 	 * @param newFieldValue
 	 * @return com.relaxed.common.log.action.model.AttributeModel
 	 */
-	AttributeModel extractAttributeModel(Field field, LogDiffTag logDiffTag, Object oldFieldValue, Object newFieldValue);
+	AttributeModel extractAttributeModel(Field field, LogDiffTag logDiffTag, Object oldFieldValue,
+			Object newFieldValue);
 
 	/**
 	 * 是否忽略当前处理字段 忽略 则不进行属性变更记录

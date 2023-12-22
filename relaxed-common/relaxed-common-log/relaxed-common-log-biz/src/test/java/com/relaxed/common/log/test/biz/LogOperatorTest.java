@@ -81,7 +81,7 @@ public class LogOperatorTest {
 		IFieldHandler fieldHandler = new IFieldHandler() {
 			@Override
 			public AttributeModel extractAttributeModel(Field field, LogDiffTag logTag, Object oldFieldValue,
-														Object newFieldValue) {
+					Object newFieldValue) {
 				return new DefaultFieldHandler().extractAttributeModel(field, logTag, oldFieldValue, newFieldValue);
 			}
 

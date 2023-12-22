@@ -90,6 +90,7 @@ public class LogBizAutoConfiguration {
 	 * @return
 	 */
 	@Bean
+	@ConditionalOnMissingBean
 	public ILogParse regxLogParse(IOperatorGetService iOperatorGetService, ILogBizEnhance logBizEnhance,
 			IDataHandler dataHandler) {
 		return new LogRegxSpelParse(iOperatorGetService, logBizEnhance, dataHandler);

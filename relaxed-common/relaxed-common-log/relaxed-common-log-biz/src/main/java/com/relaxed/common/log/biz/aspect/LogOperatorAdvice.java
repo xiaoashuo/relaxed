@@ -46,8 +46,15 @@ public class LogOperatorAdvice implements MethodInterceptor {
 		BizLog bizLog = AnnotationUtil.getAnnotation(method, BizLog.class);
 
 		// spel解析 业务日志注解
-		LogSpelEvaluationContext logSpelContext = logParse.buildContext(target, method, args);
-		boolean isRecordLog = logParse.isRecordLog(logSpelContext, bizLog.condition());
+		LogSpelEvaluationContext logSpelContext = null;
+		boolean isRecordLog = false;
+		try {
+			logSpelContext = logParse.buildContext(target, method, args);
+			isRecordLog = logParse.isRecordLog(logSpelContext, bizLog.condition());
+		}
+		catch (Throwable throwable) {
+			log.error("record log exp stage condition resolver", throwable);
+		}
 		// 不需要记录日志 直接执行方法
 		if (!isRecordLog) {
 			try {
@@ -58,7 +65,13 @@ public class LogOperatorAdvice implements MethodInterceptor {
 			}
 		}
 
-		LogBizInfo logBizOp = logParse.beforeResolve(logSpelContext, bizLog);
+		LogBizInfo logBizOp = null;
+		try {
+			logBizOp = logParse.beforeResolve(logSpelContext, bizLog);
+		}
+		catch (Throwable throwable) {
+			log.error("record log exp stage before resolver", throwable);
+		}
 		LogRecordContext.push(LogRecordConstants.S_TIME, System.currentTimeMillis());
 		Object result;
 		try {
@@ -77,6 +90,9 @@ public class LogOperatorAdvice implements MethodInterceptor {
 				logBizOp = logParse.afterResolve(logBizOp, logSpelContext, bizLog);
 				// 记录业务日志
 				logRecordService.record(logBizOp);
+			}
+			catch (Throwable throwable) {
+				log.error("record log exp stage after resolver", throwable);
 			}
 			finally {
 				LogRecordContext.poll();

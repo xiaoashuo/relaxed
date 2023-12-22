@@ -48,8 +48,8 @@ public class DefaultDataHandler implements IDataHandler {
 				if (fieldHandler.ignoreField(oldValueClass, declaredField, oldFieldValue, newFieldValue)) {
 					continue;
 				}
-				AttributeModel attributeModel = fieldHandler.extractAttributeModel(declaredField, logDiffTag, oldFieldValue,
-						newFieldValue);
+				AttributeModel attributeModel = fieldHandler.extractAttributeModel(declaredField, logDiffTag,
+						oldFieldValue, newFieldValue);
 				attributeModelList.add(attributeModel);
 			}
 		}

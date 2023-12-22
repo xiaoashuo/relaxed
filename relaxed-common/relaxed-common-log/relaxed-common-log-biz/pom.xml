@@ -25,11 +25,13 @@
             <groupId>com.flipkart.zjsonpatch</groupId>
             <artifactId>zjsonpatch</artifactId>
         </dependency>
+        <!--对象差异比较工具-->
         <dependency>
             <groupId>org.javers</groupId>
             <artifactId>javers-core</artifactId>
         </dependency>
 
+        <!--对象差异比较工具 也可以使用Java object diff -->
         <dependency>
             <groupId>com.googlecode.java-diff-utils</groupId>
             <artifactId>diffutils</artifactId>

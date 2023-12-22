@@ -17,7 +17,7 @@ import com.relaxed.common.log.biz.service.IDataHandler;
 import com.relaxed.common.log.biz.service.ILogBizEnhance;
 import com.relaxed.common.log.biz.service.ILogParse;
 import com.relaxed.common.log.biz.service.IOperatorGetService;
-import com.relaxed.common.log.biz.spel.LogSeplUtil;
+import com.relaxed.common.log.biz.spel.LogSpelUtil;
 import com.relaxed.common.log.biz.spel.LogSpelEvaluationContext;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -92,7 +92,12 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 
 	@Override
 	public LogSpelEvaluationContext buildContext(Object target, Method method, Object[] args) {
-		LogSpelEvaluationContext logRecordContext = buildSpelContext(target, method, args);
+		LogSpelEvaluationContext logRecordContext = LogSpelUtil.buildSpelContext(target, method, args);
+		if (beanFactory != null) {
+			// setBeanResolver 主要用于支持SpEL模板中调用指定类的方法，如：@XXService.x(#root)
+			// 如果获得工厂方法自己，bean名字须要添加&前缀而不是@
+			logRecordContext.setBeanResolver(new BeanFactoryResolver(beanFactory));
+		}
 		return logRecordContext;
 	}
 
@@ -100,7 +105,6 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 	public LogBizInfo beforeResolve(LogSpelEvaluationContext logSpelContext, BizLog bizLog) {
 		// 等待解析得模板
 		List<String> waitExpressTemplate = getExpressTemplate(bizLog);
-
 		// 函数map
 		HashMap<String, String> funcMap = new HashMap<>();
 
@@ -119,11 +123,10 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 					continue;
 				}
 				String funcName = matcher.group(1);
-
 				// 如果为函数 且 是前置函数 则此处调用执行
 				if (StrUtil.isNotBlank(funcName) && LogRecordFuncDiscover.isBeforeExec(funcName)) {
-					Object value = LogSeplUtil.parseExpression(paramName, logSpelContext);
-					String funcVal = LogRecordFuncDiscover.invokeFuncToStr(funcName, value);
+					Object[] funcArgs = LogSpelUtil.parseParamStrToValArr(logSpelContext, paramName);
+					String funcVal = LogRecordFuncDiscover.invokeFuncToStr(funcName, funcArgs);
 					funcMap.put(getFunctionMapKey(funcName, paramName), funcVal);
 				}
 			}
@@ -146,7 +149,7 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 	@Override
 	public LogBizInfo afterResolve(LogBizInfo logBizOp, LogSpelEvaluationContext spelContext, BizLog bizLog) {
 		// 后置全局变量注册,增加中间过程产生的
-		LogSeplUtil.registerGlobalParam(spelContext);
+		LogSpelUtil.registerGlobalParam(spelContext);
 		// 等待解析得模板
 		List<String> waitExpressTemplate = getExpressTemplate(bizLog);
 		// 表达式map
@@ -217,16 +220,6 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 		return funcName + param;
 	}
 
-	private LogSpelEvaluationContext buildSpelContext(Object target, Method method, Object[] args) {
-		LogSpelEvaluationContext logRecordContext = LogSeplUtil.buildSpelContext(target, method, args);
-		if (beanFactory != null) {
-			// setBeanResolver 主要用于支持SpEL模板中调用指定类的方法，如：@XXService.x(#root)
-			// 如果获得工厂方法自己，bean名字须要添加&前缀而不是@
-			logRecordContext.setBeanResolver(new BeanFactoryResolver(beanFactory));
-		}
-		return logRecordContext;
-	}
-
 	public String resolveExpression(String template, LogSpelEvaluationContext logRecordContext) {
 		return resolveExpression(template, logRecordContext,
 				(funcName, paramName, params) -> LogRecordFuncDiscover.invokeFuncToStr(funcName, params));
@@ -250,37 +243,11 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 		try {
 			if (template.contains("{")) {
 				// 模板搜寻匹配 若模板包含 左花括号 及支持正则匹配提取
-				Matcher matcher = PATTERN.matcher(template);
-				StringBuffer parsedStr = new StringBuffer();
-				while (matcher.find()) {
-					String paramName = matcher.group(2);
-					String funcName = matcher.group(1);
-					// 函数名为空 说明不是函数
-					if (StrUtil.isBlank(funcName)) {
-						String paramValue = LogSeplUtil.parseParamToString(paramName, logRecordContext);
-						matcher.appendReplacement(parsedStr, paramValue);
-					}
-					else {
-						// 是函数 解析参数值
-						Object[] funcArgs = null;
-						if (StrUtil.isNotBlank(paramName)) {
-							String[] paramNameExps = paramName.split(StrUtil.COMMA);
-							funcArgs = new Object[paramNameExps.length];
-							for (int i = 0; i < paramNameExps.length; i++) {
-								funcArgs[i] = LogSeplUtil.parseExpression(paramNameExps[i], logRecordContext);
-							}
-						}
-						String funcVal = funcEval.evalFunc(funcName, paramName, funcArgs);
-						funcVal = funcVal == null ? "" : funcVal;
-						matcher.appendReplacement(parsedStr, funcVal);
-					}
-				}
-				matcher.appendTail(parsedStr);
-				value = parsedStr.toString();
+				value = innerResolveExpress(template, logRecordContext, funcEval);
 			}
 			else {
 				// 走默认spel表达式提取
-				value = LogSeplUtil.parseParamToString(template, logRecordContext);
+				value = LogSpelUtil.parseParamToString(template, logRecordContext);
 			}
 		}
 		catch (Exception e) {
@@ -288,6 +255,30 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 			value = template;
 		}
 		return value;
+	}
+
+	private static String innerResolveExpress(String template, LogSpelEvaluationContext logRecordContext,
+			FuncEval funcEval) {
+		Matcher matcher = PATTERN.matcher(template);
+		StringBuffer parsedStr = new StringBuffer();
+		while (matcher.find()) {
+			String paramName = matcher.group(2);
+			String funcName = matcher.group(1);
+			// 函数名为空 说明不是函数
+			if (StrUtil.isBlank(funcName)) {
+				String paramValue = LogSpelUtil.parseParamToString(paramName, logRecordContext);
+				matcher.appendReplacement(parsedStr, paramValue);
+			}
+			else {
+				// 是函数 解析参数值
+				Object[] funcArgs = LogSpelUtil.parseParamStrToValArr(logRecordContext, paramName);
+				String funcVal = funcEval.evalFunc(funcName, paramName, funcArgs);
+				funcVal = funcVal == null ? "" : funcVal;
+				matcher.appendReplacement(parsedStr, funcVal);
+			}
+		}
+		matcher.appendTail(parsedStr);
+		return parsedStr.toString();
 	}
 
 	@Override
@@ -300,7 +291,7 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 	 * @param bizLog
 	 * @return
 	 */
-	private List<String> getExpressTemplate(BizLog bizLog) {
+	protected List<String> getExpressTemplate(BizLog bizLog) {
 		Set<String> set = new HashSet<>();
 		set.addAll(Arrays.asList(bizLog.bizNo(), bizLog.detail(), bizLog.operator(), bizLog.success(), bizLog.fail()));
 		return set.stream().filter(s -> !ObjectUtils.isEmpty(s) && String.class.isAssignableFrom(s.getClass()))

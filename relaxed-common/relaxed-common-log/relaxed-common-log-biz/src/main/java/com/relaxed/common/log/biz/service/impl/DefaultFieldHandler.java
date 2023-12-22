@@ -24,7 +24,7 @@ public class DefaultFieldHandler implements IFieldHandler {
 
 	@Override
 	public AttributeModel extractAttributeModel(Field field, LogDiffTag logDiffTag, Object oldFieldValue,
-												Object newFieldValue) {
+			Object newFieldValue) {
 		AttributeModel attributeModel = new AttributeModel();
 		Class<?> fieldType = field.getType();
 		String fieldTypeSimpleName = fieldType.getSimpleName();
