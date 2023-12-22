@@ -4,7 +4,7 @@ import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.IdUtil;
 
 import cn.hutool.json.JSONUtil;
-import com.relaxed.common.log.biz.annotation.LogTag;
+import com.relaxed.common.log.biz.annotation.LogDiffTag;
 import com.relaxed.common.log.biz.constant.LogRecordConstants;
 import com.relaxed.common.log.biz.model.AttributeModel;
 import com.relaxed.common.log.biz.model.DiffMeta;
@@ -25,11 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.activation.DataHandler;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Yakir
@@ -83,8 +80,8 @@ public class LogOperatorTest {
 	public void diffCompare() {
 		IFieldHandler fieldHandler = new IFieldHandler() {
 			@Override
-			public AttributeModel extractAttributeModel(Field field, LogTag logTag, Object oldFieldValue,
-					Object newFieldValue) {
+			public AttributeModel extractAttributeModel(Field field, LogDiffTag logTag, Object oldFieldValue,
+														Object newFieldValue) {
 				return new DefaultFieldHandler().extractAttributeModel(field, logTag, oldFieldValue, newFieldValue);
 			}
 

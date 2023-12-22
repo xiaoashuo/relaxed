@@ -1,6 +1,6 @@
 package com.relaxed.common.log.biz.extractor;
 
-import com.relaxed.common.log.biz.annotation.LogTag;
+import com.relaxed.common.log.biz.annotation.LogDiffTag;
 
 import java.lang.reflect.Field;
 
@@ -18,11 +18,11 @@ public interface DiffExtractor {
 	 * @author yakir
 	 * @date 2021/12/14 17:29
 	 * @param field
-	 * @param logTag
+	 * @param logDiffTag
 	 * @param oldFieldValue
 	 * @param newFieldValue
 	 * @return String
 	 */
-	String diffValue(Field field, LogTag logTag, Object oldFieldValue, Object newFieldValue);
+	String diffValue(Field field, LogDiffTag logDiffTag, Object oldFieldValue, Object newFieldValue);
 
 }

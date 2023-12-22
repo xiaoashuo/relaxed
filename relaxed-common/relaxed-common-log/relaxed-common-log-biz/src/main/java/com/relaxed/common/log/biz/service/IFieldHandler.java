@@ -1,6 +1,6 @@
 package com.relaxed.common.log.biz.service;
 
-import com.relaxed.common.log.biz.annotation.LogTag;
+import com.relaxed.common.log.biz.annotation.LogDiffTag;
 import com.relaxed.common.log.biz.model.AttributeModel;
 
 import java.lang.reflect.Field;
@@ -18,12 +18,12 @@ public interface IFieldHandler {
 	 * 提取属性model
 	 * @author yakir
 	 * @date 2021/12/14 16:29
-	 * @param logTag
+	 * @param logDiffTag
 	 * @param oldFieldValue
 	 * @param newFieldValue
 	 * @return com.relaxed.common.log.action.model.AttributeModel
 	 */
-	AttributeModel extractAttributeModel(Field field, LogTag logTag, Object oldFieldValue, Object newFieldValue);
+	AttributeModel extractAttributeModel(Field field, LogDiffTag logDiffTag, Object oldFieldValue, Object newFieldValue);
 
 	/**
 	 * 是否忽略当前处理字段 忽略 则不进行属性变更记录

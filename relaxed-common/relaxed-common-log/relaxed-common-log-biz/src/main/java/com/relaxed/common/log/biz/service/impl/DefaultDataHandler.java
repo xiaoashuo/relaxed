@@ -4,7 +4,7 @@ import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 
-import com.relaxed.common.log.biz.annotation.LogTag;
+import com.relaxed.common.log.biz.annotation.LogDiffTag;
 import com.relaxed.common.log.biz.model.AttributeModel;
 import com.relaxed.common.log.biz.model.DiffMeta;
 import com.relaxed.common.log.biz.service.IDataHandler;
@@ -39,8 +39,8 @@ public class DefaultDataHandler implements IDataHandler {
 			Field[] declaredFields = ClassUtil.getDeclaredFields(oldValueClass);
 			for (Field declaredField : declaredFields) {
 
-				LogTag logTag = AnnotationUtil.getAnnotation(declaredField, LogTag.class);
-				if (logTag.ignore()) {
+				LogDiffTag logDiffTag = AnnotationUtil.getAnnotation(declaredField, LogDiffTag.class);
+				if (logDiffTag.ignore()) {
 					continue;
 				}
 				Object oldFieldValue = ReflectUtil.getFieldValue(oldValue, declaredField);
@@ -48,7 +48,7 @@ public class DefaultDataHandler implements IDataHandler {
 				if (fieldHandler.ignoreField(oldValueClass, declaredField, oldFieldValue, newFieldValue)) {
 					continue;
 				}
-				AttributeModel attributeModel = fieldHandler.extractAttributeModel(declaredField, logTag, oldFieldValue,
+				AttributeModel attributeModel = fieldHandler.extractAttributeModel(declaredField, logDiffTag, oldFieldValue,
 						newFieldValue);
 				attributeModelList.add(attributeModel);
 			}

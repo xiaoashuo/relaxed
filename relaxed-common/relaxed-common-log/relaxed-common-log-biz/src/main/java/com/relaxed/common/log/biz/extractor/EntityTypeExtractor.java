@@ -2,7 +2,7 @@ package com.relaxed.common.log.biz.extractor;
 
 import cn.hutool.json.JSONUtil;
 
-import com.relaxed.common.log.biz.annotation.LogTag;
+import com.relaxed.common.log.biz.annotation.LogDiffTag;
 import com.relaxed.common.log.biz.enums.AttrOptionEnum;
 import com.relaxed.common.log.biz.model.AttributeChange;
 import org.javers.common.string.PrettyValuePrinter;
@@ -34,7 +34,7 @@ public class EntityTypeExtractor implements DiffExtractor {
 	private static Javers javers = JaversBuilder.javers().withListCompareAlgorithm(LEVENSHTEIN_DISTANCE).build();
 
 	@Override
-	public String diffValue(Field field, LogTag logTag, Object oldFieldValue, Object newFieldValue) {
+	public String diffValue(Field field, LogDiffTag logDiffTag, Object oldFieldValue, Object newFieldValue) {
 		Diff diff = javers.compare(oldFieldValue, newFieldValue);
 		if (!diff.hasChanges()) {
 			return "";

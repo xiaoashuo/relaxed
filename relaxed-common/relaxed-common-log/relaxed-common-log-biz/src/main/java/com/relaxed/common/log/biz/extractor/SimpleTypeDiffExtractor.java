@@ -1,7 +1,7 @@
 package com.relaxed.common.log.biz.extractor;
 
 import cn.hutool.core.util.StrUtil;
-import com.relaxed.common.log.biz.annotation.LogTag;
+import com.relaxed.common.log.biz.annotation.LogDiffTag;
 
 import java.lang.reflect.Field;
 
@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
 public class SimpleTypeDiffExtractor implements DiffExtractor {
 
 	@Override
-	public String diffValue(Field field, LogTag logTag, Object oldFieldValue, Object newFieldValue) {
+	public String diffValue(Field field, LogDiffTag logDiffTag, Object oldFieldValue, Object newFieldValue) {
 		return "值:" + StrUtil.toString(oldFieldValue) + "->" + StrUtil.toString(newFieldValue);
 	}
 

@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface LogTag {
+public @interface LogDiffTag {
 
 	/**
 	 * 字段别名

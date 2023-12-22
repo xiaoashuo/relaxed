@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import com.relaxed.common.log.biz.annotation.LogTag;
+import com.relaxed.common.log.biz.annotation.LogDiffTag;
 import com.relaxed.common.log.biz.enums.AttrOptionEnum;
 import com.relaxed.common.log.biz.extractor.DiffExtractor;
 import com.relaxed.common.log.biz.model.AttributeChange;
@@ -36,7 +36,7 @@ public class JsonTypeExtractor implements DiffExtractor {
 	public static final String FROM_VALUE = "fromValue";
 
 	@Override
-	public String diffValue(Field field, LogTag logTag, Object oldFieldValue, Object newFieldValue) {
+	public String diffValue(Field field, LogDiffTag logDiffTag, Object oldFieldValue, Object newFieldValue) {
 		JsonNode jsonNode = JsonUtil.jsonPatchDiff(StrUtil.toString(oldFieldValue), StrUtil.toString(newFieldValue));
 		Iterator<JsonNode> elements = jsonNode.elements();
 		List<AttributeChange> attributeChangeList = new ArrayList<>();

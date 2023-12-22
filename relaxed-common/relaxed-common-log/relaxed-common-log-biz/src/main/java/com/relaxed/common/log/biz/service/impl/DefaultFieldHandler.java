@@ -4,7 +4,7 @@ import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
-import com.relaxed.common.log.biz.annotation.LogTag;
+import com.relaxed.common.log.biz.annotation.LogDiffTag;
 import com.relaxed.common.log.biz.extractor.DiffConvertHolder;
 import com.relaxed.common.log.biz.extractor.DiffExtractor;
 import com.relaxed.common.log.biz.model.AttributeModel;
@@ -23,8 +23,8 @@ import java.lang.reflect.Field;
 public class DefaultFieldHandler implements IFieldHandler {
 
 	@Override
-	public AttributeModel extractAttributeModel(Field field, LogTag logTag, Object oldFieldValue,
-			Object newFieldValue) {
+	public AttributeModel extractAttributeModel(Field field, LogDiffTag logDiffTag, Object oldFieldValue,
+												Object newFieldValue) {
 		AttributeModel attributeModel = new AttributeModel();
 		Class<?> fieldType = field.getType();
 		String fieldTypeSimpleName = fieldType.getSimpleName();
@@ -44,20 +44,20 @@ public class DefaultFieldHandler implements IFieldHandler {
 		attributeModel.setOldValue(oldValueStr);
 		attributeModel.setNewValue(newValueStr);
 		DiffExtractor diffExtractor;
-		if (logTag == null) {
+		if (logDiffTag == null) {
 			attributeModel.setAttributeType(fieldTypeSimpleName);
 			attributeModel.setAttributeAlias(fieldName);
 			diffExtractor = DiffConvertHolder.getByDefault();
 
 		}
 		else {
-			String typeAlias = logTag.typeAlias();
-			String alias = logTag.alias();
+			String typeAlias = logDiffTag.typeAlias();
+			String alias = logDiffTag.alias();
 			attributeModel.setAttributeType(StringUtils.hasText(typeAlias) ? typeAlias : fieldTypeSimpleName);
 			attributeModel.setAttributeAlias(StringUtils.hasText(alias) ? alias : fieldName);
-			diffExtractor = DiffConvertHolder.getByClass(logTag.extractor());
+			diffExtractor = DiffConvertHolder.getByClass(logDiffTag.extractor());
 		}
-		String diffValue = diffExtractor.diffValue(field, logTag, oldFieldValue, newFieldValue);
+		String diffValue = diffExtractor.diffValue(field, logDiffTag, oldFieldValue, newFieldValue);
 		attributeModel.setDiffValue(diffValue);
 		return attributeModel;
 	}

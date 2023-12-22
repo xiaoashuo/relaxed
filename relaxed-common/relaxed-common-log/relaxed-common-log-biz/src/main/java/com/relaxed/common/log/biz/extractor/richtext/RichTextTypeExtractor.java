@@ -3,7 +3,7 @@ package com.relaxed.common.log.biz.extractor.richtext;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
-import com.relaxed.common.log.biz.annotation.LogTag;
+import com.relaxed.common.log.biz.annotation.LogDiffTag;
 import com.relaxed.common.log.biz.extractor.DiffExtractor;
 import difflib.Delta;
 import difflib.DiffRow;
@@ -30,7 +30,7 @@ import java.util.Set;
 public class RichTextTypeExtractor implements DiffExtractor {
 
 	@Override
-	public String diffValue(Field field, LogTag logTag, Object oldFieldValue, Object newFieldValue) {
+	public String diffValue(Field field, LogDiffTag logDiffTag, Object oldFieldValue, Object newFieldValue) {
 		String oldValueStr = StrUtil.toString(oldFieldValue);
 		String newValueStr = StrUtil.toString(newFieldValue);
 		String diffText = diffText(oldValueStr, newValueStr);
