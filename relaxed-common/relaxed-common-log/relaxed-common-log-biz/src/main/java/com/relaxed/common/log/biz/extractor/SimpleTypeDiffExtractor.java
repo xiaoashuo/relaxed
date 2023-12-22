@@ -1,7 +1,11 @@
 package com.relaxed.common.log.biz.extractor;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.biz.annotation.LogDiffTag;
+import com.relaxed.common.log.biz.enums.AttrOptionEnum;
+import com.relaxed.common.log.biz.model.AttributeChange;
 
 import java.lang.reflect.Field;
 
@@ -16,7 +20,28 @@ public class SimpleTypeDiffExtractor implements DiffExtractor {
 
 	@Override
 	public String diffValue(Field field, LogDiffTag logDiffTag, Object oldFieldValue, Object newFieldValue) {
-		return "值:" + StrUtil.toString(oldFieldValue) + "->" + StrUtil.toString(newFieldValue);
+		if ((oldFieldValue==null&&newFieldValue==null)|| ObjectUtil.equals(oldFieldValue,newFieldValue)){
+			return "";
+		}
+
+		AttrOptionEnum op=null;
+
+		if (oldFieldValue==null&&newFieldValue!=null){
+			op=AttrOptionEnum.ADD;
+		}else if (oldFieldValue!=null&&newFieldValue==null){
+			op=AttrOptionEnum.REMOVE;
+		}else if (!oldFieldValue.equals(newFieldValue)){
+			op=AttrOptionEnum.REPLACE;
+		}
+		 AttributeChange attributeChange = new AttributeChange();
+		 attributeChange.setOp(op.name());
+		String name = field.getName();
+		attributeChange.setProperty(name);
+		 attributeChange.setPath("/"+name);
+		 attributeChange.setLeftValue(StrUtil.toString(oldFieldValue));
+		 attributeChange.setRightValue(StrUtil.toString(newFieldValue));
+
+		return JSONUtil.toJsonStr(attributeChange);
 	}
 
 }

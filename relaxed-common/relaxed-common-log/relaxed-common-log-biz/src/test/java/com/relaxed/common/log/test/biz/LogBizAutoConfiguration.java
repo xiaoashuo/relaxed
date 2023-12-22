@@ -1,4 +1,4 @@
-package com.relaxed.common.log.biz;
+package com.relaxed.common.log.test.biz;
 
 import com.relaxed.common.log.biz.annotation.BizLog;
 import com.relaxed.common.log.biz.aspect.LogOperatorAdvice;

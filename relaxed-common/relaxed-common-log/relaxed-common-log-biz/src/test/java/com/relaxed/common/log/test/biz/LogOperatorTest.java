@@ -88,11 +88,12 @@ public class LogOperatorTest {
 			@Override
 			public boolean ignoreField(Class clazzType, Field field, Object oldFieldValue, Object newFieldValue) {
 				// 若为字符串或基本类型 内容相同 则不进行记录
-				Class<?> fieldType = field.getType();
-				if ((String.class.isAssignableFrom(fieldType) || ClassUtil.isBasicType(fieldType))
-						&& oldFieldValue.equals(newFieldValue)) {
-					return true;
-				}
+//				Class<?> fieldType = field.getType();
+//				if ((String.class.isAssignableFrom(fieldType) || ClassUtil.isBasicType(fieldType))
+//						&& oldFieldValue.equals(newFieldValue)) {
+//					return true;
+//				}
+//				return false;
 				return false;
 			}
 		};
@@ -102,7 +103,7 @@ public class LogOperatorTest {
 		String expected = "{\"username\":\"张三\",\"version\":\"1.0.0\",\"content\":[{\"lineNumber\":1,\"gender\":\"女\"}]}";
 		String actual = "{\"jack\":\"张三\",\"version\":\"1.0.0\",\"content\":[{\"lineNumber\":2,\"age\":\"18\"}]}";
 		TestData oldValue = buildTestData1("张三", "男", expected, false);
-		TestData newValue = buildTestData1("李四", "女", actual, true);
+		TestData newValue = buildTestData1("张三", "女", actual, true);
 		List<AttributeModel> attributeModelList = dataHandler.diffObject(new DiffMeta("diffUser", oldValue, newValue));
 		log.info("差异化信息{}", JSONUtil.toJsonStr(attributeModelList));
 	}

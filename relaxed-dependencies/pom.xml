@@ -200,11 +200,7 @@
                 <version>${revision}</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-common-log-action</artifactId>
-                <version>${revision}</version>
-            </dependency>
+
             <!--通用工具类-->
             <dependency>
                 <groupId>com.lovecyy</groupId>

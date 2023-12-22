@@ -16,7 +16,6 @@
     <modules>
        <module>relaxed-common-log-access</module>
        <module>relaxed-common-log-operation</module>
-       <module>relaxed-common-log-action</module>
        <module>relaxed-common-log-biz</module>
     </modules>
     <dependencies>
