@@ -40,7 +40,7 @@ public class DefaultDataHandler implements IDataHandler {
 			for (Field declaredField : declaredFields) {
 
 				LogDiffTag logDiffTag = AnnotationUtil.getAnnotation(declaredField, LogDiffTag.class);
-				if (logDiffTag==null||logDiffTag.ignore()){
+				if (logDiffTag == null || logDiffTag.ignore()) {
 					continue;
 				}
 

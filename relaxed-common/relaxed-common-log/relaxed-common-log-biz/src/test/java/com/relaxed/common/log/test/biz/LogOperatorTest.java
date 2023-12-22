@@ -88,12 +88,13 @@ public class LogOperatorTest {
 			@Override
 			public boolean ignoreField(Class clazzType, Field field, Object oldFieldValue, Object newFieldValue) {
 				// 若为字符串或基本类型 内容相同 则不进行记录
-//				Class<?> fieldType = field.getType();
-//				if ((String.class.isAssignableFrom(fieldType) || ClassUtil.isBasicType(fieldType))
-//						&& oldFieldValue.equals(newFieldValue)) {
-//					return true;
-//				}
-//				return false;
+				// Class<?> fieldType = field.getType();
+				// if ((String.class.isAssignableFrom(fieldType) ||
+				// ClassUtil.isBasicType(fieldType))
+				// && oldFieldValue.equals(newFieldValue)) {
+				// return true;
+				// }
+				// return false;
 				return false;
 			}
 		};

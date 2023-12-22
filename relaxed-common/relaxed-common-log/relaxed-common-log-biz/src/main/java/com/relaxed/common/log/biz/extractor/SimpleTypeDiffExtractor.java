@@ -20,26 +20,28 @@ public class SimpleTypeDiffExtractor implements DiffExtractor {
 
 	@Override
 	public String diffValue(Field field, LogDiffTag logDiffTag, Object oldFieldValue, Object newFieldValue) {
-		if ((oldFieldValue==null&&newFieldValue==null)|| ObjectUtil.equals(oldFieldValue,newFieldValue)){
+		if ((oldFieldValue == null && newFieldValue == null) || ObjectUtil.equals(oldFieldValue, newFieldValue)) {
 			return "";
 		}
 
-		AttrOptionEnum op=null;
+		AttrOptionEnum op = null;
 
-		if (oldFieldValue==null&&newFieldValue!=null){
-			op=AttrOptionEnum.ADD;
-		}else if (oldFieldValue!=null&&newFieldValue==null){
-			op=AttrOptionEnum.REMOVE;
-		}else if (!oldFieldValue.equals(newFieldValue)){
-			op=AttrOptionEnum.REPLACE;
+		if (oldFieldValue == null && newFieldValue != null) {
+			op = AttrOptionEnum.ADD;
 		}
-		 AttributeChange attributeChange = new AttributeChange();
-		 attributeChange.setOp(op.name());
+		else if (oldFieldValue != null && newFieldValue == null) {
+			op = AttrOptionEnum.REMOVE;
+		}
+		else if (!oldFieldValue.equals(newFieldValue)) {
+			op = AttrOptionEnum.REPLACE;
+		}
+		AttributeChange attributeChange = new AttributeChange();
+		attributeChange.setOp(op.name());
 		String name = field.getName();
 		attributeChange.setProperty(name);
-		 attributeChange.setPath("/"+name);
-		 attributeChange.setLeftValue(StrUtil.toString(oldFieldValue));
-		 attributeChange.setRightValue(StrUtil.toString(newFieldValue));
+		attributeChange.setPath("/" + name);
+		attributeChange.setLeftValue(StrUtil.toString(oldFieldValue));
+		attributeChange.setRightValue(StrUtil.toString(newFieldValue));
 
 		return JSONUtil.toJsonStr(attributeChange);
 	}

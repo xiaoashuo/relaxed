@@ -1,5 +1,6 @@
 package com.relaxed.autoconfigure.log;
 
+import com.relaxed.autoconfigure.log.properties.LogProperties;
 import com.relaxed.common.log.biz.annotation.BizLog;
 import com.relaxed.common.log.biz.aspect.LogOperatorAdvice;
 import com.relaxed.common.log.biz.aspect.LogOperatorAdvisor;
@@ -16,6 +17,7 @@ import com.relaxed.common.log.biz.service.impl.DefaultLogRecordService;
 import com.relaxed.common.log.biz.service.impl.DefaultOperatorGetServiceImpl;
 import com.relaxed.common.log.biz.service.impl.LogRegxSpelParse;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,7 +28,8 @@ import org.springframework.context.annotation.Configuration;
  * @date 2023/12/14 14:58
  * @Version 1.0
  */
-//@Configuration(proxyBeanMethods = false)
+@Configuration
+@ConditionalOnProperty(prefix = LogProperties.Biz.PREFIX, name = "enabled", havingValue = "true")
 public class LogBizAutoConfiguration {
 
 	/**
