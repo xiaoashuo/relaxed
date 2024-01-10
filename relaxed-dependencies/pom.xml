@@ -29,7 +29,7 @@
         <dynamic-datasource.version>3.5.0</dynamic-datasource.version>
         <jasypt.version>2.1.0</jasypt.version>
         <jsch.version>0.1.54</jsch.version>
-        <easyexcel.version>3.0.5</easyexcel.version>
+        <easyexcel.version>3.3.3</easyexcel.version>
         <poi.version>5.2.2</poi.version>
         <itext-font-asian.version>7.1.13</itext-font-asian.version>
         <itext-html-pdf.version>3.0.2</itext-html-pdf.version>
