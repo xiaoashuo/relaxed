@@ -1,11 +1,6 @@
 package com.relaxed.common.core.jackson.annotations;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * @author Yakir
@@ -16,10 +11,24 @@ import java.lang.annotation.Target;
  * @date 2021/8/4 20:44
  * @Version 1.0
  */
-@Target({ ElementType.FIELD })
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-public @interface IgnoreNullSerializer {
+public @interface IgnoreNullSerializerByType {
+
+	/**
+	 * 默认忽略全部
+	 */
+	IgnoreNullSerializerByType.Include value() default IgnoreNullSerializerByType.Include.ALL;
+
+	public static enum Include {
+
+		ALL, STRING, ARRAY, MAP,;
+
+		Include() {
+		}
+
+	}
 
 }

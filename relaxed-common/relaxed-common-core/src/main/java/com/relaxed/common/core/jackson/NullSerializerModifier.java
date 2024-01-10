@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import com.fasterxml.jackson.databind.util.Annotations;
+
 import com.relaxed.common.core.jackson.annotations.IgnoreNullSerializer;
+import com.relaxed.common.core.jackson.annotations.IgnoreNullSerializerByType;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
@@ -31,11 +33,16 @@ public class NullSerializerModifier extends BeanSerializerModifier {
 			List<BeanPropertyWriter> beanProperties) {
 		Annotations classAnnotations = beanDesc.getClassAnnotations();
 
-		IgnoreNullSerializer ignoreNullSerializer = classAnnotations.get(IgnoreNullSerializer.class);
+		IgnoreNullSerializerByType ignoreNullSerializer = classAnnotations.get(IgnoreNullSerializerByType.class);
 		/// 若用户未指定注解 则所有都赋予默认空序列化器
 		if (ignoreNullSerializer == null) {
 			// 循环所有的beanPropertyWriter
 			for (BeanPropertyWriter writer : beanProperties) {
+				boolean isIgnoreNullSerializer = writer.getAnnotation(IgnoreNullSerializer.class) != null;
+				if (isIgnoreNullSerializer) {
+					// 若存在忽略空值序列化器,直接跳过
+					continue;
+				}
 				if (isStringType(writer)) {
 					// null 字符串转空
 					writer.assignNullSerializer(this.nullStringJsonSerializer);
@@ -51,22 +58,27 @@ public class NullSerializerModifier extends BeanSerializerModifier {
 			}
 			return beanProperties;
 		}
-		IgnoreNullSerializer.Include value = ignoreNullSerializer.value();
+		IgnoreNullSerializerByType.Include value = ignoreNullSerializer.value();
 		// 忽略所有 则所有都不赋予空序列化器
-		if (IgnoreNullSerializer.Include.ALL.equals(value)) {
+		if (IgnoreNullSerializerByType.Include.ALL.equals(value)) {
 			return beanProperties;
 		}
 		// 循环所有的beanPropertyWriter
 		for (BeanPropertyWriter writer : beanProperties) {
-			if (!IgnoreNullSerializer.Include.STRING.equals(value) && isStringType(writer)) {
+			// 若存在忽略空值序列化器,直接跳过空序列化器分配,否则走全局配置
+			boolean isIgnoreNullSerializer = writer.getAnnotation(IgnoreNullSerializer.class) != null;
+			if (isIgnoreNullSerializer) {
+				continue;
+			}
+			if (!IgnoreNullSerializerByType.Include.STRING.equals(value) && isStringType(writer)) {
 				// null 字符串转空
 				writer.assignNullSerializer(this.nullStringJsonSerializer);
 			}
-			else if (!IgnoreNullSerializer.Include.ARRAY.equals(value) && isArrayType(writer)) {
+			else if (!IgnoreNullSerializerByType.Include.ARRAY.equals(value) && isArrayType(writer)) {
 				// null array 或 list，set则注册nullSerializer
 				writer.assignNullSerializer(this.nullArrayJsonSerializer);
 			}
-			else if (!IgnoreNullSerializer.Include.MAP.equals(value) && isMapType(writer)) {
+			else if (!IgnoreNullSerializerByType.Include.MAP.equals(value) && isMapType(writer)) {
 				// null Map 转 '{}'
 				writer.assignNullSerializer(this.nullMapJsonSerializer);
 			}
