@@ -20,6 +20,8 @@ import java.util.function.BiFunction;
 @Slf4j
 public class SftpExecutor extends AbstractSftpExecutor {
 
+	private static final String NO_SUCH_FILE = "No such file";
+
 	public SftpExecutor(ChannelSftp channelSftp) {
 		super(channelSftp);
 	}
@@ -31,8 +33,10 @@ public class SftpExecutor extends AbstractSftpExecutor {
 			return true;
 		}
 		catch (SftpException e) {
-			log.debug("isExist exception params[{}]", path, e);
-			return false;
+			if (NO_SUCH_FILE.equalsIgnoreCase(e.getMessage())) {
+				return false;
+			}
+			throw new SftpClientException(String.format("isExist exception params[{}]", path), e);
 		}
 	}
 
