@@ -353,6 +353,11 @@
                 <artifactId>relaxed-spring-boot-starter-easyexcel</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-spring-boot-starter-mq</artifactId>
+                <version>${revision}</version>
+            </dependency>
             <!--web 模块-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>

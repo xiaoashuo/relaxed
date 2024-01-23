@@ -28,6 +28,7 @@
          <module>relaxed-spring-boot-starter-download</module>
          <module>relaxed-spring-boot-starter-datascope</module>
          <module>relaxed-spring-boot-starter-wechat</module>
+         <module>relaxed-spring-boot-starter-mq</module>
     </modules>
 
 

@@ -1,0 +1,21 @@
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username:
+    password:
+    virtual-host: /
+
+rabbitmq:
+  exchange: exchange-direct-test
+  credit:
+    queue: queue-direct-test
+    key: queue-direct-test-key
+relaxed:
+  mq:
+   base-package: com.relaxed.autoconfigure.mq.rabbitmq.domain
+
+logging:
+  level:
+    root: debug
