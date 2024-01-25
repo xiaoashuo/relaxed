@@ -57,7 +57,8 @@ public class SftpFactory extends BasePooledObjectFactory<ISftpExecutor> {
 			return iSftpProvider.provide(channel);
 		}
 		catch (JSchException e) {
-			throw new SftpClientException("connection sftp failed", e);
+			throw new SftpClientException("connection sftp failed,host :" + sftpProperties.getHost() + ",port:"
+					+ sftpProperties.getPort() + ",username:" + sftpProperties.getUsername(), e);
 		}
 	}
 
@@ -112,7 +113,8 @@ public class SftpFactory extends BasePooledObjectFactory<ISftpExecutor> {
 					return true;
 				}
 				catch (SftpException e) {
-					log.error("validate obj error", e);
+					log.error("validate sftp error, host {},port:{} ,username {}", sftpProperties.getHost(),
+							sftpProperties.getPort(), sftpProperties.getUsername(), e);
 					return false;
 				}
 			}
