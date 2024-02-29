@@ -77,6 +77,11 @@ public class Step<T> {
 		return this;
 	}
 
+	public Step<T> locationComputer(LocationComputer locationComputer) {
+		this.locationComputer = locationComputer;
+		return this;
+	}
+
 	public Step<T> exp(ExceptionHandler exceptionHandler) {
 		this.exceptionHandler = exceptionHandler;
 		return this;

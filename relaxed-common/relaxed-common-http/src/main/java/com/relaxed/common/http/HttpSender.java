@@ -3,11 +3,9 @@ package com.relaxed.common.http;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.resource.InputStreamResource;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.ReferenceUtil;
-import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.*;
-import com.relaxed.common.core.util.SpringUtils;
+import com.relaxed.common.core.util.SpringContextUtil;
 
 import com.relaxed.common.http.core.ISender;
 import com.relaxed.common.http.core.client.ClientResponse;
@@ -23,10 +21,7 @@ import com.relaxed.common.http.domain.*;
 import com.relaxed.common.http.event.ReqReceiveEvent;
 import com.relaxed.common.http.exception.ClientException;
 import com.relaxed.common.http.exception.RequestException;
-import com.relaxed.common.http.util.GenericTypeUtils;
-import com.relaxed.common.model.result.R;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.*;
@@ -80,7 +75,7 @@ public class HttpSender implements ISender<HttpRequest, HttpResponse> {
 	}
 
 	public HttpSender(String baseUrl, RequestHeaderProvider requestHeaderProvider) {
-		this(baseUrl, requestHeaderProvider, event -> SpringUtils.getContext().publishEvent(event),
+		this(baseUrl, requestHeaderProvider, event -> SpringContextUtil.getContext().publishEvent(event),
 				DEFAULT_REQUEST_INTERCEPTOR);
 	}
 

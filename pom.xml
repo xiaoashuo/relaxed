@@ -12,6 +12,9 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
     <name>relaxed</name>
+
+
+
     <url>https://github.com/xiaoashuo/relaxed</url>
     <description>项目基本脚手架</description>
 

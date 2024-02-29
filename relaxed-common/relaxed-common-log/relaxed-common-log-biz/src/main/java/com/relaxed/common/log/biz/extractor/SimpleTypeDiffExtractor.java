@@ -23,18 +23,7 @@ public class SimpleTypeDiffExtractor implements DiffExtractor {
 		if ((oldFieldValue == null && newFieldValue == null) || ObjectUtil.equals(oldFieldValue, newFieldValue)) {
 			return "";
 		}
-
-		AttrOptionEnum op = null;
-
-		if (oldFieldValue == null && newFieldValue != null) {
-			op = AttrOptionEnum.ADD;
-		}
-		else if (oldFieldValue != null && newFieldValue == null) {
-			op = AttrOptionEnum.REMOVE;
-		}
-		else if (!oldFieldValue.equals(newFieldValue)) {
-			op = AttrOptionEnum.REPLACE;
-		}
+		AttrOptionEnum op = AttrOptionEnum.changeTypeEnum(oldFieldValue, newFieldValue);
 		AttributeChange attributeChange = new AttributeChange();
 		attributeChange.setOp(op.name());
 		String name = field.getName();

@@ -2,6 +2,8 @@ package com.relaxed.common.log.biz.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
@@ -31,6 +33,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -175,7 +178,10 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 		// 判断是否需要记录结果
 		if (bizLog.recordReturnValue()) {
 			Object result = LogRecordContext.peek().get(LogRecordConstants.RESULT);
-			logBizOp.setResult(JSONUtil.toJsonStr(result));
+			if (ObjectUtil.isNotEmpty(result)) {
+				logBizOp.setResult(ClassUtil.isBasicType(result.getClass())
+						? StrUtil.str(result, StandardCharsets.UTF_8) : JSONUtil.toJsonStr(result));
+			}
 		}
 		Long startTime = Convert.toLong(LogRecordContext.peek().get(LogRecordConstants.S_TIME));
 		Long endTime = Convert.toLong(LogRecordContext.peek().get(LogRecordConstants.E_TIME));
@@ -293,7 +299,8 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 	 */
 	protected List<String> getExpressTemplate(BizLog bizLog) {
 		Set<String> set = new HashSet<>();
-		set.addAll(Arrays.asList(bizLog.bizNo(), bizLog.detail(), bizLog.operator(), bizLog.success(), bizLog.fail()));
+		set.addAll(Arrays.asList(bizLog.bizNo(), bizLog.detail(), bizLog.operator(), bizLog.success(), bizLog.fail(),
+				bizLog.type()));
 		return set.stream().filter(s -> !ObjectUtils.isEmpty(s) && String.class.isAssignableFrom(s.getClass()))
 				.collect(Collectors.toList());
 	}

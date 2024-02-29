@@ -1,12 +1,9 @@
 package com.relaxed.oauth2.auth.util;
 
-import com.relaxed.common.core.util.SpringUtils;
+import com.relaxed.common.core.util.SpringContextUtil;
 import com.relaxed.oauth2.auth.handler.AuthorizationInfoHandle;
-import lombok.RequiredArgsConstructor;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.util.Assert;
 
 /**
@@ -26,7 +23,7 @@ public class ProxyFactory {
 	 * @return T
 	 */
 	public static <T> T create(Class<T> clazz) {
-		AuthorizationInfoHandle authorizationInfoHandle = SpringUtils.getBean(AuthorizationInfoHandle.class);
+		AuthorizationInfoHandle authorizationInfoHandle = SpringContextUtil.getBean(AuthorizationInfoHandle.class);
 		Assert.notNull(authorizationInfoHandle, "授权信息处理器不能为空");
 		Enhancer enhancer = new Enhancer();
 		enhancer.setSuperclass(clazz);
@@ -42,7 +39,7 @@ public class ProxyFactory {
 	 * @return T
 	 */
 	public static <T> T create(T obj) {
-		AuthorizationInfoHandle authorizationInfoHandle = SpringUtils.getBean(AuthorizationInfoHandle.class);
+		AuthorizationInfoHandle authorizationInfoHandle = SpringContextUtil.getBean(AuthorizationInfoHandle.class);
 		Assert.notNull(authorizationInfoHandle, "授权信息处理器不能为空");
 		Enhancer enhancer = new Enhancer();
 		enhancer.setSuperclass(obj.getClass());

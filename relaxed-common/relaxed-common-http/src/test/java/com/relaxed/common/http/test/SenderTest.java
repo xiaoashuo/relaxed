@@ -2,15 +2,11 @@ package com.relaxed.common.http.test;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.URLUtil;
-import cn.hutool.crypto.digest.MD5;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONUtil;
-import com.relaxed.common.core.util.SpringUtils;
 import com.relaxed.common.http.HttpSender;
 
 import com.relaxed.common.http.core.interceptor.RequestInterceptor;
@@ -18,7 +14,6 @@ import com.relaxed.common.http.core.notify.RequestResultNotifier;
 import com.relaxed.common.http.core.provider.RequestHeaderProvider;
 import com.relaxed.common.http.core.resource.StringResource;
 import com.relaxed.common.http.domain.RequestForm;
-import com.relaxed.common.http.event.ReqReceiveEvent;
 import com.relaxed.common.http.test.custom.CustomSender;
 import com.relaxed.common.http.test.example.create.CreateRequest;
 import com.relaxed.common.http.test.example.create.CreateResponse;
@@ -30,11 +25,6 @@ import com.relaxed.common.http.test.example.query.StampQueryRequest;
 import com.relaxed.common.http.test.example.query.StampQueryResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpEntity;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.File;

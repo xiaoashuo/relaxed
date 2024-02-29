@@ -36,7 +36,7 @@ public class SftpExecutor extends AbstractSftpExecutor {
 			if (NO_SUCH_FILE.equalsIgnoreCase(e.getMessage())) {
 				return false;
 			}
-			throw new SftpClientException(String.format("isExist exception params[{}]", path), e);
+			throw new SftpClientException(String.format("isExist exception params[%s]", path), e);
 		}
 	}
 

@@ -1,5 +1,6 @@
 package com.relaxed.common.log.biz.enums;
 
+import cn.hutool.core.util.ObjectUtil;
 import lombok.Getter;
 
 /**
@@ -13,9 +14,14 @@ import lombok.Getter;
 public enum AttrOptionEnum {
 
 	/**
+	 * 无变动
+	 */
+	NONE,
+	/**
 	 * 添加
 	 */
 	ADD,
+
 	/**
 	 * 删除
 	 */
@@ -26,6 +32,30 @@ public enum AttrOptionEnum {
 	REPLACE,
 
 	;
+
+	/**
+	 * 枚举类型获取
+	 * @param oldFieldValue
+	 * @param newFieldValue
+	 * @return
+	 */
+	public static AttrOptionEnum changeTypeEnum(Object oldFieldValue, Object newFieldValue) {
+		AttrOptionEnum op;
+
+		if (ObjectUtil.isEmpty(oldFieldValue) && ObjectUtil.isNotEmpty(newFieldValue)) {
+			op = AttrOptionEnum.ADD;
+		}
+		else if (ObjectUtil.isNotEmpty(oldFieldValue) && ObjectUtil.isEmpty(newFieldValue)) {
+			op = AttrOptionEnum.REMOVE;
+		}
+		else if (ObjectUtil.notEqual(oldFieldValue, newFieldValue)) {
+			op = AttrOptionEnum.REPLACE;
+		}
+		else {
+			op = AttrOptionEnum.NONE;
+		}
+		return op;
+	}
 
 	public static AttrOptionEnum of(String op) {
 		AttrOptionEnum attrOptionEnum;

@@ -3,7 +3,6 @@ package com.relaxed.common.core.util;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -17,13 +16,13 @@ import java.util.Map;
  * @Version 1.0
  */
 @Component
-public class SpringUtils implements ApplicationContextAware {
+public class SpringContextUtil implements ApplicationContextAware {
 
 	private static ApplicationContext context;
 
 	@Override
 	public void setApplicationContext(ApplicationContext context) throws BeansException {
-		SpringUtils.context = context;
+		SpringContextUtil.context = context;
 	}
 
 	@SuppressWarnings("unchecked")

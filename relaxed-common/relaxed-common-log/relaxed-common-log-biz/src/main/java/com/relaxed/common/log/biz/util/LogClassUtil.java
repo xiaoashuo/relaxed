@@ -7,9 +7,25 @@ import cn.hutool.core.exceptions.UtilException;
 import cn.hutool.core.lang.reflect.MethodHandleUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ClassUtil;
+import com.relaxed.common.log.biz.enums.AttrOptionEnum;
+import com.relaxed.common.log.biz.model.AttributeChange;
+import org.javers.common.string.PrettyValuePrinter;
+import org.javers.core.Changes;
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
+import org.javers.core.diff.Change;
+import org.javers.core.diff.Diff;
+import org.javers.core.diff.changetype.ValueChange;
+import org.javers.core.metamodel.object.GlobalId;
+import org.javers.core.metamodel.object.ValueObjectId;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.javers.core.diff.ListCompareAlgorithm.LEVENSHTEIN_DISTANCE;
 
 /**
  * @author Yakir
@@ -19,6 +35,8 @@ import java.lang.reflect.Method;
  * @Version 1.0
  */
 public class LogClassUtil {
+
+	private static Javers javers = JaversBuilder.javers().withListCompareAlgorithm(LEVENSHTEIN_DISTANCE).build();
 
 	/**
 	 * 执行方法
@@ -106,6 +124,82 @@ public class LogClassUtil {
 		}
 
 		return (T) method.invoke(ClassUtil.isStatic(method) ? null : obj, actualArgs);
+	}
+
+	/**
+	 * 比较两个对象差异
+	 * @param source
+	 * @param target
+	 * @return
+	 */
+	public static Diff compare(Object source, Object target) {
+		return javers.compare(source, target);
+	}
+
+	/**
+	 * diff 比较
+	 * @param leftValue
+	 * @param rightValue
+	 * @return
+	 */
+	public static List<AttributeChange> diff(Object leftValue, Object rightValue) {
+		return diff(leftValue, rightValue, (change, source, target) -> false);
+	}
+
+	/**
+	 * diff 比较
+	 * @param leftValue 原始对象
+	 * @param rightValue 差异对象
+	 * @param propertyFilter 属性过滤器
+	 * @return
+	 */
+	public static List<AttributeChange> diff(Object leftValue, Object rightValue, PropertyFilter propertyFilter) {
+		Diff diff = compare(leftValue, rightValue);
+		if (!diff.hasChanges()) {
+			return new ArrayList<>();
+		}
+		Class<?> sourceClass = leftValue.getClass();
+		Class<?> targetClass = rightValue.getClass();
+
+		PrettyValuePrinter printer = PrettyValuePrinter.getDefault();
+		List<AttributeChange> attributeChanges = new ArrayList<>();
+		Changes changes = diff.getChanges();
+		for (Change change : changes) {
+
+			if (propertyFilter.ignoreProperty(change, sourceClass, targetClass)) {
+				// 若忽略当前属性则跳过
+				continue;
+			}
+			AttributeChange attributeChange = new AttributeChange();
+			GlobalId affectedGlobalId = change.getAffectedGlobalId();
+			if (affectedGlobalId instanceof ValueObjectId) {
+				ValueObjectId valueObjectId = (ValueObjectId) affectedGlobalId;
+				String fragment = valueObjectId.getFragment();
+				attributeChange.setPath("/" + fragment);
+			}
+			if ((change instanceof ValueChange)) {
+				ValueChange valueChange = (ValueChange) change;
+
+				String propertyName = valueChange.getPropertyName();
+				Object left = valueChange.getLeft();
+				Object right = valueChange.getRight();
+				AttrOptionEnum op = AttrOptionEnum.changeTypeEnum(left, right);
+				String path = attributeChange.getPath();
+				if (!StringUtils.hasText(path)) {
+					attributeChange.setPath("/" + propertyName);
+				}
+				else {
+					attributeChange.setPath(path + "/" + propertyName);
+				}
+				attributeChange.setOp(op.toString());
+				attributeChange.setProperty(propertyName);
+				attributeChange.setLeftValue(printer.format(left));
+				attributeChange.setRightValue(printer.format(right));
+
+			}
+			attributeChanges.add(attributeChange);
+		}
+		return attributeChanges;
 	}
 
 }
