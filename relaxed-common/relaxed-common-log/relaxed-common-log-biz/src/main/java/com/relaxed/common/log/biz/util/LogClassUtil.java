@@ -24,6 +24,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static org.javers.core.diff.ListCompareAlgorithm.LEVENSHTEIN_DISTANCE;
 
@@ -143,14 +145,14 @@ public class LogClassUtil {
 	 * @return
 	 */
 	public static List<AttributeChange> diff(Object leftValue, Object rightValue) {
-		return diff(leftValue, rightValue, (change, source, target) -> false);
+		return diff(leftValue, rightValue, (propertyName, source, target) -> true);
 	}
 
 	/**
 	 * diff 比较
 	 * @param leftValue 原始对象
 	 * @param rightValue 差异对象
-	 * @param propertyFilter 属性过滤器
+	 * @param propertyFilter 数据集属性过滤器
 	 * @return
 	 */
 	public static List<AttributeChange> diff(Object leftValue, Object rightValue, PropertyFilter propertyFilter) {
@@ -165,11 +167,6 @@ public class LogClassUtil {
 		List<AttributeChange> attributeChanges = new ArrayList<>();
 		Changes changes = diff.getChanges();
 		for (Change change : changes) {
-
-			if (propertyFilter.ignoreProperty(change, sourceClass, targetClass)) {
-				// 若忽略当前属性则跳过
-				continue;
-			}
 			AttributeChange attributeChange = new AttributeChange();
 			GlobalId affectedGlobalId = change.getAffectedGlobalId();
 			if (affectedGlobalId instanceof ValueObjectId) {
@@ -179,7 +176,6 @@ public class LogClassUtil {
 			}
 			if ((change instanceof ValueChange)) {
 				ValueChange valueChange = (ValueChange) change;
-
 				String propertyName = valueChange.getPropertyName();
 				Object left = valueChange.getLeft();
 				Object right = valueChange.getRight();
@@ -199,7 +195,9 @@ public class LogClassUtil {
 			}
 			attributeChanges.add(attributeChange);
 		}
-		return attributeChanges;
+		return attributeChanges.stream()
+				.filter(item -> propertyFilter.filterProperty(item.getProperty(), sourceClass, targetClass))
+				.collect(Collectors.toList());
 	}
 
 }

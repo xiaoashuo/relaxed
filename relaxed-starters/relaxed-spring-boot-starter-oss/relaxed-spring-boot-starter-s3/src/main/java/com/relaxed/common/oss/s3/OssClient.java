@@ -20,6 +20,7 @@ import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.utils.IoUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -180,6 +181,26 @@ public class OssClient implements DisposableBean {
 		catch (Exception e) {
 			throw new OssException(e, "download file error bucket:%s,path:%s", this.bucket, relativePath);
 
+		}
+	}
+
+	/**
+	 * 下载到文件
+	 * @param relativePath
+	 * @param file
+	 * @return 返回源文件引用
+	 */
+	public File download(String relativePath, File file) {
+		try {
+			GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucket).key(relativePath).build();
+			try (ResponseInputStream<GetObjectResponse> object = s3Client.getObject(getObjectRequest);
+					FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+				IoUtils.copy(object, fileOutputStream);
+			}
+			return file;
+		}
+		catch (Exception e) {
+			throw new OssException(e, "download file error bucket:%s,path:%s", this.bucket, relativePath);
 		}
 	}
 

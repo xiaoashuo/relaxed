@@ -15,12 +15,12 @@ import java.util.List;
 public interface PropertyFilter {
 
 	/**
-	 * 是否忽略当前属性差异提取
-	 * @param change 变化
+	 * 是否 保留当前属性差异提取
+	 * @param propertyName 属性名
 	 * @param source 原字段类
 	 * @param target 目标字段类
 	 * @return true 忽略属性 false 加入差异结果集
 	 */
-	boolean ignoreProperty(Change change, Class source, Class target);
+	boolean filterProperty(String propertyName, Class source, Class target);
 
 }

@@ -9,7 +9,7 @@
 
     <packaging>pom</packaging>
     <properties>
-        <revision>1.0.0-SNAPSHOT</revision>
+        <revision>1.4.0</revision>
         <!--插件部分-->
         <maven-compiler-plugin.verison>3.8.0</maven-compiler-plugin.verison>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>

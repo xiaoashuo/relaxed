@@ -5,9 +5,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flipkart.zjsonpatch.DiffFlags;
 import com.flipkart.zjsonpatch.JsonDiff;
+import com.relaxed.common.log.biz.enums.AttrOptionEnum;
+import com.relaxed.common.log.biz.model.AttributeChange;
 import lombok.SneakyThrows;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Yakir
@@ -30,6 +36,16 @@ import java.util.EnumSet;
  * @Version 1.0
  */
 public class JsonUtil {
+
+	public static final String OP = "op";
+
+	public static final String VALUE = "value";
+
+	public static final String PATH = "path";
+
+	public static final String FROM = "from";
+
+	public static final String FROM_VALUE = "fromValue";
 
 	private static ObjectMapper MAPPER = new ObjectMapper();
 
@@ -55,6 +71,45 @@ public class JsonUtil {
 		JsonNode target = MAPPER.readTree(actual);
 		JsonNode jsonpPatch = jsonDiff(source, target);
 		return jsonpPatch;
+	}
+
+	public static List<AttributeChange> diffJson(String expected, String actual) {
+		JsonNode jsonNode = jsonPatchDiff(expected, actual);
+		Iterator<JsonNode> elements = jsonNode.elements();
+		List<AttributeChange> attributeChangeList = new ArrayList<>();
+		while (elements.hasNext()) {
+			JsonNode node = elements.next();
+			AttributeChange attributeChange = new AttributeChange();
+			String op = nodeValue(node.get(OP), "unknown");
+			String value = nodeValue(node.get(VALUE), "");
+			String path = nodeValue(node.get(PATH), "");
+			String fromValue = nodeValue(node.get(FROM_VALUE), "");
+			AttrOptionEnum attrOptionEnum = AttrOptionEnum.of(op);
+			attributeChange.setOp(attrOptionEnum.toString());
+			attributeChange.setPath(path);
+			String property = "";
+			if (StringUtils.hasText(path)) {
+				String[] pathArray = path.split("/");
+				property = pathArray[pathArray.length - 1];
+			}
+			attributeChange.setProperty(property);
+			if (AttrOptionEnum.ADD.equals(attrOptionEnum)) {
+				attributeChange.setRightValue(value);
+			}
+			else if (AttrOptionEnum.REMOVE.equals(attrOptionEnum)) {
+				attributeChange.setLeftValue(value);
+			}
+			else {
+				attributeChange.setLeftValue(fromValue);
+				attributeChange.setRightValue(value);
+			}
+			attributeChangeList.add(attributeChange);
+		}
+		return attributeChangeList;
+	}
+
+	public static String nodeValue(JsonNode jsonNode, String defaultValue) {
+		return jsonNode == null ? defaultValue : jsonNode.asText();
 	}
 
 	public static JsonNode jsonDiff(JsonNode expected, JsonNode actual) {
