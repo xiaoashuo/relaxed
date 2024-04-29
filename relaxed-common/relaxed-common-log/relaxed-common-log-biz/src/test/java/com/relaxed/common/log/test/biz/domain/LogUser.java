@@ -3,6 +3,9 @@ package com.relaxed.common.log.test.biz.domain;
 import com.relaxed.common.log.biz.annotation.LogDiffTag;
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 /**
  * @author Yakir
  * @Topic User
@@ -30,5 +33,9 @@ public class LogUser {
 	 */
 	@LogDiffTag
 	private String bizNo;
+
+	private BigDecimal value;
+
+	private LocalDateTime now;
 
 }

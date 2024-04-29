@@ -2,6 +2,9 @@ package com.relaxed.common.log.biz.model;
 
 import lombok.Data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Yakir
  * @Topic AttributeChange
@@ -36,5 +39,10 @@ public class AttributeChange {
 	 * 目标对象值
 	 */
 	private String rightValue;
+
+	/**
+	 * 扩展参数
+	 */
+	private Map<String, String> extParam = new HashMap<>();
 
 }

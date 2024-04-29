@@ -3,15 +3,18 @@ package com.relaxed.common.log.test.biz;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.IdUtil;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.biz.annotation.LogDiffTag;
 import com.relaxed.common.log.biz.constant.LogRecordConstants;
+import com.relaxed.common.log.biz.model.AttributeChange;
 import com.relaxed.common.log.biz.model.AttributeModel;
 import com.relaxed.common.log.biz.model.DiffMeta;
 import com.relaxed.common.log.biz.service.IDataHandler;
 import com.relaxed.common.log.biz.service.IFieldHandler;
 import com.relaxed.common.log.biz.service.impl.DefaultDataHandler;
 import com.relaxed.common.log.biz.service.impl.DefaultFieldHandler;
+import com.relaxed.common.log.biz.util.LogClassUtil;
 import com.relaxed.common.log.test.biz.domain.LogUser;
 import com.relaxed.common.log.test.biz.domain.TestData;
 import com.relaxed.common.log.test.biz.service.BizLogService;
@@ -26,6 +29,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -54,6 +59,11 @@ public class LogOperatorTest {
 		MDC.put(LogRecordConstants.TRACE_ID, IdUtil.objectId());
 		try {
 			LogUser user = getLogUser();
+			LogUser user1 = getLogUser();
+			user.setValue(new BigDecimal("1000003"));
+			user1.setValue(new BigDecimal("1000002.00"));
+			List<AttributeChange> attributeChangeList = LogClassUtil.diff(user, user1);
+			System.out.println(attributeChangeList);
 			// 简单方法
 			// bizLogService.simpleMethod(user);
 			// 上下文变量方法
@@ -67,7 +77,7 @@ public class LogOperatorTest {
 			// 测试方法嵌套日志
 			// bizLogService.simpleMethodNested(user);
 			// 差异方法
-			bizLogService.simpleMethodDiff(user);
+			// bizLogService.simpleMethodDiff(user);
 
 		}
 		finally {
@@ -147,6 +157,7 @@ public class LogOperatorTest {
 		user.setUsername("张三");
 		user.setStatus(1);
 		user.setBizNo(IdUtil.getSnowflakeNextIdStr());
+		user.setNow(LocalDateTime.now().plusDays(RandomUtil.randomInt(10)));
 		return user;
 	}
 
