@@ -15,10 +15,12 @@ import java.util.Map;
  */
 public class MdcTaskDecorator implements TaskDecorator {
 
+
 	@Override
 	public Runnable decorate(Runnable runnable) {
 		Map<String, String> contextMap = MDC.getCopyOfContextMap();
 		return () -> {
+			Map<String, String> old = MDC.getCopyOfContextMap();
 			try {
 				// 现在：@Async线程上下文！
 				// 恢复Web线程上下文的MDC数据
@@ -28,7 +30,13 @@ public class MdcTaskDecorator implements TaskDecorator {
 				runnable.run();
 			}
 			finally {
-				MDC.clear();
+				if (old == null) {
+					MDC.clear();
+				}
+				else {
+					MDC.setContextMap(old);
+				}
+
 			}
 		};
 	}
