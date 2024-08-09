@@ -3,6 +3,7 @@ package com.relaxed.common.core.exception;
 import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.model.result.ResultCode;
 import lombok.Getter;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  * 通用业务异常
@@ -45,7 +46,7 @@ public class BusinessException extends RuntimeException {
 	}
 
 	public BusinessException(int code, String messageTemplate, Object... args) {
-		this(code, StrUtil.format(messageTemplate, args));
+		this(code, StrUtil.format(messageTemplate, args), MessageFormatter.getThrowableCandidate(args));
 	}
 
 }
