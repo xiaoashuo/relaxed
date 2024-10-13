@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -68,6 +69,18 @@ public class MybatisEncryptInterceptor implements Interceptor {
 					if (paramMap.containsKey(Constants.WRAPPER) && Objects.nonNull(paramMap.get(Constants.WRAPPER))) {
 						AbstractWrapper<Object, ?, ?> wrapper = (AbstractWrapper<Object, ?, ?>) paramMap
 								.get(Constants.WRAPPER);
+						// MPGENVAL->值映射
+						Map<String, Object> paramNameValuePairs = wrapper.getParamNameValuePairs();
+						//// 解决· mybatis plus 分页查询 二阶段查询 导致第一次参数加密 第二次执行 再次加密问题
+						if (!paramMap.containsKey("x-old-pvPairs")) {
+							// 首次进入
+							paramMap.put("x-old-pvPairs", new HashMap<>(paramNameValuePairs));
+						}
+						else {
+							Map<String, Object> oldParamNameValuePairs = (Map<String, Object>) paramMap
+									.get("x-old-pvPairs");
+							wrapper.getParamNameValuePairs().putAll(oldParamNameValuePairs);
+						}
 						// 实体类型检测
 						Class<Object> entityClass = wrapper.getEntityClass();
 						Assert.notNull(entityClass, "当前实体类型信息未找到,无法寻找加密注解");
@@ -79,9 +92,6 @@ public class MybatisEncryptInterceptor implements Interceptor {
 						String normalSqlSegment = normalSegmentList.getSqlSegment();
 						// 解析 where条件sql 获取多值map 字段名->[随机条件名]
 						MultiValueMap<String, String> mpMap = MpJsqlParserExt.parseSql(normalSqlSegment);
-
-						// MPGENVAL->值映射
-						Map<String, Object> paramNameValuePairs = wrapper.getParamNameValuePairs();
 
 						if (wrapper instanceof Update) {
 							// set语句
@@ -101,7 +111,6 @@ public class MybatisEncryptInterceptor implements Interceptor {
 
 						Assert.isTrue(paramNameValuePairs.size() == count, "字段值MPGENVAL数量不匹配,参数数量:{},sql提取出数量:{}",
 								paramNameValuePairs.size(), count);
-
 						fieldEncryptHelper.encrypt(entityClass, mpMap, paramNameValuePairs);
 					}
 					else if (paramMap.containsKey(Constants.ENTITY)
