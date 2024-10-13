@@ -68,7 +68,10 @@ public class MybatisEncryptInterceptor implements Interceptor {
 					if (paramMap.containsKey(Constants.WRAPPER) && Objects.nonNull(paramMap.get(Constants.WRAPPER))) {
 						AbstractWrapper<Object, ?, ?> wrapper = (AbstractWrapper<Object, ?, ?>) paramMap
 								.get(Constants.WRAPPER);
-
+						// 实体类型检测
+						Class<Object> entityClass = wrapper.getEntityClass();
+						Assert.notNull(entityClass, "当前实体类型信息未找到,无法寻找加密注解");
+						// 获取where条件片段 提出属性映射
 						MergeSegments expression = wrapper.getExpression();
 						NormalSegmentList normalSegmentList = expression.getNormal();
 						// (c_list_id = #{ew.paramNameValuePairs.MPGENVAL1} AND c_custtype
@@ -82,7 +85,6 @@ public class MybatisEncryptInterceptor implements Interceptor {
 
 						if (wrapper instanceof Update) {
 							// set语句
-
 							List<String> updateFieldValueList = (List<String>) ReflectUtil.getFieldValue(wrapper,
 									"sqlSet");
 
@@ -100,8 +102,6 @@ public class MybatisEncryptInterceptor implements Interceptor {
 						Assert.isTrue(paramNameValuePairs.size() == count, "字段值MPGENVAL数量不匹配,参数数量:{},sql提取出数量:{}",
 								paramNameValuePairs.size(), count);
 
-						Class<Object> entityClass = wrapper.getEntityClass();
-						Assert.notNull(entityClass, "当前实体类型信息未找到,无法寻找加密注解");
 						fieldEncryptHelper.encrypt(entityClass, mpMap, paramNameValuePairs);
 					}
 					else if (paramMap.containsKey(Constants.ENTITY)
