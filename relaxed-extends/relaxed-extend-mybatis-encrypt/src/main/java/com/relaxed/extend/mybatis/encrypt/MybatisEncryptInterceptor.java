@@ -1,12 +1,13 @@
 package com.relaxed.extend.mybatis.encrypt;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
-import com.baomidou.mybatisplus.core.MybatisParameterHandler;
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
 import com.baomidou.mybatisplus.core.conditions.segments.NormalSegmentList;
+import com.baomidou.mybatisplus.core.conditions.update.Update;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
-import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
@@ -26,12 +26,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -70,6 +68,7 @@ public class MybatisEncryptInterceptor implements Interceptor {
 					if (paramMap.containsKey(Constants.WRAPPER) && Objects.nonNull(paramMap.get(Constants.WRAPPER))) {
 						AbstractWrapper<Object, ?, ?> wrapper = (AbstractWrapper<Object, ?, ?>) paramMap
 								.get(Constants.WRAPPER);
+
 						MergeSegments expression = wrapper.getExpression();
 						NormalSegmentList normalSegmentList = expression.getNormal();
 						// (c_list_id = #{ew.paramNameValuePairs.MPGENVAL1} AND c_custtype
@@ -77,12 +76,30 @@ public class MybatisEncryptInterceptor implements Interceptor {
 						String normalSqlSegment = normalSegmentList.getSqlSegment();
 						// 解析 where条件sql 获取多值map 字段名->[随机条件名]
 						MultiValueMap<String, String> mpMap = MpJsqlParserExt.parseSql(normalSqlSegment);
-						// 总MPGENVAL数量
-						long count = mpMap.values().stream().mapToInt(List::size).sum();
+
 						// MPGENVAL->值映射
 						Map<String, Object> paramNameValuePairs = wrapper.getParamNameValuePairs();
+
+						if (wrapper instanceof Update) {
+							// set语句
+
+							List<String> updateFieldValueList = (List<String>) ReflectUtil.getFieldValue(wrapper,
+									"sqlSet");
+
+							if (CollectionUtil.isNotEmpty(updateFieldValueList)) {
+								for (String val : updateFieldValueList) {
+									String[] pair = val.replace("#{ew.paramNameValuePairs.", "").replace("}", "")
+											.split("=");
+									mpMap.add(pair[0], pair[1]);
+								}
+							}
+						}
+						// 总MPGENVAL数量
+						long count = mpMap.values().stream().mapToInt(List::size).sum();
+
 						Assert.isTrue(paramNameValuePairs.size() == count, "字段值MPGENVAL数量不匹配,参数数量:{},sql提取出数量:{}",
 								paramNameValuePairs.size(), count);
+
 						Class<Object> entityClass = wrapper.getEntityClass();
 						Assert.notNull(entityClass, "当前实体类型信息未找到,无法寻找加密注解");
 						fieldEncryptHelper.encrypt(entityClass, mpMap, paramNameValuePairs);
