@@ -73,7 +73,7 @@ public class MybatisEncryptInterceptor implements Interceptor {
 						Map<String, Object> paramNameValuePairs = wrapper.getParamNameValuePairs();
 
 						//// 解决· mybatis plus 分页查询 二阶段查询 导致第一次参数加密 第二次执行 再次加密问题
-						if (paramMap.containsKey("page")){
+						if (paramMap.containsKey("page")) {
 							if (!paramMap.containsKey("x-old-pvPairs")) {
 								// 首次进入
 								paramMap.put("x-old-pvPairs", new HashMap<>(paramNameValuePairs));
@@ -85,7 +85,7 @@ public class MybatisEncryptInterceptor implements Interceptor {
 							}
 						}
 						String simpleName = wrapper.getClass().getSimpleName();
-						if (!"EmptyWrapper".equals(simpleName)){
+						if (!"EmptyWrapper".equals(simpleName)) {
 							wrapperEwEncrypt(wrapper);
 						}
 					}
@@ -146,7 +146,7 @@ public class MybatisEncryptInterceptor implements Interceptor {
 	}
 
 	private void wrapperEwEncrypt(AbstractWrapper<Object, ?, ?> wrapper) {
-		Map<String, Object> paramNameValuePairs=wrapper.getParamNameValuePairs();
+		Map<String, Object> paramNameValuePairs = wrapper.getParamNameValuePairs();
 		// 实体类型检测
 		Class<Object> entityClass = wrapper.getEntityClass();
 		Assert.notNull(entityClass, "当前实体类型信息未找到,无法寻找加密注解");
@@ -161,13 +161,11 @@ public class MybatisEncryptInterceptor implements Interceptor {
 
 		if (wrapper instanceof Update) {
 			// set语句
-			List<String> updateFieldValueList = (List<String>) ReflectUtil.getFieldValue(wrapper,
-					"sqlSet");
+			List<String> updateFieldValueList = (List<String>) ReflectUtil.getFieldValue(wrapper, "sqlSet");
 
 			if (CollectionUtil.isNotEmpty(updateFieldValueList)) {
 				for (String val : updateFieldValueList) {
-					String[] pair = val.replace("#{ew.paramNameValuePairs.", "").replace("}", "")
-							.split("=");
+					String[] pair = val.replace("#{ew.paramNameValuePairs.", "").replace("}", "").split("=");
 					mpMap.add(pair[0], pair[1]);
 				}
 			}
