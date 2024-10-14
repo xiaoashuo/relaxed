@@ -71,47 +71,23 @@ public class MybatisEncryptInterceptor implements Interceptor {
 								.get(Constants.WRAPPER);
 						// MPGENVAL->值映射
 						Map<String, Object> paramNameValuePairs = wrapper.getParamNameValuePairs();
+
 						//// 解决· mybatis plus 分页查询 二阶段查询 导致第一次参数加密 第二次执行 再次加密问题
-						if (!paramMap.containsKey("x-old-pvPairs")) {
-							// 首次进入
-							paramMap.put("x-old-pvPairs", new HashMap<>(paramNameValuePairs));
-						}
-						else {
-							Map<String, Object> oldParamNameValuePairs = (Map<String, Object>) paramMap
-									.get("x-old-pvPairs");
-							wrapper.getParamNameValuePairs().putAll(oldParamNameValuePairs);
-						}
-						// 实体类型检测
-						Class<Object> entityClass = wrapper.getEntityClass();
-						Assert.notNull(entityClass, "当前实体类型信息未找到,无法寻找加密注解");
-						// 获取where条件片段 提出属性映射
-						MergeSegments expression = wrapper.getExpression();
-						NormalSegmentList normalSegmentList = expression.getNormal();
-						// (c_list_id = #{ew.paramNameValuePairs.MPGENVAL1} AND c_custtype
-						// LIKE #{ew.paramNameValuePairs.MPGENVAL2})
-						String normalSqlSegment = normalSegmentList.getSqlSegment();
-						// 解析 where条件sql 获取多值map 字段名->[随机条件名]
-						MultiValueMap<String, String> mpMap = MpJsqlParserExt.parseSql(normalSqlSegment);
-
-						if (wrapper instanceof Update) {
-							// set语句
-							List<String> updateFieldValueList = (List<String>) ReflectUtil.getFieldValue(wrapper,
-									"sqlSet");
-
-							if (CollectionUtil.isNotEmpty(updateFieldValueList)) {
-								for (String val : updateFieldValueList) {
-									String[] pair = val.replace("#{ew.paramNameValuePairs.", "").replace("}", "")
-											.split("=");
-									mpMap.add(pair[0], pair[1]);
-								}
+						if (paramMap.containsKey("page")){
+							if (!paramMap.containsKey("x-old-pvPairs")) {
+								// 首次进入
+								paramMap.put("x-old-pvPairs", new HashMap<>(paramNameValuePairs));
+							}
+							else {
+								Map<String, Object> oldParamNameValuePairs = (Map<String, Object>) paramMap
+										.get("x-old-pvPairs");
+								wrapper.getParamNameValuePairs().putAll(oldParamNameValuePairs);
 							}
 						}
-						// 总MPGENVAL数量
-						long count = mpMap.values().stream().mapToInt(List::size).sum();
-
-						Assert.isTrue(paramNameValuePairs.size() == count, "字段值MPGENVAL数量不匹配,参数数量:{},sql提取出数量:{}",
-								paramNameValuePairs.size(), count);
-						fieldEncryptHelper.encrypt(entityClass, mpMap, paramNameValuePairs);
+						String simpleName = wrapper.getClass().getSimpleName();
+						if (!"EmptyWrapper".equals(simpleName)){
+							wrapperEwEncrypt(wrapper);
+						}
 					}
 					else if (paramMap.containsKey(Constants.ENTITY)
 							&& Objects.nonNull(paramMap.get(Constants.ENTITY))) {
@@ -167,6 +143,41 @@ public class MybatisEncryptInterceptor implements Interceptor {
 			}
 		}
 		return invocation.proceed();
+	}
+
+	private void wrapperEwEncrypt(AbstractWrapper<Object, ?, ?> wrapper) {
+		Map<String, Object> paramNameValuePairs=wrapper.getParamNameValuePairs();
+		// 实体类型检测
+		Class<Object> entityClass = wrapper.getEntityClass();
+		Assert.notNull(entityClass, "当前实体类型信息未找到,无法寻找加密注解");
+		// 获取where条件片段 提出属性映射
+		MergeSegments expression = wrapper.getExpression();
+		NormalSegmentList normalSegmentList = expression.getNormal();
+		// (c_list_id = #{ew.paramNameValuePairs.MPGENVAL1} AND c_custtype
+		// LIKE #{ew.paramNameValuePairs.MPGENVAL2})
+		String normalSqlSegment = normalSegmentList.getSqlSegment();
+		// 解析 where条件sql 获取多值map 字段名->[随机条件名]
+		MultiValueMap<String, String> mpMap = MpJsqlParserExt.parseSql(normalSqlSegment);
+
+		if (wrapper instanceof Update) {
+			// set语句
+			List<String> updateFieldValueList = (List<String>) ReflectUtil.getFieldValue(wrapper,
+					"sqlSet");
+
+			if (CollectionUtil.isNotEmpty(updateFieldValueList)) {
+				for (String val : updateFieldValueList) {
+					String[] pair = val.replace("#{ew.paramNameValuePairs.", "").replace("}", "")
+							.split("=");
+					mpMap.add(pair[0], pair[1]);
+				}
+			}
+		}
+		// 总MPGENVAL数量
+		long count = mpMap.values().stream().mapToInt(List::size).sum();
+
+		Assert.isTrue(paramNameValuePairs.size() == count, "字段值MPGENVAL数量不匹配,参数数量:{},sql提取出数量:{}",
+				paramNameValuePairs.size(), count);
+		fieldEncryptHelper.encrypt(entityClass, mpMap, paramNameValuePairs);
 	}
 
 	private List<String> searchParamAnnotation(ParameterHandler parameterHandler) throws ClassNotFoundException {
