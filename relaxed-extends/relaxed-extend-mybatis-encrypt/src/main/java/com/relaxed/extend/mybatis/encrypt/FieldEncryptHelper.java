@@ -1,5 +1,6 @@
 package com.relaxed.extend.mybatis.encrypt;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -32,10 +33,12 @@ import java.util.Objects;
 @Slf4j
 public class FieldEncryptHelper {
 
-	private final FieldEncryptor fieldEncryptor;
+	private static FieldSecurityHolder FILED_SEC_HOLDER = FieldSecurityHolder.INSTANCE;
 
 	public FieldEncryptor getFieldEncryptor() {
-		return fieldEncryptor;
+		FieldEncryptor encryptor = FILED_SEC_HOLDER.getByType(FieldSecurityProperties.AES.SEC_FLAG);
+		Assert.notNull(encryptor, "加密算法:{},不能为空", FieldSecurityProperties.AES.SEC_FLAG);
+		return encryptor;
 	}
 
 	/** 对EncryptField注解进行加密处理 */
@@ -99,11 +102,11 @@ public class FieldEncryptHelper {
 			String logText = null, newValue = null;
 			if (encrypt) {
 				logText = "encrypt";
-				newValue = fieldEncryptor.encrypt(oldValue);
+				newValue = getFieldEncryptor().encrypt(oldValue);
 			}
 			else {
 				logText = "decrypt";
-				newValue = fieldEncryptor.decrypt(oldValue);
+				newValue = getFieldEncryptor().decrypt(oldValue);
 			}
 
 			log.info("{} success[{}=>{}]. before:{}, after:{}", logText, field.getDeclaringClass().getName(),
@@ -145,7 +148,7 @@ public class FieldEncryptHelper {
 				if (StringUtils.isBlank(oldValue)) {
 					continue;
 				}
-				String newValue = fieldEncryptor.encrypt(oldValue);
+				String newValue = getFieldEncryptor().encrypt(oldValue);
 				log.info("{} success[{}=>{}]. before:{}, after:{}", "encrypt", field.getDeclaringClass().getName(),
 						field.getName(), oldValue, newValue);
 				paramNameValuePairs.put(mapKey, newValue);

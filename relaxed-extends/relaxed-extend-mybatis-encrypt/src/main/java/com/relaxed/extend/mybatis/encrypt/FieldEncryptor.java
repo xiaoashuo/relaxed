@@ -9,6 +9,12 @@ package com.relaxed.extend.mybatis.encrypt;
  */
 public interface FieldEncryptor {
 
+	/**
+	 * 加密算法类型
+	 * @return
+	 */
+	String secType();
+
 	/** 对数据进行加密 */
 	String encrypt(String value);
 
