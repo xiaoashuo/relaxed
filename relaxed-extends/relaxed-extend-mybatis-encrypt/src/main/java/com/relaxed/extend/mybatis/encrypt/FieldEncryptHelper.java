@@ -35,9 +35,12 @@ public class FieldEncryptHelper {
 
 	private static FieldSecurityHolder FILED_SEC_HOLDER = FieldSecurityHolder.INSTANCE;
 
+	private final FieldSecurityProperties fieldSecurityProperties;
+
 	public FieldEncryptor getFieldEncryptor() {
-		FieldEncryptor encryptor = FILED_SEC_HOLDER.getByType(FieldSecurityProperties.AES.SEC_FLAG);
-		Assert.notNull(encryptor, "加密算法:{},不能为空", FieldSecurityProperties.AES.SEC_FLAG);
+		String defSec = fieldSecurityProperties.getDefSec();
+		FieldEncryptor encryptor = FILED_SEC_HOLDER.getByType(defSec);
+		Assert.notNull(encryptor, "加密算法:{},不能为空", defSec);
 		return encryptor;
 	}
 
