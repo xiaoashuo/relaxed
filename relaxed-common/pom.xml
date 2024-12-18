@@ -16,7 +16,7 @@
         <module>relaxed-common-model</module>
         <module>relaxed-common-core</module>
         <module>relaxed-common-desensitize</module>
-        <module>relaxed-common-datasource</module>
+
         <module>relaxed-common-tenant</module>
         <module>relaxed-common-idempotent</module>
 

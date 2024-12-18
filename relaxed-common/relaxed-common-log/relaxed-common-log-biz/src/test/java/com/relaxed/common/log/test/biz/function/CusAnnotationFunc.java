@@ -1,9 +1,8 @@
-package com.relaxed.common.log.test.biz.function;
+package com.relaxed.test.log.biz.function;
 
 import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.biz.annotation.LogFunc;
 import com.relaxed.common.log.biz.constant.LogRecordConstants;
-import com.relaxed.common.log.biz.context.LogRecordContext;
 import com.relaxed.common.log.biz.model.AttributeModel;
 import com.relaxed.common.log.biz.model.DiffMeta;
 import com.relaxed.common.log.biz.service.IDataHandler;

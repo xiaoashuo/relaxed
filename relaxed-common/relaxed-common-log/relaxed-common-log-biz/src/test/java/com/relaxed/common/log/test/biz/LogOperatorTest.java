@@ -1,6 +1,5 @@
 package com.relaxed.common.log.test.biz;
 
-import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.IdUtil;
 
 import cn.hutool.core.util.RandomUtil;
@@ -15,10 +14,10 @@ import com.relaxed.common.log.biz.service.IFieldHandler;
 import com.relaxed.common.log.biz.service.impl.DefaultDataHandler;
 import com.relaxed.common.log.biz.service.impl.DefaultFieldHandler;
 import com.relaxed.common.log.biz.util.LogClassUtil;
-import com.relaxed.common.log.test.biz.domain.LogUser;
-import com.relaxed.common.log.test.biz.domain.TestData;
-import com.relaxed.common.log.test.biz.service.BizLogService;
-import com.relaxed.common.log.test.biz.service.UserAService;
+import com.relaxed.test.log.biz.domain.LogUser;
+import com.relaxed.test.log.biz.domain.TestData;
+import com.relaxed.test.log.biz.service.BizLogService;
+import com.relaxed.test.log.biz.service.UserAService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.javers.common.collections.Lists;

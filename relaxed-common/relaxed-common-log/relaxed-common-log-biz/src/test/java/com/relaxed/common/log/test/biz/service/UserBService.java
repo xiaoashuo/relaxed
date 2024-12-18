@@ -1,8 +1,8 @@
-package com.relaxed.common.log.test.biz.service;
+package com.relaxed.test.log.biz.service;
 
 import com.relaxed.common.log.biz.annotation.BizLog;
 import com.relaxed.common.log.biz.context.LogRecordContext;
-import com.relaxed.common.log.test.biz.domain.LogUser;
+import com.relaxed.test.log.biz.domain.LogUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

@@ -1,9 +1,9 @@
-package com.relaxed.common.log.test.biz.spel;
+package com.relaxed.test.log.biz.spel;
 
 import com.relaxed.common.log.biz.discover.LogRecordFuncDiscover;
 import com.relaxed.common.log.biz.model.FuncMeta;
 import com.relaxed.common.log.biz.spel.LogMethodResolver;
-import com.relaxed.common.log.test.biz.domain.LogUser;
+import com.relaxed.test.log.biz.domain.LogUser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 

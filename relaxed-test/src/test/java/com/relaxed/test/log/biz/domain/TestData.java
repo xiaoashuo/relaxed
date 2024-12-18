@@ -1,4 +1,4 @@
-package com.relaxed.common.log.test.biz.domain;
+package com.relaxed.test.log.biz.domain;
 
 import com.relaxed.common.log.biz.annotation.LogDiffTag;
 import com.relaxed.common.log.biz.extractor.EntityTypeExtractor;

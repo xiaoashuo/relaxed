@@ -1,4 +1,4 @@
-package com.relaxed.common.log.test.biz.function;
+package com.relaxed.test.log.biz.function;
 
 import cn.hutool.json.JSONUtil;
 import com.relaxed.common.log.biz.annotation.LogFunc;

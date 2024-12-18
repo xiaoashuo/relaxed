@@ -166,7 +166,7 @@
             <!--多数据源-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-common-datasource</artifactId>
+                <artifactId>relaxed-dynamic-datasource</artifactId>
                 <version>${revision}</version>
             </dependency>
 
