@@ -33,6 +33,10 @@
         </dependency>
         <dependency>
             <groupId>com.lovecyy</groupId>
+            <artifactId>relaxed-common-tenant</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-s3</artifactId>
         </dependency>
 

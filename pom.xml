@@ -26,6 +26,7 @@
         <module>relaxed-starters</module>
         <module>relaxed-dependencies</module>
         <module>database/relaxed-dynamic-datasource</module>
+        <module>database/relaxed-common-tenant</module>
         <module>oss/relaxed-spring-boot-starter-s3</module>
         <module>log/relaxed-common-log</module>
         <module>log/relaxed-spring-boot-starter-log</module>

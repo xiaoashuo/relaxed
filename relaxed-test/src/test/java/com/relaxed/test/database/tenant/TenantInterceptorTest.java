@@ -1,4 +1,4 @@
-package com.relaxed.common.tenant.interceptor;
+package com.relaxed.test.database.tenant;
 
 import com.relaxed.common.tenant.core.Tenant;
 import com.relaxed.common.tenant.core.schema.SchemaHandler;
