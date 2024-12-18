@@ -3,7 +3,7 @@ package com.relaxed.common.xss.toolkit;
 import cn.hutool.core.util.StrUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 /**
  * @author Yakir
@@ -17,9 +17,10 @@ public final class HtmlKit {
 	private HtmlKit() {
 	}
 
-	private static final Whitelist WHITELIST = Whitelist.relaxed();
+	private static final Safelist WHITELIST = Safelist.relaxed();
 
 	static {
+
 		// 富文本编辑时一些样式是使用 style 来进行实现的
 		// 比如红色字体 style="color:red;", 所以需要给所有标签添加 style 属性
 		// 注意：style 属性会有注入风险 <img STYLE="background-image:url(javascript:alert('XSS'))">
@@ -82,7 +83,7 @@ public final class HtmlKit {
 	 * 清理不安全的 Html 标签。保留换行符
 	 * </p>
 	 * 白名单配置参见：{@link HtmlKit#WHITELIST}
-	 * @see Whitelist#relaxed()
+	 * @see Safelist#relaxed()
 	 * @param bodyHtml HTML 文本
 	 * @return 清理后的 HTML 文本
 	 */
@@ -98,7 +99,7 @@ public final class HtmlKit {
 	 * @param whitelist 白名单配置
 	 * @return 清理后的 HTML 文本
 	 */
-	public static String cleanUnSafe(String bodyHtml, Whitelist whitelist) {
+	public static String cleanUnSafe(String bodyHtml, Safelist whitelist) {
 		return Jsoup.clean(bodyHtml, "", whitelist, new Document.OutputSettings().prettyPrint(false));
 	}
 
