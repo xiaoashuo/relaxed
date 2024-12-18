@@ -272,6 +272,23 @@ public class OssClient implements DisposableBean {
 		getS3Client().deleteObjects(multiObjectDeleteRequest);
 	}
 
+	public boolean isExist(String path) {
+		try {
+			HeadObjectRequest headObjectRequest = HeadObjectRequest.builder().bucket(bucket).key(path).build();
+			// 发送请求并检查响应
+			HeadObjectResponse response = s3Client.headObject(headObjectRequest);
+			return response != null; // 如果存在，响应不为 null
+		}
+		catch (S3Exception e) {
+			if (e.awsErrorDetails().errorCode().equals("NoSuchKey")) {
+				return false; // 文件不存在
+			}
+			else {
+				throw e; // 其他 S3 错误
+			}
+		}
+	}
+
 	/**
 	 * copy 对象
 	 * @author yakir
