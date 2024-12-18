@@ -17,12 +17,12 @@
          <module>relaxed-spring-boot-starter-dingtalk</module>
          <module>relaxed-spring-boot-starter-mail</module>
          <module>relaxed-spring-boot-starter-job</module>
-         <module>relaxed-spring-boot-starter-log</module>
+
          <module>relaxed-spring-boot-starter-xss</module>
          <module>relaxed-spring-boot-starter-cache</module>
          <module>relaxed-spring-boot-starter-easyexcel</module>
          <module>relaxed-spring-boot-starter-secret</module>
-         <module>relaxed-spring-boot-starter-oss</module>
+
          <module>relaxed-spring-boot-starter-web</module>
          <module>relaxed-spring-boot-starter-exception</module>
          <module>relaxed-spring-boot-starter-download</module>

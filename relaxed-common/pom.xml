@@ -24,7 +24,7 @@
         <module>relaxed-common-cache</module>
 
         <module>relaxed-common-util</module>
-        <module>relaxed-common-log</module>
+<!--        <module>relaxed-common-log</module>-->
         <module>relaxed-common-exception</module>
         <module>relaxed-common-translation</module>
         <module>relaxed-common-http</module>
