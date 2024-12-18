@@ -3,32 +3,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.lovecyy</groupId>
-        <artifactId>relaxed-parent</artifactId>
+        <artifactId>relaxed-dependencies</artifactId>
         <version>${revision}</version>
-        <relativePath>./relaxed-parent/pom.xml</relativePath>
+        <relativePath>../relaxed-dependencies/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>relaxed</artifactId>
+    <artifactId>relaxed-parent</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
-    <name>relaxed</name>
+    <name>relaxed-parent</name>
 
 
 
     <url>https://github.com/xiaoashuo/relaxed</url>
     <description>项目基本脚手架</description>
 
-    <modules>
-        <module>relaxed-admin</module>
-        <module>relaxed-oauth2</module>
-        <module>relaxed-common</module>
-        <module>relaxed-extends</module>
-        <module>relaxed-starters</module>
-        <module>relaxed-dependencies</module>
-        <module>relaxed-dependencies</module>
-        <module>relaxed-poi-tl</module>
-        <module>relaxed-test</module>
-    </modules>
 
 
 
@@ -43,7 +32,26 @@
         <mapstruct-processor.version>1.4.2.Final</mapstruct-processor.version>
 
     </properties>
+    <dependencies>
+        <!-- bean 转换工具类 -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
+        <!-- lombok 代码简化处理器 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 
 
 

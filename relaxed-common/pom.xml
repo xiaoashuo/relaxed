@@ -29,7 +29,7 @@
         <module>relaxed-common-translation</module>
         <module>relaxed-common-http</module>
         <module>relaxed-common-holidays</module>
-<!--        <module>relaxed-common-i18n</module>-->
+        <module>relaxed-common-poi</module>
     </modules>
 
 

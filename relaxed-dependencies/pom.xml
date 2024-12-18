@@ -31,10 +31,12 @@
         <jsch.version>0.1.54</jsch.version>
         <easyexcel.version>3.3.3</easyexcel.version>
         <poi.version>5.2.2</poi.version>
+        <poi-tl.version>1.11.1</poi-tl.version>
+        <poi-tl-ext.version>0.4.18-poi5</poi-tl-ext.version>
         <itext-font-asian.version>7.1.13</itext-font-asian.version>
         <itext-html-pdf.version>3.0.2</itext-html-pdf.version>
         <velocity.version>1.7</velocity.version>
-        <jsoup.version>1.13.1</jsoup.version>
+        <jsoup.version>1.15.3</jsoup.version>
         <groovy.version>3.0.9</groovy.version>
         <tensorflow.version>1.15.0</tensorflow.version>
         <ip2region.version>1.7.2</ip2region.version>
@@ -223,6 +225,11 @@
             <dependency>
                 <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-common-holidays</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lovecyy</groupId>
+                <artifactId>relaxed-poi-tl</artifactId>
                 <version>${revision}</version>
             </dependency>
             <!--扩展mybatis -->
@@ -450,6 +457,16 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.deepoove</groupId>
+                <artifactId>poi-tl</artifactId>
+                <version>${poi-tl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.draco1023</groupId>
+                <artifactId>poi-tl-ext</artifactId>
+                <version>${poi-tl-ext.version}</version>
             </dependency>
             <!--模板引擎-->
             <dependency>
