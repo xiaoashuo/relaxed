@@ -38,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>com.lovecyy</groupId>
-            <artifactId>relaxed-extend-mybatis-plus</artifactId>
+            <artifactId>relaxed-mybatis-plus</artifactId>
         </dependency>
 
         <dependency>

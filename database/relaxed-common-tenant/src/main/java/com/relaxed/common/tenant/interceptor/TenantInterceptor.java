@@ -54,7 +54,7 @@ public class TenantInterceptor implements Interceptor {
 		if (enableSchema) {
 			String currentSchema = schemaHandler.getCurrentSchema();
 			// 忽略指定方法
-			if (currentSchema==null||"".equals(currentSchema) || schemaHandler.ignore(currentSchema)
+			if (currentSchema == null || "".equals(currentSchema) || schemaHandler.ignore(currentSchema)
 					|| schemaHandler.ignoreMethod(mappedStatementId)) {
 				tenant.setSchema(false);
 			}

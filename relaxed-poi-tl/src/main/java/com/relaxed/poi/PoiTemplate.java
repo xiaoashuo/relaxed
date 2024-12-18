@@ -11,7 +11,6 @@ import com.relaxed.poi.exception.WordException;
 import com.relaxed.poi.funcs.RenderFunction;
 import com.relaxed.poi.funcs.WordContentRender;
 
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;

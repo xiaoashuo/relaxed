@@ -1,6 +1,5 @@
 package com.relaxed.test.poi;
 
-
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import com.deepoove.poi.data.AttachmentType;
@@ -45,80 +44,73 @@ import java.util.List;
 public class PoiTest {
 
 	public static void main(String[] args) throws IOException {
-		//模板文件
+		// 模板文件
 		File file = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "template\\poi\\Poi测试模板.docx");
-		//附件
-		File attentmentFile = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "template\\poi\\attentment.docx");
-		//输出文件
-		File destDir= ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "template\\poi");
+		// 附件
+		File attentmentFile = ResourceUtils
+				.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "template\\poi\\attentment.docx");
+		// 输出文件
+		File destDir = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "template\\poi");
 
-		//图片文件
-		File imgFile= ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "template\\poi\\test1.jpg");
+		// 图片文件
+		File imgFile = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "template\\poi\\test1.jpg");
 
 		String templatePath = file.getAbsolutePath();
 
-
 		File parentFileDir = FileUtil.mkdir(destDir + "\\dest");
-		String destPath = FileUtil.file(parentFileDir,"test_" + RandomUtils.nextInt() + ".docx").getAbsolutePath();
+		String destPath = FileUtil.file(parentFileDir, "test_" + RandomUtils.nextInt() + ".docx").getAbsolutePath();
 
 		PoiTemplate poiTemplate = PoiTemplate.INSTANCE;
 		InputStream inputStream = FileUtils.openInputStream(file);
 		List<ElementMeta> elementMetas = PoiUtil.templateElement(inputStream);
 		System.out.println("模板字段数据\n" + elementMetas);
 
-		 // 普通文本
-		 TextContentData textContentData =
-		 PoiDataHelper.Text.builder().labelName("username").content("张三").build();
-		 // 超链接
-		 TextContentData genderTextContentData =
-		 PoiDataHelper.Text.builder().labelName("gender").content("女")
-		 .url("https://www.baidu.com").build();
-		 // 自定义样式
-		 TextContentData ageTextContentData =
-		 PoiDataHelper.Text.builder().labelName("age")
-		 .custom(Texts.of("Sayi").color("00FF00").create()).build();
-		 // 图片
-		 PicContentData picContentData =
-		 PoiDataHelper.PICTURE.builder().labelName("image").width(100).height(100)
-		 .file(imgFile).build();
-		 // 表格
-		 TableContentData tableContentData =
-		 PoiDataHelper.TABLE.builder().labelName("table").headerStyle()
-		 .bgColor("4472C4").textColor("FFFFFF").center().build().addContent(Arrays.asList("科教1班",
-		 "1"))
-		 .addContent(Arrays.asList("幼儿3班", "6")).addContent(Arrays.asList("科教1班", "1"))
-		 .headers(Arrays.asList("班级", "排名")).build();
-		 // 列表
-		 ListContentData listContentData =
-		 PoiDataHelper.LIST.builder().labelName("list").addContent("排序1")
-		 .addContent("排序2").addContent("排序3").addContent("排序4").build();
-		 // 模板列表
-		 List<TestData> loopDatas = new ArrayList<>();
-		 loopDatas.add(mockTestLoopData());
-		 loopDatas.add(mockTestLoopData());
-		 LoopRowTableContentData loopRowTableContentData =
-		 PoiDataHelper.LOOP_ROW_TABLE.<TestData>builder()
-		 .labelName("policyDetails").prefix("[").suffix("]").dataStartRow(2).dataList(loopDatas).build();
-		 //附件
- 		 AttachmentContentData attachmentContentData =
-		 PoiDataHelper.ATTACHMENT.builder().labelName("attentment")
-		 .attachmentType(AttachmentType.DOCX).file(attentmentFile).build();
+		// 普通文本
+		TextContentData textContentData = PoiDataHelper.Text.builder().labelName("username").content("张三").build();
+		// 超链接
+		TextContentData genderTextContentData = PoiDataHelper.Text.builder().labelName("gender").content("女")
+				.url("https://www.baidu.com").build();
+		// 自定义样式
+		TextContentData ageTextContentData = PoiDataHelper.Text.builder().labelName("age")
+				.custom(Texts.of("Sayi").color("00FF00").create()).build();
+		// 图片
+		PicContentData picContentData = PoiDataHelper.PICTURE.builder().labelName("image").width(100).height(100)
+				.file(imgFile).build();
+		// 表格
+		TableContentData tableContentData = PoiDataHelper.TABLE.builder().labelName("table").headerStyle()
+				.bgColor("4472C4").textColor("FFFFFF").center().build().addContent(Arrays.asList("科教1班", "1"))
+				.addContent(Arrays.asList("幼儿3班", "6")).addContent(Arrays.asList("科教1班", "1"))
+				.headers(Arrays.asList("班级", "排名")).build();
+		// 列表
+		ListContentData listContentData = PoiDataHelper.LIST.builder().labelName("list").addContent("排序1")
+				.addContent("排序2").addContent("排序3").addContent("排序4").build();
+		// 模板列表
+		List<TestData> loopDatas = new ArrayList<>();
+		loopDatas.add(mockTestLoopData());
+		loopDatas.add(mockTestLoopData());
+		LoopRowTableContentData loopRowTableContentData = PoiDataHelper.LOOP_ROW_TABLE.<TestData>builder()
+				.labelName("policyDetails").prefix("[").suffix("]").dataStartRow(2).dataList(loopDatas).build();
+		// 附件
+		AttachmentContentData attachmentContentData = PoiDataHelper.ATTACHMENT.builder().labelName("attentment")
+				.attachmentType(AttachmentType.DOCX).file(attentmentFile).build();
 
 		HtmlContentData htmlContent = PoiDataHelper.HTML.builder().labelName("htmlContent")
 				.content("<p style='color:red'>测试</p>").build();
-		//自定义标题样式
-//		HtmlRenderConfig htmlRenderConfig = extHtmlConfig();
-//		HtmlContentData htmlContent = PoiDataHelper.HTML.builder().labelName("htmlContent")
-//				.content("<p style='color:red'>测试</p>").htmlRenderConfig(htmlRenderConfig).build();
+		// 自定义标题样式
+		// HtmlRenderConfig htmlRenderConfig = extHtmlConfig();
+		// HtmlContentData htmlContent =
+		// PoiDataHelper.HTML.builder().labelName("htmlContent")
+		// .content("<p
+		// style='color:red'>测试</p>").htmlRenderConfig(htmlRenderConfig).build();
 		List<LabelData> contents = new ArrayList<>();
-		 contents.add(textContentData);
-		 contents.add(genderTextContentData);
-		 contents.add(ageTextContentData);
-		 contents.add(picContentData);
-		 contents.add(tableContentData);
-		 contents.add(listContentData);
-		 contents.add(loopRowTableContentData);
-		 contents.add(attachmentContentData);
+		contents.add(textContentData);
+		contents.add(genderTextContentData);
+		contents.add(ageTextContentData);
+		contents.add(picContentData);
+		contents.add(tableContentData);
+		contents.add(listContentData);
+		contents.add(loopRowTableContentData);
+		contents.add(attachmentContentData);
 		contents.add(htmlContent);
 		// PoiGlobalConfig.setConfigureSupplier(new ConfigureSupplier() {
 		// @Override
@@ -130,23 +122,24 @@ public class PoiTest {
 		// });
 
 		PoiUtil.renderWord(new File(templatePath), new File(destPath), contents);
-		log.info("渲染模板路径:{} \n输出路径:{}",templatePath,destPath);
-
+		log.info("渲染模板路径:{} \n输出路径:{}", templatePath, destPath);
 
 	}
+
 	public static HtmlRenderConfig extHtmlConfig() {
-		HtmlRenderConfig config=new HtmlRenderConfig();
+		HtmlRenderConfig config = new HtmlRenderConfig();
 		List<ElementRenderer> customRenderers = config.getCustomRenderers();
 
-		List<ElementRenderer> ext=new ArrayList<>();
+		List<ElementRenderer> ext = new ArrayList<>();
 		ext.add(new CustomHeaderRender());
-		if (customRenderers!=null){
+		if (customRenderers != null) {
 			ext.addAll(customRenderers);
 		}
 
 		config.setCustomRenderers(ext);
 		return config;
 	}
+
 	private static TestData mockTestLoopData() {
 		TestData testData = new TestData();
 		testData.setSerialNumber("test_" + RandomUtils.nextInt() + "");

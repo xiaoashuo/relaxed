@@ -3,7 +3,6 @@ package com.relaxed.poi.funcs;
 import com.deepoove.poi.config.Configure;
 import com.relaxed.poi.domain.LabelData;
 
-
 /**
  * @author Yakir
  * @Topic WordContentRender

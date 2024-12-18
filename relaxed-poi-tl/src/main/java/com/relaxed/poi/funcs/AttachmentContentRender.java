@@ -7,7 +7,6 @@ import com.deepoove.poi.util.ByteUtils;
 import com.relaxed.poi.domain.AttachmentContentData;
 import com.relaxed.poi.enums.ContentTypeEnum;
 
-
 /**
  * @author Yakir
  * @Topic TextContentRender

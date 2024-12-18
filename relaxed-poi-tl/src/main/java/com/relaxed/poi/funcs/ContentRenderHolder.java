@@ -1,7 +1,5 @@
 package com.relaxed.poi.funcs;
 
-
-
 import com.relaxed.poi.domain.LabelData;
 import com.relaxed.poi.enums.ContentTypeEnum;
 

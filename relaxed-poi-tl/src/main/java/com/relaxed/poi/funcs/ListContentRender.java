@@ -6,7 +6,6 @@ import com.deepoove.poi.data.TextRenderData;
 import com.relaxed.poi.domain.ListContentData;
 import com.relaxed.poi.enums.ContentTypeEnum;
 
-
 /**
  * @author Yakir
  * @Topic TextContentRender

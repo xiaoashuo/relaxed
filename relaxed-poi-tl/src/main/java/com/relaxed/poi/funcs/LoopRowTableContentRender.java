@@ -5,7 +5,6 @@ import com.relaxed.poi.domain.LoopRowTableContentData;
 import com.relaxed.poi.enums.ContentTypeEnum;
 import com.relaxed.poi.plugins.LoopRowTableRenderByHeaderPolicy;
 
-
 import java.util.List;
 
 /**

@@ -4,7 +4,6 @@ import com.deepoove.poi.config.Configure;
 import com.relaxed.poi.funcs.ConfigureSupplier;
 import com.relaxed.poi.funcs.ContentRenderHolder;
 
-
 /**
  * @author Yakir
  * @Topic PolGlobalConfig
