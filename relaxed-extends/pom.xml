@@ -13,9 +13,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>relaxed-extend-mybatis-plus</module>
-        <module>relaxed-extend-mybatis-encrypt</module>
-        <module>relaxed-extend-mybatis</module>
         <module>relaxed-extend-mail</module>
         <module>relaxed-extend-dingtalk</module>
         <module>relaxed-extend-wechat</module>

@@ -27,6 +27,10 @@
         <module>relaxed-dependencies</module>
         <module>database/relaxed-dynamic-datasource</module>
         <module>database/relaxed-common-tenant</module>
+        <module>database/relaxed-mybatis</module>
+        <module>database/relaxed-mybatis-plus</module>
+        <module>database/relaxed-mybatis-plus-encrypt</module>
+        <module>database/relaxed-spring-boot-starter-datascope</module>
         <module>oss/relaxed-spring-boot-starter-s3</module>
         <module>log/relaxed-common-log</module>
         <module>log/relaxed-spring-boot-starter-log</module>

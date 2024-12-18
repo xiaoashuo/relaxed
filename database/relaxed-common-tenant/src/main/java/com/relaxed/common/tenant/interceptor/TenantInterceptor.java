@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.*;
-import org.springframework.util.StringUtils;
 
 import java.sql.Connection;
 import java.util.List;
@@ -55,7 +54,7 @@ public class TenantInterceptor implements Interceptor {
 		if (enableSchema) {
 			String currentSchema = schemaHandler.getCurrentSchema();
 			// 忽略指定方法
-			if (!StringUtils.hasText(currentSchema) || schemaHandler.ignore(currentSchema)
+			if (currentSchema==null||"".equals(currentSchema) || schemaHandler.ignore(currentSchema)
 					|| schemaHandler.ignoreMethod(mappedStatementId)) {
 				tenant.setSchema(false);
 			}

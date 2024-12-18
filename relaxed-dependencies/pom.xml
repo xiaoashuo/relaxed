@@ -235,18 +235,18 @@
             <!--扩展mybatis -->
             <dependency>
                 <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-extend-mybatis</artifactId>
+                <artifactId>relaxed-mybatis</artifactId>
                 <version>${revision}</version>
             </dependency>
             <!--扩展mybatis plus-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-extend-mybatis-plus</artifactId>
+                <artifactId>relaxed-mybatis-plus</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-extend-mybatis-encrypt</artifactId>
+                <artifactId>relaxed-mybatis-plus-encrypt</artifactId>
                 <version>${revision}</version>
             </dependency>
             <!--扩展Mail-->

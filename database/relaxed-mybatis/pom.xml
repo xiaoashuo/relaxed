@@ -6,10 +6,11 @@
 
     <parent>
         <groupId>com.lovecyy</groupId>
-        <artifactId>relaxed-extends</artifactId>
+        <artifactId>relaxed-parent</artifactId>
         <version>${revision}</version>
+        <relativePath>../../relaxed-parent/pom.xml</relativePath>
     </parent>
-    <artifactId>relaxed-extend-mybatis</artifactId>
+    <artifactId>relaxed-mybatis</artifactId>
 
     <dependencies>
 
