@@ -6,12 +6,15 @@
 
     <parent>
         <groupId>com.lovecyy</groupId>
-        <artifactId>relaxed-starters</artifactId>
+        <artifactId>relaxed-parent</artifactId>
         <version>${revision}</version>
+        <relativePath>../../relaxed-parent/pom.xml</relativePath>
     </parent>
     <artifactId>relaxed-spring-boot-starter-job</artifactId>
 
     <dependencies>
+
+
         <dependency>
             <groupId>com.xuxueli</groupId>
             <artifactId>xxl-job-core</artifactId>
@@ -19,6 +22,12 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+        <!-- Maven -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <!-- SpringBoot项目中一般不需要指定版本，它会自动管理版本 -->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

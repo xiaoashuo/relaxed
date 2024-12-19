@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 其他已有配置 -->
+
+    <!-- 添加XXL-JOB日志Appender -->
+    <appender name="XXL-JOB" class="com.relaxed.common.job.XxlJobLogAppender">
+        <logPrefix>XXL-</logPrefix>
+        <minLevel>INFO</minLevel>
+    </appender>
+
+    <root level="INFO">
+
+        <!-- 添加XXL-JOB appender -->
+        <appender-ref ref="XXL-JOB"/>
+    </root>
+</configuration>

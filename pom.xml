@@ -19,12 +19,16 @@
     <description>项目基本脚手架</description>
 
     <modules>
+
+        <module>relaxed-dependencies</module>
+        <module>relaxed-parent</module>
+
         <module>relaxed-admin</module>
         <module>relaxed-oauth2</module>
         <module>relaxed-common</module>
         <module>relaxed-extends</module>
         <module>relaxed-starters</module>
-        <module>relaxed-dependencies</module>
+
         <module>database/relaxed-dynamic-datasource</module>
         <module>database/relaxed-common-tenant</module>
         <module>database/relaxed-mybatis</module>
@@ -34,6 +38,7 @@
         <module>oss/relaxed-spring-boot-starter-s3</module>
         <module>log/relaxed-common-log</module>
         <module>log/relaxed-spring-boot-starter-log</module>
+        <module>job/relaxed-spring-boot-starter-job</module>
         <module>relaxed-poi-tl</module>
         <module>relaxed-test</module>
     </modules>

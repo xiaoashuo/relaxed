@@ -12,6 +12,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @ConfigurationProperties(prefix = "xxl.job")
 public class XxlJobProperties {
 
+
 	@NestedConfigurationProperty
 	private XxlAdminProperties admin = new XxlAdminProperties();
 

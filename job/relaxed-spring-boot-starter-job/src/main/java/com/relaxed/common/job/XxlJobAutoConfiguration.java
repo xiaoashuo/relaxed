@@ -2,10 +2,12 @@ package com.relaxed.common.job;
 
 import com.relaxed.common.job.properties.XxlExecutorProperties;
 import com.relaxed.common.job.properties.XxlJobProperties;
+import com.relaxed.common.job.trace.TraceXxlJobSpringExecutor;
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author lengleng
@@ -18,9 +20,9 @@ import org.springframework.context.annotation.Bean;
 public class XxlJobAutoConfiguration {
 
 	@Bean
-	public XxlJobSpringExecutor xxlJobSpringExecutor(XxlJobProperties xxlJobProperties) {
+	public TraceXxlJobSpringExecutor xxlJobSpringExecutor(XxlJobProperties xxlJobProperties) {
 		log.info(">>>>>>>>>>> xxl-job config init.");
-		XxlJobSpringExecutor xxlJobSpringExecutor = new XxlJobSpringExecutor();
+		TraceXxlJobSpringExecutor xxlJobSpringExecutor = new TraceXxlJobSpringExecutor();
 		xxlJobSpringExecutor.setAdminAddresses(xxlJobProperties.getAdmin().getAddresses());
 		XxlExecutorProperties executorProperties = xxlJobProperties.getExecutor();
 		xxlJobSpringExecutor.setAppname(executorProperties.getAppname());
