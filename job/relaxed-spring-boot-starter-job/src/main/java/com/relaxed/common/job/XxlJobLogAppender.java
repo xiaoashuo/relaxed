@@ -7,9 +7,11 @@ import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.AppenderBase;
 import com.xxl.job.core.log.XxlJobLogger;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * @author Yakir
@@ -52,7 +54,12 @@ public class XxlJobLogAppender extends AppenderBase<ILoggingEvent> {
 
 						// 添加日志级别
 						fullMessage.append("[").append(event.getLevel()).append("] ");
-
+						// 添加traceId
+						String traceId = Optional.ofNullable(event.getMDCPropertyMap()).map(item -> item.get("traceId"))
+								.orElse("");
+						if (StringUtils.hasText(traceId)) {
+							fullMessage.append("[").append(traceId).append("] ");
+						}
 						// 添加日志内容
 						fullMessage.append(
 								message.startsWith(logPrefix) ? message.substring(logPrefix.length()) : message);
