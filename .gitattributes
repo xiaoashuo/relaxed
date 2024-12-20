@@ -1,7 +1,10 @@
 *.js linguist-language=java
 *.html linguist-language=java
-
+# 换行符配置
 * text auto
+*.sh text eol=lf
+*.bat text eol=crlf
+#二进制文件
 *.docx binary
 *.jpg binary
 *.png binary
