@@ -2,6 +2,12 @@
 *.html linguist-language=java
 
 * text auto
-
+*.docx binary
+*.jpg binary
+*.png binary
+*.gif binary
+*.doc binary
+*.docx binary
+*.pdf binary
 # 强制换行符为 LF
 # * text eol=lf
