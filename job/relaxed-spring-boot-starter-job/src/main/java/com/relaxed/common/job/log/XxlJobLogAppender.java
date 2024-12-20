@@ -1,4 +1,4 @@
-package com.relaxed.common.job;
+package com.relaxed.common.job.log;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -16,7 +16,7 @@ import java.util.Optional;
 /**
  * @author Yakir
  * @Topic XxlJobLogAppender
- * @Description
+ * @Description logback https://logback.qos.ch/manual/appenders.html
  * @date 2024/12/18 15:59
  * @Version 1.0
  */

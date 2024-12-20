@@ -12,6 +12,8 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @ConfigurationProperties(prefix = "xxl.job")
 public class XxlJobProperties {
 
+	@NestedConfigurationProperty
+	private XxlLogProperties log = new XxlLogProperties();
 
 	@NestedConfigurationProperty
 	private XxlAdminProperties admin = new XxlAdminProperties();

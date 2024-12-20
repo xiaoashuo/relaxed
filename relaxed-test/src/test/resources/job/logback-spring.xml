@@ -78,7 +78,7 @@
         </filter>
     </appender>
     <!-- 添加XXL-JOB日志Appender -->
-    <appender name="XXL-JOB" class="com.relaxed.common.job.XxlJobLogAppender">
+    <appender name="XXL-JOB" class="com.relaxed.common.job.log.XxlJobLogAppender">
         <logPrefix>XXL-</logPrefix>
         <minLevel>INFO</minLevel>
     </appender>
