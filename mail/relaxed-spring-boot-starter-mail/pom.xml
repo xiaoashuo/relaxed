@@ -6,9 +6,11 @@
 
     <parent>
         <groupId>com.lovecyy</groupId>
-        <artifactId>relaxed-starters</artifactId>
+        <artifactId>relaxed-parent</artifactId>
         <version>${revision}</version>
+        <relativePath>../../relaxed-parent/pom.xml</relativePath>
     </parent>
+
     <artifactId>relaxed-spring-boot-starter-mail</artifactId>
 
     <dependencies>

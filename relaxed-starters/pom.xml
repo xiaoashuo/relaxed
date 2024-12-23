@@ -15,7 +15,7 @@
     <modules>
          <module>relaxed-spring-boot-starter-sftp</module>
          <module>relaxed-spring-boot-starter-dingtalk</module>
-         <module>relaxed-spring-boot-starter-mail</module>
+
 
 
          <module>relaxed-spring-boot-starter-xss</module>
