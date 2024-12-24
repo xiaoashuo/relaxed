@@ -79,7 +79,15 @@ public class TestAccessLogHandler extends AbstractAccessLogHandler<AccessLog> {
 			buildParam.setResult(getResponseBody(request, response, matchResponseKey));
 		}
 
-		String header = getHeader(request);
+		String header = getHeader(request, new ReqHeaderFilter() {
+			@Override
+			public boolean filter(String headerName) {
+				if ("Accept".equals(headerName) || "Content-Type".equals(headerName)) {
+					return true;
+				}
+				return false;
+			}
+		});
 		log.info("\n请求头:\n{}\n请求记录:\n{}", header, convertToAccessLogStr(buildParam));
 
 	}

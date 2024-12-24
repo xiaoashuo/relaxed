@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -52,12 +53,30 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 	}
 
 	protected String getHeader(HttpServletRequest request) {
+		return getHeader(request, headerName -> true);
+	}
+
+	protected interface ReqHeaderFilter {
+
+		/**
+		 * 过滤请求头
+		 * @param headerName
+		 * @return true 提取 false 跳过
+		 */
+		boolean filter(String headerName);
+
+	}
+
+	protected String getHeader(HttpServletRequest request, ReqHeaderFilter reqHeaderFilter) {
 		StringBuilder header = new StringBuilder();
 		header.append("{");
 		Enumeration<String> e = request.getHeaderNames();
 		if (e != null) {
 			while (e.hasMoreElements()) {
 				String name = (String) e.nextElement();
+				if (!reqHeaderFilter.filter(name)) {
+					continue;
+				}
 				String value = request.getHeader(name);
 				header.append(name).append("=").append("[").append(value).append("]").append(", ");
 			}
