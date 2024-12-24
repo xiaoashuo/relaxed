@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestAccessController {
 
 	@GetMapping
-	public String testMethod() {
-		return "Hello, World!";
+	public String testMethod(String username) {
+		return "Hello, World!" + username;
 	}
 
 	@PostMapping("/form")
