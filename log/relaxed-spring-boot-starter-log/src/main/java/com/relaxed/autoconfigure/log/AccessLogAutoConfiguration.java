@@ -46,7 +46,7 @@ public class AccessLogAutoConfiguration {
 		AccessLogFilter accessLogFilter = new AccessLogFilter(logProperties.getAccess(), useAccessLogHandler,
 				defaultRule);
 		FilterRegistrationBean<AccessLogFilter> registrationBean = new FilterRegistrationBean<>(accessLogFilter);
-		registrationBean.setOrder(-10);
+		registrationBean.setOrder(logProperties.getAccess().getOrder());
 		return registrationBean;
 	}
 

@@ -24,6 +24,11 @@ public class LogAccessProperties {
 	private boolean enabled;
 
 	/**
+	 * 过滤器顺序
+	 */
+	private int order = -10;
+
+	/**
 	 * URL规则
 	 */
 	private List<LogAccessRule> urlRules = new ArrayList<>();
