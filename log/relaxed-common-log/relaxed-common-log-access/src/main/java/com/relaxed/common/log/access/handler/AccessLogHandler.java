@@ -27,7 +27,7 @@ public interface AccessLogHandler<T> {
 	 * @param request 请求
 	 * @param response 响应
 	 * @param executionTime 执行时间
-	 * @param throwable 异常
+	 * @param myThrowable 异常
 	 * @param logAccessRule 访问日志规则
 	 */
 	void afterRequest(T buildParam, HttpServletRequest request, HttpServletResponse response, Long executionTime,
