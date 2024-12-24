@@ -40,6 +40,12 @@ public class LogAccessRule {
 		 */
 		private String matchResponseKey;
 
+		/**
+		 * 日志替换文本
+		 */
+
+		private String replaceText = "long content replace...";
+
 	}
 
 	@Data

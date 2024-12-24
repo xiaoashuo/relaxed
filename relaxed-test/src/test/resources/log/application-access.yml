@@ -11,5 +11,15 @@ relaxed:
             includeRequest: true
             includeResponse: true
           fieldFilter:
-            matchRequestKey: username
+            matchRequestKey: username,password
             matchResponseKey: password
+            replaceText: none
+        - urlPattern: /test/log/**/json
+          recordOption:
+            ignore: false
+            includeRequest: true
+            includeResponse: true
+          fieldFilter:
+            matchRequestKey: username,password
+            matchResponseKey: password,username,noMatchKey
+            replaceText: none

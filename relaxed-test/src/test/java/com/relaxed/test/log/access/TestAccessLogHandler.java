@@ -64,30 +64,22 @@ public class TestAccessLogHandler extends AbstractAccessLogHandler<AccessLog> {
 		if (recordOption.isIncludeRequest()) {
 			String matchRequestKey = fieldFilter.getMatchRequestKey();
 			// 获取普通参数
-			String params = getParams(request, matchRequestKey);
+			String params = getParams(request, matchRequestKey, fieldFilter.getReplaceText());
 			buildParam.setReqParams(params);
 			// 非文件上传请求，记录body，用户改密时不记录body
 			// TODO 使用注解控制此次请求是否记录body，更方便个性化定制
 			if (!isMultipartContent(request)) {
-				buildParam.setReqBody(getRequestBody(request, matchRequestKey));
+				buildParam.setReqBody(getRequestBody(request, matchRequestKey, fieldFilter.getReplaceText()));
 
 			}
 		}
 		// 记录响应
 		if (recordOption.isIncludeResponse()) {
 			String matchResponseKey = fieldFilter.getMatchResponseKey();
-			buildParam.setResult(getResponseBody(request, response, matchResponseKey));
+			buildParam.setResult(getResponseBody(request, response, matchResponseKey, fieldFilter.getReplaceText()));
 		}
 
-		String header = getHeader(request, new ReqHeaderFilter() {
-			@Override
-			public boolean filter(String headerName) {
-				if ("Accept".equals(headerName) || "Content-Type".equals(headerName)) {
-					return true;
-				}
-				return false;
-			}
-		});
+		String header = getHeader(request, "Accept", "Content-Type");
 		log.info("\n请求头:\n{}\n请求记录:\n{}", header, convertToAccessLogStr(buildParam));
 
 	}

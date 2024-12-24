@@ -1,5 +1,9 @@
 package com.relaxed.common.log.access.handler;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -14,7 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,29 +36,6 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T> {
-
-	protected String getRequestBody(HttpServletRequest request, String matchingPattern) {
-		String body = null;
-		if (!request.getMethod().equals(HttpMethod.GET.name())) {
-			try {
-				BufferedReader reader = request.getReader();
-				if (reader != null) {
-					body = (String) reader.lines().collect(Collectors.joining(System.lineSeparator()));
-				}
-				if (StringUtils.hasText(body) && StringUtils.hasText(matchingPattern)) {
-					JSONObject reqJsonObj = JSONUtil.parseObj(body);
-					reqJsonObj.putByPath(matchingPattern, "");
-					body = reqJsonObj.toJSONString(0);
-				}
-
-			}
-			catch (Exception var3) {
-				log.error("读取请求体异常：", var3);
-			}
-		}
-
-		return body;
-	}
 
 	protected String getHeader(HttpServletRequest request) {
 		return getHeader(request, headerName -> true);
@@ -67,6 +52,12 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 
 	}
 
+	/**
+	 * 根据过滤器提取请求头
+	 * @param request
+	 * @param reqHeaderFilter
+	 * @return
+	 */
 	protected String getHeader(HttpServletRequest request, ReqHeaderFilter reqHeaderFilter) {
 		StringBuilder header = new StringBuilder();
 		header.append("{");
@@ -87,13 +78,40 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 	}
 
 	/**
+	 * 获取指定范围内请求头
+	 * @param request
+	 * @param headerNames
+	 * @return
+	 */
+	protected String getHeader(HttpServletRequest request, String... headerNames) {
+		Map<String, Integer> headMap = new HashMap<>();
+		for (String headerName : headerNames) {
+			headMap.put(headerName, 1);
+		}
+		return getHeader(request, headerName -> {
+			if (headMap.get(headerName) != null) {
+				return true;
+			}
+			return false;
+		});
+	}
+
+	protected String getResponseBody(HttpServletRequest request, HttpServletResponse response,
+			String matchResponseKey) {
+
+		return getResponseBody(request, response, matchResponseKey, "");
+	}
+
+	/**
 	 * 获取响应体 防止在 {@link RequestContextHolder} 设置内容之前或清空内容之后使用，从而导致获取不到响应体的问题
 	 * @param request 请求信息
 	 * @param response 响应信息
+	 * @param matchResponseKey 匹配key
+	 * @param replaceText 替换文本
 	 * @return responseBody 响应体
 	 */
-	protected String getResponseBody(HttpServletRequest request, HttpServletResponse response,
-			String matchResponseKey) {
+	protected String getResponseBody(HttpServletRequest request, HttpServletResponse response, String matchResponseKey,
+			String replaceText) {
 		try {
 			if (response instanceof ContentCachingResponseWrapper) {
 				ContentCachingResponseWrapper responseWrapper = (ContentCachingResponseWrapper) response;
@@ -102,7 +120,14 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 				String responseText = new String(contentAsByteArray, StandardCharsets.UTF_8);
 				if (JSONUtil.isTypeJSONObject(responseText) && StrUtil.isNotBlank(matchResponseKey)) {
 					JSONObject resJsonObj = JSONUtil.parseObj(responseText);
-					resJsonObj.putByPath(matchResponseKey, "");
+					List<String> matchkeys = StrUtil.split(matchResponseKey, ",");
+					for (String matchKey : matchkeys) {
+						Object val = resJsonObj.getByPath(matchKey);
+						if (ObjectUtil.isNotEmpty(val)) {
+							resJsonObj.putByPath(matchKey, replaceText);
+						}
+					}
+
 					responseText = resJsonObj.toJSONString(0);
 				}
 				return responseText;
@@ -115,17 +140,30 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 		return "";
 	}
 
+	protected String getParams(HttpServletRequest request, String matchKey) {
+		return getParams(request, matchKey, "");
+	}
+
 	/**
 	 * 获取参数信息
 	 * @param request 请求信息
+	 * @param matchFieldKey 匹配key
+	 * @param replaceText 替换文本
 	 * @return 请求参数
 	 */
-	protected String getParams(HttpServletRequest request, String matchKey) {
+	protected String getParams(HttpServletRequest request, String matchFieldKey, String replaceText) {
 		String params;
 		try {
 			Map<String, String[]> parameterMap = request.getParameterMap();
-			if (StringUtils.hasText(matchKey)) {
-				parameterMap.put(matchKey, new String[0]);
+			if (StringUtils.hasText(matchFieldKey)) {
+				List<String> matchKeys = StrUtil.split(matchFieldKey, ",");
+				for (String matchKey : matchKeys) {
+					String[] vals = parameterMap.get(matchKey);
+					if (ArrayUtil.isNotEmpty(vals)) {
+						parameterMap.put(matchKey, new String[] { replaceText });
+					}
+				}
+
 			}
 			params = JSONUtil.toJsonStr(parameterMap);
 		}
@@ -134,6 +172,48 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 			log.error("[prodLog]，参数获取序列化异常", e);
 		}
 		return params;
+	}
+
+	protected String getRequestBody(HttpServletRequest request, String matchingPattern) {
+		return getRequestBody(request, matchingPattern, "");
+	}
+
+	/**
+	 * 获取请求体
+	 * @param request
+	 * @param matchingFieldKey
+	 * @param replaceText
+	 * @return
+	 */
+	protected String getRequestBody(HttpServletRequest request, String matchingFieldKey, String replaceText) {
+		String body = null;
+		if (!request.getMethod().equals(HttpMethod.GET.name())) {
+			try {
+				BufferedReader reader = request.getReader();
+				if (reader != null) {
+					body = (String) reader.lines().collect(Collectors.joining(System.lineSeparator()));
+				}
+				if (StringUtils.hasText(body) && StringUtils.hasText(matchingFieldKey)) {
+					JSONObject reqJsonObj = JSONUtil.parseObj(body);
+					List<String> matchkeys = StrUtil.split(matchingFieldKey, ",");
+					for (String matchkey : matchkeys) {
+						Object val = reqJsonObj.getByPath(matchkey);
+						if (ObjectUtil.isNotEmpty(val)) {
+							reqJsonObj.putByPath(matchkey, replaceText);
+						}
+
+					}
+
+					body = reqJsonObj.toJSONString(0);
+				}
+
+			}
+			catch (Exception var3) {
+				log.error("读取请求体异常：", var3);
+			}
+		}
+
+		return body;
 	}
 
 }
