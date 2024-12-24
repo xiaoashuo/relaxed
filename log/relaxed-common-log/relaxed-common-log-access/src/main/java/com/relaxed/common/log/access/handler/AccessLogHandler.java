@@ -1,5 +1,8 @@
 package com.relaxed.common.log.access.handler;
 
+import com.relaxed.common.log.access.filter.LogAccessProperties;
+import com.relaxed.common.log.access.filter.LogAccessRule;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,32 +14,32 @@ import javax.servlet.http.HttpServletResponse;
 public interface AccessLogHandler<T> {
 
 	/**
-	 * 记录日志
-	 * @param request 请求信息
-	 * @param response 响应信息
-	 * @param executionTime 执行时长
-	 * @param throwable 异常
+	 * 请求前处理
+	 * @param request
+	 * @param logAccessRule
+	 * @return 构建请求实体信息
 	 */
-	default void logRecord(HttpServletRequest request, HttpServletResponse response, Long executionTime,
-			Throwable throwable) {
-		T log = prodLog(request, response, executionTime, throwable);
-		saveLog(log);
+	T beforeRequest(HttpServletRequest request, LogAccessRule logAccessRule);
+
+	/**
+	 * 请求后处理
+	 * @param buildParam 请求方法执行前构建的参数
+	 * @param request 请求
+	 * @param response 响应
+	 * @param executionTime 执行时间
+	 * @param throwable 异常
+	 * @param logAccessRule 访问日志规则
+	 */
+	void afterRequest(T buildParam, HttpServletRequest request, HttpServletResponse response, Long executionTime,
+			Throwable myThrowable, LogAccessRule logAccessRule);
+
+	/**
+	 * 是否应该记录日志 可以过滤一些不需要记录日志的请求
+	 * @param request
+	 * @return true 记录 false 不记录
+	 */
+	default boolean shouldLog(HttpServletRequest request) {
+		return true;
 	}
-
-	/**
-	 * 生产一个日志
-	 * @return accessLog
-	 * @param request 请求信息
-	 * @param response 响应信息
-	 * @param executionTime 执行时长
-	 * @param throwable 异常
-	 */
-	T prodLog(HttpServletRequest request, HttpServletResponse response, Long executionTime, Throwable throwable);
-
-	/**
-	 * 保存日志 落库/或输出到文件等
-	 * @param accessLog 访问日志
-	 */
-	void saveLog(T accessLog);
 
 }

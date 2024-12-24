@@ -22,16 +22,19 @@ import org.springframework.test.context.TestPropertySource;
  * @Version 1.0
  */
 @Slf4j
-@SpringBootTest(classes = {MailSenderAutoConfiguration.class,MailAutoConfiguration.class},properties = "spring.config.location=classpath:/mail/application-mail.yml")
+@SpringBootTest(classes = { MailSenderAutoConfiguration.class, MailAutoConfiguration.class },
+		properties = "spring.config.location=classpath:/mail/application-mail.yml")
 public class MailTest {
 
-    @Autowired
-    private MailSender mailSender;
-    @Test
-    public void mailSend(){
-        MailSendInfo mailSendInfo = mailSender.sendTextMail("测试", "测试内容", "yushuo@vipsave.cn");
-        log.info("发送结果:{}",mailSendInfo.getSuccess());
-        Assert.isTrue(mailSendInfo.getSuccess(),"邮件发送失败,错误消息:{}",mailSendInfo.getErrorMsg());
+	@Autowired
+	private MailSender mailSender;
 
-    }
+	@Test
+	public void mailSend() {
+		MailSendInfo mailSendInfo = mailSender.sendTextMail("测试", "测试内容", "yushuo@vipsave.cn");
+		log.info("发送结果:{}", mailSendInfo.getSuccess());
+		Assert.isTrue(mailSendInfo.getSuccess(), "邮件发送失败,错误消息:{}", mailSendInfo.getErrorMsg());
+
+	}
+
 }

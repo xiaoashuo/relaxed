@@ -1,9 +1,12 @@
 package com.relaxed.autoconfigure.log.properties;
 
+import com.relaxed.common.log.access.filter.LogAccessProperties;
+import com.sun.javafx.css.Rule;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,26 +24,11 @@ public class LogProperties {
 
 	public static final String ROOT_PREFIX = "relaxed.log";
 
-	private Access access = new Access();
+	private LogAccessProperties access = new LogAccessProperties();
 
 	private Operation operation = new Operation();
 
 	private Biz biz = new Biz();
-
-	@Data
-	public class Access {
-
-		public static final String PREFIX = ROOT_PREFIX + ".access";
-
-		private boolean enabled;
-
-		/**
-		 * 忽略的Url匹配规则，Ant风格
-		 */
-		private List<String> ignoreUrlPatterns = Arrays.asList("/actuator/**", "/webjars/**", "/favicon.ico",
-				"/captcha/get");
-
-	}
 
 	/**
 	 * 操作日志

@@ -1,0 +1,15 @@
+server:
+  port: 8080
+relaxed:
+  log:
+    access:
+      enabled: true
+      urlRules:
+        - urlPattern: /test/log/**/form
+          recordOption:
+            ignore: false
+            includeRequest: true
+            includeResponse: true
+          fieldFilter:
+            matchRequestKey: username
+            matchResponseKey: password
