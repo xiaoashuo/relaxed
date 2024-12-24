@@ -14,6 +14,11 @@
 
     <description>relaxed-test模块</description>
 
+    <properties>
+        <maven.install.skip>true</maven.install.skip>
+        <!--   跳过不需要deploy的模块-->
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
 
 
     <dependencies>
@@ -102,15 +107,5 @@
 
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+
 </project>
