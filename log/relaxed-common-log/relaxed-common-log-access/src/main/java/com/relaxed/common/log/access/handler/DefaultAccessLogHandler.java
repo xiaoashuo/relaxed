@@ -80,8 +80,11 @@ public class DefaultAccessLogHandler extends AbstractAccessLogHandler<Map<String
 		}
 
 		String header = getHeader(request);
-		log.info("\n请求头:\n{}\n请求记录:\n{}", header, convertToAccessLogStr(buildParam));
+		this.handleLog(header, buildParam);
+	}
 
+	protected void handleLog(String header, Map<String, String> buildParam) {
+		log.info("\n请求头:\n{}\n请求记录:\n{}", header, convertToAccessLogStr(buildParam));
 	}
 
 	/**
