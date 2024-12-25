@@ -118,12 +118,12 @@ public class AccessLogFilter extends OncePerRequestFilter {
 
 	}
 
-	private HttpServletResponse wrapperResponse(HttpServletResponse response) {
+	protected HttpServletResponse wrapperResponse(HttpServletResponse response) {
 		// 包装 response，便于重复获取 body
 		return new ContentCachingResponseWrapper(response);
 	}
 
-	private HttpServletRequest wrapperRequest(HttpServletRequest request) {
+	protected HttpServletRequest wrapperRequest(HttpServletRequest request) {
 		// 避免由于路由信息缺失，导致无法获取到请求目标的执行方法
 		if (!ServletRequestPathUtils.hasParsedRequestPath(request)) {
 			ServletRequestPathUtils.parseAndCache(request);
@@ -135,7 +135,7 @@ public class AccessLogFilter extends OncePerRequestFilter {
 		return new RepeatBodyRequestWrapper(request);
 	}
 
-	private LogAccessRule searchRequestRule(HttpServletRequest request) {
+	protected LogAccessRule searchRequestRule(HttpServletRequest request) {
 		List<LogAccessRule> urlRules = logAccessProperties.getUrlRules();
 		if (CollectionUtil.isEmpty(urlRules)) {
 			return this.defaultLogAccessRule;
@@ -147,6 +147,26 @@ public class AccessLogFilter extends OncePerRequestFilter {
 			}
 		}
 		return this.defaultLogAccessRule;
+	}
+
+	protected AccessLogHandler getAccessLogHandler() {
+		return accessLogHandler;
+	}
+
+	protected LogAccessProperties getLogAccessProperties() {
+		return logAccessProperties;
+	}
+
+	protected LogAccessRule getDefaultLogAccessRule() {
+		return defaultLogAccessRule;
+	}
+
+	protected AntPathMatcher getAntPathMatcher() {
+		return ANT_PATH_MATCHER;
+	}
+
+	protected UrlPathHelper getUrlPathHelper() {
+		return URL_PATH_HELPER;
 	}
 
 }
