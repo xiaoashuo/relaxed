@@ -2,21 +2,26 @@ package com.relaxed.common.log.access.handler;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.relaxed.common.core.request.RepeatBodyRequestWrapper;
 import com.relaxed.common.log.access.filter.LogAccessProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.util.ContentCachingResponseWrapper;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -154,18 +159,19 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 	protected String getParams(HttpServletRequest request, String matchFieldKey, String replaceText) {
 		String params;
 		try {
-			Map<String, String[]> parameterMap = request.getParameterMap();
+			// 防止改变原请求参数
+			Map<String, String[]> wrapperParterMap = new HashMap<>(request.getParameterMap());
 			if (StringUtils.hasText(matchFieldKey)) {
 				List<String> matchKeys = StrUtil.split(matchFieldKey, ",");
 				for (String matchKey : matchKeys) {
-					String[] vals = parameterMap.get(matchKey);
+					String[] vals = wrapperParterMap.get(matchKey);
 					if (ArrayUtil.isNotEmpty(vals)) {
-						parameterMap.put(matchKey, new String[] { replaceText });
+						wrapperParterMap.put(matchKey, new String[] { replaceText });
 					}
 				}
 
 			}
-			params = JSONUtil.toJsonStr(parameterMap);
+			params = JSONUtil.toJsonStr(wrapperParterMap);
 		}
 		catch (Exception e) {
 			params = "记录参数异常";
@@ -186,34 +192,60 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 	 * @return
 	 */
 	protected String getRequestBody(HttpServletRequest request, String matchingFieldKey, String replaceText) {
-		String body = null;
-		if (!request.getMethod().equals(HttpMethod.GET.name())) {
-			try {
-				BufferedReader reader = request.getReader();
-				if (reader != null) {
-					body = (String) reader.lines().collect(Collectors.joining(System.lineSeparator()));
-				}
-				if (StringUtils.hasText(body) && StringUtils.hasText(matchingFieldKey)) {
-					JSONObject reqJsonObj = JSONUtil.parseObj(body);
-					List<String> matchkeys = StrUtil.split(matchingFieldKey, ",");
-					for (String matchkey : matchkeys) {
-						Object val = reqJsonObj.getByPath(matchkey);
-						if (ObjectUtil.isNotEmpty(val)) {
-							reqJsonObj.putByPath(matchkey, replaceText);
-						}
-
-					}
-
-					body = reqJsonObj.toJSONString(0);
+		RepeatBodyRequestWrapper wrapperRequest = WebUtils.getNativeRequest(request, RepeatBodyRequestWrapper.class);
+		if (wrapperRequest == null) {
+			return null;
+		}
+		if (request.getMethod().equals(HttpMethod.GET.name())) {
+			return null;
+		}
+		String body = getRequestBodyText(wrapperRequest);
+		if (StringUtils.hasText(body) && StringUtils.hasText(matchingFieldKey)) {
+			JSONObject reqJsonObj = JSONUtil.parseObj(body);
+			List<String> matchkeys = StrUtil.split(matchingFieldKey, ",");
+			for (String matchkey : matchkeys) {
+				Object val = reqJsonObj.getByPath(matchkey);
+				if (ObjectUtil.isNotEmpty(val)) {
+					reqJsonObj.putByPath(matchkey, replaceText);
 				}
 
 			}
-			catch (Exception var3) {
-				log.error("读取请求体异常：", var3);
+			// 改变后值赋给body
+			body = reqJsonObj.toJSONString(0);
+		}
+		return body;
+	}
+
+	private String getRequestBodyText(RepeatBodyRequestWrapper wrapperRequest) {
+		String body;
+
+		if (wrapperRequest.getCharacterEncoding() != null) {
+			body = getMessagePayload(wrapperRequest.getBodyByteArray(), -1, wrapperRequest.getCharacterEncoding());
+		}
+		else {
+			body = getMessagePayload(wrapperRequest.getBodyByteArray(), -1, Charset.defaultCharset().name());
+		}
+		return body;
+	}
+
+	protected String getMessagePayload(byte[] buf, int maxLength, String characterEncoding) {
+		if (buf.length > 0) {
+			try {
+				if (maxLength < 0) {
+					return new String(buf, characterEncoding);
+				}
+				else if (maxLength == 0) {
+					return "";
+				}
+				else {
+					return new String(buf, 0, Math.min(buf.length, maxLength), characterEncoding);
+				}
+			}
+			catch (UnsupportedEncodingException ex) {
+				return "[unknown]";
 			}
 		}
-
-		return body;
+		return null;
 	}
 
 }
