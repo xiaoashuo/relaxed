@@ -1,4 +1,4 @@
-package com.relaxed.common.idempotent.test;
+package com.relaxed.test.idempotent;
 
 import com.relaxed.common.idempotent.IdempotentAspect;
 import com.relaxed.common.idempotent.key.IdempotentKeyStore;

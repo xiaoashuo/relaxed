@@ -40,7 +40,10 @@
             <groupId>com.lovecyy</groupId>
             <artifactId>relaxed-common-tenant</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.lovecyy</groupId>
+            <artifactId>relaxed-common-idempotent</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.lovecyy</groupId>
             <artifactId>relaxed-mybatis-plus</artifactId>

@@ -17,9 +17,6 @@
         <module>relaxed-common-core</module>
         <module>relaxed-common-desensitize</module>
 
-
-        <module>relaxed-common-idempotent</module>
-
         <module>relaxed-common-ip</module>
         <module>relaxed-common-cache</module>
 

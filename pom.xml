@@ -39,6 +39,7 @@
         <module>log/relaxed-common-log</module>
         <module>log/relaxed-spring-boot-starter-log</module>
         <module>job/relaxed-spring-boot-starter-job</module>
+        <module>idempotent/relaxed-common-idempotent</module>
         <module>mail/relaxed-extend-mail</module>
         <module>mail/relaxed-spring-boot-starter-mail</module>
         <module>relaxed-poi-tl</module>

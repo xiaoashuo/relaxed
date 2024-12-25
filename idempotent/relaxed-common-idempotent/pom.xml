@@ -5,8 +5,9 @@
 
     <parent>
         <groupId>com.lovecyy</groupId>
-         <artifactId>relaxed-common</artifactId>
-         <version>${revision}</version>
+        <artifactId>relaxed-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../relaxed-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>relaxed-common-idempotent</artifactId>
@@ -57,15 +58,7 @@
             <artifactId>hutool-cache</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-        </dependency>
+
 
     </dependencies>
 

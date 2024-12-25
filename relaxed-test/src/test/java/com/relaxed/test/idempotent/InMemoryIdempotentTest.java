@@ -1,7 +1,6 @@
-package com.relaxed.common.idempotent.test;
+package com.relaxed.test.idempotent;
 
 import cn.hutool.core.lang.Assert;
-
 import com.relaxed.common.idempotent.exception.IdempotentException;
 import com.relaxed.common.idempotent.key.InMemoryIdempotentKeyStore;
 import lombok.extern.slf4j.Slf4j;
