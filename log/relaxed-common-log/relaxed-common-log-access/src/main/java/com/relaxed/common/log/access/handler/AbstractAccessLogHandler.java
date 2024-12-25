@@ -216,7 +216,7 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 		return body;
 	}
 
-	private String getRequestBodyText(RepeatBodyRequestWrapper wrapperRequest) {
+	protected String getRequestBodyText(RepeatBodyRequestWrapper wrapperRequest) {
 		String body;
 
 		if (wrapperRequest.getCharacterEncoding() != null) {
