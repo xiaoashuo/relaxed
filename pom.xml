@@ -28,6 +28,7 @@
         <module>relaxed-common</module>
         <module>relaxed-extends</module>
         <module>relaxed-starters</module>
+        <module>sftp/relaxed-spring-boot-starter-sftp</module>
 
         <module>database/relaxed-dynamic-datasource</module>
         <module>database/relaxed-common-tenant</module>

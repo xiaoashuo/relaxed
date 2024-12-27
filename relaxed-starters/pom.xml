@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
 
     <modules>
-         <module>relaxed-spring-boot-starter-sftp</module>
          <module>relaxed-spring-boot-starter-dingtalk</module>
 
 
