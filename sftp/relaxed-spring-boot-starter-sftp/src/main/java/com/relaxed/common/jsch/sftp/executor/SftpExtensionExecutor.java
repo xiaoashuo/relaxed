@@ -15,7 +15,7 @@ import java.io.File;
 public class SftpExtensionExecutor extends SftpExecutor {
 
 	public SftpExtensionExecutor(ChannelSftp channelSftp, SftpProperties sftpProperties) {
-		super(channelSftp,sftpProperties);
+		super(channelSftp, sftpProperties);
 	}
 
 	@Override

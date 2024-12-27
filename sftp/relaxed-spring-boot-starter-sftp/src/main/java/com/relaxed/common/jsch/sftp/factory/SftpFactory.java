@@ -54,7 +54,7 @@ public class SftpFactory extends BasePooledObjectFactory<ISftpExecutor> {
 			session.connect(sftpProperties.getSessionConnectTimeout());
 			ChannelSftp channel = (ChannelSftp) session.openChannel(CHANNEL_TYPE);
 			channel.connect(sftpProperties.getChannelConnectedTimeout());
-			return iSftpProvider.provide(channel,sftpProperties);
+			return iSftpProvider.provide(channel, sftpProperties);
 		}
 		catch (JSchException e) {
 			throw new SftpClientException("connection sftp failed,host :" + sftpProperties.getHost() + ",port:"

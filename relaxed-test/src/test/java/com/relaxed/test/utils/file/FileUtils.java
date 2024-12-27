@@ -14,13 +14,14 @@ import java.io.File;
  */
 public class FileUtils {
 
-    /**
-     * 加载类路径下文件路径
-     * @param filepath 文件路径不需要以/开头
-     * @return
-     */
-    @SneakyThrows
-    public static File loadClassPathFile(String filepath){
-        return ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + filepath);
-    }
+	/**
+	 * 加载类路径下文件路径
+	 * @param filepath 文件路径不需要以/开头
+	 * @return
+	 */
+	@SneakyThrows
+	public static File loadClassPathFile(String filepath) {
+		return ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + filepath);
+	}
+
 }

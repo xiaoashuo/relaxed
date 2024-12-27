@@ -12,12 +12,12 @@ import com.relaxed.common.jsch.sftp.SftpProperties;
 public abstract class AbstractSftpExecutor implements ISftpExecutor {
 
 	protected final ChannelSftp channelSftp;
+
 	private final SftpProperties sftpProperties;
 
-
-	protected AbstractSftpExecutor(ChannelSftp channelSftp,SftpProperties sftpProperties) {
+	protected AbstractSftpExecutor(ChannelSftp channelSftp, SftpProperties sftpProperties) {
 		this.channelSftp = channelSftp;
-		this.sftpProperties=sftpProperties;
+		this.sftpProperties = sftpProperties;
 	}
 
 	/**
@@ -25,11 +25,12 @@ public abstract class AbstractSftpExecutor implements ISftpExecutor {
 	 * @return
 	 */
 	@Override
-	public  ChannelSftp getChannelSftp() {
+	public ChannelSftp getChannelSftp() {
 		return channelSftp;
 	}
 
 	protected SftpProperties getSftpProperties() {
 		return sftpProperties;
 	}
+
 }

@@ -51,6 +51,7 @@ public class SftpProperties {
 	 * 根级别工作目录,若不指定则默认获取连接后的
 	 */
 	private String workdir;
+
 	/**
 	 * 严格检查
 	 */

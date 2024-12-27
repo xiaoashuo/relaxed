@@ -25,17 +25,16 @@ public class SftpExecutor extends AbstractSftpExecutor {
 
 	private static final String NO_SUCH_FILE = "No such file";
 
-
-
 	public SftpExecutor(ChannelSftp channelSftp, SftpProperties sftpProperties) {
-		super(channelSftp,sftpProperties);
+		super(channelSftp, sftpProperties);
 		String workdir = sftpProperties.getWorkdir();
-		if (!StringUtils.hasText(workdir)){
+		if (!StringUtils.hasText(workdir)) {
 			try {
 				String workDir = channelSftp.pwd();
 				sftpProperties.setWorkdir(workDir);
-			} catch (SftpException e) {
-               log.error("获取默认工作目录失败",e);
+			}
+			catch (SftpException e) {
+				log.error("获取默认工作目录失败", e);
 			}
 		}
 
@@ -86,7 +85,8 @@ public class SftpExecutor extends AbstractSftpExecutor {
 		catch (SftpException e) {
 			throw new SftpClientException(String.format("get remote file exception params[dir=%s,name=%s]", dir, name),
 					e);
-		}finally {
+		}
+		finally {
 			this.switchToWorkDir();
 		}
 	}
@@ -162,7 +162,8 @@ public class SftpExecutor extends AbstractSftpExecutor {
 		}
 		catch (SftpException e) {
 			throw new SftpClientException(String.format("upload file exception params[dir=%s,name=%s]", dir, name), e);
-		}finally {
+		}
+		finally {
 			this.switchToWorkDir();
 		}
 	}
@@ -201,7 +202,8 @@ public class SftpExecutor extends AbstractSftpExecutor {
 		}
 		catch (SftpException e) {
 			throw new SftpClientException(String.format("delete file exception params[dir=%s,name=%s]", dir, name), e);
-		}finally {
+		}
+		finally {
 			this.switchToWorkDir();
 		}
 	}
@@ -225,7 +227,8 @@ public class SftpExecutor extends AbstractSftpExecutor {
 		}
 		catch (SftpException e) {
 			throw new SftpClientException(String.format("create directory exception params[dir=%s]", dir), e);
-		}finally {
+		}
+		finally {
 			this.switchToWorkDir();
 		}
 	}
@@ -296,7 +299,8 @@ public class SftpExecutor extends AbstractSftpExecutor {
 			throw new SftpClientException(
 					String.format(" move file exception params[src=%s,target=%s,fileName=%s]", src, target, fileName),
 					e);
-		}finally {
+		}
+		finally {
 			this.switchToWorkDir();
 		}
 	}
@@ -354,14 +358,15 @@ public class SftpExecutor extends AbstractSftpExecutor {
 	/**
 	 * 切换回默认工作目录
 	 */
-	private void switchToWorkDir(){
+	private void switchToWorkDir() {
 		SftpProperties sftpProperties = super.getSftpProperties();
 		String workdir = sftpProperties.getWorkdir();
-		if (StringUtils.hasText(workdir)){
+		if (StringUtils.hasText(workdir)) {
 			try {
 				super.getChannelSftp().cd(workdir);
-			} catch (SftpException e) {
-				 log.error("切回工作目录失败",e);
+			}
+			catch (SftpException e) {
+				log.error("切回工作目录失败", e);
 			}
 		}
 	}
