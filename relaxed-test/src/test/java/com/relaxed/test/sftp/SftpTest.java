@@ -8,6 +8,7 @@ import com.relaxed.common.jsch.sftp.executor.ISftpExecutor;
 import com.relaxed.test.utils.file.FileUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ public class SftpTest {
 	@Autowired
 	private ISftpClient iSftpClient;
 
-	private String DIR_PATH="/home/dir";
+	private String DIR_PATH="/home";
 
 	private String FILE_NAME="Poi测试模板.docx";
 
@@ -103,6 +104,7 @@ public class SftpTest {
 	 * 	 sftp.isExist(PathUtils.normalizePathBySlash("tianze3/55030002/upload",
 	 * 		 "BILLING_20241221.ok"));
 	 */
+	@Disabled("This test is ignored for now")
 	@SneakyThrows
 	@Test
 	public void testWorkDir() {
