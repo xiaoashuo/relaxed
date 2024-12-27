@@ -5,12 +5,11 @@ import com.relaxed.common.redis.RedisHelper;
 import com.relaxed.common.redis.config.CacheProperties;
 import com.relaxed.common.redis.config.CachePropertiesHolder;
 import com.relaxed.common.redis.core.CacheStringAspect;
-import com.relaxed.common.redis.lock.LockManage;
 import com.relaxed.common.redis.lock.scheduled.LockRenewalScheduledTask;
 import com.relaxed.common.redis.prefix.DefaultRedisPrefixConverter;
 import com.relaxed.common.redis.prefix.IRedisPrefixConverter;
-import com.relaxed.common.redis.serialize.CacheSerializer;
-import com.relaxed.common.redis.serialize.JacksonSerializer;
+import com.relaxed.common.redis.serialize.RelaxedRedisSerializer;
+import com.relaxed.common.redis.serialize.JacksonSerializerRelaxed;
 import com.relaxed.common.redis.serialize.PrefixJdkRedisSerializer;
 import com.relaxed.common.redis.serialize.PrefixStringRedisSerializer;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @AutoConfiguration
 @RequiredArgsConstructor
 @EnableConfigurationProperties(CacheProperties.class)
-public class RedisAutoConfiguration {
+public class RelaxedRedisAutoConfiguration {
 
 	private final RedisConnectionFactory redisConnectionFactory;
 
@@ -58,37 +57,22 @@ public class RedisAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnMissingBean
-	public CacheSerializer cacheSerializer(ObjectMapper objectMapper) {
-		return new JacksonSerializer(objectMapper);
-	}
-
-	/**
-	 * 初始化lockManage
-	 * @param stringRedisTemplate 默认使用字符串类型操作，后续扩展
-	 * @return CacheLock
-	 */
-	@Bean
-	@ConditionalOnMissingBean
-	public LockManage lockManage(StringRedisTemplate stringRedisTemplate) {
-		LockManage lockManage = new LockManage();
-		lockManage.setStringRedisTemplate(stringRedisTemplate);
-		return lockManage;
+	public RelaxedRedisSerializer relaxedRedisSerializer(ObjectMapper objectMapper) {
+		return new JacksonSerializerRelaxed(objectMapper);
 	}
 
 	/**
 	 * 缓存注解操作切面</br>
 	 * 必须在CacheLock初始化之后使用
 	 * @param stringRedisTemplate 字符串存储的Redis操作类
-	 * @param lockManage 锁管理器
-	 * @param cacheSerializer 缓存序列化器
+	 * @param relaxedRedisSerializer 缓存序列化器
 	 * @return CacheStringAspect 缓存注解操作切面
 	 */
 	@Bean
-	@DependsOn("lockManage")
 	@ConditionalOnMissingBean
-	public CacheStringAspect cacheStringAspect(StringRedisTemplate stringRedisTemplate, LockManage lockManage,
-			CacheSerializer cacheSerializer) {
-		return new CacheStringAspect(stringRedisTemplate, lockManage, cacheSerializer);
+	public CacheStringAspect cacheStringAspect(StringRedisTemplate stringRedisTemplate,
+			RelaxedRedisSerializer relaxedRedisSerializer) {
+		return new CacheStringAspect(stringRedisTemplate, relaxedRedisSerializer);
 	}
 
 	/**
@@ -97,7 +81,7 @@ public class RedisAutoConfiguration {
 	 */
 	@Bean
 	@DependsOn("cachePropertiesHolder")
-	@ConditionalOnProperty(prefix = "relaxed.cache", name = "key-prefix")
+	@ConditionalOnProperty(prefix = "relaxed.redis", name = "key-prefix")
 	@ConditionalOnMissingBean(IRedisPrefixConverter.class)
 	public IRedisPrefixConverter redisPrefixConverter() {
 		return new DefaultRedisPrefixConverter(CachePropertiesHolder.keyPrefix());
@@ -109,7 +93,7 @@ public class RedisAutoConfiguration {
 	 * @return com.relaxed.common.redis.lock.scheduled.LockRenewalScheduledTask
 	 */
 	@Bean
-	@ConditionalOnProperty(prefix = "relaxed.cache", name = "lockRenewal", havingValue = "true")
+	@ConditionalOnProperty(prefix = "relaxed.redis", name = "lockRenewal", havingValue = "true")
 	@ConditionalOnMissingBean
 	public LockRenewalScheduledTask lockRenewalScheduledTask() {
 		LockRenewalScheduledTask lockRenewalScheduledTask = new LockRenewalScheduledTask();

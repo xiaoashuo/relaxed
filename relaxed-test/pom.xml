@@ -89,6 +89,10 @@
             <artifactId>relaxed-spring-boot-starter-sftp</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.lovecyy</groupId>
+            <artifactId>relaxed-spring-boot-starter-redis</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>

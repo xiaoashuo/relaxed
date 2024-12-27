@@ -30,6 +30,8 @@
         <module>relaxed-starters</module>
         <module>sftp/relaxed-spring-boot-starter-sftp</module>
 
+        <module>cache/redis/relaxed-redis-core</module>
+        <module>cache/redis/relaxed-spring-boot-starter-redis</module>
         <module>database/relaxed-dynamic-datasource</module>
         <module>database/relaxed-common-tenant</module>
         <module>database/relaxed-mybatis</module>

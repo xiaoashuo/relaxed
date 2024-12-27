@@ -1,0 +1,27 @@
+spring:
+  redis:
+    database: 6
+    host: 127.0.0.7
+    port: 6379
+    password: 123456
+    lettuce:
+      pool:
+        max-idle: 30 #最大空闲连接数
+        min-idle: 0 #最小空闲连接数
+        max-active: 30 #最大连接数
+        max-wait: -1 #最大等待时间
+
+relaxed:
+  redis:
+    #全局key前缀
+    key-prefix: 'pc:'
+    #锁key后缀
+    lock-key-suffix: locked
+    #key分隔符
+    delimiter: ':'
+    #空值占位
+    null-value: "N_V"
+    #默认全局过期时间 ms
+    expire-time: 86400
+    #锁超时时间
+    locked-time-out: 1000

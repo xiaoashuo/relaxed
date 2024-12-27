@@ -181,7 +181,7 @@
             <!--cache-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-common-redis</artifactId>
+                <artifactId>relaxed-redis-core</artifactId>
                 <version>${revision}</version>
             </dependency>
 
@@ -356,7 +356,7 @@
             <!--缓存模块-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-spring-boot-starter-cache</artifactId>
+                <artifactId>relaxed-spring-boot-starter-redis</artifactId>
                 <version>${revision}</version>
             </dependency>
             <!--EXCEL-->

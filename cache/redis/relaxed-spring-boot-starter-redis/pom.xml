@@ -6,16 +6,26 @@
 
     <parent>
         <groupId>com.lovecyy</groupId>
-        <artifactId>relaxed-starters</artifactId>
+        <artifactId>relaxed-parent</artifactId>
         <version>${revision}</version>
+        <relativePath>../../../relaxed-parent/pom.xml</relativePath>
     </parent>
-    <artifactId>relaxed-spring-boot-starter-cache</artifactId>
+    <artifactId>relaxed-spring-boot-starter-redis</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.lovecyy</groupId>
-            <artifactId>relaxed-common-redis</artifactId>
+            <artifactId>relaxed-redis-core</artifactId>
 
+        </dependency>
+        <!--spring data redis 依赖 common-pool2-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

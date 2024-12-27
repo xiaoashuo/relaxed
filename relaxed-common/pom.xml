@@ -18,7 +18,6 @@
         <module>relaxed-common-desensitize</module>
 
         <module>relaxed-common-ip</module>
-        <module>relaxed-common-cache</module>
 
         <module>relaxed-common-util</module>
         <module>relaxed-common-exception</module>
