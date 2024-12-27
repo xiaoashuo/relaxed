@@ -47,13 +47,14 @@ public class XxlJobLogAppender extends AppenderBase<ILoggingEvent> {
 						// 构建完整日志信息
 						StringBuilder fullMessage = new StringBuilder();
 
-						// 添加时间戳
-						fullMessage.append("[").append(
-								new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(event.getTimeStamp())))
-								.append("] ");
+						// 添加时间戳 默认xxl会输出
+						// fullMessage.append("[").append(
+						// new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new
+						// Date(event.getTimeStamp())))
+						// .append("] ");
 
 						// 添加日志级别
-						fullMessage.append("[").append(event.getLevel()).append("] ");
+						// fullMessage.append("[").append(event.getLevel()).append("] ");
 						// 添加traceId
 						String traceId = Optional.ofNullable(event.getMDCPropertyMap()).map(item -> item.get("traceId"))
 								.orElse("");
