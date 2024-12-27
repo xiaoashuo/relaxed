@@ -35,6 +35,7 @@ public class SftpExecutor extends AbstractSftpExecutor {
 		}
 		catch (SftpException e) {
 			if (NO_SUCH_FILE.equalsIgnoreCase(e.getMessage())) {
+				log.debug("isExist exception,路径:{}", path, e);
 				return false;
 			}
 			throw new SftpClientException(String.format("isExist exception params[%s]", path), e);
