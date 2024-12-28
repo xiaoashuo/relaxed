@@ -38,6 +38,9 @@ public class TestExcelController {
 	 * @return
 	 */
 	@ResponseExcel(name = "单sheet模板")
+	// @ResponseExcel( name="'客户记录#'.replace('#','') +
+	// T(java.time.LocalDateTime).now().format(T(java.time.format.DateTimeFormatter).ofPattern('yyyyMMddHHmmss'))",sheets
+	// = @Sheet(sheetName = "客户记录"))
 	@GetMapping("/sheet")
 	public List<ExcelModel> sheet() {
 		return mockExcelModelList();
