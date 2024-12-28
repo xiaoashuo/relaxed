@@ -18,7 +18,6 @@
 
 
          <module>relaxed-spring-boot-starter-xss</module>
-         <module>relaxed-spring-boot-starter-easyexcel</module>
          <module>relaxed-spring-boot-starter-secret</module>
 
          <module>relaxed-spring-boot-starter-web</module>
