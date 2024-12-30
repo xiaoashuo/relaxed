@@ -1,5 +1,6 @@
 package com.relaxed.fastexcel.annotation;
 
+import cn.idev.excel.read.builder.AbstractExcelReaderParameterBuilder;
 import com.relaxed.fastexcel.handler.DefaultAnalysisEventListener;
 import com.relaxed.fastexcel.handler.ListAnalysisEventListener;
 
@@ -33,5 +34,26 @@ public @interface RequestExcel {
 	 * @return 默认跳过
 	 */
 	boolean ignoreEmptyRow() default false;
+
+	/**
+	 * 工作表名称
+	 * @return sheetName
+	 */
+	String sheetName() default "";
+
+	/**
+	 * Count the number of added heads when read sheet. 0 - This Sheet has no head ,since
+	 * the first row are the data 1 - This Sheet has one row head , this is the default 2
+	 * - This Sheet has two row head ,since the third row is the data
+	 * @see AbstractExcelReaderParameterBuilder#headRowNumber
+	 * @return headRowNumber
+	 */
+	int headRowNumber() default 1;
+
+	/**
+	 * The number of rows to read, the default is all, start with 0. include table header
+	 * row
+	 */
+	int numRows() default -1;
 
 }

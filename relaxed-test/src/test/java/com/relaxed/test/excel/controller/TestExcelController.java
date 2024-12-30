@@ -72,9 +72,23 @@ public class TestExcelController {
 		return R.ok(dataList);
 	}
 
+	/**
+	 * 解析前多少行
+	 * @param dataList
+	 * @param bindingResult
+	 * @return
+	 */
+	@PostMapping("/upload/preHunds")
+	public R uploadPreHunds(@RequestExcel(fileName = "dataList", numRows = 50) List<ExcelModel> dataList,
+			BindingResult bindingResult) {
+		// JSR 303 校验通用校验获取失败的数据
+		List<ErrorMessage> errorMessageList = (List<ErrorMessage>) bindingResult.getTarget();
+		return R.ok(dataList);
+	}
+
 	private static List<ExcelModel> mockExcelModelList() {
 		List<ExcelModel> excelModels = new ArrayList<>();
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 200; i++) {
 			ExcelModel excelModel = new ExcelModel();
 			excelModel.setId(NumberSource.getInstance().randomInt(1, 101));
 			excelModel.setUsername(PersonInfoSource.getInstance().randomChineseName());

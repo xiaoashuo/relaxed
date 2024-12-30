@@ -363,12 +363,6 @@
             <!--EXCEL-->
             <dependency>
                 <groupId>com.lovecyy</groupId>
-                <artifactId>relaxed-spring-boot-starter-easyexcel</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.lovecyy</groupId>
                 <artifactId>relaxed-spring-boot-starter-fastexcel</artifactId>
                 <version>${revision}</version>
             </dependency>
@@ -448,12 +442,6 @@
                 <version>${groovy.version}</version>
             </dependency>
 
-            <!--easyExcel 处理-->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>easyexcel</artifactId>
-                <version>${easyexcel.version}</version>
-            </dependency>
             <!--fastExcel 处理-->
             <dependency>
                 <groupId>cn.idev.excel</groupId>

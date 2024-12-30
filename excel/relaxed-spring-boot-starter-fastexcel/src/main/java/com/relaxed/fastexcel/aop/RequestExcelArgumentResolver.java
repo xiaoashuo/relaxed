@@ -10,8 +10,14 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.Conventions;
+import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.ResolvableType;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -25,6 +31,7 @@ import org.springframework.web.multipart.MultipartRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -36,6 +43,10 @@ import java.util.List;
  */
 @Slf4j
 public class RequestExcelArgumentResolver implements HandlerMethodArgumentResolver {
+
+	private final ParameterNameDiscoverer parameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
+
+	private final ExpressionParser expressionParser = new SpelExpressionParser();
 
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
@@ -74,14 +85,17 @@ public class RequestExcelArgumentResolver implements HandlerMethodArgumentResolv
 		else {
 			inputStream = request.getInputStream();
 		}
-
+		// 解析工作表名称
+		String sheetName = resolverSheetName(request, parameter.getMethod(), requestExcel.sheetName());
 		// 获取目标类型
 		Class<?> excelModelClass = ResolvableType.forMethodParameter(parameter).getGeneric(0).resolve();
 
 		// 这里需要指定读用哪个 class 去读，然后读取第一个 sheet 文件流会自动关闭
 		FastExcel.read(inputStream, excelModelClass, readListener).registerConverter(LocalDateStringConverter.INSTANCE)
-				.registerConverter(LocalDateTimeStringConverter.INSTANCE).ignoreEmptyRow(requestExcel.ignoreEmptyRow())
-				.sheet().doRead();
+				.registerConverter(LocalDateTimeStringConverter.INSTANCE)
+				.numRows(requestExcel.numRows() > 0 ? requestExcel.numRows() : null)
+				.ignoreEmptyRow(requestExcel.ignoreEmptyRow()).sheet(sheetName)
+				.headRowNumber(requestExcel.headRowNumber()).doRead();
 
 		// 校验失败的数据处理 交给 BindResult
 		WebDataBinder dataBinder = webDataBinderFactory.createBinder(webRequest, readListener.getErrors(), fieldName);
@@ -89,6 +103,33 @@ public class RequestExcelArgumentResolver implements HandlerMethodArgumentResolv
 		model.put(BindingResult.MODEL_KEY_PREFIX + fieldName, dataBinder.getBindingResult());
 
 		return readListener.getList();
+	}
+
+	/**
+	 * 解析Sheet名称
+	 * @param request HttpServletRequest对象，用于获取请求参数
+	 * @param method 调用的方法对象，用于获取方法参数名称
+	 * @param sheetName 需要解析的Sheet名称
+	 * @return 解析后的Sheet名称，如果为空则返回null
+	 */
+	public String resolverSheetName(HttpServletRequest request, Method method, String sheetName) {
+		if (!StringUtils.hasText(sheetName)) {
+			return null;
+		}
+
+		if (!sheetName.contains("#")) {
+			return sheetName;
+		}
+		String[] parameterNames = this.parameterNameDiscoverer.getParameterNames(method);
+		StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
+		if (parameterNames != null) {
+			for (String name : parameterNames) {
+				evaluationContext.setVariable(name, request.getParameter(name));
+			}
+		}
+		Expression expression = this.expressionParser.parseExpression(sheetName);
+		String value = expression.getValue(evaluationContext, String.class);
+		return value == null || value.isEmpty() ? null : value;
 	}
 
 }
