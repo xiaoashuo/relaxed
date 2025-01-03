@@ -62,28 +62,87 @@ mvn install
 @Slf4j
 @Component
 public class AccessLogHandle implements AccessLogHandler<AccessLog> {
-	/**
-	 * 生产一个日志 根据自己需要格式实现
-	 * @param request 请求信息
-	 * @param response 响应信息
-	 * @param time 执行时长
-	 * @param myThrowable 异常信息
-	 * @return accessLog
-	 */
-	@SneakyThrows
-	@Override
-	public AccessLog prodLog(HttpServletRequest request, HttpServletResponse response, Long time,
-			Throwable myThrowable) {
-        //编写对应日志记录
-        AccessLog log=new AccessLog();
-		return log;
-	}
+    public static final String TRACE_ID = "traceId";
 
-	@Override
-	public void saveLog(AccessLog accessLog) {
-		//此处可以将上述生产出来的log实体 进行异步落库保存，异步实现交由使用者
-		// log.info("请求访问日志:{}", accessLog);
-	}
+    @Override
+    public AccessLog beforeRequest(HttpServletRequest request, LogAccessRule logAccessRule) {
+        AccessLog paramMap = new AccessLog();
+        Object matchingPatternAttr = request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+        String matchingPattern = matchingPatternAttr == null ? "" : String.valueOf(matchingPatternAttr);
+        String uri = URLUtil.getPath(request.getRequestURI());
+        paramMap.setTraceId(MDC.get(TRACE_ID));
+        paramMap.setUri(uri);
+        paramMap.setMethod(request.getMethod());
+        paramMap.setIp(IpUtils.getIpAddr(request));
+        paramMap.setMatchingPattern(matchingPattern);
+        paramMap.setUserAgent(request.getHeader("user-agent"));
+        paramMap.setCreatedTime(LocalDateTime.now());
+        return paramMap;
+    }
+
+    @Override
+    public void afterRequest(AccessLog buildParam, HttpServletRequest request, HttpServletResponse response,
+                             Long executionTime, Throwable myThrowable, LogAccessRule logAccessRule) {
+        buildParam.setUpdatedTime(LocalDateTime.now());
+        buildParam.setTime(executionTime);
+        buildParam.setHttpStatus(response.getStatus());
+        buildParam.setErrorMsg(Optional.ofNullable(myThrowable).map(Throwable::getMessage).orElse(""));
+        LogAccessRule.RecordOption recordOption = logAccessRule.getRecordOption();
+        LogAccessRule.FieldFilter fieldFilter = logAccessRule.getFieldFilter();
+
+        // 记录请求
+        if (recordOption.isIncludeRequest()) {
+            String matchRequestKey = fieldFilter.getMatchRequestKey();
+            // 获取普通参数
+            String params = getParams(request, matchRequestKey, fieldFilter.getReplaceText());
+            buildParam.setReqParams(params);
+            // 非文件上传请求，记录body，用户改密时不记录body
+            // TODO 使用注解控制此次请求是否记录body，更方便个性化定制
+            if (!isMultipartContent(request)) {
+                buildParam.setReqBody(getRequestBody(request, matchRequestKey, fieldFilter.getReplaceText()));
+
+            }
+        }
+        // 记录响应
+        if (recordOption.isIncludeResponse()) {
+            String matchResponseKey = fieldFilter.getMatchResponseKey();
+            buildParam.setResult(getResponseBody(request, response, matchResponseKey, fieldFilter.getReplaceText()));
+        }
+
+        String header = getHeader(request, "Accept", "Content-Type");
+        log.info("\n请求头:\n{}\n请求记录:\n{}", header, convertToAccessLogStr(buildParam));
+
+    }
+
+    /**
+     * 判断是否是multipart/form-data请求
+     * @param request 请求信息
+     * @return 是否是multipart/form-data请求
+     */
+    public boolean isMultipartContent(HttpServletRequest request) {
+        // 获取Content-Type
+        String contentType = request.getContentType();
+        return (contentType != null) && (contentType.toLowerCase().startsWith("multipart/"));
+    }
+
+    public String convertToAccessLogStr(AccessLog accessLog) {
+        String LINE_SEPARATOR = System.lineSeparator();
+        StringBuilder reqInfo = new StringBuilder().append("traceId:").append(accessLog.getTraceId())
+                .append(LINE_SEPARATOR).append("userId:").append(accessLog.getUserId()).append(LINE_SEPARATOR)
+                .append("userName:").append(accessLog.getUsername()).append(LINE_SEPARATOR).append("uri:")
+                .append(accessLog.getUri()).append(LINE_SEPARATOR).append("matchingPattern:")
+                .append(accessLog.getMatchingPattern()).append(LINE_SEPARATOR).append("method:")
+                .append(accessLog.getMethod()).append(LINE_SEPARATOR).append("userAgent:")
+                .append(accessLog.getUserAgent()).append(LINE_SEPARATOR).append("reqParams:")
+                .append(accessLog.getReqParams()).append(LINE_SEPARATOR).append("reqBody:")
+                .append(accessLog.getReqBody()).append(LINE_SEPARATOR).append("httpStatus:")
+                .append(accessLog.getHttpStatus()).append(LINE_SEPARATOR).append("result:")
+                .append(accessLog.getResult()).append(LINE_SEPARATOR).append("errorMsg:")
+                .append(accessLog.getErrorMsg()).append(LINE_SEPARATOR).append("time:").append(accessLog.getTime())
+                .append(LINE_SEPARATOR).append("createdTime:").append(accessLog.getCreatedTime())
+                .append(LINE_SEPARATOR);
+        return reqInfo.toString();
+    }
 }
 ```
 
@@ -96,5 +155,30 @@ relaxed:
   log:
     access:
       enabled: true
+      #过滤器顺序(可选)
+      order: -10
+      #url规则列表(可选)
+      urlRules:
+        #匹配路径
+        - urlPattern: /test/log/**/form
+          #日志选项
+          recordOption:
+            #是否忽略 默认为false
+            ignore: false
+            #记录请求 默认true
+            includeRequest: true
+            #记录响应 默认true
+            includeResponse: true
+          #字段级别过滤规则 
+          #此示例过滤请求username 响应password
+          #请求参数:{"username":"zs","password":"12"}
+          #响应参数:{"username":"zs","password":"12"}
+          fieldFilter:
+            #匹配请求参数路径名,多个以,分隔。
+            matchRequestKey: username,password
+            #匹配响应参数路径名,多个以,分隔
+            matchResponseKey: password
+            #替换文本 若内容为空 则不替换
+            replaceText: none
 ```
 
