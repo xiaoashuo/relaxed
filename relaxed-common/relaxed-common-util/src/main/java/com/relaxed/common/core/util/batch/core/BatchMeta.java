@@ -1,4 +1,4 @@
-package com.relaxed.common.core.util.batch.meta;
+package com.relaxed.common.core.util.batch.core;
 
 import lombok.Getter;
 import lombok.Setter;

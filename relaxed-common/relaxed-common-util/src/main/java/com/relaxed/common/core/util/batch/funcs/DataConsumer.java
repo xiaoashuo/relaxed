@@ -1,6 +1,6 @@
 package com.relaxed.common.core.util.batch.funcs;
 
-import com.relaxed.common.core.util.batch.meta.BatchMeta;
+import com.relaxed.common.core.util.batch.core.BatchMeta;
 
 /**
  * @author Yakir
