@@ -1,6 +1,6 @@
 package com.relaxed.common.core.util.batch.core;
 
-import com.relaxed.common.core.util.batch.BatchExecutor;
+import com.relaxed.common.core.util.batch.BatchUtil;
 import org.springframework.util.Assert;
 
 /**
@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
 
 public class BatchGroup {
 
-	private BatchExecutor _parent;
+	private BatchUtil _parent;
 
 	/**
 	 * 分组数
@@ -30,7 +30,7 @@ public class BatchGroup {
 	 */
 	private long totalCount;
 
-	public BatchGroup(BatchExecutor parent) {
+	public BatchGroup(BatchUtil parent) {
 		this._parent = parent;
 	}
 
@@ -56,7 +56,7 @@ public class BatchGroup {
 		return totalCount;
 	}
 
-	public BatchExecutor end() {
+	public BatchUtil end() {
 		Assert.isTrue(totalCount > 0, "total must not be less 0");
 		Assert.isTrue(size > 0, "size must not be less 0");
 		// 切分数目

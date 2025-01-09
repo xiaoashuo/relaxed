@@ -28,7 +28,7 @@ import java.util.concurrent.Executor;
  * @Version 1.0
  */
 @Slf4j
-public class BatchExecutor {
+public class BatchUtil {
 
 	private BatchGroup batchGroup;
 
@@ -41,11 +41,11 @@ public class BatchExecutor {
 	 */
 	private Executor executor;
 
-	public static BatchExecutor create() {
-		return new BatchExecutor();
+	public static BatchUtil create() {
+		return new BatchUtil();
 	}
 
-	public BatchExecutor executor(Executor executor) {
+	public BatchUtil executor(Executor executor) {
 		this.executor = executor;
 		return this;
 	}

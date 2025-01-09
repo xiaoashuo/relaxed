@@ -1,6 +1,6 @@
 package com.relaxed.common.core.util.batch.core;
 
-import com.relaxed.common.core.util.batch.BatchExecutor;
+import com.relaxed.common.core.util.batch.BatchUtil;
 
 /**
  * @author Yakir
@@ -11,13 +11,13 @@ import com.relaxed.common.core.util.batch.BatchExecutor;
  */
 public class BatchProps {
 
-	private BatchExecutor _parent;
+	private BatchUtil _parent;
 
 	private String taskName;
 
 	private boolean isAsync;
 
-	public BatchProps(BatchExecutor parent) {
+	public BatchProps(BatchUtil parent) {
 		this._parent = parent;
 	}
 
@@ -39,7 +39,7 @@ public class BatchProps {
 		return isAsync;
 	}
 
-	public BatchExecutor end() {
+	public BatchUtil end() {
 		return _parent;
 	}
 

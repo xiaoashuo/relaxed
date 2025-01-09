@@ -1,7 +1,7 @@
 package com.relaxed.test.utils.batch;
 
 import cn.hutool.core.thread.NamedThreadFactory;
-import com.relaxed.common.core.util.batch.BatchExecutor;
+import com.relaxed.common.core.util.batch.BatchUtil;
 import com.relaxed.common.core.util.batch.core.BatchMeta;
 import com.relaxed.common.core.util.batch.funcs.DataConsumer;
 import com.relaxed.common.core.util.batch.funcs.ExceptionHandler;
@@ -30,8 +30,8 @@ public class BatchTest {
 		try {
 
 			// 构造任务
-			BatchExecutor.create().executor(poolExecutor).props().taskName("测试").async(true).end().params()
-					.totalCount(1000).size(100).end().<TestModel>task().provider(batchMeta -> {
+			BatchUtil.create().executor(poolExecutor).props().taskName("测试").async(true).end().params().totalCount(1000)
+					.size(100).end().<TestModel>task().provider(batchMeta -> {
 						Integer startIndex = batchMeta.getStartIndex();
 						Integer groupNo = batchMeta.getGroupNo();
 						System.out.println("组数" + groupNo + "-" + startIndex);

@@ -1,6 +1,6 @@
 package com.relaxed.common.core.util.batch.core;
 
-import com.relaxed.common.core.util.batch.BatchExecutor;
+import com.relaxed.common.core.util.batch.BatchUtil;
 import com.relaxed.common.core.util.batch.funcs.DataConsumer;
 import com.relaxed.common.core.util.batch.funcs.DataProvider;
 import com.relaxed.common.core.util.batch.funcs.ExceptionHandler;
@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class BatchTask<T> {
 
-	private BatchExecutor _parent;
+	private BatchUtil _parent;
 
 	private DataProvider<T> provider;
 
@@ -25,13 +25,13 @@ public class BatchTask<T> {
 
 	private ExceptionHandler expResolver = BatchTask::throwException;
 
-	private LocationComputer locationComputer = BatchTask::locationComputer;
+	private LocationComputer locationComputer = BatchTask::DEFAULT_LOCATION_COMPUTER;
 
-	private static int locationComputer(int groupNo, int size) {
+	private static int DEFAULT_LOCATION_COMPUTER(int groupNo, int size) {
 		return (groupNo - 1) * size;
 	}
 
-	public BatchTask(BatchExecutor parent) {
+	public BatchTask(BatchUtil parent) {
 		this._parent = parent;
 	}
 
@@ -45,8 +45,13 @@ public class BatchTask<T> {
 		return this;
 	}
 
-	public BatchTask expResolver(ExceptionHandler expResolver) {
+	public BatchTask<T> expResolver(ExceptionHandler expResolver) {
 		this.expResolver = expResolver;
+		return this;
+	}
+
+	public BatchTask<T> locationComputer(LocationComputer locationComputer) {
+		this.locationComputer = locationComputer;
 		return this;
 	}
 
@@ -66,7 +71,7 @@ public class BatchTask<T> {
 		return locationComputer;
 	}
 
-	public BatchExecutor end() {
+	public BatchUtil end() {
 		return _parent;
 	}
 
