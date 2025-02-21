@@ -1,5 +1,6 @@
 package com.relaxed.test.log.access;
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.URLUtil;
 import com.relaxed.common.core.util.IpUtils;
@@ -11,12 +12,15 @@ import com.relaxed.common.log.access.handler.AbstractAccessLogHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.util.UrlPathHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -33,6 +37,29 @@ import java.util.Optional;
 public class TestAccessLogHandler extends AbstractAccessLogHandler<AccessLog> {
 
 	public static final String TRACE_ID = "traceId";
+
+	/**
+	 * 针对需忽略的Url的规则匹配器
+	 */
+	private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
+
+	/**
+	 * URL 路径匹配的帮助类
+	 */
+	private static final UrlPathHelper URL_PATH_HELPER = new UrlPathHelper();
+
+	@Override
+	public boolean shouldLog(HttpServletRequest request) {
+		// /webjars/**
+		String lookupPathForRequest = URL_PATH_HELPER.getLookupPathForRequest(request);
+		ArrayList<String> ignoreList = ListUtil.toList("/doc.html", "/webjars/**", "/v3/api-docs/**", "/favicon.ico");
+		for (String url : ignoreList) {
+			if (ANT_PATH_MATCHER.match(url, lookupPathForRequest)) {
+				return false;
+			}
+		}
+		return super.shouldLog(request);
+	}
 
 	@Override
 	public AccessLog beforeRequest(HttpServletRequest request, LogAccessRule logAccessRule) {
