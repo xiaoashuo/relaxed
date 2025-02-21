@@ -79,7 +79,9 @@ public abstract class AbstractDownloadHandler implements DownloadHandler, Applic
 	 */
 	@SneakyThrows
 	protected String extractFileName(ResponseDownload responseDownload, DownloadModel downloadModel) {
-		return URLEncoder.encode(downloadModel.getFileName(), "UTF-8");
+		String displayFileName = StrUtil.isBlank(downloadModel.getDisplayFileName()) ? downloadModel.getFileName()
+				: downloadModel.getDisplayFileName();
+		return URLEncoder.encode(displayFileName, "UTF-8");
 	}
 
 }

@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 import org.springframework.util.Assert;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,6 +35,11 @@ public class DownloadModel {
 	private String fileName;
 
 	/**
+	 * 展示文件名
+	 */
+	private String displayFileName;
+
+	/**
 	 * 文件类型 png
 	 */
 	private String fileType;
@@ -56,7 +62,7 @@ public class DownloadModel {
 	/**
 	 * 额外参数
 	 */
-	private Map<String, Object> extra;
+	private Map<String, Object> extra = new HashMap<>();
 
 	/**
 	 * 后置处理器 执行完之后可以做一些收尾工作
