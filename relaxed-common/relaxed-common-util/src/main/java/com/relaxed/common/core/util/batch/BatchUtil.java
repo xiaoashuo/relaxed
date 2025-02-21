@@ -95,7 +95,7 @@ public class BatchUtil {
 			log.info("组:[{}],起始坐标:[{}],任务开始", groupNo, startIndex, size);
 			List dataList = provider.get(batchMeta);
 			if (CollectionUtil.isEmpty(dataList)) {
-				break;
+				continue;
 			}
 			if (async) {
 				// 单批数量jobs
