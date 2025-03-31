@@ -86,13 +86,17 @@ public class BatchUtil {
 		long totalCount = this.batchGroup.getTotalCount();
 		long groupNum = this.batchGroup.getGroupNum();
 		int size = this.batchGroup.getSize();
-		log.info("任务名称[{}],异步[{}],总数[{}],分组[{}],单批大小[{}]", taskName, async, totalCount, groupNum, size);
-
+		boolean debugLog = this.batchProps.isDebugLog();
+		if (debugLog) {
+			log.info("任务名称[{}],异步[{}],总数[{}],分组[{}],单批大小[{}]", taskName, async, totalCount, groupNum, size);
+		}
 		for (int groupNo = 1; groupNo <= groupNum; groupNo++) {
 
 			int startIndex = locationComputer.compute(groupNo, size);
 			BatchMeta batchMeta = getBatchMeta(groupNo, startIndex, size);
-			log.info("组:[{}],起始坐标:[{}],任务开始", groupNo, startIndex, size);
+			if (debugLog) {
+				log.info("组:[{}],起始坐标:[{}],任务开始", groupNo, startIndex, size);
+			}
 			List dataList = provider.get(batchMeta);
 			if (CollectionUtil.isEmpty(dataList)) {
 				continue;
@@ -130,7 +134,9 @@ public class BatchUtil {
 					rowIndex++;
 				}
 			}
-			log.info("组[{}],任务结束", groupNo, startIndex);
+			if (debugLog) {
+				log.info("组[{}],任务结束", groupNo, startIndex);
+			}
 		}
 	}
 

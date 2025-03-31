@@ -17,12 +17,19 @@ public class BatchProps {
 
 	private boolean isAsync;
 
+	private boolean debugLog = false;
+
 	public BatchProps(BatchUtil parent) {
 		this._parent = parent;
 	}
 
 	public BatchProps taskName(String taskName) {
 		this.taskName = taskName;
+		return this;
+	}
+
+	public BatchProps debugLog(boolean debugLog) {
+		this.debugLog = debugLog;
 		return this;
 	}
 
@@ -37,6 +44,10 @@ public class BatchProps {
 
 	public boolean isAsync() {
 		return isAsync;
+	}
+
+	public boolean isDebugLog() {
+		return debugLog;
 	}
 
 	public BatchUtil end() {

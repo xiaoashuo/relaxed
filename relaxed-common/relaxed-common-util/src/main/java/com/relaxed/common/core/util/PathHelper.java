@@ -17,7 +17,7 @@ import java.util.List;
  * @Version 1.0
  */
 @ToString
-public class Path {
+public class PathHelper {
 
 	/**
 	 * 核心路径
@@ -39,11 +39,11 @@ public class Path {
 	 */
 	private String fullPath;
 
-	public Path() {
+	public PathHelper() {
 
 	}
 
-	public Path(String profile, String dirPath, String fileName, String fullPath) {
+	public PathHelper(String profile, String dirPath, String fileName, String fullPath) {
 		this.profile = profile;
 		this.dirPath = dirPath;
 		this.fileName = fileName;
@@ -178,7 +178,7 @@ public class Path {
 			return fileName;
 		}
 
-		public Path build() {
+		public PathHelper build() {
 			if (CollectionUtil.isEmpty(dirs)) {
 				this.dirPath = withRootPath ? profile : "";
 			}
@@ -194,7 +194,7 @@ public class Path {
 			if (safeCheck) {
 				FileUtil.mkdir(this.dirPath);
 			}
-			return new Path(this.profile, this.dirPath, this.fileName, this.getFullPath());
+			return new PathHelper(this.profile, this.dirPath, this.fileName, this.getFullPath());
 		}
 
 		/**

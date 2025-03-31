@@ -1,10 +1,8 @@
 package com.relaxed.test.poi;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.resource.ResourceUtil;
 import com.deepoove.poi.data.AttachmentType;
 import com.deepoove.poi.data.Texts;
-import com.relaxed.common.core.util.Path;
 import com.relaxed.poi.PoiDataHelper;
 import com.relaxed.poi.PoiTemplate;
 import com.relaxed.poi.PoiUtil;
@@ -27,8 +25,6 @@ import org.springframework.util.ResourceUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
