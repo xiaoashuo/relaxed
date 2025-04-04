@@ -5,7 +5,11 @@ import cn.hutool.core.thread.ThreadUtil;
 import com.relaxed.common.jsch.sftp.SftpAutoConfiguration;
 import com.relaxed.pool.monitor.ThreadPoolMonitorAutoConfiguration;
 import com.relaxed.pool.monitor.annotation.ThreadPoolMonitor;
+import com.relaxed.pool.monitor.monitor.ThreadPoolStats;
+import com.relaxed.pool.monitor.monitor.ThreadPoolTaskMonitor;
+import com.relaxed.pool.monitor.monitor.ThreadPoolTrend;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -26,21 +31,37 @@ import java.util.concurrent.TimeUnit;
  * @Version 1.0
  */
 @Slf4j
-@SpringBootTest(classes = { ThreadPoolConfig.class, ThreadPoolMonitorAutoConfiguration.class },
+@SpringBootTest(
+		classes = { ThreadPoolConfig.class, ThreadPoolController.class, ThreadPoolMonitorAutoConfiguration.class },
 		properties = "spring.config.location=classpath:/thread/application-thread.yml")
 public class ThreadPoolMonitorApplicationTest {
 
 	@Autowired
 	ThreadPoolExecutor testThreadPool;
 
+	@Autowired
+	ThreadPoolController threadPoolController;
+
 	@Test
 	void test() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					List<ThreadPoolStats> allStats = threadPoolController.getAllStats();
+					Map<String, ThreadPoolTrend> allTrends = threadPoolController.getAllTrends();
+					ThreadUtil.sleep(1000);
+				}
+			}
+		}).start();
 		for (int i = 0; i < 1000; i++) {
 			PoolOrder poolOrder = new PoolOrder();
 			poolOrder.setUsername("username" + i);
 			processOrderAsync(poolOrder, testThreadPool);
 		}
+
 		ThreadUtil.sleep(70000);
+
 		List<CompletableFuture> jobs = new ArrayList<>();
 		for (int i = 0; i < 1000; i++) {
 			PoolOrder poolOrder = new PoolOrder();
@@ -49,6 +70,7 @@ public class ThreadPoolMonitorApplicationTest {
 		}
 		CompletableFuture.allOf(jobs.toArray(new CompletableFuture[0])).join();
 		ThreadUtil.safeSleep(80000);
+
 	}
 
 	// 业务方法

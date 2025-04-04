@@ -29,4 +29,16 @@ public class ThreadPoolConfig {
 		return orderProcessExecutor;
 	}
 
+	@ThreadPoolMonitor
+	@Bean
+	public ThreadPoolExecutor backThreadPool() {
+		ThreadPoolExecutor orderProcessExecutor = new ThreadPoolExecutor(3, // 核心线程数
+				5, // 最大线程数
+				60, TimeUnit.SECONDS, // 空闲线程存活时间
+				new LinkedBlockingQueue<>(200), // 工作队列
+				new NamedThreadFactory("back-process-", false), new ThreadPoolExecutor.CallerRunsPolicy() // 拒绝策略
+		);
+		return orderProcessExecutor;
+	}
+
 }

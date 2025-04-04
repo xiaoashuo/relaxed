@@ -6,6 +6,7 @@ import com.relaxed.pool.monitor.monitor.ThreadPoolTaskMonitor;
 import com.relaxed.pool.monitor.monitor.ThreadPoolTrend;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.Map;
  * @date 2025/4/3 17:32
  * @Version 1.0
  */
-
+@RestController
 @RequestMapping("/api/thread-pools")
 public class ThreadPoolController {
 
