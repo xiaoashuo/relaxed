@@ -46,6 +46,7 @@
         <module>idempotent/relaxed-common-idempotent</module>
         <module>mail/relaxed-extend-mail</module>
         <module>mail/relaxed-spring-boot-starter-mail</module>
+        <module>thread/pool-monitor-starter</module>
         <module>relaxed-poi-tl</module>
         <module>relaxed-test</module>
     </modules>
