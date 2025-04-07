@@ -2,10 +2,10 @@ relaxed:
   thread-pool:
     monitor:
       monitorEnabled: true
-      alertThreshold: 70
+      alertThreshold: 80
       alertChannels: email
       monitorIntervalMills: 10000
       adjustPoolNumEnabled: true
       idleRatioMaxThreshold: 20
       idleRatioIntervalMills: 60000
-      adjustPoolMaxinumThreshold: 20
+      adjustPoolMaxinumThreshold: 100

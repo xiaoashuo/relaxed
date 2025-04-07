@@ -14,7 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +44,9 @@ public class ThreadPoolMonitorApplicationTest {
 	@Autowired
 	ThreadPoolController threadPoolController;
 
+	@Resource
+	ThreadPoolTaskExecutor sealTaskExecutor;
+
 	@Test
 	void test() {
 		new Thread(new Runnable() {
@@ -57,7 +62,7 @@ public class ThreadPoolMonitorApplicationTest {
 		for (int i = 0; i < 1000; i++) {
 			PoolOrder poolOrder = new PoolOrder();
 			poolOrder.setUsername("username" + i);
-			processOrderAsync(poolOrder, testThreadPool);
+			processOrderAsync(poolOrder, sealTaskExecutor);
 		}
 
 		ThreadUtil.sleep(70000);
@@ -71,6 +76,14 @@ public class ThreadPoolMonitorApplicationTest {
 		CompletableFuture.allOf(jobs.toArray(new CompletableFuture[0])).join();
 		ThreadUtil.safeSleep(80000);
 
+	}
+
+	public static CompletableFuture<String> processOrderAsync(PoolOrder order,
+			ThreadPoolTaskExecutor threadPoolTaskExecutor) {
+		return CompletableFuture.supplyAsync(() -> {
+			// 处理订单逻辑
+			return doProcessOrder(order);
+		}, threadPoolTaskExecutor);
 	}
 
 	// 业务方法

@@ -3,8 +3,12 @@ package com.relaxed.pool.monitor;
 import com.relaxed.pool.monitor.monitor.ThreadPoolTaskMonitor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 /**
  * @author Yakir
@@ -14,6 +18,7 @@ import org.springframework.context.annotation.Bean;
  * @Version 1.0
  */
 @RequiredArgsConstructor
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ThreadPoolMonitorProperties.class)
 public class ThreadPoolMonitorAutoConfiguration {
 
@@ -34,6 +39,7 @@ public class ThreadPoolMonitorAutoConfiguration {
 	 * @param poolMonitorProperties
 	 */
 	@Bean
+	@ConditionalOnProperty(prefix = "relaxed.thread-pool.monitor", name = "monitorEnabled", havingValue = "true")
 	public ThreadPoolTaskMonitor threadPoolTaskMonitor(AlertService alertService,
 			ThreadPoolMonitorProperties poolMonitorProperties) {
 		return new ThreadPoolTaskMonitor(alertService, poolMonitorProperties);
@@ -43,6 +49,7 @@ public class ThreadPoolMonitorAutoConfiguration {
 	 * 线程池监控后置处理器 增强代理
 	 */
 	@Bean
+	@ConditionalOnProperty(prefix = "relaxed.thread-pool.monitor", name = "adjustPoolNumEnabled", havingValue = "true")
 	public ThreadPoolMonitorEnhancer threadPoolMonitorEnhancer() {
 		return new ThreadPoolMonitorEnhancer();
 	}
