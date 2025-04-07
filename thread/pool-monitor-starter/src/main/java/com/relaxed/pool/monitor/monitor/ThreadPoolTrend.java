@@ -14,6 +14,8 @@ public class ThreadPoolTrend {
 
 	private String poolName;
 
+	private double avgMaximumPoolSize; // 平均最大线程数
+
 	private double avgActiveThreadRatio; // 平均活跃线程比例
 
 	private double avgQueueUsageRatio; // 平均队列使用率

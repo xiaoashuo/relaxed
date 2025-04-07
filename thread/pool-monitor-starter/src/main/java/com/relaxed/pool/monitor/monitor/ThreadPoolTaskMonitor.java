@@ -191,7 +191,9 @@ public class ThreadPoolTaskMonitor {
 
 		ThreadPoolTrend trend = new ThreadPoolTrend();
 		trend.setPoolName(poolName);
-
+		// 计算平均最大线程数
+		trend.setAvgMaximumPoolSize(
+				history.stream().mapToDouble(ThreadPoolStats::getMaximumPoolSize).average().orElse(0));
 		// 计算平均活跃线程比例趋势
 		trend.setAvgActiveThreadRatio(
 				history.stream().mapToDouble(ThreadPoolStats::getActiveThreadRatio).average().orElse(0));
