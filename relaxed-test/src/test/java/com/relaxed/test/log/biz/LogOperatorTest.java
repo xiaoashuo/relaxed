@@ -4,6 +4,7 @@ import cn.hutool.core.util.IdUtil;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.relaxed.common.log.biz.annotation.LogDiffTag;
 import com.relaxed.common.log.biz.constant.LogRecordConstants;
 import com.relaxed.common.log.biz.model.AttributeChange;
@@ -31,6 +32,8 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Yakir
@@ -40,7 +43,7 @@ import java.util.List;
  * @Version 1.0
  */
 @Slf4j
-@SpringBootApplication(scanBasePackages = "com.relaxed")
+@SpringBootApplication(scanBasePackages = "com.relaxed.test.log.biz")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class LogOperatorTest {
 
@@ -66,7 +69,7 @@ public class LogOperatorTest {
 			// 简单方法
 			// bizLogService.simpleMethod(user);
 			// 上下文变量方法
-			// bizLogService.simpleMethodContext(user);
+			bizLogService.simpleMethodContext(user);
 			// 自定义函数方法
 			// bizLogService.simpleMethodCustomFunc(user);
 			// 执行前置函数
@@ -188,6 +191,36 @@ public class LogOperatorTest {
 		// arguments);
 		// System.out.println(listresult);
 
+	}
+
+	private static final Pattern PATTERN = Pattern.compile("\\{\\s*(\\w*)\\s*\\{(.*?)}}");
+
+	void testQuoteJson() {
+
+		String template = "{{#diffText}}";
+		String paramValue = "{\"subject\":\"\",\"diffs\":[{\"op\":\"REPLACE\",\"property\":\"questionText\",\"path\":\"/questionText\",\"leftValue\":\"\\\"停止催收。\\\\n\\\\n\",\"rightValue\":\"\\\"停止催收，屏蔽第诉。\\\\n\\\\n\",\"extParam\":{\"propertyLabel\":\"具体问题描述\"}}]}";
+		// paramValue = paramValue.replace("\\", "\\\\")
+		// .replace("$", "\\$");
+		// jackson
+		// ObjectMapper mapper = new ObjectMapper();
+		// paramValue = mapper.writeValueAsString(paramValue);
+		//// 移除最外层的引号
+		// paramValue = paramValue.substring(1, paramValue.length() - 1);
+		// 1. 使用Hutool的JSONUtil处理转义
+		boolean typeJSON = JSONUtil.isTypeJSON(paramValue);
+		String escapedParamValue = JSONUtil.quote(paramValue);
+		// 移除最外层的引号（因为quote方法会给字符串添加引号）
+		escapedParamValue = escapedParamValue.substring(1, escapedParamValue.length() - 1);
+
+		Matcher matcher = PATTERN.matcher(template);
+		StringBuffer parsedStr = new StringBuffer();
+		while (matcher.find()) {
+			String paramName = matcher.group(2);
+			String funcName = matcher.group(1);
+			matcher.appendReplacement(parsedStr, escapedParamValue);
+		}
+
+		System.out.println(parsedStr);
 	}
 
 }

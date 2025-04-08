@@ -22,6 +22,7 @@ import com.relaxed.common.log.biz.service.IOperatorGetService;
 import com.relaxed.common.log.biz.spel.LogSpelUtil;
 import com.relaxed.common.log.biz.spel.LogSpelEvaluationContext;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.slf4j.MDC;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -273,18 +274,37 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 			// 函数名为空 说明不是函数
 			if (StrUtil.isBlank(funcName)) {
 				String paramValue = LogSpelUtil.parseParamToString(paramName, logRecordContext);
-				matcher.appendReplacement(parsedStr, paramValue);
+				matcher.appendReplacement(parsedStr, quoteJson(paramValue));
 			}
 			else {
 				// 是函数 解析参数值
 				Object[] funcArgs = LogSpelUtil.parseParamStrToValArr(logRecordContext, paramName);
 				String funcVal = funcEval.evalFunc(funcName, paramName, funcArgs);
 				funcVal = funcVal == null ? "" : funcVal;
-				matcher.appendReplacement(parsedStr, funcVal);
+				matcher.appendReplacement(parsedStr, quoteJson(funcVal));
 			}
 		}
 		matcher.appendTail(parsedStr);
 		return parsedStr.toString();
+	}
+
+	/**
+	 * 转义json
+	 * @param jsonStr
+	 * @return
+	 */
+	public static String quoteJson(String jsonStr) {
+		if (StrUtil.isBlank(jsonStr)) {
+			return jsonStr;
+		}
+		// 非json类型 保持原值
+		if (!JSONUtil.isTypeJSON(jsonStr)) {
+			return jsonStr;
+		}
+		String escapedParamValue = JSONUtil.quote(jsonStr);
+		// 移除最外层的引号（因为quote方法会给字符串添加引号）
+		escapedParamValue = escapedParamValue.substring(1, escapedParamValue.length() - 1);
+		return escapedParamValue;
 	}
 
 	@Override

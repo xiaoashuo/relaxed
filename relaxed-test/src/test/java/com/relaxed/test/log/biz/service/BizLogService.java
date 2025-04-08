@@ -1,12 +1,20 @@
 package com.relaxed.test.log.biz.service;
 
+import cn.hutool.core.util.EscapeUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.relaxed.common.log.biz.annotation.BizLog;
 import com.relaxed.common.log.biz.context.LogRecordContext;
 import com.relaxed.test.log.biz.domain.LogUser;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Yakir
@@ -67,7 +75,7 @@ public class BizLogService {
 	 */
 	@BizLog(success = "'simpleMethod上下文变量执行成功'", bizNo = "{{#logUser.bizNo}}", detail = "物流投递到{{#deliveryAddress}}")
 	public String simpleMethodContext(LogUser logUser) {
-		String deliveryAddress = "上海市普陀区长寿路1888号";
+		String deliveryAddress = "\"上海市普陀区长寿路1888号";
 		LogRecordContext.push("deliveryAddress", deliveryAddress);
 		return "method [simpleMethodContext] exec success!!!";
 	}
