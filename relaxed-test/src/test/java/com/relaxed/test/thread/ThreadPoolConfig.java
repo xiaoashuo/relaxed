@@ -1,11 +1,14 @@
 package com.relaxed.test.thread;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.thread.NamedThreadFactory;
 import com.relaxed.pool.monitor.annotation.ThreadPoolMonitor;
+import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -50,9 +53,38 @@ public class ThreadPoolConfig {
 		// executor.setTaskDecorator(new MdcTaskDecorator());
 		// 设置拒绝策略 由当前（主）线程执行
 		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-		// executor.setTaskDecorator(mdcTaskDecorator);
+
+		 executor.setTaskDecorator(new PoolMdcTaskDecorator());
 		executor.initialize();
 		return executor;
+	}
+	public class PoolMdcTaskDecorator implements TaskDecorator {
+
+		@Override
+		public Runnable decorate(Runnable runnable) {
+			Map<String, String> contextMap = MDC.getCopyOfContextMap();
+			return () -> {
+				Map<String, String> old = MDC.getCopyOfContextMap();
+				try {
+					// 现在：@Async线程上下文！
+					// 恢复Web线程上下文的MDC数据
+					if (MapUtil.isNotEmpty(contextMap)) {
+						MDC.setContextMap(contextMap);
+					}
+					runnable.run();
+				}
+				finally {
+					if (old == null) {
+						MDC.clear();
+					}
+					else {
+						MDC.setContextMap(old);
+					}
+
+				}
+			};
+		}
+
 	}
 
 	@ThreadPoolMonitor

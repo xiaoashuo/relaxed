@@ -9,3 +9,5 @@ relaxed:
       idleRatioMaxThreshold: 20
       idleRatioIntervalMills: 60000
       adjustPoolMaxinumThreshold: 100
+logging:
+   config: classpath:thread/logback-spring.xml

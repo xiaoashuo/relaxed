@@ -2,6 +2,7 @@ package com.relaxed.test.thread;
 
 import cn.hutool.core.thread.NamedThreadFactory;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.IdUtil;
 import com.relaxed.common.jsch.sftp.SftpAutoConfiguration;
 import com.relaxed.pool.monitor.ThreadPoolMonitorAutoConfiguration;
 import com.relaxed.pool.monitor.annotation.ThreadPoolMonitor;
@@ -11,6 +12,7 @@ import com.relaxed.pool.monitor.monitor.ThreadPoolTrend;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
@@ -59,12 +61,13 @@ public class ThreadPoolMonitorApplicationTest {
 				}
 			}
 		}).start();
+		MDC.put("traceId", IdUtil.fastSimpleUUID());
 		for (int i = 0; i < 1000; i++) {
 			PoolOrder poolOrder = new PoolOrder();
 			poolOrder.setUsername("username" + i);
 			processOrderAsync(poolOrder, sealTaskExecutor);
 		}
-
+		MDC.clear();
 		ThreadUtil.sleep(70000);
 
 		List<CompletableFuture> jobs = new ArrayList<>();
@@ -96,7 +99,7 @@ public class ThreadPoolMonitorApplicationTest {
 	}
 
 	private static String doProcessOrder(PoolOrder order) {
-		System.out.println("当前处理到order" + Thread.currentThread().getName());
+		log.info("当前处理到order" + Thread.currentThread().getName());
 		ThreadUtil.safeSleep(3000);
 		return "success";
 	}

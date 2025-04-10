@@ -83,6 +83,7 @@ public class ThreadPoolMonitorEnhancer implements BeanPostProcessor, Application
 
 							threadPoolExecutor = threadPoolTaskExecutor.getThreadPoolExecutor();
 							threadPoolExecutor = createProxiedExecutor(beanName, threadPoolExecutor, annotation);
+
 							ReflectUtil.setFieldValue(threadPoolTaskExecutor, "threadPoolExecutor", threadPoolExecutor);
 							bean = threadPoolTaskExecutor;
 						}
