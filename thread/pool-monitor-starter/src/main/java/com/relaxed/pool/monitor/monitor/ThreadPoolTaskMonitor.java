@@ -19,6 +19,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -63,11 +64,20 @@ public class ThreadPoolTaskMonitor {
 		if (!monitorProperties.isMonitorEnabled()) {
 			return executor;
 		}
-
 		MonitoredThreadPool monitoredPool = new MonitoredThreadPool(name, executor);
+		return this.register(name, monitoredPool);
+	}
+
+	/**
+	 * 注册包装后的
+	 * @param name
+	 * @param monitoredPool
+	 * @return
+	 */
+	public ThreadPoolExecutor register(String name, MonitoredThreadPool monitoredPool) {
+		ThreadPoolExecutor executor = monitoredPool.getOriginalExecutor();
 		threadPoolMap.put(name, monitoredPool);
 		historyStats.put(name, new ArrayList<>());
-
 		log.info("线程池 [{}] 已注册到监控系统, 核心线程数: {}, 最大线程数: {}, 队列类型: {}, 队列容量: {}", name, executor.getCorePoolSize(),
 				executor.getMaximumPoolSize(), executor.getQueue().getClass().getSimpleName(),
 				getQueueCapacity(executor.getQueue()));

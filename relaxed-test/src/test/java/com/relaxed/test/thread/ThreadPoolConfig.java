@@ -3,6 +3,7 @@ package com.relaxed.test.thread;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.thread.NamedThreadFactory;
 import com.relaxed.pool.monitor.annotation.ThreadPoolMonitor;
+import com.relaxed.pool.monitor.monitor.MonitoredThreadPool;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.TaskDecorator;
@@ -34,6 +35,18 @@ public class ThreadPoolConfig {
 		return orderProcessExecutor;
 	}
 
+	@ThreadPoolMonitor(name = "监控线程池")
+	@Bean
+	public MonitoredThreadPool testMonitorThreadPool() {
+		ThreadPoolExecutor orderProcessExecutor = new ThreadPoolExecutor(3, // 核心线程数
+				5, // 最大线程数
+				60, TimeUnit.SECONDS, // 空闲线程存活时间
+				new LinkedBlockingQueue<>(200), // 工作队列
+				new NamedThreadFactory("order-process-", false), new ThreadPoolExecutor.CallerRunsPolicy() // 拒绝策略
+		);
+		return new MonitoredThreadPool("test", orderProcessExecutor);
+	}
+
 	@ThreadPoolMonitor(name = "签章线程池")
 	@Bean
 	public ThreadPoolTaskExecutor sealTaskExecutor(ThreadPoolExecutor testThreadPool) {
@@ -54,10 +67,11 @@ public class ThreadPoolConfig {
 		// 设置拒绝策略 由当前（主）线程执行
 		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 
-		 executor.setTaskDecorator(new PoolMdcTaskDecorator());
+		executor.setTaskDecorator(new PoolMdcTaskDecorator());
 		executor.initialize();
 		return executor;
 	}
+
 	public class PoolMdcTaskDecorator implements TaskDecorator {
 
 		@Override

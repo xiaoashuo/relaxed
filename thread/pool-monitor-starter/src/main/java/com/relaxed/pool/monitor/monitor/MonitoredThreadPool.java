@@ -3,6 +3,7 @@ package com.relaxed.pool.monitor.monitor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.lang.Nullable;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -28,7 +29,6 @@ public class MonitoredThreadPool extends ThreadPoolExecutor {
 	 * 最后一次参数更新时间
 	 */
 	private long lastUpdateTimeMills;
-
 
 	public MonitoredThreadPool(String name, ThreadPoolExecutor executor) {
 		super(executor.getCorePoolSize(), executor.getMaximumPoolSize(),
@@ -58,8 +58,9 @@ public class MonitoredThreadPool extends ThreadPoolExecutor {
 		this.lastUpdateTimeMills = lastUpdateTimeMills;
 	}
 
-
-
+	public String getName() {
+		return name;
+	}
 
 	/**
 	 * 拒绝策略包装器

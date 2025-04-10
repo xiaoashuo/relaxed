@@ -3,6 +3,7 @@ package com.relaxed.pool.monitor;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.relaxed.pool.monitor.annotation.ThreadPoolMonitor;
+import com.relaxed.pool.monitor.monitor.MonitoredThreadPool;
 import com.relaxed.pool.monitor.monitor.ThreadPoolTaskMonitor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -17,17 +18,21 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.MergedAnnotations;
+import org.springframework.core.task.TaskDecorator;
 import org.springframework.core.type.MethodMetadata;
 import org.springframework.core.type.StandardMethodMetadata;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.ConcurrentReferenceHashMap;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -75,14 +80,24 @@ public class ThreadPoolMonitorEnhancer implements BeanPostProcessor, Application
 					if (annotation != null) {
 						ThreadPoolExecutor threadPoolExecutor = null;
 						if (bean instanceof ThreadPoolExecutor) {
-							threadPoolExecutor = (ThreadPoolExecutor) bean;
-							bean = createProxiedExecutor(beanName, threadPoolExecutor, annotation);
+							if (bean instanceof MonitoredThreadPool) {
+								MonitoredThreadPool monitoredThreadPool = (MonitoredThreadPool) bean;
+
+								// 若本身注册的就是监控线程池 则直接注册
+								String poolKey = StrUtil.isBlank(annotation.name()) ? monitoredThreadPool.getName()
+										: annotation.name();
+								getMonitor().register(poolKey, monitoredThreadPool);
+							}
+							else {
+								threadPoolExecutor = (ThreadPoolExecutor) bean;
+								bean = createProxiedExecutor(beanName, threadPoolExecutor, annotation);
+							}
+
 						}
 						else if (bean instanceof ThreadPoolTaskExecutor) {
 							ThreadPoolTaskExecutor threadPoolTaskExecutor = (ThreadPoolTaskExecutor) bean;
 
-							threadPoolExecutor = threadPoolTaskExecutor.getThreadPoolExecutor();
-							threadPoolExecutor = createProxiedExecutor(beanName, threadPoolExecutor, annotation);
+							threadPoolExecutor = createProxiedExecutor(beanName, threadPoolTaskExecutor, annotation);
 
 							ReflectUtil.setFieldValue(threadPoolTaskExecutor, "threadPoolExecutor", threadPoolExecutor);
 							bean = threadPoolTaskExecutor;
@@ -146,6 +161,36 @@ public class ThreadPoolMonitorEnhancer implements BeanPostProcessor, Application
 		// 实现代理逻辑，例如监控线程池状态
 		String poolKey = StrUtil.isBlank(annotation.name()) ? beanName : annotation.name();
 		return getMonitor().register(poolKey, original);
+	}
+
+	private ThreadPoolExecutor createProxiedExecutor(String beanName, ThreadPoolTaskExecutor threadPoolTaskExecutor,
+			ThreadPoolMonitor annotation) {
+		String poolKey = StrUtil.isBlank(annotation.name()) ? beanName : annotation.name();
+		ThreadPoolExecutor threadPoolExecutor = threadPoolTaskExecutor.getThreadPoolExecutor();
+		// 装饰器
+		TaskDecorator taskDecorator = (TaskDecorator) ReflectUtil.getFieldValue(threadPoolTaskExecutor,
+				"taskDecorator");
+		ConcurrentReferenceHashMap decoratedTaskMap = (ConcurrentReferenceHashMap) ReflectUtil
+				.getFieldValue(threadPoolTaskExecutor, "decoratedTaskMap");
+		MonitoredThreadPool monitoredThreadPool = new MonitoredThreadPool(poolKey, threadPoolExecutor) {
+			@Override
+			public void execute(Runnable command) {
+				Runnable decorated;
+				if (taskDecorator != null) {
+					decorated = taskDecorator.decorate(command);
+					if (decorated != command) {
+						decoratedTaskMap.put(decorated, command);
+					}
+				}
+				else {
+					decorated = command;
+				}
+				super.execute(decorated);
+			}
+		};
+		// 实现代理逻辑，例如监控线程池状态
+
+		return getMonitor().register(poolKey, monitoredThreadPool);
 	}
 
 }
