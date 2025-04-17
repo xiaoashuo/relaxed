@@ -142,10 +142,7 @@
             <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-common-translation</artifactId>
         </dependency>
-        <dependency>
-            <groupId>cn.lovecyy</groupId>
-            <artifactId>relaxed-common-util</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-common-holidays</artifactId>
