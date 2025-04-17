@@ -94,7 +94,61 @@
         </dependency>
         <dependency>
             <groupId>cn.lovecyy</groupId>
+            <artifactId>relaxed-spring-boot-starter-secret</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.lovecyy</groupId>
+            <artifactId>relaxed-spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.lovecyy</groupId>
+            <artifactId>relaxed-spring-boot-starter-mq</artifactId>
+        </dependency>
+        <!-- RabbitMQ  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- RocketMQ -->
+        <!-- https://mvnrepository.com/artifact/org.apache.rocketmq/rocketmq-tools -->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-tools</artifactId>
+            <version>4.8.0</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-spring-boot-starter</artifactId>
+            <version>2.2.0</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>pool-monitor-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.lovecyy</groupId>
+            <artifactId>relaxed-common-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.lovecyy</groupId>
+            <artifactId>relaxed-common-desensitize</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.lovecyy</groupId>
+            <artifactId>relaxed-common-translation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.lovecyy</groupId>
+            <artifactId>relaxed-common-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.lovecyy</groupId>
+            <artifactId>relaxed-common-holidays</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
