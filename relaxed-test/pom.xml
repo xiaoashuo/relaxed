@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.lovecyy</groupId>
+        <groupId>cn.lovecyy</groupId>
          <artifactId>relaxed-parent</artifactId>
          <version>${revision}</version>
         <relativePath>../relaxed-parent/pom.xml</relativePath>
@@ -25,27 +25,27 @@
 
 
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-poi-tl</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-common-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-common-log-biz</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-common-tenant</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-common-idempotent</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-mybatis-plus</artifactId>
         </dependency>
         <dependency>
@@ -65,35 +65,35 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-datascope</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-s3</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-job</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-mail</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-log</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-sftp</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-redis</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>pool-monitor-starter</artifactId>
         </dependency>
         <dependency>
@@ -101,7 +101,7 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-fastexcel</artifactId>
         </dependency>
 

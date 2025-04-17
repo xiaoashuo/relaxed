@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.lovecyy</groupId>
+        <groupId>cn.lovecyy</groupId>
         <artifactId>relaxed-parent</artifactId>
         <version>${revision}</version>
         <relativePath>../../relaxed-parent/pom.xml</relativePath>
@@ -16,15 +16,15 @@
 
 
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-common-log-access</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-common-log-operation</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-common-log-biz</artifactId>
         </dependency>
         <dependency>

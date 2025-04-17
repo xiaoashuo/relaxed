@@ -5,7 +5,7 @@
 
 
     <parent>
-        <groupId>com.lovecyy</groupId>
+        <groupId>cn.lovecyy</groupId>
         <artifactId>relaxed-parent</artifactId>
         <version>${revision}</version>
         <relativePath>../../relaxed-parent/pom.xml</relativePath>

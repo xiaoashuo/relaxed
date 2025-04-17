@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.lovecyy</groupId>
+        <groupId>cn.lovecyy</groupId>
         <artifactId>relaxed-starters</artifactId>
         <version>${revision}</version>
     </parent>
@@ -14,21 +14,21 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-common-exception</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-dingtalk</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-wechat</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-spring-boot-starter-mail</artifactId>
             <optional>true</optional>
         </dependency>

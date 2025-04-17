@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.lovecyy</groupId>
+        <groupId>cn.lovecyy</groupId>
          <artifactId>relaxed-oauth2</artifactId>
          <version>${revision}</version>
     </parent>
@@ -18,7 +18,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-common-core</artifactId>
         </dependency>
 

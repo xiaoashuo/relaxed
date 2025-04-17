@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.lovecyy</groupId>
+        <groupId>cn.lovecyy</groupId>
         <artifactId>relaxed-starters</artifactId>
         <version>${revision}</version>
     </parent>
@@ -14,7 +14,7 @@
     <description>Web 请求响应加解密</description>
     <dependencies>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-common-core</artifactId>
         </dependency>
 

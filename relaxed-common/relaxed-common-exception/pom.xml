@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.lovecyy</groupId>
+        <groupId>cn.lovecyy</groupId>
          <artifactId>relaxed-common</artifactId>
          <version>${revision}</version>
     </parent>
@@ -37,17 +37,17 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-extend-dingtalk</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-extend-wechat</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-extend-mail</artifactId>
             <optional>true</optional>
         </dependency>

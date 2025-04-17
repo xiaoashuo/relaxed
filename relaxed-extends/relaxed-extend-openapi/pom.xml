@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.lovecyy</groupId>
+        <groupId>cn.lovecyy</groupId>
         <artifactId>relaxed-extends</artifactId>
         <version>${revision}</version>
     </parent>
@@ -26,7 +26,7 @@
             <artifactId>hutool-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lovecyy</groupId>
+            <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-common-model</artifactId>
         </dependency>
         <dependency>
