@@ -12,8 +12,8 @@ public interface SupplyHandler<U> {
 
 	/**
 	 * 带返回值的
-	 * @param sftp
-	 * @return
+	 * @param sftp sftp执行器
+	 * @return 执行结果
 	 */
 	U supplyHandle(ISftpExecutor sftp);
 

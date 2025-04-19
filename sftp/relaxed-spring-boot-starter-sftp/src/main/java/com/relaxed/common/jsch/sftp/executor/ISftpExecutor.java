@@ -60,7 +60,7 @@ public interface ISftpExecutor {
 	 * 下载远程文件 到指定文件
 	 * @param absoluteFilePath 全名称文件路径
 	 * @param file 写入文件
-	 * @return
+	 * @return 返回文件
 	 */
 	File download(String absoluteFilePath, File file);
 
@@ -131,7 +131,7 @@ public interface ISftpExecutor {
 	/**
 	 * 查看远程目录下的文件和目录
 	 * @param path 远程目录路径
-	 * @param filterFunction 过滤函数 (文件属性)-> true ; 返回true 则当前寻找到文件需要保存 返回false 则跳过当前文件目录存储
+	 * @param filterFunction 过滤函数 文件属性-> true ; 返回true 则当前寻找到文件需要保存 返回false 则跳过当前文件目录存储
 	 * @return 目录下的文件和目录名称集合
 	 */
 	List<String> list(String path, Function<FileAttr, Boolean> filterFunction);
@@ -160,14 +160,14 @@ public interface ISftpExecutor {
 
 	/**
 	 * 获取文件大小
-	 * @param path
-	 * @return
+	 * @param path 文件路径
+	 * @return 文件大小
 	 */
 	long filesize(String path);
 
 	/**
 	 * 获取channel sftp 仅允许 同包路径或子类调用
-	 * @return
+	 * @return sftp通道
 	 */
 	ChannelSftp getChannelSftp();
 

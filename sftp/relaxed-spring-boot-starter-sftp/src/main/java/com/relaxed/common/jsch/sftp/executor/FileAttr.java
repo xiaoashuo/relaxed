@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Yakir
- * @Topic FileAttr
- * @Description
+ * @Description FileAttr
  * @date 2024/11/19 16:30
  * @Version 1.0
  */

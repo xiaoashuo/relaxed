@@ -14,9 +14,9 @@ public interface ISftpProvider {
 
 	/**
 	 * 根据channel sftp 生成Sftp
-	 * @param channelSftp
+	 * @param channelSftp sftp通道
 	 * @param sftpProperties sftp配置属性
-	 * @return
+	 * @return sftp执行类
 	 */
 	ISftpExecutor provide(ChannelSftp channelSftp, SftpProperties sftpProperties);
 

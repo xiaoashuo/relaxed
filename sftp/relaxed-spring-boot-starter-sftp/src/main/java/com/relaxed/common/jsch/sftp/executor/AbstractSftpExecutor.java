@@ -22,7 +22,7 @@ public abstract class AbstractSftpExecutor implements ISftpExecutor {
 
 	/**
 	 * 获取channel sftp 仅允许 同包路径或子类调用
-	 * @return
+	 * @return sftp通道
 	 */
 	@Override
 	public ChannelSftp getChannelSftp() {

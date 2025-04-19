@@ -11,8 +11,8 @@ import com.relaxed.common.jsch.sftp.executor.ISftpExecutor;
 public interface Handler {
 
 	/**
-	 * 不带返回值
-	 * @param sftp
+	 * 不带返回值的方法函数
+	 * @param sftp sftp执行器
 	 */
 	void handle(ISftpExecutor sftp);
 

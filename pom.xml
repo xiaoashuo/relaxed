@@ -67,7 +67,16 @@
 
 
 
-
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://central.sonatype.com</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://central.sonatype.com</url>
+        </repository>
+    </distributionManagement>
 
 
     <!--环境变量-->
@@ -98,37 +107,10 @@
             <id>ossrh</id>
              <build>
                  <plugins>
-                     <!--sonatype发布插件-->
-                     <plugin>
-                         <groupId>org.sonatype.central</groupId>
-                         <artifactId>central-publishing-maven-plugin</artifactId>
-                         <version>0.4.0</version>
-                         <extensions>true</extensions>
-                         <configuration>
-                             <publishingServerId>central</publishingServerId>
-                             <tokenAuth>true</tokenAuth>
-                         </configuration>
-                     </plugin>
-                     <!-- 生成source -->
-                     <plugin>
-                         <groupId>org.apache.maven.plugins</groupId>
-                         <artifactId>maven-source-plugin</artifactId>
-                         <version>3.2.1</version>
-                         <executions>
-                             <execution>
-                                 <id>oss</id>
-                                 <phase>package</phase>
-                                 <goals>
-                                     <goal>jar-no-fork</goal>
-                                 </goals>
-                             </execution>
-                         </executions>
-                     </plugin>
                      <!-- Javadoc -->
                      <plugin>
                          <groupId>org.apache.maven.plugins</groupId>
                          <artifactId>maven-javadoc-plugin</artifactId>
-                         <version>3.6.3</version>
                          <configuration>
                              <encoding>UTF-8</encoding>
                              <charset>UTF-8</charset>
@@ -146,22 +128,35 @@
                              </execution>
                          </executions>
                      </plugin>
+                     <!-- 生成source -->
+                     <plugin>
+                         <groupId>org.apache.maven.plugins</groupId>
+                         <artifactId>maven-source-plugin</artifactId>
+                          <executions>
+                             <execution>
+                                 <id>oss</id>
+                                 <phase>package</phase>
+                                 <goals>
+                                     <goal>jar-no-fork</goal>
+                                 </goals>
+                             </execution>
+                         </executions>
+                     </plugin>
                      <plugin>
                          <groupId>org.apache.maven.plugins</groupId>
                          <artifactId>maven-release-plugin</artifactId>
-                         <version>3.0.1</version>
                          <configuration>
                              <autoVersionSubmodules>true</autoVersionSubmodules>
+                             <goals>deploy</goals>
+                             <releaseProfiles>release</releaseProfiles>
                              <mavenExecutorId>forked-path</mavenExecutorId>
                              <useReleaseProfile>false</useReleaseProfile>
                          </configuration>
                      </plugin>
-
                      <!-- 工程文件自动签名-->
                      <plugin>
                          <groupId>org.apache.maven.plugins</groupId>
                          <artifactId>maven-gpg-plugin</artifactId>
-                         <version>3.2.3</version>
                          <executions>
                              <execution>
                                  <id>sign-artifacts</id>
@@ -172,22 +167,27 @@
                              </execution>
                          </executions>
                      </plugin>
+                     <!--sonatype发布插件-->
+                     <plugin>
+                         <groupId>org.sonatype.central</groupId>
+                         <artifactId>central-publishing-maven-plugin</artifactId>
+                         <extensions>true</extensions>
+                         <configuration>
+                             <publishingServerId>ossrh</publishingServerId>
+                         </configuration>
+                     </plugin>
+
+
+
+
+
                  </plugins>
              </build>
         </profile>
 
     </profiles>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>release-snapshot-id</id>
-            <url>http://49.234.128.78/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>release-id</id>
-            <url>http://49.234.128.78/nexus/content/repositories/releases/</url>
-        </repository>
-    </distributionManagement>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -206,6 +206,7 @@
             </plugins>
         </pluginManagement>
         <plugins>
+
             <plugin>
                 <groupId>io.spring.javaformat</groupId>
                 <artifactId>spring-javaformat-maven-plugin</artifactId>
@@ -309,7 +310,7 @@
     <developers>
         <developer>
             <name>yakir</name>
-            <email>yakir@foxmail.com</email>
+            <email>1412844668@qq.com</email>
         </developer>
     </developers>
 
