@@ -22,36 +22,62 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
+ * 批量插入部分字段方法实现
+ * <p>
+ * 该实现类扩展了 MyBatis-Plus 的 {@link InsertBatchSomeColumn} 方法， 支持通过集合参数进行批量插入，并且可以指定要插入的字段。
+ *
  * @author Yakir
- * @Topic InsertBatchSomeColumnByCollection
- * @Description {@link InsertBatchSomeColumn}
- * @date 2021/6/10 10:18
- * @Version 1.0
  */
 public class InsertBatchSomeColumnByCollection extends AbstractMethod {
 
+	/**
+	 * SQL 方法名称
+	 */
 	private static final String SQL_METHOD = "insertBatchSomeColumn";
 
+	/**
+	 * 默认构造方法
+	 */
 	public InsertBatchSomeColumnByCollection() {
 		super(SQL_METHOD);
 	}
 
 	/**
 	 * 字段筛选条件
+	 * <p>
+	 * 用于指定要插入的字段，可以通过设置该条件来过滤不需要插入的字段。
 	 */
 	@Setter
 	@Accessors(chain = true)
 	private Predicate<TableFieldInfo> predicate;
 
+	/**
+	 * 带字段筛选条件的构造方法
+	 * @param predicate 字段筛选条件
+	 */
 	public InsertBatchSomeColumnByCollection(Predicate<TableFieldInfo> predicate) {
 		this(SQL_METHOD, predicate);
 	}
 
+	/**
+	 * 带方法名和字段筛选条件的构造方法
+	 * @param methodName 方法名称
+	 * @param predicate 字段筛选条件
+	 */
 	public InsertBatchSomeColumnByCollection(String methodName, Predicate<TableFieldInfo> predicate) {
 		super(methodName);
 		this.predicate = predicate;
 	}
 
+	/**
+	 * 注入 MappedStatement
+	 * <p>
+	 * 处理主键生成策略，构建 SQL 语句，并创建 MappedStatement。 支持自增主键和序列主键的处理。
+	 * @param mapperClass Mapper 接口类
+	 * @param modelClass 实体类
+	 * @param tableInfo 表信息
+	 * @return MappedStatement
+	 */
 	@Override
 	public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
 		KeyGenerator keyGenerator = new NoKeyGenerator();

@@ -24,15 +24,23 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * 对 XxlJobSpringExecutor 做了增强，在注册 JobHandler 时使用 TraceMethodJobHandler
+ * 可追踪的 XXL-Job Spring 执行器。 继承自 XxlJobSpringExecutor，为任务执行添加追踪功能。 主要功能包括： 1.
+ * 自动扫描并注册带有 @XxlJob 注解的方法 2. 使用 TraceMethodJobHandler 包装任务处理器 3. 支持任务执行链路追踪
  *
- * @author Hccake
+ * @author Yakir
+ * @since 1.0
  * @see TraceMethodJobHandler
  */
 public class TraceXxlJobSpringExecutor extends XxlJobSpringExecutor {
 
+	/**
+	 * 日志记录器
+	 */
 	private static final Logger logger = LoggerFactory.getLogger(TraceXxlJobSpringExecutor.class);
 
+	/**
+	 * 在单例初始化完成后执行。 主要完成以下工作： 1. 初始化任务处理器方法仓库 2. 刷新 GlueFactory 3. 启动执行器
+	 */
 	@Override
 	public void afterSingletonsInstantiated() {
 		// init JobHandler Repository
@@ -53,6 +61,10 @@ public class TraceXxlJobSpringExecutor extends XxlJobSpringExecutor {
 		}
 	}
 
+	/**
+	 * 初始化任务处理器方法仓库。 扫描 Spring 容器中所有带有 @XxlJob 注解的方法， 并将其注册为任务处理器。
+	 * @param applicationContext Spring 应用上下文
+	 */
 	private void initJobHandlerMethodRepository(ApplicationContext applicationContext) {
 		if (applicationContext == null) {
 			return;

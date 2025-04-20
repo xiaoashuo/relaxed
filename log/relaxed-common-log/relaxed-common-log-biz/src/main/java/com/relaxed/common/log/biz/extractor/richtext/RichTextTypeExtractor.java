@@ -21,14 +21,22 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * 富文本类型差异提取器，用于处理富文本内容的差异比较。 该实现类通过比较富文本的旧值和新值，生成类似于 Git Diff 的差异结果。 主要功能包括： 1. 将 HTML
+ * 内容转换为纯文本进行比较 2. 使用 DiffUtils 计算文本差异 3. 生成包含变更类型和内容的差异片段 4. 特殊处理图片标签
+ *
  * @author Yakir
- * @Topic RichTextConverter
- * @Description
- * @date 2021/12/15 9:49
- * @Version 1.0
+ * @since 1.0.0
  */
 public class RichTextTypeExtractor implements DiffExtractor {
 
+	/**
+	 * 提取并转换富文本字段的差异值
+	 * @param field 字段对象
+	 * @param logDiffTag 差异标签注解
+	 * @param oldFieldValue 字段的旧值
+	 * @param newFieldValue 字段的新值
+	 * @return 差异结果的 JSON 字符串表示
+	 */
 	@Override
 	public String diffValue(Field field, LogDiffTag logDiffTag, Object oldFieldValue, Object newFieldValue) {
 		String oldValueStr = StrUtil.toString(oldFieldValue);
@@ -38,33 +46,34 @@ public class RichTextTypeExtractor implements DiffExtractor {
 	}
 
 	/**
-	 * 对比两个 text对象，或者html片段的不同，生成类似于gitDiff的html片段
-	 * @param oldText 旧值
-	 * @param newText 新值
-	 * @return 类似于gitDiff的html片段
+	 * 比较两个文本对象或 HTML 片段的不同，生成类似于 Git Diff 的差异结果
+	 * @param oldText 旧文本内容
+	 * @param newText 新文本内容
+	 * @return 差异结果的 JSON 字符串表示，包含版本号和差异片段列表
 	 */
 	public static String diffText(String oldText, String newText) {
-
+		// 将 HTML 转换为纯文本并按行分割
 		List<String> oldStringList = Arrays.asList(Html2Text.simpleHtml(oldText).split("\n"));
 		List<String> newStringList = Arrays.asList(Html2Text.simpleHtml(newText).split("\n"));
 
-		// 获得文件的不同之处
+		// 计算文本差异
 		Patch patch = DiffUtils.diff(oldStringList, newStringList);
 		DiffRowGenerator.Builder builder = new DiffRowGenerator.Builder();
 		builder.showInlineDiffs(false).columnWidth(Integer.MAX_VALUE);
 		DiffRowGenerator generator = builder.build();
 
+		// 存储差异行
 		Map<Integer, List<DiffRow>> diffRowMap = new LinkedHashMap<>();
 
-		// 获得变化的数据
+		// 处理每个差异块
 		for (Object delta : patch.getDeltas()) {
 			List<String> originalLines = (List<String>) ((Delta) delta).getOriginal().getLines();
 			List<String> revisedLines = (List<String>) ((Delta) delta).getRevised().getLines();
 			List<DiffRow> generateDiffRows = generator.generateDiffRows(originalLines, revisedLines);
-			// 变化的位置
+			// 获取变化的位置
 			int leftPos = ((Delta) delta).getOriginal().getPosition();
 			int rightPos = ((Delta) delta).getRevised().getPosition();
-			// 根据改变的位置做分类
+			// 根据位置分类存储差异行
 			for (DiffRow row : generateDiffRows) {
 				List<DiffRow> diffRowList = diffRowMap.get(leftPos);
 				if (diffRowList == null) {
@@ -75,11 +84,12 @@ public class RichTextTypeExtractor implements DiffExtractor {
 			}
 		}
 
+		// 构建差异结果
 		Map<String, Object> textDiffMap = new HashMap<>();
 		textDiffMap.put("version", "1.0.0");
 		List<Fragment> diffFragmentList = new ArrayList<>();
 
-		// 遍历map
+		// 处理每个差异位置
 		Set<Map.Entry<Integer, List<DiffRow>>> entrySet = diffRowMap.entrySet();
 		for (Map.Entry<Integer, List<DiffRow>> entry : entrySet) {
 			Integer pos = entry.getKey();
@@ -109,12 +119,16 @@ public class RichTextTypeExtractor implements DiffExtractor {
 			}
 			fragment.setPartList(partList);
 			diffFragmentList.add(fragment);
-
 		}
 		textDiffMap.put("content", diffFragmentList);
 		return JSONUtil.toJsonStr(textDiffMap);
 	}
 
+	/**
+	 * 替换图片标签占位符为实际的 HTML 标签
+	 * @param s 包含图片占位符的字符串
+	 * @return 替换后的字符串
+	 */
 	private static String replaceImgTag(String s) {
 		return s.replaceAll(Constant.imgLeftPlaceholder, "<img ").replaceAll(Constant.imgRightPlaceholder, " >");
 	}

@@ -13,16 +13,20 @@ import org.springframework.context.annotation.Bean;
 import java.util.List;
 
 /**
- * @author hccake
+ * 数据权限自动配置类
+ * <p>
+ * 提供数据权限相关的自动配置，包括数据权限处理器、注解处理器和 MyBatis 拦截器的配置。 当存在 DataScope 实现类时自动生效。
  */
 @RequiredArgsConstructor
 @ConditionalOnBean(DataScope.class)
 public class DataScopeAutoConfiguration {
 
 	/**
-	 * 数据权限处理器
+	 * 配置数据权限处理器
+	 * <p>
+	 * 根据提供的数据范围集合创建默认的数据权限处理器。
 	 * @param dataScopeList 需要控制的数据范围集合
-	 * @return DataPermissionHandler
+	 * @return 数据权限处理器
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -31,8 +35,10 @@ public class DataScopeAutoConfiguration {
 	}
 
 	/**
-	 * 数据权限注解 Advisor，用于处理数据权限的链式调用关系
-	 * @return DataPermissionAnnotationAdvisor
+	 * 配置数据权限注解处理器
+	 * <p>
+	 * 创建数据权限注解处理器，用于处理数据权限的链式调用关系。
+	 * @return 数据权限注解处理器
 	 */
 	@Bean
 	@ConditionalOnMissingBean(DataPermissionAnnotationAdvisor.class)
@@ -41,9 +47,11 @@ public class DataScopeAutoConfiguration {
 	}
 
 	/**
-	 * mybatis 拦截器，用于拦截处理 sql
+	 * 配置 MyBatis 数据权限拦截器
+	 * <p>
+	 * 创建数据权限拦截器，用于拦截和处理 SQL 语句。
 	 * @param dataPermissionHandler 数据权限处理器
-	 * @return DataPermissionInterceptor
+	 * @return 数据权限拦截器
 	 */
 	@Bean
 	@ConditionalOnMissingBean

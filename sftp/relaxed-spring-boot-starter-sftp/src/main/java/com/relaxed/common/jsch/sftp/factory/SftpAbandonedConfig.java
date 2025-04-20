@@ -14,8 +14,8 @@ public class SftpAbandonedConfig extends AbandonedConfig {
 
 	/**
 	 * 根据属性配置抛弃策略
-	 * @param sftpProperties
-	 * @return
+	 * @param sftpProperties SFTP配置属性
+	 * @return 配置好的SFTP抛弃策略对象
 	 */
 	public static SftpAbandonedConfig of(SftpProperties sftpProperties) {
 		SftpProperties.Abandoned abandoned = sftpProperties.getAbandoned();

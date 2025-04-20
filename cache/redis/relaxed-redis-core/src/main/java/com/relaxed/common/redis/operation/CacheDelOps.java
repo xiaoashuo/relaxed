@@ -4,23 +4,32 @@ import com.relaxed.common.redis.operation.functions.VoidMethod;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
+ * 缓存删除操作类。 封装缓存删除的相关操作，继承自AbstractCacheOps。
+ *
  * @author Hccake
- * @version 1.0
- * @date 2019/9/2 15:19
+ * @since 1.0
  */
 public class CacheDelOps extends AbstractCacheOps {
 
 	/**
-	 * 删除缓存数据
-	 * @return VoidMethod
+	 * 删除缓存的具体操作方法
 	 */
 	private VoidMethod cacheDel;
 
+	/**
+	 * 构造函数
+	 * @param joinPoint 切面连接点
+	 * @param cacheDel 删除缓存的具体操作方法
+	 */
 	public CacheDelOps(ProceedingJoinPoint joinPoint, VoidMethod cacheDel) {
 		super(joinPoint);
 		this.cacheDel = cacheDel;
 	}
 
+	/**
+	 * 获取删除缓存的操作方法
+	 * @return 删除缓存的操作方法
+	 */
 	public VoidMethod cacheDel() {
 		return cacheDel;
 	}

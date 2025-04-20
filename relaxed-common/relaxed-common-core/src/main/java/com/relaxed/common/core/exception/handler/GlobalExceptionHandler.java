@@ -1,10 +1,5 @@
 package com.relaxed.common.core.exception.handler;
 
-/**
- * @author Hccake
- * @version 1.0
- * @date 2019/10/18 17:05 异常日志处理类
- */
 public interface GlobalExceptionHandler {
 
 	/**

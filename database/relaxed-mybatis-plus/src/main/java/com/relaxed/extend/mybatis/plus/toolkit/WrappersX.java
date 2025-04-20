@@ -6,38 +6,55 @@ import com.relaxed.extend.mybatis.plus.conditions.query.TableAliasFunction;
 import com.relaxed.extend.mybatis.plus.conditions.update.LambdaUpdateWrapperX;
 
 /**
- * @author Hccake 2021/1/14
- * @version 1.0
+ * MyBatis-Plus 扩展条件构造器工具类
+ * <p>
+ * 提供了创建增强版的 Lambda 查询构造器的静态工厂方法。 支持以下类型的条件构造器：
+ * <ul>
+ * <li>LambdaQueryWrapperX - 增强的 Lambda 查询构造器</li>
+ * <li>LambdaUpdateWrapperX - 增强的 Lambda 更新构造器</li>
+ * <li>LambdaAliasQueryWrapperX - 支持表别名的 Lambda 查询构造器</li>
+ * </ul>
+ *
+ * @author Hccake
  */
 public final class WrappersX {
 
+	/**
+	 * 私有构造方法，防止实例化
+	 */
 	private WrappersX() {
 	}
 
 	/**
-	 * 获取 LambdaQueryWrapperX&lt;T&gt;
+	 * 获取增强的 Lambda 查询构造器
+	 * <p>
+	 * 创建一个空的查询构造器，用于构建查询条件
 	 * @param <T> 实体类泛型
-	 * @return LambdaQueryWrapperX&lt;T&gt;
+	 * @return 返回增强的 Lambda 查询构造器
 	 */
 	public static <T> LambdaQueryWrapperX<T> lambdaQueryX() {
 		return new LambdaQueryWrapperX<>();
 	}
 
 	/**
-	 * 获取 LambdaQueryWrapperX&lt;T&gt;
-	 * @param entity 实体类
+	 * 获取增强的 Lambda 查询构造器
+	 * <p>
+	 * 根据实体对象创建查询构造器，实体对象的非空属性会作为等值查询条件
+	 * @param entity 实体对象
 	 * @param <T> 实体类泛型
-	 * @return LambdaQueryWrapperX&lt;T&gt;
+	 * @return 返回增强的 Lambda 查询构造器
 	 */
 	public static <T> LambdaQueryWrapperX<T> lambdaQueryX(T entity) {
 		return new LambdaQueryWrapperX<>(entity);
 	}
 
 	/**
-	 * 获取 LambdaQueryWrapperX&lt;T&gt;
-	 * @param entityClass 实体类class
+	 * 获取增强的 Lambda 查询构造器
+	 * <p>
+	 * 根据实体类 Class 创建查询构造器
+	 * @param entityClass 实体类 Class
 	 * @param <T> 实体类泛型
-	 * @return LambdaQueryWrapperX&lt;T&gt;
+	 * @return 返回增强的 Lambda 查询构造器
 	 * @since 3.3.1
 	 */
 	public static <T> LambdaQueryWrapperX<T> lambdaQueryX(Class<T> entityClass) {
@@ -45,29 +62,35 @@ public final class WrappersX {
 	}
 
 	/**
-	 * 获取 LambdaUpdateWrapperX&lt;T&gt;
+	 * 获取增强的 Lambda 更新构造器
+	 * <p>
+	 * 创建一个空的更新构造器，用于构建更新条件和设置更新字段
 	 * @param <T> 实体类泛型
-	 * @return LambdaQueryWrapperX&lt;T&gt;
+	 * @return 返回增强的 Lambda 更新构造器
 	 */
 	public static <T> LambdaUpdateWrapperX<T> lambdaUpdateX() {
 		return new LambdaUpdateWrapperX<>();
 	}
 
 	/**
-	 * 获取 LambdaQueryWrapperX&lt;T&gt;
-	 * @param entity 实体类
+	 * 获取增强的 Lambda 更新构造器
+	 * <p>
+	 * 根据实体对象创建更新构造器，实体对象的非空属性会作为等值更新条件
+	 * @param entity 实体对象
 	 * @param <T> 实体类泛型
-	 * @return LambdaQueryWrapperX&lt;T&gt;
+	 * @return 返回增强的 Lambda 更新构造器
 	 */
 	public static <T> LambdaUpdateWrapperX<T> lambdaUpdateX(T entity) {
 		return new LambdaUpdateWrapperX<>(entity);
 	}
 
 	/**
-	 * 获取 LambdaUpdateWrapperX&lt;T&gt;
-	 * @param entityClass 实体类class
+	 * 获取增强的 Lambda 更新构造器
+	 * <p>
+	 * 根据实体类 Class 创建更新构造器
+	 * @param entityClass 实体类 Class
 	 * @param <T> 实体类泛型
-	 * @return LambdaQueryWrapperX&lt;T&gt;
+	 * @return 返回增强的 Lambda 更新构造器
 	 * @since 3.3.1
 	 */
 	public static <T> LambdaUpdateWrapperX<T> lambdaUpdateX(Class<T> entityClass) {
@@ -75,32 +98,37 @@ public final class WrappersX {
 	}
 
 	/**
-	 * 获取 LambdaAliasQueryWrapper&lt;T&gt;
-	 * @param entity 实体类
+	 * 获取支持表别名的 Lambda 查询构造器
+	 * <p>
+	 * 根据实体对象创建查询构造器，支持设置表别名
+	 * @param entity 实体对象
 	 * @param <T> 实体类泛型
-	 * @return LambdaAliasQueryWrapper&lt;T&gt;
+	 * @return 返回支持表别名的 Lambda 查询构造器
 	 */
 	public static <T> LambdaAliasQueryWrapperX<T> lambdaAliasQueryX(T entity) {
 		return new LambdaAliasQueryWrapperX<>(entity);
 	}
 
 	/**
-	 * 获取表别名自定义
-	 * @author yakir
-	 * @date 2022/4/12 10:48
-	 * @param entity
-	 * @param tableAliasFunction
-	 * @return com.relaxed.extend.mybatis.plus.conditions.query.LambdaAliasQueryWrapperX<T>
+	 * 获取支持表别名的 Lambda 查询构造器
+	 * <p>
+	 * 根据实体对象和表别名函数创建查询构造器
+	 * @param <T> 实体对象
+	 * @param entity 实体对象
+	 * @param tableAliasFunction 表别名生成函数
+	 * @return 返回支持表别名的 Lambda 查询构造器
 	 */
 	public static <T> LambdaAliasQueryWrapperX<T> lambdaAliasQueryX(T entity, TableAliasFunction tableAliasFunction) {
 		return new LambdaAliasQueryWrapperX<>(entity, tableAliasFunction);
 	}
 
 	/**
-	 * 获取 LambdaAliasQueryWrapper&lt;T&gt;
-	 * @param entityClass 实体类class
+	 * 获取支持表别名的 Lambda 查询构造器
+	 * <p>
+	 * 根据实体类 Class 创建查询构造器
+	 * @param entityClass 实体类 Class
 	 * @param <T> 实体类泛型
-	 * @return LambdaAliasQueryWrapper&lt;T&gt;
+	 * @return 返回支持表别名的 Lambda 查询构造器
 	 * @since 3.3.1
 	 */
 	public static <T> LambdaAliasQueryWrapperX<T> lambdaAliasQueryX(Class<T> entityClass) {
@@ -108,12 +136,13 @@ public final class WrappersX {
 	}
 
 	/**
-	 * 获取表别名自定义
-	 * @author yakir
-	 * @date 2022/4/12 10:48
-	 * @param entityClass
-	 * @param tableAliasFunction
-	 * @return com.relaxed.extend.mybatis.plus.conditions.query.LambdaAliasQueryWrapperX<T>
+	 * 获取支持表别名的 Lambda 查询构造器
+	 * <p>
+	 * 根据实体类 Class 和表别名函数创建查询构造器
+	 * @param <T> 实体对象
+	 * @param entityClass 实体类 Class
+	 * @param tableAliasFunction 表别名生成函数
+	 * @return 返回支持表别名的 Lambda 查询构造器
 	 */
 	public static <T> LambdaAliasQueryWrapperX<T> lambdaAliasQueryX(Class<T> entityClass,
 			TableAliasFunction tableAliasFunction) {

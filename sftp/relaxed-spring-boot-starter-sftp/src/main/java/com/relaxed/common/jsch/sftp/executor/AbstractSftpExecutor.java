@@ -4,7 +4,7 @@ import com.jcraft.jsch.ChannelSftp;
 import com.relaxed.common.jsch.sftp.SftpProperties;
 
 /**
- * sftp 抽象类
+ * SFTP执行器抽象类
  *
  * @author shuoyu
  */
@@ -15,20 +15,29 @@ public abstract class AbstractSftpExecutor implements ISftpExecutor {
 
 	private final SftpProperties sftpProperties;
 
+	/**
+	 * 创建SFTP执行器抽象类实例
+	 * @param channelSftp SFTP通道
+	 * @param sftpProperties SFTP配置属性
+	 */
 	protected AbstractSftpExecutor(ChannelSftp channelSftp, SftpProperties sftpProperties) {
 		this.channelSftp = channelSftp;
 		this.sftpProperties = sftpProperties;
 	}
 
 	/**
-	 * 获取channel sftp 仅允许 同包路径或子类调用
-	 * @return sftp通道
+	 * 获取SFTP通道
+	 * @return SFTP通道
 	 */
 	@Override
 	public ChannelSftp getChannelSftp() {
 		return channelSftp;
 	}
 
+	/**
+	 * 获取SFTP配置属性
+	 * @return SFTP配置属性
+	 */
 	protected SftpProperties getSftpProperties() {
 		return sftpProperties;
 	}

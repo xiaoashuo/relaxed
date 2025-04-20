@@ -29,6 +29,12 @@ public class SftpFactory extends BasePooledObjectFactory<ISftpExecutor> {
 
 	private final ISftpProvider iSftpProvider;
 
+	/**
+	 * 创建SFTP工厂实例
+	 * @param sftpProperties SFTP配置属性
+	 * @param iSftpProvider SFTP执行器提供者
+	 * @return SFTP工厂实例
+	 */
 	public static SftpFactory of(SftpProperties sftpProperties, ISftpProvider iSftpProvider) {
 		return new SftpFactory(sftpProperties, iSftpProvider);
 	}
@@ -36,6 +42,7 @@ public class SftpFactory extends BasePooledObjectFactory<ISftpExecutor> {
 	/**
 	 * 创建一个{@link AbstractSftpExecutor}子实例 这个方法必须支持并发多线程调用
 	 * @return {@link AbstractSftpExecutor}子实例
+	 * @throws Exception 创建实例时可能抛出的异常
 	 */
 	@Override
 	public ISftpExecutor create() throws Exception {

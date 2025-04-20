@@ -10,57 +10,84 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Redis分布式锁管理器。 提供基于Redis的分布式锁的获取和释放功能，支持可重入锁和锁超时。
+ *
  * @author Yakir
- * @Topic LockManage
- * @Description
- * @date 2022/10/12 13:50
- * @Version 1.0
+ * @since 1.0
  */
 @Slf4j
 public class LockManage {
 
 	/**
-	 *
-	 * 释放锁lua脚本 KEYS【1】：key值是为要加的锁定义的字符串常量 ARGV【1】：value值是 request id, 用来防止解除了不该解除的锁. 可用
-	 * UUID
+	 * 释放锁的Lua脚本 KEYS[1]: 锁的键名 ARGV[1]: 请求ID，用于防止解除错误的锁
 	 */
 	private static final DefaultRedisScript<Long> RELEASE_LOCK_LUA_SCRIPT = new DefaultRedisScript<>(
 			"if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end",
 			Long.class);
 
 	/**
-	 * 释放锁成功返回值
+	 * 释放锁成功的返回值
 	 */
 	private static final Long RELEASE_LOCK_SUCCESS_RESULT = 1L;
 
 	/**
-	 * 上锁
-	 * @date 2022/10/12 13:54
-	 * @param lockKey 锁key
-	 * @param requestId 请求id
-	 * @return boolean
+	 * 获取锁，不设置过期时间
+	 * @param lockKey 锁的键名
+	 * @param requestId 请求ID
+	 * @return 是否成功获取锁
 	 */
 	public static boolean lock(String lockKey, String requestId) {
 		return lock(lockKey, requestId, -1L);
 	}
 
+	/**
+	 * 获取锁，设置过期时间（秒）
+	 * @param key 锁的键名
+	 * @param requestId 请求ID
+	 * @param ttl 过期时间（秒）
+	 * @return 是否成功获取锁
+	 */
 	public static boolean lock(String key, String requestId, Long ttl) {
 		return lock(key, requestId, ttl, TimeUnit.SECONDS);
 	}
 
+	/**
+	 * 获取锁，设置过期时间和时间单位
+	 * @param key 锁的键名
+	 * @param requestId 请求ID
+	 * @param ttl 过期时间
+	 * @param timeUnit 时间单位
+	 * @return 是否成功获取锁
+	 */
 	public static boolean lock(String key, String requestId, Long ttl, TimeUnit timeUnit) {
 		log.trace("lock: {key:{}, clientId:{}}", key, requestId);
 		if (ttl < 0) {
 			return RedisHelper.setNx(key, requestId);
 		}
 		return RedisHelper.setNxEx(key, requestId, ttl, timeUnit);
-
 	}
 
+	/**
+	 * 获取锁，设置过期时间和超时时间（秒）
+	 * @param key 锁的键名
+	 * @param requestId 请求ID
+	 * @param ttl 过期时间（秒）
+	 * @param timeout 获取锁的超时时间（秒）
+	 * @return 是否成功获取锁
+	 */
 	public static boolean lock(String key, String requestId, Long ttl, long timeout) {
 		return lock(key, requestId, ttl, timeout, TimeUnit.SECONDS);
 	}
 
+	/**
+	 * 获取锁，设置过期时间、超时时间和时间单位
+	 * @param key 锁的键名
+	 * @param requestId 请求ID
+	 * @param ttl 过期时间
+	 * @param timeout 获取锁的超时时间
+	 * @param timeUnit 时间单位
+	 * @return 是否成功获取锁
+	 */
 	public static boolean lock(String key, String requestId, Long ttl, long timeout, TimeUnit timeUnit) {
 		long startTime = System.currentTimeMillis();
 		boolean token;
@@ -86,6 +113,12 @@ public class LockManage {
 		return token;
 	}
 
+	/**
+	 * 释放锁
+	 * @param key 锁的键名
+	 * @param requestId 请求ID
+	 * @return 是否成功释放锁
+	 */
 	public static boolean releaseLock(String key, String requestId) {
 		log.trace("release lock: {key:{}, clientId:{}}", key, requestId);
 		Long result = RedisHelper.execute(RELEASE_LOCK_LUA_SCRIPT, Collections.singletonList(key), requestId);

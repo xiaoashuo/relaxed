@@ -4,17 +4,19 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.relaxed.extend.mybatis.plus.conditions.query.TableAliasFunction;
 import org.springframework.core.annotation.AnnotationUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import lombok.experimental.UtilityClass;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 表别名辅助类
- *
- * @author Hccake 2021/1/14
- * @version 1.0
+ * 表别名助手类
+ * <p>
+ * 提供表别名的缓存和解析功能。 使用 ConcurrentHashMap 缓存表别名，提高性能。
  */
-public final class TableAliasHelper {
+
+public class TableAliasHelper {
 
 	private TableAliasHelper() {
 	}

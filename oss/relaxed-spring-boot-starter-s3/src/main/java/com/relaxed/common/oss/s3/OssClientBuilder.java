@@ -23,157 +23,195 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 /**
+ * S3 对象存储客户端构建器。 用于构建和配置 S3 客户端，支持自定义端点、区域、访问凭证等配置。 提供了灵活的构建选项，包括路径样式访问、ACL 控制、自定义域名等。
+ *
  * @author Yakir
- * @Topic OssClientBuilder
- * @Description
- * @date 2021/11/25 18:08
- * @Version 1.0
+ * @since 1.0
  */
 @Getter
 public class OssClientBuilder {
 
 	/**
+	 * S3 服务端点地址。 支持多种云服务商的节点地址，例如： - 阿里云：oss-cn-qingdao.aliyuncs.com - 亚马逊
+	 * S3：s3.ap-southeast-1.amazonaws.com - 亚马逊：ap-southeast-1.amazonaws.com
 	 *
-	 * <p>
-	 * endpoint 节点地址, 例如:
-	 * </p>
-	 * <ul>
-	 * <li>阿里云节点: oss-cn-qingdao.aliyuncs.com</li>
-	 * <li>亚马逊s3节点: s3.ap-southeast-1.amazonaws.com</li>
-	 * <li>亚马逊节点: ap-southeast-1.amazonaws.com</li>
-	 * </ul>
-	 * <p>
-	 * 只需要完整 正确的节点地址即可
-	 * </p>
-	 * <p>
-	 * 如果使用 自定义的域名转发 不需要配置本值
-	 * </p>
+	 * 注意：如果使用自定义域名转发，则不需要配置此值。
 	 */
 	private String endpoint;
 
 	/**
-	 * <p>
-	 * 区域
-	 * </p>
-	 *
-	 * <p>
-	 * 如果配置了自定义域名(domain), 必须配置本值
-	 * </p>
-	 * <p>
-	 * 如果没有配置自定义域名(domain), 配置了节点, 那么当前值可以不配置
-	 * </p>
+	 * S3 服务区域。 如果配置了自定义域名(domain)，则必须配置此值。 如果未配置自定义域名但配置了节点，则此值可选。
 	 */
 	private String region;
 
 	/**
-	 * 密钥key
+	 * 访问密钥 ID。 用于身份验证的访问密钥。
 	 */
 	private String accessKey;
 
 	/**
-	 * 密钥Secret
+	 * 访问密钥密码。 用于身份验证的密钥密码。
 	 */
 	private String accessSecret;
 
 	/**
-	 * <p>
-	 * bucket 必填 命名空间
-	 * </p>
+	 * 存储桶名称。 必填项，用于指定存储空间。
 	 */
 	private String bucket;
 
 	/**
-	 * <p>
-	 * 自定义域名转发
-	 * </p>
-	 * <p>
-	 * 本值优先级最高, 配置本值后 endpoint 无效
-	 * </p>
-	 * <p>
-	 * 配置本值必须配置 region
-	 * </p>
+	 * 自定义域名。 配置后优先级高于 endpoint，此时 endpoint 配置将失效。 配置此值时必须同时配置 region。
 	 */
 	private String domain;
 
 	/**
-	 * true path-style nginx 反向代理和S3默认支持 pathStyle {http://endpoint/bucketname} false
-	 * supports virtual-hosted-style 阿里云等需要配置为 virtual-hosted-style
-	 * 模式{http://bucketname.endpoint}
+	 * 路径样式访问控制。 true：使用路径样式访问（如 http://endpoint/bucketname） false：使用虚拟主机样式访问（如
+	 * http://bucketname.endpoint） 默认为 true，支持 nginx 反向代理和 S3 默认配置。
 	 */
 	private Boolean pathStyleAccess = true;
 
 	/**
-	 * 代理url
+	 * 代理服务器 URL。 用于配置 HTTP 代理服务器地址。
 	 */
 	private String proxyUrl;
 
 	/**
-	 * 上传时为文件配置acl, 为null 不配置
+	 * 对象访问控制列表。 用于设置对象的访问权限。
 	 */
 	private ObjectCannedACL acl;
 
+	/**
+	 * 客户端自定义器集合。 用于在构建过程中自定义客户端配置。
+	 */
 	private Set<OssClientCustomizer> customizers;
 
+	/**
+	 * 路径修改器。 用于自定义对象存储路径的修改规则。
+	 */
 	private PathModifier pathModifier;
 
+	/**
+	 * S3 客户端实例。
+	 */
 	private S3Client s3Client;
 
+	/**
+	 * 设置 S3 服务端点地址。
+	 * @param endpoint 端点地址
+	 * @return 当前构建器实例
+	 */
 	public OssClientBuilder endpoint(String endpoint) {
 		this.endpoint = endpoint;
 		return this;
 	}
 
+	/**
+	 * 设置 S3 服务区域。
+	 * @param region 区域名称
+	 * @return 当前构建器实例
+	 */
 	public OssClientBuilder region(String region) {
 		this.region = region;
 		return this;
 	}
 
+	/**
+	 * 设置访问密钥 ID。
+	 * @param accessKey 访问密钥 ID
+	 * @return 当前构建器实例
+	 */
 	public OssClientBuilder accessKey(String accessKey) {
 		this.accessKey = accessKey;
 		return this;
 	}
 
+	/**
+	 * 设置访问密钥密码。
+	 * @param accessSecret 访问密钥密码
+	 * @return 当前构建器实例
+	 */
 	public OssClientBuilder accessSecret(String accessSecret) {
 		this.accessSecret = accessSecret;
 		return this;
 	}
 
+	/**
+	 * 设置存储桶名称。
+	 * @param bucket 存储桶名称
+	 * @return 当前构建器实例
+	 */
 	public OssClientBuilder bucket(String bucket) {
 		this.bucket = bucket;
 		return this;
 	}
 
+	/**
+	 * 设置自定义域名。
+	 * @param domain 自定义域名
+	 * @return 当前构建器实例
+	 */
 	public OssClientBuilder domain(String domain) {
 		this.domain = domain;
 		return this;
 	}
 
+	/**
+	 * 设置路径样式访问控制。
+	 * @param pathStyleAccess 是否使用路径样式访问
+	 * @return 当前构建器实例
+	 */
 	public OssClientBuilder pathStyleAccess(Boolean pathStyleAccess) {
 		this.pathStyleAccess = pathStyleAccess;
 		return this;
 	}
 
+	/**
+	 * 设置对象访问控制列表。
+	 * @param objectCannedACL 对象访问控制列表
+	 * @return 当前构建器实例
+	 */
 	public OssClientBuilder acl(ObjectCannedACL objectCannedACL) {
 		this.acl = objectCannedACL;
 		return this;
 	}
 
+	/**
+	 * 设置客户端自定义器集合。
+	 * @param customizers 自定义器集合
+	 * @return 当前构建器实例
+	 */
 	public OssClientBuilder customizers(Iterable<OssClientCustomizer> customizers) {
 		this.customizers = this.append(null, customizers);
 		return this;
 	}
 
+	/**
+	 * 设置路径修改器。
+	 * @param pathModifier 路径修改器
+	 * @return 当前构建器实例
+	 */
 	public OssClientBuilder pathModifier(PathModifier pathModifier) {
 		this.pathModifier = pathModifier;
 		return this;
 	}
 
+	/**
+	 * 将新元素添加到集合中。
+	 * @param set 目标集合
+	 * @param additions 要添加的元素
+	 * @param <T> 元素类型
+	 * @return 更新后的集合
+	 */
 	private <T> Set<T> append(Set<T> set, Iterable<? extends T> additions) {
 		Set<T> result = new LinkedHashSet(set != null ? set : Collections.emptySet());
 		additions.forEach(result::add);
 		return Collections.unmodifiableSet(result);
 	}
 
+	/**
+	 * 构建 S3 客户端实例。 根据配置创建并返回 S3 客户端实例。
+	 * @return S3 客户端实例
+	 */
 	public OssClient build() {
 		EndPointSelect endPointSelect = EndPointSelect.toBuilder().domain(domain).pathStyleAccess(pathStyleAccess)
 				.bucket(bucket).endpoint(endpoint).pathModifier(pathModifier).build();
@@ -189,6 +227,11 @@ public class OssClientBuilder {
 		return new OssClient(this);
 	}
 
+	/**
+	 * 创建 S3 客户端构建器。 根据端点选择策略创建相应的 S3 客户端构建器。
+	 * @param endPointSelect 端点选择策略
+	 * @return S3 客户端构建器
+	 */
 	private S3ClientBuilder create(EndPointSelect endPointSelect) {
 		S3ClientBuilder builder = S3Client.builder();
 		// 设置区域

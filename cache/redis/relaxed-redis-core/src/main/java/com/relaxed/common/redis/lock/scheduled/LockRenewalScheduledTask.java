@@ -15,27 +15,47 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 分布式锁续期定时任务。 负责定期检查并续期分布式锁，防止锁过期导致业务中断。
+ *
  * @author Yakir
- * @Topic TaskRenewalScheduled
- * @Description
- * @date 2022/10/12 16:49
- * @Version 1.0
+ * @since 1.0
  */
 @Slf4j
 public class LockRenewalScheduledTask {
 
+	/**
+	 * 线程池名称
+	 */
 	private final String threadPoolName;
 
+	/**
+	 * 核心线程数
+	 */
 	private final Integer corePoolSize;
 
+	/**
+	 * 执行周期（秒）
+	 */
 	private final Integer period;
 
+	/**
+	 * 定时任务调度器
+	 */
 	private final ScheduledExecutorService scheduler;
 
+	/**
+	 * 默认构造函数 使用默认配置：线程池名称为"redisLock-schedule-pool"，核心线程数为1，执行周期为2秒
+	 */
 	public LockRenewalScheduledTask() {
 		this("redisLock-schedule-pool", 1, 2);
 	}
 
+	/**
+	 * 构造函数
+	 * @param threadPoolName 线程池名称
+	 * @param corePoolSize 核心线程数
+	 * @param period 执行周期（秒）
+	 */
 	public LockRenewalScheduledTask(String threadPoolName, Integer corePoolSize, Integer period) {
 		this.threadPoolName = threadPoolName;
 		this.corePoolSize = corePoolSize;
@@ -49,6 +69,9 @@ public class LockRenewalScheduledTask {
 		log.info("start daemon thread pool {}  success", threadPoolName);
 	}
 
+	/**
+	 * 销毁方法 在应用关闭时关闭线程池
+	 */
 	@PreDestroy
 	public void destroy() {
 		try {
@@ -60,6 +83,9 @@ public class LockRenewalScheduledTask {
 		}
 	}
 
+	/**
+	 * 初始化看门狗任务 定期检查并续期分布式锁
+	 */
 	private void initWatchDog() {
 		// 两秒执行一次「续时」操作
 		this.scheduler.scheduleAtFixedRate(() -> {

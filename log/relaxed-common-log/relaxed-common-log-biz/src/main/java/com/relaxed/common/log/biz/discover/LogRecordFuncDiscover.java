@@ -22,31 +22,34 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 日志函数发现器，负责注册和管理日志模板中可用的函数。 该组件实现了 ApplicationContextAware 接口，在 Spring 容器初始化时自动注册函数。
+ * 支持两种函数注册方式： 1. 通过 {@link LogFunc} 注解标记的函数 2. 实现 {@link IParseFunc} 接口的函数
+ * 注册的函数可以在日志模板中通过 SpEL 表达式调用。
+ *
  * @author Yakir
- * @Topic LogFuncDiscover
- * @Description
- * @date 2023/12/14 18:08
- * @Version 1.0
+ * @since 1.0.0
  */
 @Component
 @Slf4j
 public class LogRecordFuncDiscover implements ApplicationContextAware {
 
 	/**
-	 * 注解函数 非静态类
+	 * 函数映射表，存储所有注册的函数元数据 key: 函数名称（可能包含命名空间） value: 函数元数据，包含目标对象、方法、执行时机等信息
 	 */
 	private static Map<String, FuncMeta> functionMap = new HashMap<>();
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-
 		// 注册接口函数
 		registerInterfaceFuncs(applicationContext);
 		// 注册注解函数
 		registerAnnotationFuncs(applicationContext);
-
 	}
 
+	/**
+	 * 注册通过 {@link LogFunc} 注解标记的函数 支持类级别和方法级别的注解，可以指定命名空间和函数名称
+	 * @param applicationContext Spring 应用上下文
+	 */
 	private static void registerAnnotationFuncs(ApplicationContext applicationContext) {
 		Map<String, Object> beans = applicationContext.getBeansWithAnnotation(LogFunc.class);
 		for (Object value : beans.values()) {
@@ -88,41 +91,67 @@ public class LogRecordFuncDiscover implements ApplicationContextAware {
 							regFuncName, method);
 				}
 			});
-
 		}
 	}
 
+	/**
+	 * 注册实现 {@link IParseFunc} 接口的函数 这些函数通过接口定义的方式提供，支持命名空间和函数名称的配置
+	 * @param applicationContext Spring 应用上下文
+	 */
 	private static void registerInterfaceFuncs(ApplicationContext applicationContext) {
 		Map<String, IParseFunc> iFuncs = applicationContext.getBeansOfType(IParseFunc.class);
 		for (IParseFunc func : iFuncs.values()) {
-
 			String fullFuncName = func.namespace() + StrPool.UNDERLINE + func.name();
 			Method method = ClassUtil.getDeclaredMethod(func.getClass(), "apply", Object[].class);
 			FuncMeta funcMeta = new FuncMeta(fullFuncName, false, func, method, func.around());
 			functionMap.put(fullFuncName, funcMeta);
-			/// iFuncServiceMap.put(fullFuncName,func);
 			log.info("LogRecord register function type[interface] alias[{}] func_address[{}]", fullFuncName, func);
-
 		}
 	}
 
+	/**
+	 * 获取所有注册的函数映射表
+	 * @return 函数名称到函数元数据的映射
+	 */
 	public static Map<String, FuncMeta> getFunctionMap() {
 		return functionMap;
 	}
 
+	/**
+	 * 根据函数名称获取函数元数据
+	 * @param funcname 函数名称
+	 * @return 函数元数据，如果未找到则返回 null
+	 */
 	public static FuncMeta getFunctionMeta(String funcname) {
 		return functionMap.get(funcname);
 	}
 
+	/**
+	 * 手动注册一个函数
+	 * @param funcName 函数名称
+	 * @param funcMeta 函数元数据
+	 */
 	public static void regFunc(String funcName, FuncMeta funcMeta) {
 		functionMap.put(funcName, funcMeta);
 	}
 
+	/**
+	 * 判断函数是否为前置函数（在目标方法执行前调用）
+	 * @param funcName 函数名称
+	 * @return 如果是前置函数返回 true，否则返回 false
+	 */
 	public static boolean isBeforeExec(String funcName) {
 		FuncMeta funcMeta = functionMap.get(funcName);
 		return funcMeta != null && LogRecordConstants.BEFORE_FUNC.equals(funcMeta.getAround());
 	}
 
+	/**
+	 * 调用指定的函数
+	 * @param funname 函数名称
+	 * @param arguments 函数参数
+	 * @return 函数执行结果
+	 * @throws RuntimeException 如果函数执行过程中发生异常
+	 */
 	public static Object invokeFunc(String funname, Object... arguments) {
 		FuncMeta funcMeta = getFunctionMeta(funname);
 		Object targetFuncObj = funcMeta.getTarget();
@@ -134,11 +163,9 @@ public class LogRecordFuncDiscover implements ApplicationContextAware {
 				Method method = targetFuncObj.getClass().getMethod(orgMethodName, parameterTypes);
 				Object result = LogClassUtil.invokeRaw(targetFuncObj, method, arguments);
 				return result;
-
 			}
 			else {
 				Method method = targetFuncObj.getClass().getMethod(orgMethodName, parameterTypes);
-
 				Object result = LogClassUtil.invokeRaw(targetFuncObj, method, arguments);
 				return result;
 			}
@@ -148,9 +175,14 @@ public class LogRecordFuncDiscover implements ApplicationContextAware {
 		}
 	}
 
+	/**
+	 * 调用指定的函数并将结果转换为字符串
+	 * @param funname 函数名称
+	 * @param arguments 函数参数
+	 * @return 函数执行结果的字符串表示，如果结果为 null 则返回 null
+	 */
 	public static String invokeFuncToStr(String funname, Object... arguments) {
 		Object result = invokeFunc(funname, arguments);
-
 		if (result != null) {
 			return result instanceof String ? (String) result : JSONUtil.toJsonStr(result);
 		}

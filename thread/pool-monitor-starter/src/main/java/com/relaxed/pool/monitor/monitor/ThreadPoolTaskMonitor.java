@@ -23,11 +23,10 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
+ * 高级线程池监控器，提供动态监控、预警和自动调整线程池参数的功能。 该类负责监控注册的线程池，收集性能指标，并在必要时触发告警或自动调整线程池配置。
+ *
  * @author Yakir
- * @Topic ThreadPoolMonitor
- * @Description 高级线程池监控器 支持动态监控、预警和自动调整线程池参数
- * @date 2025/4/3 16:40
- * @Version 1.0
+ * @since 1.0
  */
 @Slf4j
 @Setter
@@ -55,10 +54,11 @@ public class ThreadPoolTaskMonitor {
 	}
 
 	/**
-	 * 注册线程池到监控系统
-	 * @param name 线程池名称
-	 * @param executor 线程池对象
-	 * @return 包装后的线程池对象
+	 * 注册线程池到监控系统。 如果监控功能未启用，将直接返回原始线程池。
+	 * @param name 线程池名称，用于标识和监控
+	 * @param executor 要监控的线程池对象
+	 * @param <T> 线程池类型
+	 * @return 包装后的线程池对象，如果监控未启用则返回原始线程池
 	 */
 	public <T extends ThreadPoolExecutor> ThreadPoolExecutor register(String name, T executor) {
 		if (!monitorProperties.isMonitorEnabled()) {
@@ -69,10 +69,10 @@ public class ThreadPoolTaskMonitor {
 	}
 
 	/**
-	 * 注册包装后的
-	 * @param name
-	 * @param monitoredPool
-	 * @return
+	 * 注册已包装的线程池到监控系统。 将线程池添加到监控映射表中，并初始化其历史统计数据。
+	 * @param name 线程池名称
+	 * @param monitoredPool 已包装的线程池对象
+	 * @return 包装后的线程池对象
 	 */
 	public ThreadPoolExecutor register(String name, MonitoredThreadPool monitoredPool) {
 		ThreadPoolExecutor executor = monitoredPool.getOriginalExecutor();
@@ -85,6 +85,9 @@ public class ThreadPoolTaskMonitor {
 		return monitoredPool;
 	}
 
+	/**
+	 * 启动监控线程，定期收集线程池统计数据。 监控线程会按照配置的时间间隔运行，直到程序终止。
+	 */
 	private void startMonitorThread() {
 		Thread thread = new Thread(new Runnable() {
 			@Override
@@ -107,7 +110,7 @@ public class ThreadPoolTaskMonitor {
 	}
 
 	/**
-	 * 定时收集线程池统计数据
+	 * 收集所有注册线程池的统计数据。 包括线程池大小、队列大小、活跃线程数等指标。
 	 */
 	public void collectStats() {
 		if (!monitorProperties.isMonitorEnabled() || threadPoolMap.isEmpty()) {
@@ -161,10 +164,10 @@ public class ThreadPoolTaskMonitor {
 	}
 
 	/**
-	 * 是否恢复初始状态 判断条件 当前最大池数大于原始数 且空闲率小于最小阈值 ,距离上次更新时间超过空闲率间隔
-	 * @param pool
-	 * @param stats
-	 * @return true重置 false不重置
+	 * 判断线程池是否需要恢复到原始配置。 当线程池处于自动调整状态且满足恢复条件时返回true。
+	 * @param pool 被监控的线程池
+	 * @param stats 当前线程池统计信息
+	 * @return 如果需要恢复则返回true
 	 */
 	private boolean isRestoreThreadPool(MonitoredThreadPool pool, ThreadPoolStats stats) {
 		long idleRatioMaxThreshold = monitorProperties.getIdleRatioMaxThreshold();
@@ -177,6 +180,10 @@ public class ThreadPoolTaskMonitor {
 				&& System.currentTimeMillis() - pool.getLastUpdateTimeMills() > idleRatioIntervalMills;
 	}
 
+	/**
+	 * 将线程池恢复到原始配置。 重置核心线程数和最大线程数到初始值。
+	 * @param executor 要恢复的线程池
+	 */
 	private void restoreThreadPool(MonitoredThreadPool executor) {
 		String poolName = getPoolName(executor);
 		int originalMaximumPoolSize = executor.getOriginalExecutor().getMaximumPoolSize();
@@ -189,9 +196,9 @@ public class ThreadPoolTaskMonitor {
 	}
 
 	/**
-	 * 获取线程池使用趋势分析
+	 * 获取指定线程池的趋势数据。 返回最近一段时间内的性能指标变化趋势。
 	 * @param poolName 线程池名称
-	 * @return 趋势数据
+	 * @return 线程池趋势数据对象
 	 */
 	public ThreadPoolTrend getTrend(String poolName) {
 		List<ThreadPoolStats> history = historyStats.getOrDefault(poolName, Collections.emptyList());
@@ -223,8 +230,8 @@ public class ThreadPoolTaskMonitor {
 	}
 
 	/**
-	 * 获取所有线程池状态快照
-	 * @return 线程池状态列表
+	 * 获取所有线程池的当前统计信息。
+	 * @return 所有线程池统计信息的列表
 	 */
 	public List<ThreadPoolStats> getAllPoolStats() {
 		return threadPoolMap.keySet().stream().map(name -> {
@@ -234,7 +241,8 @@ public class ThreadPoolTaskMonitor {
 	}
 
 	/**
-	 * 计算线程池指标
+	 * 计算线程池的性能指标。 包括队列使用率、线程活跃度等关键指标。
+	 * @param stats 要计算的统计信息对象
 	 */
 	private void calculateMetrics(ThreadPoolStats stats) {
 		// 活跃线程比例
@@ -251,7 +259,8 @@ public class ThreadPoolTaskMonitor {
 	}
 
 	/**
-	 * 检查是否需要发送告警
+	 * 检查线程池状态并触发告警。 当线程池指标超过阈值时，通过告警服务发送通知。
+	 * @param stats 线程池统计信息
 	 */
 	private void checkAlert(ThreadPoolStats stats) {
 		boolean needAlert = false;
@@ -283,7 +292,8 @@ public class ThreadPoolTaskMonitor {
 	}
 
 	/**
-	 * 自动调整线程池参数
+	 * 自动调整线程池参数。 根据当前负载情况动态调整核心线程数和最大线程数。
+	 * @param executor 要调整的线程池
 	 */
 	private void autoAdjustThreadPool(MonitoredThreadPool executor) {
 		// 未开启自动调整线程池参数 直接返回
@@ -310,7 +320,9 @@ public class ThreadPoolTaskMonitor {
 	}
 
 	/**
-	 * 获取线程池名称
+	 * 获取线程池的名称。 如果线程池未命名，则使用其哈希码作为名称。
+	 * @param executor 线程池对象
+	 * @return 线程池名称
 	 */
 	private String getPoolName(ThreadPoolExecutor executor) {
 		for (Map.Entry<String, MonitoredThreadPool> entry : threadPoolMap.entrySet()) {
@@ -324,7 +336,9 @@ public class ThreadPoolTaskMonitor {
 	}
 
 	/**
-	 * 获取队列容量
+	 * 获取阻塞队列的容量。 支持ArrayBlockingQueue和LinkedBlockingQueue类型的队列。
+	 * @param queue 要检查的阻塞队列
+	 * @return 队列容量，如果无法获取则返回-1
 	 */
 	private int getQueueCapacity(BlockingQueue<?> queue) {
 		try {

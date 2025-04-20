@@ -8,20 +8,11 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.io.BufferedReader;
 
-/**
- * @author Yakir
- * @Topic TokenUtils
- * @Description
- * @date 2022/1/12 10:35
- * @Version 1.0
- */
 @UtilityClass
 public class TokenUtils {
 
 	/**
 	 * 获取token
-	 * @author yakir
-	 * @date 2022/1/12 10:36
 	 * @param classFilePath js文件路径相对于classpath
 	 * @param args 参数
 	 * @return java.lang.String

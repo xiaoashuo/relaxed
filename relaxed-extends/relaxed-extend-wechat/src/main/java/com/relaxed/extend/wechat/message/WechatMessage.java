@@ -1,18 +1,16 @@
 package com.relaxed.extend.wechat.message;
 
 /**
+ * 企业微信消息接口。 定义了企业微信消息的基本行为，所有具体的消息类型都需要实现此接口。
+ *
  * @author Yakir
- * @Topic WechatGroupMessage
- * @Description
- * @date 2022/6/15 11:46
- * @Version 1.0
+ * @since 1.0
  */
 public interface WechatMessage {
 
 	/**
-	 * 生成钉钉消息发送参数
-	 * @return 钉钉文档要求的 jsonString
-	 * @author lingting 2020-06-12 19:56:54
+	 * 生成企业微信消息发送参数
+	 * @return 符合企业微信API要求的JSON字符串
 	 */
 	String generate();
 

@@ -6,11 +6,10 @@ import com.relaxed.starter.download.handler.DownloadHandler;
 import java.lang.annotation.*;
 
 /**
+ * 响应下载注解，用于标记需要下载文件的方法。 可以配置下载渠道、内容类型、字符编码等参数。 支持本地文件、SFTP和OSS等多种下载方式。
+ *
  * @author Yakir
- * @Topic Download
- * @Description
- * @date 2022/2/17 11:39
- * @Version 1.0
+ * @since 1.0
  */
 @Documented
 @Target(ElementType.METHOD)
@@ -19,33 +18,39 @@ import java.lang.annotation.*;
 public @interface ResponseDownload {
 
 	/**
-	 * 下载渠道 支持 local sftp oss
-	 * @return
+	 * 下载渠道类型 支持本地文件系统、SFTP服务器和OSS对象存储
+	 * @return 下载渠道类型，默认为本地文件系统
 	 */
 	DownTypeEnum channel() default DownTypeEnum.LOCAL;
 
 	/**
-	 * 自定义处理器
+	 * 自定义下载处理器 当下载渠道为OTHER时，需要指定自定义处理器
+	 * @return 自定义下载处理器类，默认为DownloadHandler接口
 	 */
 	Class<? extends DownloadHandler> customHandler() default DownloadHandler.class;
 
 	/**
-	 * 如果为true，可以直接在浏览器预览 需要配合contentType，如图片或视频，默认false
+	 * 是否内联显示 如果为true，文件可以在浏览器中直接预览，如图片或视频 需要配合contentType使用
+	 * @return true 表示内联显示，false 表示作为附件下载，默认为false
 	 */
 	boolean inline() default false;
 
 	/**
-	 * 如果未指定，会尝试获取 如果尝试获取失败，则默认application/octet-stream
+	 * 内容类型 如果未指定，会尝试根据文件扩展名自动获取 如果自动获取失败，则使用默认值application/octet-stream
+	 * @return 内容类型，默认为application/octet-stream
 	 */
 	String contentType() default "application/octet-stream";
 
 	/**
-	 * 如果下载包含中文的文本文件出现乱码，可以尝试指定编码
+	 * 字符编码 用于处理包含中文的文本文件下载
+	 * @return 字符编码，默认为UTF-8
 	 */
 	String charset() default "UTF-8";
 
 	/**
-	 * 响应头 基数位为key 偶数位 为value
+	 * 自定义响应头 数组中的奇数位为响应头名称，偶数位为响应头值 例如：{"Cache-Control", "no-cache", "Pragma",
+	 * "no-cache"}
+	 * @return 响应头数组，默认为空数组
 	 */
 	String[] headers() default {};
 

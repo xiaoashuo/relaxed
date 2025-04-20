@@ -15,12 +15,19 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * rabbit mq 定义
+ * RabbitMQ声明创建器。 继承AbstractMQDeclareCreator，负责创建和初始化RabbitMQ的队列、交换器和绑定关系。
+ * 支持广播模式和点对点模式的消息路由。
  *
- * @author yakir
+ * @author Yakir
+ * @since 1.0
  */
 public class RabbitMQDeclareCreator extends AbstractMQDeclareCreator {
 
+	/**
+	 * 生成队列Bean定义构建器。 根据队列元数据创建持久化队列。
+	 * @param queueMeta 队列元数据
+	 * @return 队列Bean定义构建器
+	 */
 	@Override
 	protected BeanDefinitionBuilder generateQueueBeanDefBuilder(MQMeta.QueueMeta queueMeta) {
 		Supplier<Queue> queueSupplier = () -> new Queue(queueMeta.getQueueName(), true, false, false,
@@ -30,6 +37,14 @@ public class RabbitMQDeclareCreator extends AbstractMQDeclareCreator {
 		return beanDefinitionBuilder;
 	}
 
+	/**
+	 * 注册队列和交换器的绑定关系。 创建并注册Binding Bean，将队列绑定到交换器。
+	 * @param beanDefinitionRegistry Bean定义注册表
+	 * @param nameGenerator Bean名称生成器
+	 * @param queueName 队列名称
+	 * @param exchangeName 交换器名称
+	 * @param routingKey 路由键
+	 */
 	@Override
 	protected void registeredBinding(BeanDefinitionRegistry beanDefinitionRegistry, BeanNameGenerator nameGenerator,
 			String queueName, String exchangeName, String routingKey) {
@@ -43,6 +58,12 @@ public class RabbitMQDeclareCreator extends AbstractMQDeclareCreator {
 				nameGenerator.generateBeanName(bindBeanDefinition, beanDefinitionRegistry), bindBeanDefinition);
 	}
 
+	/**
+	 * 生成交换器Bean定义构建器。 根据交换器元数据和发送类型创建相应的交换器。
+	 * @param exchangeMeta 交换器元数据
+	 * @param exchangeName 交换器名称
+	 * @return 交换器Bean定义构建器
+	 */
 	@Override
 	protected BeanDefinitionBuilder generateExchangeBeanDefBuilder(MQMeta.ExchangeMeta exchangeMeta,
 			String exchangeName) {

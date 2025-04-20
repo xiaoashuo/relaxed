@@ -8,9 +8,10 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * 生成 markdown 文本
+ * Markdown文本构建器。 用于构建钉钉消息中的Markdown格式文本，支持标题、引用、加粗、斜体、列表、图片和链接等格式。
  *
- * @author lingting 2020/6/10 22:43
+ * @author lingting
+ * @since 1.0
  */
 public class MarkdownBuilder {
 
@@ -43,7 +44,7 @@ public class MarkdownBuilder {
 	/**
 	 * 添加自定义内容
 	 * @param content 自定义内容
-	 * @author lingting 2020-06-10 23:14:54
+	 * @return this
 	 */
 	public MarkdownBuilder append(String content) {
 		lineTextBuilder.append(content);
@@ -51,9 +52,9 @@ public class MarkdownBuilder {
 	}
 
 	/**
-	 * 有序列表 自动生成 索引
+	 * 有序列表 自动生成索引
 	 * @param content 文本
-	 * @author lingting 2020-06-10 23:13:41
+	 * @return this
 	 */
 	public MarkdownBuilder orderList(String content) {
 		// 获取最后一个字符串
@@ -77,7 +78,7 @@ public class MarkdownBuilder {
 	 * 有序列表
 	 * @param index 索引
 	 * @param content 文本
-	 * @author lingting 2020-06-10 23:13:41
+	 * @return this
 	 */
 	public MarkdownBuilder orderList(int index, String content) {
 		lineBreak();
@@ -86,9 +87,9 @@ public class MarkdownBuilder {
 	}
 
 	/**
-	 * 无序列表 - item1 - item2
-	 *
-	 * @author lingting 2020-06-10 23:09:29
+	 * 无序列表
+	 * @param content 列表项内容
+	 * @return this
 	 */
 	public MarkdownBuilder unorderedList(String content) {
 		// 换行
@@ -98,19 +99,19 @@ public class MarkdownBuilder {
 	}
 
 	/**
-	 * 图片
+	 * 添加图片
 	 * @param url 图片链接
-	 * @author lingting 2020-06-10 23:03:04
+	 * @return this
 	 */
 	public MarkdownBuilder pic(String url) {
 		return pic(StrUtil.EMPTY, url);
 	}
 
 	/**
-	 * 图片
+	 * 添加图片
 	 * @param title 图片标题
 	 * @param url 图片路径
-	 * @author lingting 2020-06-10 23:03:11
+	 * @return this
 	 */
 	public MarkdownBuilder pic(String title, String url) {
 		lineTextBuilder.append("![").append(title).append("](").append(url).append(")");
@@ -118,10 +119,10 @@ public class MarkdownBuilder {
 	}
 
 	/**
-	 * 链接
-	 * @param title 标题
-	 * @param url http 路径
-	 * @author lingting 2020-06-10 23:01:15
+	 * 添加链接
+	 * @param title 链接标题
+	 * @param url 链接地址
+	 * @return this
 	 */
 	public MarkdownBuilder link(String title, String url) {
 		lineTextBuilder.append("[").append(title).append("](").append(url).append(")");
@@ -129,9 +130,9 @@ public class MarkdownBuilder {
 	}
 
 	/**
-	 * 斜体
-	 *
-	 * @author lingting 2020-06-10 22:59:26
+	 * 添加斜体文本
+	 * @param content 文本内容
+	 * @return this
 	 */
 	public MarkdownBuilder italic(String content) {
 		lineTextBuilder.append(ITALIC_PREFIX).append(content).append(ITALIC_PREFIX);
@@ -139,9 +140,9 @@ public class MarkdownBuilder {
 	}
 
 	/**
-	 * 加粗
-	 *
-	 * @author lingting 2020-06-10 22:58:39
+	 * 添加加粗文本
+	 * @param content 文本内容
+	 * @return this
 	 */
 	public MarkdownBuilder bold(String content) {
 		lineTextBuilder.append(BOLD_PREFIX).append(content).append(BOLD_PREFIX);
@@ -149,9 +150,9 @@ public class MarkdownBuilder {
 	}
 
 	/**
-	 * 引用 > 文本
-	 * @param content 文本
-	 * @author lingting 2020-06-10 22:58:04
+	 * 添加引用文本
+	 * @param content 引用内容
+	 * @return this
 	 */
 	public MarkdownBuilder quote(String content) {
 		lineBreak();
@@ -160,9 +161,9 @@ public class MarkdownBuilder {
 	}
 
 	/**
-	 * 添加引用后 强制换行
-	 *
-	 * @author lingting 2020-06-12 15:50:29
+	 * 添加引用文本并强制换行
+	 * @param content 引用内容
+	 * @return this
 	 */
 	public MarkdownBuilder quoteLineBreak(String content) {
 		quote(content);
@@ -171,8 +172,7 @@ public class MarkdownBuilder {
 
 	/**
 	 * 强制换行
-	 *
-	 * @author lingting 2020-06-10 22:56:25
+	 * @return this
 	 */
 	public MarkdownBuilder forceLineBreak() {
 		content.add(lineTextBuilder.toString());
@@ -181,9 +181,8 @@ public class MarkdownBuilder {
 	}
 
 	/**
-	 * 换行 当已编辑文本长度不为0时换行
-	 *
-	 * @author lingting 2020-06-10 22:56:25
+	 * 换行（当已编辑文本长度不为0时换行）
+	 * @return this
 	 */
 	public MarkdownBuilder lineBreak() {
 		if (lineTextBuilder.length() != 0) {
@@ -193,9 +192,10 @@ public class MarkdownBuilder {
 	}
 
 	/**
-	 * 生成 i 级标题
-	 *
-	 * @author lingting 2020-06-10 22:55:39
+	 * 生成i级标题
+	 * @param i 标题级别（1-5）
+	 * @param content 标题内容
+	 * @return this
 	 */
 	private MarkdownBuilder title(int i, String content) {
 		// 如果当前操作行已有字符，需要换行
@@ -208,22 +208,47 @@ public class MarkdownBuilder {
 		return this;
 	}
 
+	/**
+	 * 生成一级标题
+	 * @param text 标题内容
+	 * @return this
+	 */
 	public MarkdownBuilder title1(String text) {
 		return title(1, text);
 	}
 
+	/**
+	 * 生成二级标题
+	 * @param text 标题内容
+	 * @return this
+	 */
 	public MarkdownBuilder title2(String text) {
 		return title(2, text);
 	}
 
+	/**
+	 * 生成三级标题
+	 * @param text 标题内容
+	 * @return this
+	 */
 	public MarkdownBuilder title3(String text) {
 		return title(3, text);
 	}
 
+	/**
+	 * 生成四级标题
+	 * @param text 标题内容
+	 * @return this
+	 */
 	public MarkdownBuilder title4(String text) {
 		return title(4, text);
 	}
 
+	/**
+	 * 生成五级标题
+	 * @param text 标题内容
+	 * @return this
+	 */
 	public MarkdownBuilder title5(String text) {
 		return title(5, text);
 	}
@@ -234,9 +259,8 @@ public class MarkdownBuilder {
 	}
 
 	/**
-	 * 构筑 Markdown 文本
-	 *
-	 * @author lingting 2020-06-11 22:55:40
+	 * 构建Markdown文本
+	 * @return 构建完成的Markdown文本
 	 */
 	public String build() {
 		lineBreak();

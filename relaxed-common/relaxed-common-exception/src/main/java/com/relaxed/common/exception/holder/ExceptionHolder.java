@@ -22,31 +22,59 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @Topic 记录异常信息
- * @author yakir
+ * 异常信息持有者
+ * <p>
+ * 使用ThreadLocal存储异常上下文信息，用于跟踪和传递异常处理过程中的状态。 支持在多线程环境下安全地存储和获取异常信息。
+ * </p>
+ *
+ * @author Yakir
+ * @since 1.0.0
  */
 public class ExceptionHolder {
 
+	/**
+	 * 线程本地变量，用于存储异常上下文ID
+	 */
 	private static final ThreadLocal<String> CONTEXT_HOLDER = new ThreadLocal();
 
-	public ExceptionHolder() {
+	/**
+	 * 私有构造函数，防止实例化
+	 */
+	private ExceptionHolder() {
 	}
 
+	/**
+	 * 获取当前线程的异常上下文ID
+	 * @return 异常上下文ID，如果不存在则返回null
+	 */
 	public static String getXID() {
 		String xid = CONTEXT_HOLDER.get();
 		return StringUtils.hasText(xid) ? xid : null;
 	}
 
+	/**
+	 * 解除当前线程的异常上下文绑定
+	 * @param xid 要解除绑定的异常上下文ID
+	 * @return 解除绑定的异常上下文ID
+	 */
 	public static String unbind(String xid) {
 		CONTEXT_HOLDER.remove();
 		return xid;
 	}
 
+	/**
+	 * 绑定异常上下文ID到当前线程
+	 * @param xid 要绑定的异常上下文ID
+	 * @return 绑定的异常上下文ID
+	 */
 	public static String bind(String xid) {
 		CONTEXT_HOLDER.set(xid);
 		return xid;
 	}
 
+	/**
+	 * 移除当前线程的异常上下文
+	 */
 	public static void remove() {
 		CONTEXT_HOLDER.remove();
 	}

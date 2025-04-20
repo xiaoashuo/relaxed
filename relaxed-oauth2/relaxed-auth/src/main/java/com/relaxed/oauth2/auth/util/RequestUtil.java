@@ -13,14 +13,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
+ * 请求工具类 用于处理OAuth2认证相关的请求参数 支持从请求路径和请求头中获取认证信息
+ *
  * @author Yakir
- * @Topic RequestUtil
- * @Description
- * @date 2022/7/28 16:12
- * @Version 1.0
+ * @since 1.0
  */
 public class RequestUtil {
 
+	/**
+	 * 获取授权类型 从请求参数中获取grant_type参数值
+	 * @return 授权类型，如password、refresh_token等
+	 */
 	@SneakyThrows
 	public static String getGrantType() {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -30,26 +33,22 @@ public class RequestUtil {
 	}
 
 	/**
-	 * 获取登录认证的客户端ID
-	 * <p>
-	 * 兼容两种方式获取OAuth2客户端信息（client_id、client_secret） 方式一：client_id、client_secret放在请求路径中
-	 * 方式二：放在请求头（Request Headers）中的Authorization字段，且经过加密，例如 Basic Y2xpZW50OnNlY3JldA==
-	 * 明文等于 client:secret
-	 * @return
+	 * 获取OAuth2客户端ID 支持两种方式获取客户端信息： 1. 从请求参数中获取client_id 2.
+	 * 从请求头的Authorization字段中获取，格式为Basic base64(client_id:client_secret)
+	 * @return 客户端ID，如果不存在则返回null
 	 */
 	@SneakyThrows
 	public static String getOAuth2ClientId() {
-
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 				.getRequest();
 
-		// 从请求路径中获取
+		// 从请求参数中获取
 		String clientId = request.getParameter(SecurityConstant.CLIENT_ID_KEY);
 		if (StrUtil.isNotBlank(clientId)) {
 			return clientId;
 		}
 
-		// 从请求头获取
+		// 从请求头中获取
 		String basic = request.getHeader(SecurityConstant.AUTHORIZATION_KEY);
 		if (StrUtil.isNotBlank(basic) && basic.startsWith(SecurityConstant.BASIC_PREFIX)) {
 			basic = basic.replace(SecurityConstant.BASIC_PREFIX, Strings.EMPTY);
@@ -61,10 +60,8 @@ public class RequestUtil {
 	}
 
 	/**
-	 * 获取刷新token
-	 * @author yakir
-	 * @date 2022/7/29 9:48
-	 * @return java.lang.String
+	 * 获取刷新令牌 从请求参数中获取refresh_token参数值
+	 * @return 刷新令牌，如果不存在则返回null
 	 */
 	public static String getRequestRefreshToken() {
 		String refreshToken = WebUtils.getParameter(SecurityConstant.REFRESH_TOKEN_KEY);

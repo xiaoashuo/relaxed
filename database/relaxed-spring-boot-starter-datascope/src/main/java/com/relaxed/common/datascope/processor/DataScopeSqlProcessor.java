@@ -26,16 +26,11 @@ import java.util.stream.Collectors;
  * 数据权限 sql 处理器 参考 mybatis-plus 租户拦截器，解析 sql where 部分，进行查询表达式注入
  *
  * @author Hccake 2020/9/26
- * @version 1.0
  */
 @RequiredArgsConstructor
 @Slf4j
 public class DataScopeSqlProcessor extends JsqlParserSupport {
 
-	/**
-	 * select 类型SQL处理
-	 * @param select jsqlparser Statement Select
-	 */
 	@Override
 	protected void processSelect(Select select, int index, String sql, Object obj) {
 		List<DataScope> dataScopes = (List<DataScope>) obj;
@@ -75,19 +70,11 @@ public class DataScopeSqlProcessor extends JsqlParserSupport {
 		}
 	}
 
-	/**
-	 * insert 类型SQL处理
-	 * @param insert jsqlparser Statement Insert
-	 */
 	@Override
 	protected void processInsert(Insert insert, int index, String sql, Object obj) {
 		// insert 暂时不处理
 	}
 
-	/**
-	 * update 类型SQL处理
-	 * @param update jsqlparser Statement Update
-	 */
 	@Override
 	protected void processUpdate(Update update, int index, String sql, Object obj) {
 		List<DataScope> dataScopes = (List<DataScope>) obj;
@@ -102,10 +89,6 @@ public class DataScopeSqlProcessor extends JsqlParserSupport {
 		}
 	}
 
-	/**
-	 * delete 类型SQL处理
-	 * @param delete jsqlparser Statement Delete
-	 */
 	@Override
 	protected void processDelete(Delete delete, int index, String sql, Object obj) {
 		List<DataScope> dataScopes = (List<DataScope>) obj;
@@ -120,9 +103,6 @@ public class DataScopeSqlProcessor extends JsqlParserSupport {
 		}
 	}
 
-	/**
-	 * 处理 PlainSelect
-	 */
 	protected void processPlainSelect(PlainSelect plainSelect) {
 		// #3087 github
 		List<SelectItem> selectItems = plainSelect.getSelectItems();
@@ -176,11 +156,10 @@ public class DataScopeSqlProcessor extends JsqlParserSupport {
 	}
 
 	/**
-	 * 处理where条件内的子查询
-	 * <p>
-	 * 支持如下: 1. in 2. = 3. > 4. < 5. >= 6. <= 7. <> 8. EXISTS 9. NOT EXISTS
-	 * <p>
+	 * 处理where条件内的子查询 <pre>
+	 * {@code 1. in 2. = 3. > 4. < 5. >= 6. <= 7. <> 8. EXISTS 9. NOT EXISTS}支持如下:
 	 * 前提条件: 1. 子查询必须放在小括号中 2. 子查询一般放在比较操作符的右边
+	 * </pre>
 	 * @param where where 条件
 	 */
 	protected void processWhereSubSelect(Expression where) {
@@ -239,12 +218,9 @@ public class DataScopeSqlProcessor extends JsqlParserSupport {
 	/**
 	 * 处理函数
 	 * <p>
-	 * 支持: 1. select fun(args..) 2. select fun1(fun2(args..),args..)
-	 * <p>
-	 * <p>
-	 * fixed gitee pulls/141
+	 * 支持: 1. select fun(args..) 2. select fun1(fun2(args..),args..) fixed gitee pulls/141
 	 * </p>
-	 * @param function
+	 * @param function the function to be processed
 	 */
 	protected void processFunction(Function function) {
 		ExpressionList parameters = function.getParameters();
@@ -260,9 +236,6 @@ public class DataScopeSqlProcessor extends JsqlParserSupport {
 		}
 	}
 
-	/**
-	 * 处理子查询等
-	 */
 	protected void processOtherFromItem(FromItem fromItem) {
 		// 去除括号
 		while (fromItem instanceof ParenthesisFromItem) {

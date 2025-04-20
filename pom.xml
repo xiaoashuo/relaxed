@@ -35,7 +35,6 @@
         <module>excel/relaxed-spring-boot-starter-fastexcel</module>
         <module>database/relaxed-dynamic-datasource</module>
         <module>database/relaxed-common-tenant</module>
-        <module>database/relaxed-mybatis</module>
         <module>database/relaxed-mybatis-plus</module>
         <module>database/relaxed-mybatis-plus-encrypt</module>
         <module>database/relaxed-spring-boot-starter-datascope</module>
@@ -67,18 +66,6 @@
 
 
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://central.sonatype.com</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://central.sonatype.com</url>
-        </repository>
-    </distributionManagement>
-
-
     <!--环境变量-->
     <profiles>
         <profile>
@@ -103,87 +90,7 @@
                 <profiles.active>prod</profiles.active>
             </properties>
         </profile>
-        <profile>
-            <id>ossrh</id>
-             <build>
-                 <plugins>
-                     <!-- Javadoc -->
-                     <plugin>
-                         <groupId>org.apache.maven.plugins</groupId>
-                         <artifactId>maven-javadoc-plugin</artifactId>
-                         <configuration>
-                             <encoding>UTF-8</encoding>
-                             <charset>UTF-8</charset>
-                             <docencoding>UTF-8</docencoding>
-                             <additionalOptions>-Xdoclint:none</additionalOptions><!---
-                            这里是为了跳过doc一些验证error变成warn警告 允许通过
-                            -->
-                         </configuration>
-                         <executions>
-                             <execution>
-                                 <id>attach-javadocs</id>
-                                 <goals>
-                                     <goal>jar</goal>
-                                 </goals>
-                             </execution>
-                         </executions>
-                     </plugin>
-                     <!-- 生成source -->
-                     <plugin>
-                         <groupId>org.apache.maven.plugins</groupId>
-                         <artifactId>maven-source-plugin</artifactId>
-                          <executions>
-                             <execution>
-                                 <id>oss</id>
-                                 <phase>package</phase>
-                                 <goals>
-                                     <goal>jar-no-fork</goal>
-                                 </goals>
-                             </execution>
-                         </executions>
-                     </plugin>
-                     <plugin>
-                         <groupId>org.apache.maven.plugins</groupId>
-                         <artifactId>maven-release-plugin</artifactId>
-                         <configuration>
-                             <autoVersionSubmodules>true</autoVersionSubmodules>
-                             <goals>deploy</goals>
-                             <releaseProfiles>release</releaseProfiles>
-                             <mavenExecutorId>forked-path</mavenExecutorId>
-                             <useReleaseProfile>false</useReleaseProfile>
-                         </configuration>
-                     </plugin>
-                     <!-- 工程文件自动签名-->
-                     <plugin>
-                         <groupId>org.apache.maven.plugins</groupId>
-                         <artifactId>maven-gpg-plugin</artifactId>
-                         <executions>
-                             <execution>
-                                 <id>sign-artifacts</id>
-                                 <phase>verify</phase>
-                                 <goals>
-                                     <goal>sign</goal>
-                                 </goals>
-                             </execution>
-                         </executions>
-                     </plugin>
-                     <!--sonatype发布插件-->
-                     <plugin>
-                         <groupId>org.sonatype.central</groupId>
-                         <artifactId>central-publishing-maven-plugin</artifactId>
-                         <extensions>true</extensions>
-                         <configuration>
-                             <publishingServerId>ossrh</publishingServerId>
-                         </configuration>
-                     </plugin>
 
-
-
-
-
-                 </plugins>
-             </build>
-        </profile>
 
     </profiles>
 

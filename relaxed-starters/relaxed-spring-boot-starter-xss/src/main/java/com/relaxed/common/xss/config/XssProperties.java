@@ -14,11 +14,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * XSS配置属性类 定义XSS过滤的配置属性，包括是否启用、包含路径、排除路径等 支持通过配置文件进行灵活配置
+ *
  * @author Yakir
- * @Topic XssProperties
- * @Description
- * @date 2021/6/26 14:45
- * @Version 1.0
+ * @since 1.0
  */
 @Data
 @ConfigurationProperties(prefix = XssProperties.PREFIX)
@@ -32,30 +31,30 @@ public class XssProperties {
 	private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
 
 	/**
-	 * 是否开启
+	 * 是否启用XSS过滤
 	 */
 	private boolean enabled = true;
 
 	/**
-	 * xss 过滤包含的路径（Ant风格）
-	 **/
+	 * XSS过滤包含的路径（Ant风格）
+	 */
 	private Set<String> includePaths = Collections.singleton("/**");
 
 	/**
-	 * xss 需要排除的路径（Ant风格），优先级高于包含路径
-	 **/
+	 * XSS过滤需要排除的路径（Ant风格），优先级高于包含路径
+	 */
 	private Set<String> excludePaths = new HashSet<>();
 
 	/**
-	 * 需要处理的 HTTP 请求方法集合
+	 * 需要处理的HTTP请求方法集合
 	 */
 	private final Set<String> includeHttpMethods = new HashSet<>(
 			Arrays.asList(HttpMethod.POST.name(), HttpMethod.PUT.name(), HttpMethod.PATCH.name()));
 
 	/**
-	 * 判断是否不应该过滤
-	 * @param request
-	 * @return true 不过滤 false 过滤
+	 * 判断当前请求是否应该跳过XSS过滤
+	 * @param request HTTP请求对象
+	 * @return true表示跳过过滤，false表示需要过滤
 	 */
 	public boolean shouldNotFilter(HttpServletRequest request) {
 		// 关闭直接跳过

@@ -45,18 +45,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * OAuth2授权服务器自动配置类 用于配置OAuth2授权服务器的核心组件 主要功能: 1. 配置令牌存储 2. 配置访问令牌转换器 3. 配置异常处理 4. 配置认证提供者
+ * 5. 配置授权类型 6. 配置客户端信息
+ *
  * @author Yakir
- * @Topic AuthorizationAutoConfiguration
- * @Description
- * @date 2022/7/24 11:45
- * @Version 1.0
+ * @since 1.0.0
  */
 @Import({ CustomWebSecurityConfigurer.class, CustomAuthorizationServerConfigurer.class })
 public class AuthorizationAutoConfiguration {
 
 	/**
-	 * 令牌存储
-	 * @return
+	 * 配置令牌存储 默认使用内存存储,可自定义实现
+	 * @return TokenStore 令牌存储实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -65,10 +65,8 @@ public class AuthorizationAutoConfiguration {
 	}
 
 	/**
-	 * 定义access token转换器 将token字符串转换成OAuth2AccessToken对象
-	 * @author yakir
-	 * @date 2022/7/24 13:25
-	 * @return org.springframework.security.oauth2.provider.token.AccessTokenConverter
+	 * 配置访问令牌转换器 用于将token字符串转换成OAuth2AccessToken对象
+	 * @return AccessTokenConverter 访问令牌转换器
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -77,8 +75,8 @@ public class AuthorizationAutoConfiguration {
 	}
 
 	/**
-	 * 自定义的认证时异常转换
-	 * @return
+	 * 配置自定义的认证异常转换器 用于处理OAuth2认证过程中的异常
+	 * @return WebResponseExceptionTranslator 异常转换器
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -87,8 +85,8 @@ public class AuthorizationAutoConfiguration {
 	}
 
 	/**
-	 * 密码解析器，只在授权服务器中进行配置
-	 * @return
+	 * 配置密码编码器 用于处理密码的加密和验证
+	 * @return PasswordEncoder 密码编码器
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -97,8 +95,8 @@ public class AuthorizationAutoConfiguration {
 	}
 
 	/**
-	 * 自定义异常处理
-	 * @return AuthenticationEntryPoint
+	 * 配置认证入口点 用于处理未认证的请求
+	 * @return AuthenticationEntryPoint 认证入口点
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -107,8 +105,8 @@ public class AuthorizationAutoConfiguration {
 	}
 
 	/**
-	 * 进入异常处理
-	 * @return
+	 * 配置访问拒绝处理器 用于处理权限不足的请求
+	 * @return AccessDeniedHandler 访问拒绝处理器
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -117,8 +115,9 @@ public class AuthorizationAutoConfiguration {
 	}
 
 	/**
-	 * OAuth2 客户端配置类，默认使用 jdbc 从数据库获取 OAuth2 Client 信息
-	 * @return JdbcOAuth2ClientConfigurer
+	 * 配置OAuth2客户端配置器 默认使用JDBC从数据库获取客户端信息
+	 * @param dataSource 数据源
+	 * @return OAuth2ClientConfigurer 客户端配置器
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -127,18 +126,22 @@ public class AuthorizationAutoConfiguration {
 	}
 
 	/**
-	 * 预检查持有器
-	 * @param preValidatorProvider
-	 * @return
+	 * 配置预检查持有器 用于管理各种预检查验证器
+	 * @param preValidatorProvider 预检查验证器提供者
+	 * @return PreValidatorHolder 预检查持有器
 	 */
 	@Bean
 	public PreValidatorHolder preValidatorHolder(ObjectProvider<PreValidator> preValidatorProvider) {
 		Map<String, PreValidator> preValidatorMap = new HashMap<>(8);
 		preValidatorProvider.forEach(e -> preValidatorMap.put(e.supportType(), e));
 		return new PreValidatorHolder(preValidatorMap);
-
 	}
 
+	/**
+	 * 构建默认的预检查验证器 当未找到对应的验证器时使用
+	 * @param supportType 支持的验证类型
+	 * @return PreValidator 预检查验证器
+	 */
 	private PreValidator buildDefaultValidator(String supportType) {
 		return new PreValidator() {
 			@Override
@@ -154,9 +157,10 @@ public class AuthorizationAutoConfiguration {
 	}
 
 	/**
-	 * 授权类型建造者，默认处理了 OAuth2 规范的 5 种授权类型，用户可自定义添加其他授权类型，如手机号登录
+	 * 配置授权类型构建器 默认处理OAuth2规范的5种授权类型 支持自定义添加其他授权类型
 	 * @param authenticationManager 认证管理器
-	 * @return TokenGrantBuilder
+	 * @param preValidatorHolder 预检查持有器
+	 * @return TokenGrantBuilder 授权类型构建器
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -169,7 +173,6 @@ public class AuthorizationAutoConfiguration {
 				Optional.ofNullable(preValidatorHolder.getByType(CaptchaTokenGranter.GRANT_TYPE))
 						.orElseGet(() -> buildDefaultValidator(CaptchaTokenGranter.GRANT_TYPE)));
 		// 添加手机短信验证码授权模式的授权者
-		// 添加验证码授权模式授权者
 		TokenGranterProvider smsCodeTokenGranter = endpoints -> new SmsCodeTokenGranter(endpoints.getTokenServices(),
 				endpoints.getClientDetailsService(), endpoints.getOAuth2RequestFactory(), authenticationManager,
 				Optional.ofNullable(preValidatorHolder.getByType(SmsCodeTokenGranter.GRANT_TYPE))
@@ -182,8 +185,10 @@ public class AuthorizationAutoConfiguration {
 	}
 
 	/**
-	 * 用户名密码认证授权提供者
-	 * @return
+	 * 配置用户名密码认证提供者 用于处理用户名密码认证
+	 * @param passwordEncoder 密码编码器
+	 * @param userDetailsService 用户详情服务
+	 * @return DaoAuthenticationProvider 认证提供者
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -196,8 +201,9 @@ public class AuthorizationAutoConfiguration {
 	}
 
 	/**
-	 * 手机验证码认证授权提供者
-	 * @return
+	 * 配置手机验证码认证提供者 用于处理手机验证码认证
+	 * @param userDetailsService 用户详情服务
+	 * @return SmsCodeAuthenticationProvider 手机验证码认证提供者
 	 */
 	@Bean
 	public SmsCodeAuthenticationProvider smsCodeAuthenticationProvider(UserDetailsService userDetailsService) {
@@ -205,8 +211,8 @@ public class AuthorizationAutoConfiguration {
 	}
 
 	/**
-	 * 授权信息处理器
-	 * @return
+	 * 配置授权信息处理器 用于处理不同授权类型的用户信息获取
+	 * @return AuthorizationInfoHandle 授权信息处理器
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -230,10 +236,11 @@ public class AuthorizationAutoConfiguration {
 	}
 
 	/**
-	 * token service 构建者
-	 * @param userDetailsService
-	 * @param authorizationInfoHandle
-	 * @return
+	 * 配置令牌服务构建器 用于构建令牌服务
+	 * @param userDetailsService 用户详情服务
+	 * @param authorizationInfoHandle 授权信息处理器
+	 * @param tokenStore 令牌存储
+	 * @return TokenServicesBuilder 令牌服务构建器
 	 */
 	@Bean
 	@ConditionalOnMissingBean

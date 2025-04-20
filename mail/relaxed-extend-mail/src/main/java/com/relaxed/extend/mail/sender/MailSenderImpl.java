@@ -15,11 +15,6 @@ import javax.mail.MessagingException;
 import java.io.File;
 import java.time.LocalDateTime;
 
-/**
- * @author Hccake
- * @version 1.0
- * @date 2020/2/27 17:06
- */
 @Slf4j
 @RequiredArgsConstructor
 public class MailSenderImpl implements MailSender {

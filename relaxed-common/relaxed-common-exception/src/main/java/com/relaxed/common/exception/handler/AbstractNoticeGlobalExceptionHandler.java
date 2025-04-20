@@ -151,8 +151,7 @@ public abstract class AbstractNoticeGlobalExceptionHandler extends Thread
 	/**
 	 * 处理通知结果
 	 * @author yakir
-	 * @date 2022/1/20 17:34
-	 * @param response
+	 * @param response 异常通知响应
 	 */
 	public void handleExceptionNoticeResponse(ExceptionNoticeResponse response) {
 		if (!response.isSuccess()) {

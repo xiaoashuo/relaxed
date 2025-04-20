@@ -7,11 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 参数加密注解 用于标记需要加密的方法参数，仅支持字符串类型的参数 被标记的参数在SQL执行前会自动进行加密处理
  * @author Yakir
- * @Topic ParamEncrypt
- * @Description 标识入参是否需要加密,仅作用在字符串类型的参数上
- * @date 2024/10/13 11:02
- * @Version 1.0
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

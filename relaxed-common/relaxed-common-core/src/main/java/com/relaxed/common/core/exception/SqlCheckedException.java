@@ -3,9 +3,10 @@ package com.relaxed.common.core.exception;
 import com.relaxed.common.model.result.SysResultCode;
 
 /**
+ * SQL注入检查异常，用于处理SQL注入相关的异常情况
+ *
  * @author Hccake
- * @version 1.0
- * @date 2019/10/19 16:52 sql防注入校验异常
+ * @since 1.0.0
  */
 public class SqlCheckedException extends BusinessException {
 

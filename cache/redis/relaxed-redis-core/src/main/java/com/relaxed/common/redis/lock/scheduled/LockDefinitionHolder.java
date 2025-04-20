@@ -7,56 +7,64 @@ import lombok.Setter;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 锁定义持有者类。 用于存储分布式锁的相关信息，包括锁的键名、时间、线程等，支持锁续期功能。
+ *
  * @author Yakir
- * @Topic LockDefinitionHolder
- * @Description
- * @date 2022/10/12 16:31
- * @Version 1.0
+ * @since 1.0
  */
 @Setter
 @Getter
 public class LockDefinitionHolder {
 
 	/**
-	 * 业务唯一 key
+	 * 锁的键名
 	 */
 	private String lockKey;
 
 	/**
-	 * 加锁时间
+	 * 锁的过期时间
 	 */
 	private Long lockTime;
 
 	/**
-	 * 时间单位 默认 TimeUnit.SECONDS
+	 * 时间单位，默认秒
 	 */
 	private TimeUnit timeUnit;
 
 	/**
-	 * 上次更新时间（ms）
+	 * 上次更新时间（毫秒）
 	 */
 	private Long lastModifyTime;
 
 	/**
-	 * 保存当前线程
+	 * 持有锁的线程
 	 */
 	private Thread currentTread;
 
 	/**
-	 * 总共尝试次数
+	 * 最大尝试续期次数
 	 */
 	private int tryCount;
 
 	/**
-	 * 当前尝试次数
+	 * 当前已尝试续期次数
 	 */
 	private int currentCount;
 
 	/**
-	 * 更新的时间周期（毫秒）,公式 = 加锁时间（转成毫秒） / 3
+	 * 续期时间周期（毫秒），计算公式：锁过期时间（转成毫秒）/ 3
 	 */
 	private Long modifyPeriod;
 
+	/**
+	 * 构造函数
+	 * @param lockKey 锁的键名
+	 * @param lockTime 锁的过期时间
+	 * @param lastModifyTime 上次更新时间
+	 * @param currentTread 持有锁的线程
+	 * @param tryCount 最大尝试续期次数
+	 * @param timeUnit 时间单位
+	 */
 	public LockDefinitionHolder(String lockKey, Long lockTime, Long lastModifyTime, Thread currentTread, int tryCount,
 			TimeUnit timeUnit) {
 		this.lockKey = lockKey;

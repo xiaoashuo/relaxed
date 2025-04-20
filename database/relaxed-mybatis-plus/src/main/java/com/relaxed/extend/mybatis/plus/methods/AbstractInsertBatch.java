@@ -18,18 +18,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * 批量插入抽象方法类
+ * <p>
+ * 提供了批量插入数据的基础实现，包括： 1. 主键生成策略的处理 2. SQL 语句的构建 3. 字段和值的处理
+ *
  * @author Yakir
- * @Topic AbstractInsertBatch
- * @Description
- * @date 2021/7/11 10:25
- * @Version 1.0
  */
 public abstract class AbstractInsertBatch extends AbstractMethod {
 
+	/**
+	 * 构造方法
+	 * @param methodName 方法名称
+	 */
 	protected AbstractInsertBatch(String methodName) {
 		super(methodName);
 	}
 
+	/**
+	 * 注入 MappedStatement
+	 * <p>
+	 * 处理主键生成策略，构建 SQL 语句，并创建 MappedStatement。
+	 * @param mapperClass Mapper 接口类
+	 * @param modelClass 实体类
+	 * @param tableInfo 表信息
+	 * @return MappedStatement
+	 */
 	@Override
 	public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
 		// === mybatis 主键逻辑处理：主键生成策略，以及主键回填=======
@@ -61,10 +74,22 @@ public abstract class AbstractInsertBatch extends AbstractMethod {
 				keyProperty, keyColumn);
 	}
 
+	/**
+	 * 获取主键属性名
+	 * @param tableInfo 表信息
+	 * @return 主键属性名
+	 */
 	private String getKeyProperty(TableInfo tableInfo) {
 		return tableInfo.getKeyProperty();
 	}
 
+	/**
+	 * 准备字段 SQL
+	 * <p>
+	 * 构建 INSERT 语句中的字段部分。
+	 * @param tableInfo 表信息
+	 * @return 字段 SQL
+	 */
 	protected String prepareFieldSql(TableInfo tableInfo) {
 		List<TableFieldInfo> fieldList = tableInfo.getFieldList();
 		String columnFields = tableInfo.getKeyInsertSqlColumn(true, null, false)
@@ -72,6 +97,13 @@ public abstract class AbstractInsertBatch extends AbstractMethod {
 		return SqlScriptUtils.convertTrim(columnFields, LEFT_BRACKET, RIGHT_BRACKET, null, COMMA);
 	}
 
+	/**
+	 * 准备值 SQL
+	 * <p>
+	 * 构建 INSERT 语句中的值部分。
+	 * @param tableInfo 表信息
+	 * @return 值 SQL
+	 */
 	protected String prepareValuesSqlForMysqlBatch(TableInfo tableInfo) {
 		List<TableFieldInfo> fieldList = tableInfo.getFieldList();
 		String valueList = tableInfo.getKeyInsertSqlProperty(true, ENTITY_DOT, true) + fieldList.stream()
@@ -82,40 +114,32 @@ public abstract class AbstractInsertBatch extends AbstractMethod {
 	}
 
 	/**
-	 * 获取 insert 时候插入值 sql 脚本片段
+	 * 获取插入值的 SQL 脚本片段
 	 * <p>
-	 * insert into table (字段) values (值)
-	 * </p>
-	 * <p>
-	 * 位于 "值" 部位
-	 * </p>
-	 *
-	 * <li>不生成 if 标签</li>
-	 * @return sql 脚本片段
+	 * 用于构建 INSERT 语句中的值部分。 不生成 if 标签。
+	 * @param tableFieldInfo 表字段信息
+	 * @return SQL 脚本片段
 	 */
 	private static String getInsertSqlPropertyMaybeIf(TableFieldInfo tableFieldInfo) {
 		return tableFieldInfo.getInsertSqlProperty(ENTITY_DOT);
 	}
 
 	/**
-	 * 获取 insert 时候字段 sql 脚本片段
+	 * 获取插入字段的 SQL 脚本片段
 	 * <p>
-	 * insert into table (字段) values (值)
-	 * </p>
-	 * <p>
-	 * 位于 "字段" 部位
-	 * </p>
-	 *
-	 * <li>不生成 if 标签</li>
-	 * @return sql 脚本片段
+	 * 用于构建 INSERT 语句中的字段部分。 不生成 if 标签。
+	 * @param tableFieldInfo 表字段信息
+	 * @return SQL 脚本片段
 	 */
 	private static String getInsertSqlColumn(TableFieldInfo tableFieldInfo) {
 		return tableFieldInfo.getInsertSqlColumn();
 	}
 
 	/**
-	 * 获取注册的脚本
-	 * @return java.lang.String
+	 * 获取 SQL 语句
+	 * <p>
+	 * 子类需要实现该方法，返回具体的 SQL 语句模板。
+	 * @return SQL 语句模板
 	 */
 	protected abstract String getSql();
 

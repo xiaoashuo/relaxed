@@ -46,41 +46,51 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
+ * 日志正则表达式和 SpEL 解析器实现类 该类负责解析日志注解中的表达式，支持正则表达式和 SpEL 表达式的解析 主要功能包括： 1. 解析条件表达式判断是否记录日志 2.
+ * 构建 SpEL 上下文环境 3. 解析前置和后置表达式 4. 处理函数调用和参数替换 5. 支持对象差异比较
+ *
  * @author Yakir
- * @Topic LogRegxSpelParse
- * @Description
- * @date 2023/12/19 14:26
- * @Version 1.0
  */
 @Slf4j
 public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, ApplicationContextAware {
 
 	/**
-	 * 这个正则表达式的含义为： 匹配一个包含在花括号中的字符串，其中花括号中可以包含任意数量的空白字符（包括空格、制表符、换行符等），
-	 * 并且花括号中至少包含一个单词字符（字母、数字或下划线）。 =================================================
-	 * 具体来说，该正则表达式由两部分组成：
-	 * {s*(\w*)\s*}：表示匹配一个左花括号，后面跟随零个或多个空白字符，然后是一个单词字符（字母、数字或下划线）零个或多个空白字符，最后是一个右花括号。这部分用括号括起来，以便提取匹配到的内容。
-	 * (.*?)：表示匹配任意数量的任意字符，但尽可能少地匹配。这部分用括号括起来，以便提取匹配到的内容。
-	 * ================================================= 因此，整个正则表达式的意思是： 匹配一个包含在花括号中的字符串，
-	 * 其中花括号中可以包含任意数量的空白字符（包括空格、制表符、换行符等）， 并且花括号中至少包含一个单词字符（字母、数字或下划线），并提取出花括号中的内容。
-	 * ================================================= 最终匹配格式结构 {xx?{}} 此时可以固定
-	 * 参数为2，函数名为1 完整字符串为0 字段 {{param}} 函数 {func{param}}
+	 * 正则表达式模式，用于匹配花括号中的表达式 格式说明： - {param}：匹配简单参数 - {func{param}}：匹配函数调用 匹配规则： 1.
+	 * 花括号中可以包含任意数量的空白字符 2. 花括号中至少包含一个单词字符（字母、数字或下划线） 3. 支持嵌套花括号用于函数调用
 	 */
 	private static final Pattern PATTERN = Pattern.compile("\\{\\s*(\\w*)\\s*\\{(.*?)}}");
 
 	/**
-	 * 实现BeanFactoryAware以获取容器中的 beanFactory对象, 拿到beanFactory后便可以获取容器中的bean,用于SpEl表达式的解析
+	 * Spring Bean 工厂，用于获取容器中的 Bean 主要用于支持 SpEL 表达式中调用指定类的方法
 	 */
 	private BeanFactory beanFactory;
 
+	/**
+	 * Spring 应用上下文，用于获取环境配置等信息
+	 */
 	private ApplicationContext applicationContext;
 
+	/**
+	 * 操作人获取服务，用于获取当前操作人信息
+	 */
 	private final IOperatorGetService operatorGetService;
 
+	/**
+	 * 日志业务增强服务，用于对日志信息进行额外处理
+	 */
 	private final ILogBizEnhance iLogBizEnhance;
 
+	/**
+	 * 数据处理器，用于处理对象差异比较
+	 */
 	private final IDataHandler dataHandler;
 
+	/**
+	 * 构造函数，初始化必要的服务
+	 * @param operatorGetService 操作人获取服务
+	 * @param iLogBizEnhance 日志业务增强服务
+	 * @param dataHandler 数据处理器
+	 */
 	public LogRegxSpelParse(IOperatorGetService operatorGetService, ILogBizEnhance iLogBizEnhance,
 			IDataHandler dataHandler) {
 		this.operatorGetService = operatorGetService;
@@ -88,23 +98,40 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 		this.dataHandler = dataHandler;
 	}
 
+	/**
+	 * 判断是否记录日志
+	 * @param context SpEL 上下文
+	 * @param conditionSpel 条件表达式
+	 * @return 是否记录日志
+	 */
 	@Override
 	public boolean isRecordLog(LogSpelEvaluationContext context, String conditionSpel) {
 		String isRecordLog = resolveExpression(conditionSpel, context);
 		return Boolean.TRUE.toString().equals(isRecordLog);
 	}
 
+	/**
+	 * 构建 SpEL 上下文
+	 * @param target 目标对象
+	 * @param method 方法
+	 * @param args 参数
+	 * @return SpEL 上下文
+	 */
 	@Override
 	public LogSpelEvaluationContext buildContext(Object target, Method method, Object[] args) {
 		LogSpelEvaluationContext logRecordContext = LogSpelUtil.buildSpelContext(target, method, args);
 		if (beanFactory != null) {
-			// setBeanResolver 主要用于支持SpEL模板中调用指定类的方法，如：@XXService.x(#root)
-			// 如果获得工厂方法自己，bean名字须要添加&前缀而不是@
 			logRecordContext.setBeanResolver(new BeanFactoryResolver(beanFactory));
 		}
 		return logRecordContext;
 	}
 
+	/**
+	 * 前置处理，解析前置表达式并构建日志信息
+	 * @param logSpelContext SpEL 上下文
+	 * @param bizLog 业务日志注解
+	 * @return 日志业务信息
+	 */
 	@Override
 	public LogBizInfo beforeResolve(LogSpelEvaluationContext logSpelContext, BizLog bizLog) {
 		// 等待解析得模板
@@ -150,6 +177,13 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 		return logBizInfo;
 	}
 
+	/**
+	 * 后置处理，解析后置表达式并完善日志信息
+	 * @param logBizOp 日志业务信息
+	 * @param spelContext SpEL 上下文
+	 * @param bizLog 业务日志注解
+	 * @return 完善后的日志业务信息
+	 */
 	@Override
 	public LogBizInfo afterResolve(LogBizInfo logBizOp, LogSpelEvaluationContext spelContext, BizLog bizLog) {
 		// 后置全局变量注册,增加中间过程产生的
@@ -219,19 +253,32 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 
 	/**
 	 * 获取前置函数映射的 key
-	 * @param funcName 方法名
+	 * @param funcName 函数名
 	 * @param param 参数
-	 * @return {@link String} 返回结果
+	 * @return 函数映射 key
 	 */
 	private String getFunctionMapKey(String funcName, String param) {
 		return funcName + param;
 	}
 
+	/**
+	 * 解析表达式
+	 * @param template 表达式模板
+	 * @param logRecordContext SpEL 上下文
+	 * @return 解析结果
+	 */
 	public String resolveExpression(String template, LogSpelEvaluationContext logRecordContext) {
 		return resolveExpression(template, logRecordContext,
 				(funcName, paramName, params) -> LogRecordFuncDiscover.invokeFuncToStr(funcName, params));
 	}
 
+	/**
+	 * 解析表达式，支持函数缓存
+	 * @param template 表达式模板
+	 * @param logRecordContext SpEL 上下文
+	 * @param funcMap 函数缓存
+	 * @return 解析结果
+	 */
 	public String resolveExpression(String template, LogSpelEvaluationContext logRecordContext,
 			Map<String, String> funcMap) {
 		return resolveExpression(template, logRecordContext, (funcName, paramName, params) -> {
@@ -245,6 +292,13 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 		});
 	}
 
+	/**
+	 * 解析表达式，支持自定义函数求值
+	 * @param template 表达式模板
+	 * @param logRecordContext SpEL 上下文
+	 * @param funcEval 函数求值器
+	 * @return 解析结果
+	 */
 	public String resolveExpression(String template, LogSpelEvaluationContext logRecordContext, FuncEval funcEval) {
 		String value;
 		try {
@@ -264,6 +318,13 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 		return value;
 	}
 
+	/**
+	 * 内部解析表达式实现
+	 * @param template 表达式模板
+	 * @param logRecordContext SpEL 上下文
+	 * @param funcEval 函数求值器
+	 * @return 解析结果
+	 */
 	private static String innerResolveExpress(String template, LogSpelEvaluationContext logRecordContext,
 			FuncEval funcEval) {
 		Matcher matcher = PATTERN.matcher(template);
@@ -289,9 +350,9 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 	}
 
 	/**
-	 * 转义json
-	 * @param jsonStr
-	 * @return
+	 * 对 JSON 字符串进行引号转义
+	 * @param jsonStr JSON 字符串
+	 * @return 转义后的字符串
 	 */
 	public static String quoteJson(String jsonStr) {
 		if (StrUtil.isBlank(jsonStr)) {
@@ -307,15 +368,19 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 		return escapedParamValue;
 	}
 
+	/**
+	 * 设置 Bean 工厂
+	 * @param beanFactory Bean 工厂
+	 */
 	@Override
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
 		this.beanFactory = beanFactory;
 	}
 
 	/**
-	 * 获取不为空的待解析模板 从这个List里面我们也可以知道，哪些参数需要符合SpEl表达式
-	 * @param bizLog
-	 * @return
+	 * 获取表达式模板列表
+	 * @param bizLog 业务日志注解
+	 * @return 表达式模板列表
 	 */
 	protected List<String> getExpressTemplate(BizLog bizLog) {
 		Set<String> set = new HashSet<>();
@@ -325,10 +390,18 @@ public class LogRegxSpelParse implements ILogParse, BeanFactoryAware, Applicatio
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * 获取环境配置
+	 * @return 环境配置
+	 */
 	private Environment getEnvironment() {
 		return applicationContext.getEnvironment();
 	}
 
+	/**
+	 * 设置应用上下文
+	 * @param applicationContext 应用上下文
+	 */
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;

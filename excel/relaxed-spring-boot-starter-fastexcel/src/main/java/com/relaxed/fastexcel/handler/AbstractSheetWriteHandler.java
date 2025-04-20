@@ -44,21 +44,41 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
+ * Excel工作表写入处理器抽象基类 提供Excel导出的基础功能和通用实现 主要功能: 1. 支持Excel文件导出 2. 支持模板导出 3. 支持自定义表头 4.
+ * 支持数据类型转换 5. 支持密码保护 6. 支持列包含/排除 7. 支持自定义写入处理器
+ *
  * @author lengleng
  * @author L.cm
- * @date 2020/3/31
+ * @since 1.0.0
  */
 @RequiredArgsConstructor
 public abstract class AbstractSheetWriteHandler implements SheetWriteHandler, ApplicationContextAware {
 
+	/**
+	 * Excel配置属性 用于获取Excel相关的配置信息
+	 */
 	private final ExcelConfigProperties configProperties;
 
+	/**
+	 * 类型转换器提供者 用于获取自定义的类型转换器
+	 */
 	private final ObjectProvider<List<Converter<?>>> converterProvider;
 
+	/**
+	 * Excel写入构建器增强器 用于增强Excel写入构建器的功能
+	 */
 	private final WriterBuilderEnhancer excelWriterBuilderEnhance;
 
+	/**
+	 * Spring应用上下文 用于获取Spring容器中的Bean
+	 */
 	private ApplicationContext applicationContext;
 
+	/**
+	 * 校验Excel导出配置 校验内容: 1. 文件名不能为空 2. 工作表配置不能为空
+	 * @param responseExcel Excel响应注解
+	 * @throws ExcelException 当配置不合法时抛出
+	 */
 	@Override
 	public void check(ResponseExcel responseExcel) {
 		if (!StringUtils.hasText(responseExcel.name())) {
@@ -70,6 +90,12 @@ public abstract class AbstractSheetWriteHandler implements SheetWriteHandler, Ap
 		}
 	}
 
+	/**
+	 * 执行Excel导出操作 处理流程: 1. 校验配置 2. 获取文件名 3. 设置响应头 4. 执行写入操作
+	 * @param o 待导出的数据对象
+	 * @param response HTTP响应对象
+	 * @param responseExcel Excel响应注解
+	 */
 	@Override
 	@SneakyThrows
 	public void export(Object o, HttpServletResponse response, ResponseExcel responseExcel) {
@@ -92,10 +118,11 @@ public abstract class AbstractSheetWriteHandler implements SheetWriteHandler, Ap
 	}
 
 	/**
-	 * 通用的获取ExcelWriter方法
-	 * @param response HttpServletResponse
-	 * @param responseExcel ResponseExcel注解
-	 * @return ExcelWriter
+	 * 获取Excel写入器 处理流程: 1. 创建写入构建器 2. 注册默认转换器 3. 设置密码保护 4. 设置列包含/排除 5. 注册自定义写入处理器 6.
+	 * 注册自定义转换器 7. 设置模板 8. 增强构建器
+	 * @param response HTTP响应对象
+	 * @param responseExcel Excel响应注解
+	 * @return Excel写入器
 	 */
 	@SneakyThrows
 	public ExcelWriter getExcelWriter(HttpServletResponse response, ResponseExcel responseExcel) {
@@ -145,20 +172,20 @@ public abstract class AbstractSheetWriteHandler implements SheetWriteHandler, Ap
 	}
 
 	/**
-	 * 自定义注入转换器 如果有需要，子类自己重写
-	 * @param builder ExcelWriterBuilder
+	 * 注册自定义转换器 子类可以重写此方法以添加自定义转换器
+	 * @param builder Excel写入构建器
 	 */
 	public void registerCustomConverter(ExcelWriterBuilder builder) {
 		converterProvider.ifAvailable(converters -> converters.forEach(builder::registerConverter));
 	}
 
 	/**
-	 * 获取 WriteSheet 对象
-	 * @param sheet sheet annotation info
+	 * 创建工作表配置 处理流程: 1. 设置工作表编号和名称 2. 处理模板写入 3. 处理表头生成 4. 处理列包含/排除 5. 增强工作表配置
+	 * @param sheet 工作表注解
 	 * @param dataClass 数据类型
-	 * @param template 模板
-	 * @param bookHeadEnhancerClass 自定义头处理器
-	 * @return WriteSheet
+	 * @param template 模板路径
+	 * @param bookHeadEnhancerClass 表头生成器类型
+	 * @return 工作表配置
 	 */
 	public WriteSheet sheet(Sheet sheet, Class<?> dataClass, String template,
 			Class<? extends HeadGenerator> bookHeadEnhancerClass) {
@@ -200,6 +227,12 @@ public abstract class AbstractSheetWriteHandler implements SheetWriteHandler, Ap
 		return writerSheetBuilder.build();
 	}
 
+	/**
+	 * 填充自定义表头信息 使用指定的表头生成器生成表头信息
+	 * @param dataClass 数据类型
+	 * @param headEnhancerClass 表头生成器类型
+	 * @param writerSheetBuilder 工作表构建器
+	 */
 	private void fillCustomHeadInfo(Class<?> dataClass, Class<? extends HeadGenerator> headEnhancerClass,
 			ExcelWriterSheetBuilder writerSheetBuilder) {
 		HeadGenerator headGenerator = this.applicationContext.getBean(headEnhancerClass);
@@ -210,9 +243,9 @@ public abstract class AbstractSheetWriteHandler implements SheetWriteHandler, Ap
 	}
 
 	/**
-	 * 是否为Null Head Generator
-	 * @param headGeneratorClass
-	 * @return true 已指定 false 未指定(默认值)
+	 * 判断是否为非接口类型 用于判断表头生成器是否已指定
+	 * @param headGeneratorClass 表头生成器类型
+	 * @return true表示已指定,false表示未指定(默认值)
 	 */
 	private boolean isNotInterface(Class<? extends HeadGenerator> headGeneratorClass) {
 		return !Modifier.isInterface(headGeneratorClass.getModifiers());

@@ -11,14 +11,22 @@ import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
 
 /**
- * https://github.com/JSQLParser/JSqlParser
- *
- * @author miemie hccake
- * @since 2020-06-22
+ * SQL 解析器支持类
+ * <p>
+ * 基于 JSQLParser 实现的 SQL 解析支持类，提供单条 SQL 和多条 SQL 的解析能力。 支持解析 SELECT、INSERT、UPDATE、DELETE 等
+ * SQL 语句。
  */
 @Slf4j
 public abstract class JsqlParserSupport {
 
+	/**
+	 * 解析单条 SQL 语句
+	 * <p>
+	 * 使用 JSQLParser 解析单条 SQL 语句，并应用相应的处理逻辑。
+	 * @param sql 待解析的 SQL 语句
+	 * @param obj 处理参数
+	 * @return 处理后的 SQL 语句
+	 */
 	public String parserSingle(String sql, Object obj) {
 		try {
 			Statement statement = CCJSqlParserUtil.parse(sql);
@@ -29,6 +37,14 @@ public abstract class JsqlParserSupport {
 		}
 	}
 
+	/**
+	 * 解析多条 SQL 语句
+	 * <p>
+	 * 使用 JSQLParser 解析多条 SQL 语句，并分别应用相应的处理逻辑。 多条语句之间使用分号分隔。
+	 * @param sql 待解析的 SQL 语句
+	 * @param obj 处理参数
+	 * @return 处理后的 SQL 语句
+	 */
 	public String parserMulti(String sql, Object obj) {
 		try {
 			// fixed github pull/295
@@ -51,8 +67,13 @@ public abstract class JsqlParserSupport {
 
 	/**
 	 * 执行 SQL 解析
-	 * @param statement JsqlParser Statement
-	 * @return sql
+	 * <p>
+	 * 根据 SQL 语句类型调用相应的处理方法。
+	 * @param statement JSQLParser Statement 对象
+	 * @param index 当前处理的语句索引
+	 * @param sql 原始 SQL 语句
+	 * @param obj 处理参数
+	 * @return 处理后的 SQL 语句
 	 */
 	protected String processParser(Statement statement, int index, String sql, Object obj) {
 		if (log.isDebugEnabled()) {
@@ -78,28 +99,52 @@ public abstract class JsqlParserSupport {
 	}
 
 	/**
-	 * 新增
+	 * 处理 INSERT 语句
+	 * <p>
+	 * 子类需要实现此方法以处理 INSERT 语句。
+	 * @param insert INSERT 语句对象
+	 * @param index 当前处理的语句索引
+	 * @param sql 原始 SQL 语句
+	 * @param obj 处理参数
 	 */
 	protected void processInsert(Insert insert, int index, String sql, Object obj) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * 删除
+	 * 处理 DELETE 语句
+	 * <p>
+	 * 子类需要实现此方法以处理 DELETE 语句。
+	 * @param delete DELETE 语句对象
+	 * @param index 当前处理的语句索引
+	 * @param sql 原始 SQL 语句
+	 * @param obj 处理参数
 	 */
 	protected void processDelete(Delete delete, int index, String sql, Object obj) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * 更新
+	 * 处理 UPDATE 语句
+	 * <p>
+	 * 子类需要实现此方法以处理 UPDATE 语句。
+	 * @param update UPDATE 语句对象
+	 * @param index 当前处理的语句索引
+	 * @param sql 原始 SQL 语句
+	 * @param obj 处理参数
 	 */
 	protected void processUpdate(Update update, int index, String sql, Object obj) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * 查询
+	 * 处理 SELECT 语句
+	 * <p>
+	 * 子类需要实现此方法以处理 SELECT 语句。
+	 * @param select SELECT 语句对象
+	 * @param index 当前处理的语句索引
+	 * @param sql 原始 SQL 语句
+	 * @param obj 处理参数
 	 */
 	protected void processSelect(Select select, int index, String sql, Object obj) {
 		throw new UnsupportedOperationException();

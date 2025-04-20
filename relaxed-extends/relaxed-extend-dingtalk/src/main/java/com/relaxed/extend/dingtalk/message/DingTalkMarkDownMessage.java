@@ -8,7 +8,10 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
- * @author lingting 2020/6/10 22:13
+ * 钉钉 Markdown 消息实现类。 用于发送支持 Markdown 格式的钉钉消息，支持标题、文本样式、图片、链接等丰富的消息内容。
+ *
+ * @author lingting
+ * @since 1.0
  */
 @Getter
 @Setter
@@ -16,12 +19,12 @@ import lombok.experimental.Accessors;
 public class DingTalkMarkDownMessage extends AbstractDingTalkMessage {
 
 	/**
-	 * 标题
+	 * 消息标题 会在钉钉客户端的会话列表上显示的标题
 	 */
 	private String title;
 
 	/**
-	 * 内容
+	 * Markdown 格式的消息内容构建器 用于构建支持 Markdown 语法的消息内容，包括标题、加粗、斜体、图片、链接等格式
 	 */
 	private MarkdownBuilder text;
 

@@ -7,11 +7,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 缓存删除注解，用于方法级别的缓存删除。 利用AOP在方法执行后执行缓存删除操作。
+ *
  * @author Yakir
- * @Topic Cached
- * @Description 利用Aop, 在方法执行后执行缓存删除操作
- * @date 2021/7/23 16:22
- * @Version 1.0
+ * @since 1.0
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -20,25 +19,26 @@ import java.lang.annotation.Target;
 public @interface CacheDel {
 
 	/**
-	 * cache key 前缀
-	 * @return
+	 * 缓存key的前缀
+	 * @return 缓存key的前缀
 	 */
 	String prefix() default "";
 
 	/**
-	 * 如果需要在key 后面拼接参数 则传入一个拼接数据的 SpEL 表达式
+	 * 如果需要在key后面拼接参数，则传入一个拼接数据的SpEL表达式
+	 * @return SpEL表达式
 	 */
 	String keyJoint() default "";
 
 	/**
-	 * 条件筛选 符合条件才会缓存
-	 * @return
+	 * 条件筛选，符合条件才会删除缓存
+	 * @return SpEL条件表达式
 	 */
 	String condition() default "";
 
 	/**
-	 * 清除多个 key，当值为 true 时，强制要求 keyJoint 有值，且 Spel 表达式解析结果为 Collection
-	 * @return boolean
+	 * 是否清除多个key 当值为true时，强制要求keyJoint有值，且SpEL表达式解析结果为Collection
+	 * @return 是否清除多个key
 	 */
 	boolean multiDel() default false;
 

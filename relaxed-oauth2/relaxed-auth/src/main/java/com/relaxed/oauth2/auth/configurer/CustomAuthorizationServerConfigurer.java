@@ -23,41 +23,75 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 自定义授权服务器配置器 继承自AuthorizationServerConfigurerAdapter，用于配置OAuth2授权服务器的各项功能： 1. 配置客户端详情服务
+ * 2. 配置授权端点 3. 配置安全规则 支持自定义Token增强、异常处理、认证管理等扩展功能
+ *
  * @author Yakir
- * @Topic CustomAuthorizationServerConfigurer
- * @Description 认证服务器配置
- * @date 2022/7/24 11:35
- * @Version 1.0
+ * @since 1.0
  */
 @RequiredArgsConstructor
 public class CustomAuthorizationServerConfigurer extends AuthorizationServerConfigurerAdapter {
 
+	/**
+	 * OAuth2客户端配置器 用于配置客户端详情服务
+	 */
 	private final OAuth2ClientConfigurer clientConfigurer;
 
+	/**
+	 * 认证管理器 用于处理认证请求
+	 */
 	private final AuthenticationManager authenticationManager;
 
+	/**
+	 * 认证入口点 用于处理未认证的请求
+	 */
 	private final AuthenticationEntryPoint authenticationEntryPoint;
 
+	/**
+	 * 访问拒绝处理器 用于处理无权限访问的请求
+	 */
 	private final AccessDeniedHandler accessDeniedHandler;
 
+	/**
+	 * Token存储 用于存储和管理Token
+	 */
 	private final TokenStore tokenStore;
 
+	/**
+	 * Token授予构建器 用于构建和组合Token授予者
+	 */
 	private final TokenGrantBuilder tokenGrantBuilder;
 
+	/**
+	 * Token增强器列表 用于在Token中添加额外信息
+	 */
 	private final List<TokenEnhancer> tokenEnhancerList;
 
+	/**
+	 * 访问Token转换器 用于自定义Token的转换逻辑
+	 */
 	private final AccessTokenConverter accessTokenConverter;
 
+	/**
+	 * Web响应异常转换器 用于自定义异常处理
+	 */
 	private final WebResponseExceptionTranslator<OAuth2Exception> webResponseExceptionTranslator;
 
+	/**
+	 * 用户详情服务 用于加载用户信息
+	 */
 	private final UserDetailsService userDetailsService;
 
+	/**
+	 * Token服务构建器 用于构建Token服务
+	 */
 	private final TokenServicesBuilder tokenServicesBuilder;
 
 	/**
-	 * 定义资源权限控制的配置
-	 * @param security AuthorizationServerSecurityConfigurer
-	 * @throws Exception 异常
+	 * 配置授权服务器的安全规则 包括： 1. 配置Token访问权限 2. 配置认证入口点 3. 配置访问拒绝处理器 4. 允许客户端表单认证 5.
+	 * 处理客户端认证过滤器的异常
+	 * @param security 授权服务器安全配置器
+	 * @throws Exception 配置过程中的异常
 	 */
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
@@ -87,7 +121,9 @@ public class CustomAuthorizationServerConfigurer extends AuthorizationServerConf
 	}
 
 	/**
-	 * 用来配置令牌的访问端点和令牌服务
+	 * 配置授权服务器的端点 包括： 1. 配置认证管理器 2. 配置用户详情服务 3. 配置Token存储策略 4. 配置Token授予者 5. 配置Token转换器 6.
+	 * 配置Token增强器 7. 配置异常转换器 8. 配置Token服务
+	 * @param endpoints 授权服务器端点配置器
 	 */
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
@@ -113,9 +149,9 @@ public class CustomAuthorizationServerConfigurer extends AuthorizationServerConf
 	}
 
 	/**
-	 * 用来配置客户端信息服务，客户端详情信息在这里初始化，可以写死在代码里，也可以放到配置文件或者数据库
-	 * @param clients
-	 * @throws Exception
+	 * 配置客户端详情服务 通过OAuth2ClientConfigurer配置客户端信息 客户端信息可以存储在代码、配置文件或数据库中
+	 * @param clients 客户端详情服务配置器
+	 * @throws Exception 配置过程中的异常
 	 */
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {

@@ -20,18 +20,20 @@ import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import org.aopalliance.intercept.MethodInvocation;
 
 /**
+ * 最后一个参数数据源处理器 用于从方法最后一个参数中获取数据源名称 支持通过@DS("#last")注解使用方法的最后一个参数作为数据源名称
+ *
  * @author lengleng
- * @date 2020/2/6
- * <p>
- * 参数数据源解析 @DS("#last)
  */
 public class LastParamDsProcessor extends DsProcessor {
 
+	/**
+	 * 最后一个参数前缀 用于标识使用方法的最后一个参数作为数据源名称
+	 */
 	private static final String LAST_PREFIX = "#last";
 
 	/**
-	 * 抽象匹配条件 匹配才会走当前执行器否则走下一级执行器
-	 * @param key DS注解里的内容
+	 * 判断是否匹配当前处理器 检查数据源名称是否以#last开头
+	 * @param key 数据源名称
 	 * @return 是否匹配
 	 */
 	@Override
@@ -43,9 +45,9 @@ public class LastParamDsProcessor extends DsProcessor {
 	}
 
 	/**
-	 * 抽象最终决定数据源
-	 * @param invocation 方法执行信息
-	 * @param key DS注解里的内容
+	 * 从方法最后一个参数中获取数据源名称 将方法的最后一个参数转换为字符串作为数据源名称
+	 * @param invocation 方法调用信息
+	 * @param key 数据源名称，格式：#last
 	 * @return 数据源名称
 	 */
 	@Override

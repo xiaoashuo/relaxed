@@ -4,6 +4,8 @@ import com.relaxed.common.core.exception.BusinessException;
 import lombok.EqualsAndHashCode;
 
 /**
+ * 幂等性异常
+ *
  * @author hccake
  */
 @EqualsAndHashCode(callSuper = true)

@@ -8,11 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
+ * 流程上下文类，用于存储和管理流程处理过程中的上下文信息
+ *
  * @author Yakir
- * @Topic ProcessContext
- * @Description
- * @date 2022/2/10 9:47
- * @Version 1.0
+ * @since 1.0.0
  */
 @Data
 @AllArgsConstructor

@@ -10,15 +10,19 @@ import lombok.experimental.Accessors;
 import java.util.Map;
 
 /**
- * 钉钉返回信息
+ * 钉钉消息发送响应对象。 封装了钉钉机器人消息发送的响应信息，包括状态码、消息内容和处理结果。
  *
- * @author lingting 2020/6/11 0:23
+ * @author lingting
+ * @since 1.0
  */
 @Getter
 @Setter
 @Accessors(chain = true)
 public class DingTalkResponse {
 
+	/**
+	 * 钉钉接口成功响应码
+	 */
 	public static final Long SUCCESS_CODE = 0L;
 
 	@SneakyThrows
@@ -34,20 +38,23 @@ public class DingTalkResponse {
 		return new DingTalkResponse(res);
 	}
 
+	/**
+	 * 钉钉接口响应码
+	 */
 	private Long code;
 
 	/**
-	 * 值为ok表示无异常
+	 * 钉钉接口响应消息 当值为 "ok" 时表示请求成功
 	 */
 	private String message;
 
 	/**
-	 * 钉钉返回信息
+	 * 钉钉接口原始响应内容
 	 */
 	private String response;
 
 	/**
-	 * 是否发送成功
+	 * 消息发送是否成功 true 表示发送成功，false 表示发送失败
 	 */
 	private boolean success;
 

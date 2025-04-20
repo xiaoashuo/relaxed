@@ -8,11 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
+ * GoogleParam
+ *
  * @author Yakir
- * @Topic GoogleParam
- * @Description
- * @date 2022/1/12 14:55
- * @Version 1.0
  */
 @Accessors(chain = true)
 @Data

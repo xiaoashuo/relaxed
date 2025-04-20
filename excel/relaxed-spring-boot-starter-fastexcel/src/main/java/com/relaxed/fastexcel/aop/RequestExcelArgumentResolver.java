@@ -35,24 +35,45 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * 上传excel 解析注解
+ * Excel上传请求参数解析器 用于解析Controller方法中带有@RequestExcel注解的参数 主要功能: 1. 支持解析上传的Excel文件流 2.
+ * 支持自定义读取监听器 3. 支持动态解析Sheet名称 4. 支持数据校验和错误处理
  *
  * @author lengleng
  * @author L.cm
- * @date 2021/4/16
+ * @since 1.0.0
  */
 @Slf4j
 public class RequestExcelArgumentResolver implements HandlerMethodArgumentResolver {
 
+	/**
+	 * 参数名称发现器,用于获取方法参数名称
+	 */
 	private final ParameterNameDiscoverer parameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
 
+	/**
+	 * SPEL表达式解析器,用于解析动态Sheet名称
+	 */
 	private final ExpressionParser expressionParser = new SpelExpressionParser();
 
+	/**
+	 * 判断是否支持解析该参数 当参数带有@RequestExcel注解时返回true
+	 * @param parameter 方法参数
+	 * @return 是否支持解析
+	 */
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
 		return parameter.hasParameterAnnotation(RequestExcel.class);
 	}
 
+	/**
+	 * 解析Excel上传请求参数 1. 获取上传的Excel文件流 2. 创建读取监听器 3. 解析Sheet名称 4. 读取Excel数据 5. 处理数据校验结果
+	 * @param parameter 方法参数
+	 * @param modelAndViewContainer 模型和视图容器
+	 * @param webRequest Web请求对象
+	 * @param webDataBinderFactory 数据绑定工厂
+	 * @return 解析后的Excel数据列表
+	 * @throws IllegalArgumentException 当参数类型不是List时抛出
+	 */
 	@Override
 	@SneakyThrows
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer modelAndViewContainer,
@@ -106,11 +127,11 @@ public class RequestExcelArgumentResolver implements HandlerMethodArgumentResolv
 	}
 
 	/**
-	 * 解析Sheet名称
-	 * @param request HttpServletRequest对象，用于获取请求参数
-	 * @param method 调用的方法对象，用于获取方法参数名称
+	 * 解析Sheet名称 支持以下格式: 1. 固定名称 - 直接返回 2. 动态名称 - 使用SPEL表达式解析 3. 空名称 - 返回null
+	 * @param request HttpServletRequest对象
+	 * @param method 调用的方法对象
 	 * @param sheetName 需要解析的Sheet名称
-	 * @return 解析后的Sheet名称，如果为空则返回null
+	 * @return 解析后的Sheet名称
 	 */
 	public String resolverSheetName(HttpServletRequest request, Method method, String sheetName) {
 		if (!StringUtils.hasText(sheetName)) {

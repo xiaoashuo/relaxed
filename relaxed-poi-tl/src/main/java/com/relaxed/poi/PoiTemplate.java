@@ -23,25 +23,41 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Main template class for POI-TL that handles Word document rendering and template
+ * processing. This class provides methods for rendering Word documents with various data
+ * sources and configurations.
+ *
  * @author Yakir
- * @Topic PoiUtil
- * @Description
- * @date 2024/3/25 13:58
- * @Version 1.0
+ * @since 1.0
  */
-
 public class PoiTemplate {
 
+	/**
+	 * Singleton instance of PoiTemplate.
+	 */
 	public static final PoiTemplate INSTANCE = new PoiTemplate();
 
 	private PoiTemplate() {
-
 	}
 
+	/**
+	 * Renders a Word document from source file to destination file using label data.
+	 * @param source the source Word template file
+	 * @param dest the destination file to write the rendered document
+	 * @param contents the list of label data to render
+	 */
 	public void renderWord(File source, File dest, List<LabelData> contents) {
 		renderWord(source, dest, contents, PoiGlobalConfig.defaultConfigure());
 	}
 
+	/**
+	 * Renders a Word document from source file to destination file using label data and
+	 * custom configuration.
+	 * @param source the source Word template file
+	 * @param dest the destination file to write the rendered document
+	 * @param contents the list of label data to render
+	 * @param configure the custom configuration to use
+	 */
 	public void renderWord(File source, File dest, List<LabelData> contents, Configure configure) {
 		try {
 			renderWord(Files.newInputStream(source.toPath()), Files.newOutputStream(dest.toPath()), contents,
@@ -50,13 +66,26 @@ public class PoiTemplate {
 		catch (Exception e) {
 			throw new WordException(e);
 		}
-
 	}
 
+	/**
+	 * Renders a Word document from source file to destination file using data map.
+	 * @param source the source Word template file
+	 * @param dest the destination file to write the rendered document
+	 * @param data the data map containing template variables
+	 */
 	public void renderWord(File source, File dest, Map<String, Object> data) {
 		renderWord(source, dest, data, PoiGlobalConfig.defaultConfigure());
 	}
 
+	/**
+	 * Renders a Word document from source file to destination file using data map and
+	 * custom configuration.
+	 * @param source the source Word template file
+	 * @param dest the destination file to write the rendered document
+	 * @param data the data map containing template variables
+	 * @param configure the custom configuration to use
+	 */
 	public void renderWord(File source, File dest, Map<String, Object> data, Configure configure) {
 		try {
 			renderWord(Files.newInputStream(source.toPath()), Files.newOutputStream(dest.toPath()), data, configure);
@@ -66,16 +95,23 @@ public class PoiTemplate {
 		}
 	}
 
+	/**
+	 * Renders a Word document from input stream to output stream using label data.
+	 * @param inputStream the input stream containing the Word template
+	 * @param outputStream the output stream to write the rendered document
+	 * @param contents the list of label data to render
+	 */
 	public void renderWord(InputStream inputStream, OutputStream outputStream, List<LabelData> contents) {
 		renderWord(inputStream, outputStream, contents, PoiGlobalConfig.defaultConfigure());
 	}
 
 	/**
-	 * 渲染word
-	 * @param inputStream
-	 * @param outputStream
-	 * @param contents
-	 * @param configure
+	 * Renders a Word document from input stream to output stream using label data and
+	 * custom configuration.
+	 * @param inputStream the input stream containing the Word template
+	 * @param outputStream the output stream to write the rendered document
+	 * @param contents the list of label data to render
+	 * @param configure the custom configuration to use
 	 */
 	public void renderWord(InputStream inputStream, OutputStream outputStream, List<LabelData> contents,
 			Configure configure) {
@@ -88,21 +124,29 @@ public class PoiTemplate {
 		renderWord(inputStream, outputStream, dataMap, configure);
 	}
 
+	/**
+	 * Renders a Word document from input stream to output stream using data map.
+	 * @param inputStream the input stream containing the Word template
+	 * @param outputStream the output stream to write the rendered document
+	 * @param dataMap the data map containing template variables
+	 */
 	public void renderWord(InputStream inputStream, OutputStream outputStream, Map<String, Object> dataMap) {
 		renderWord(inputStream, outputStream, dataMap, PoiGlobalConfig.defaultConfigure());
 	}
 
+	/**
+	 * Renders a Word document from input stream to output stream using data map and
+	 * custom configuration.
+	 * @param inputStream the input stream containing the Word template
+	 * @param outputStream the output stream to write the rendered document
+	 * @param dataMap the data map containing template variables
+	 * @param configure the custom configuration to use
+	 */
 	public void renderWord(InputStream inputStream, OutputStream outputStream, Map<String, Object> dataMap,
 			Configure configure) {
 		XWPFTemplate xwpfTemplate = getXwpfTemplate(inputStream, configure);
 		XWPFTemplate template = xwpfTemplate.render(dataMap);
 		try {
-			// 获取word原始模板页数 注意，如果文档中有分节符或者分页符，那么获取的页数可能会不准确。
-			// NiceXWPFDocument xwpfDocument = template.getXWPFDocument();
-			// POIXMLProperties properties = xwpfDocument.getProperties();
-			// POIXMLProperties.ExtendedProperties extendedProperties =
-			// properties.getExtendedProperties();
-			// int pages = extendedProperties.getPages();
 			template.write(outputStream);
 			outputStream.flush();
 		}
@@ -114,10 +158,21 @@ public class PoiTemplate {
 		}
 	}
 
+	/**
+	 * Extracts template elements from the input stream using default configuration.
+	 * @param inputStream the input stream containing the Word template
+	 * @return list of element metadata
+	 */
 	public List<ElementMeta> templateElement(InputStream inputStream) {
 		return templateElement(inputStream, PoiGlobalConfig.defaultConfigure());
 	}
 
+	/**
+	 * Extracts template elements from the input stream using custom configuration.
+	 * @param inputStream the input stream containing the Word template
+	 * @param configure the custom configuration to use
+	 * @return list of element metadata
+	 */
 	public List<ElementMeta> templateElement(InputStream inputStream, Configure configure) {
 		RenderFunction<List<ElementMeta>> renderFunction = xwpfTemplate -> {
 			List<MetaTemplate> elementTemplates = xwpfTemplate.getElementTemplates();
@@ -126,6 +181,14 @@ public class PoiTemplate {
 		return render(inputStream, configure, renderFunction);
 	}
 
+	/**
+	 * Renders the template using the provided render function.
+	 * @param <R> the type of the render result
+	 * @param inputStream the input stream containing the Word template
+	 * @param configure the configuration to use
+	 * @param function the render function to apply
+	 * @return the result of the render function
+	 */
 	public <R> R render(InputStream inputStream, Configure configure, RenderFunction<R> function) {
 		XWPFTemplate xwpfTemplate = getXwpfTemplate(inputStream, configure);
 		try {
@@ -136,16 +199,20 @@ public class PoiTemplate {
 		}
 	}
 
+	/**
+	 * Creates a new XWPFTemplate instance from the input stream and configuration.
+	 * @param inputStream the input stream containing the Word template
+	 * @param configure the configuration to use
+	 * @return the compiled XWPFTemplate instance
+	 */
 	private XWPFTemplate getXwpfTemplate(InputStream inputStream, Configure configure) {
 		return XWPFTemplate.compile(inputStream, configure);
 	}
 
 	/**
-	 * 将获取到去重后的word模板元素
-	 * @author yakir
-	 * @date 2022/4/18 17:21
-	 * @param elementTemplates
-	 * @return java.util.List<com.relaxed.third.util.word.domain.ElementMeta>
+	 * Converts element templates to element metadata, removing duplicates.
+	 * @param elementTemplates the list of element templates to convert
+	 * @return list of unique element metadata
 	 */
 	protected List<ElementMeta> convertToElementMetas(List<MetaTemplate> elementTemplates) {
 		List<ElementMeta> elementMetas = new ArrayList<>();

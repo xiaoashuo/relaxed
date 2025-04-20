@@ -8,11 +8,10 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import java.lang.annotation.*;
 
 /**
+ * OAuth2授权服务器启用注解 用于启用OAuth2授权服务器功能 主要功能: 1. 启用Web安全配置 2. 启用授权服务器 3. 导入自动配置类 4. 支持继承配置
+ *
  * @author Yakir
- * @Topic EnableOauth2AuthorizationServer
- * @Description
- * @date 2022/7/24 11:36
- * @Version 1.0
+ * @since 1.0.0
  */
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)

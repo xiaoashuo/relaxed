@@ -3,13 +3,6 @@ package com.relaxed.common.translation.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * @author Yakir
- * @Topic LangEnum
- * @Description
- * @date 2022/1/11 16:33
- * @Version 1.0
- */
 @RequiredArgsConstructor
 @Getter
 public enum LangEnum {

@@ -18,23 +18,26 @@ package com.relaxed.autoconfigure.mq.core.enums;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 定义MQ消息类型
+ * 消息发送类型枚举。 定义消息队列支持的消息发送模式，包括点对点、广播和延迟消息。
+ *
  * @author Yakir
+ * @since 1.0
  */
-
 public enum MQSendTypeEnum {
 
 	/**
-	 * QUEUE - 点对点 （只有1个消费者可消费。 ActiveMQ的queue模式 ）
+	 * 点对点模式 消息只会被一个消费者消费，适用于需要确保消息只被处理一次的场景 对应ActiveMQ的queue模式
 	 */
 	QUEUE,
+
 	/**
-	 * BROADCAST - 订阅模式 (所有接收者都可接收到。 ActiveMQ的topic模式, RabbitMQ的fanout类型的交换机,
-	 * RocketMQ的广播模式 )
+	 * 广播模式 消息会被所有订阅者接收，适用于需要通知多个消费者的场景
+	 * 对应ActiveMQ的topic模式、RabbitMQ的fanout类型交换机和RocketMQ的广播模式
 	 */
 	BROADCAST,
+
 	/**
-	 * DELAY延迟队列
+	 * 延迟消息模式 消息会在指定时间后发送，适用于需要延迟处理的消息场景
 	 */
 	DELAY
 

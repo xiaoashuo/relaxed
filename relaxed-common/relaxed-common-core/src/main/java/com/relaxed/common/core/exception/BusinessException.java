@@ -6,9 +6,10 @@ import lombok.Getter;
 import org.slf4j.helpers.MessageFormatter;
 
 /**
- * 通用业务异常
+ * 通用业务异常类，用于处理业务逻辑中的异常情况
  *
  * @author Yakir
+ * @since 1.0.0
  */
 @Getter
 public class BusinessException extends RuntimeException {

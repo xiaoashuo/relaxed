@@ -6,11 +6,9 @@ import com.relaxed.common.jsch.sftp.SftpProperties;
 import java.io.File;
 
 /**
+ * 增加下载目标路径文件检查 防止父级目录不存在
+ *
  * @author Yakir
- * @Topic SftpExtension
- * @Description 增加下载目标路径文件检查 防止父级目录不存在
- * @date 2022/5/25 10:14
- * @Version 1.0
  */
 public class SftpExtensionExecutor extends SftpExecutor {
 
@@ -33,8 +31,7 @@ public class SftpExtensionExecutor extends SftpExecutor {
 	/**
 	 * 下载文件目标路径检查不存在 父级文件夹则创建
 	 * @author yakir
-	 * @date 2022/5/25 10:30
-	 * @param file
+	 * @param file 文件
 	 */
 	public static void downloadPathCheck(File file) {
 		File dirFile = file.getParentFile();

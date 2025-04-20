@@ -17,21 +17,18 @@ import org.springframework.context.annotation.DependsOn;
 import java.util.List;
 
 /**
+ * 响应下载处理器配置类 提供多种文件下载处理器的自动配置，包括本地文件、SFTP和OSS下载
+ *
  * @author Yakir
- * @Topic ResponseDownHandler
- * @Description
- * @date 2022/2/18 17:53
- * @Version 1.0
+ * @since 1.0
  */
 @RequiredArgsConstructor
 @Configuration
 public class ResponseDownloadHandler {
 
 	/**
-	 * 本地下载处理器
-	 * @author yakir
-	 * @date 2022/2/18 17:54
-	 * @return com.relaxed.starter.download.handler.LocalDownloadHandler
+	 * 创建本地文件下载处理器
+	 * @return LocalDownloadHandler 本地文件下载处理器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean(LocalDownloadHandler.class)
@@ -44,9 +41,9 @@ public class ResponseDownloadHandler {
 	public static class ISftpRegister {
 
 		/**
-		 * sftp下载器
-		 * @param iSftpClient
-		 * @return
+		 * 创建SFTP文件下载处理器
+		 * @param iSftpClient SFTP客户端
+		 * @return SftpDownloadHandler SFTP文件下载处理器实例
 		 */
 		@Bean
 		@ConditionalOnMissingBean(SftpDownloadHandler.class)
@@ -61,9 +58,9 @@ public class ResponseDownloadHandler {
 	public static class OssRegister {
 
 		/**
-		 * oss 下载器
-		 * @param ossClient
-		 * @return
+		 * 创建OSS文件下载处理器
+		 * @param ossClient OSS客户端
+		 * @return OssDownloadHandler OSS文件下载处理器实例
 		 */
 		@Bean
 		@ConditionalOnMissingBean(OssDownloadHandler.class)
@@ -74,9 +71,9 @@ public class ResponseDownloadHandler {
 	}
 
 	/**
-	 * 下载处理器链
-	 * @param downloadHandlerList
-	 * @return
+	 * 创建下载处理器链
+	 * @param downloadHandlerList 所有可用的下载处理器
+	 * @return DownloadHandlerChain 下载处理器链实例
 	 */
 	@Bean
 	public DownloadHandlerChain downloadHandlerChain(List<DownloadHandler> downloadHandlerList) {
@@ -84,11 +81,9 @@ public class ResponseDownloadHandler {
 	}
 
 	/**
-	 * 响应下载处理器
-	 * @author yakir
-	 * @date 2022/2/18 18:04
-	 * @param downloadHandlerChain
-	 * @return com.relaxed.starter.download.aop.ResponseDownloadReturnValueHandler
+	 * 创建响应下载返回值处理器
+	 * @param downloadHandlerChain 下载处理器链
+	 * @return ResponseDownloadReturnValueHandler 响应下载返回值处理器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean

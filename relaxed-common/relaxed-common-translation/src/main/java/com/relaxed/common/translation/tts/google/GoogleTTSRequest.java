@@ -18,13 +18,6 @@ import lombok.Data;
 import java.io.File;
 import java.util.Map;
 
-/**
- * @author Yakir
- * @Topic GoogleParamTTS
- * @Description
- * @date 2022/1/11 16:31
- * @Version 1.0
- */
 @Data
 public class GoogleTTSRequest extends AbstractTranslationRequest<TTSParam> {
 

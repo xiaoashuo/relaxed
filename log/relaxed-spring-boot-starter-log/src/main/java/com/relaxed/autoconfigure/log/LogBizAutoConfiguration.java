@@ -22,21 +22,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * 业务日志自动配置类。 用于配置业务日志相关的组件和服务。 主要功能包括： 1. 配置字段处理器 2. 配置数据处理器 3. 配置日志记录服务 4. 配置操作者提取服务 5.
+ * 配置业务日志增强器 6. 配置日志解析器 7. 配置日志切面
+ *
  * @author Yakir
- * @Topic OperatiorConfig
- * @Description
- * @date 2023/12/14 14:58
- * @Version 1.0
+ * @since 1.0
  */
 @Configuration
 @ConditionalOnProperty(prefix = LogProperties.Biz.PREFIX, name = "enabled", havingValue = "true")
 public class LogBizAutoConfiguration {
 
 	/**
-	 * 字段处理器
-	 * @author yakir
-	 * @date 2021/12/15 15:53
-	 * @return com.relaxed.common.log.action.handler.FieldHandler
+	 * 注册默认的字段处理器。 用于处理日志记录中的字段转换和格式化。
+	 * @return 字段处理器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -45,11 +43,9 @@ public class LogBizAutoConfiguration {
 	}
 
 	/**
-	 * 数据处理器
-	 * @author yakir
-	 * @date 2021/12/15 15:54
-	 * @param fieldHandler
-	 * @return com.relaxed.common.log.action.handler.DataHandler
+	 * 注册默认的数据处理器。 用于处理日志记录中的数据转换和格式化。
+	 * @param fieldHandler 字段处理器
+	 * @return 数据处理器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -58,8 +54,8 @@ public class LogBizAutoConfiguration {
 	}
 
 	/**
-	 * 日志记录上报器方法
-	 * @return
+	 * 注册默认的日志记录服务。 用于处理日志的存储和上报。
+	 * @return 日志记录服务实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -68,8 +64,8 @@ public class LogBizAutoConfiguration {
 	}
 
 	/**
-	 * 操作者id提取器
-	 * @return
+	 * 注册默认的操作者提取服务。 用于从当前上下文中提取操作者信息。
+	 * @return 操作者提取服务实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -78,8 +74,8 @@ public class LogBizAutoConfiguration {
 	}
 
 	/**
-	 * 业务日志增强器
-	 * @return
+	 * 注册默认的业务日志增强器。 用于增强业务日志的功能。
+	 * @return 业务日志增强器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -88,9 +84,11 @@ public class LogBizAutoConfiguration {
 	}
 
 	/**
-	 * 正则spel 日志解析器
-	 * @param iOperatorGetService
-	 * @return
+	 * 注册默认的日志解析器。 使用正则表达式和SpEL表达式解析日志内容。
+	 * @param iOperatorGetService 操作者提取服务
+	 * @param logBizEnhance 业务日志增强器
+	 * @param dataHandler 数据处理器
+	 * @return 日志解析器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -100,17 +98,21 @@ public class LogBizAutoConfiguration {
 	}
 
 	/**
-	 * log 切面
-	 * @param logParse
-	 * @param logRecordService
-	 * @return
+	 * 注册日志操作通知。 用于处理日志记录的具体逻辑。
+	 * @param logParse 日志解析器
+	 * @param logRecordService 日志记录服务
+	 * @return 日志操作通知实例
 	 */
-
 	@Bean
 	public LogOperatorAdvice logOperatorAdvice(ILogParse logParse, ILogRecordService logRecordService) {
 		return new LogOperatorAdvice(logParse, logRecordService);
 	}
 
+	/**
+	 * 注册日志操作顾问。 用于配置日志切面的切入点。
+	 * @param logOperatorAdvice 日志操作通知
+	 * @return 日志操作顾问实例
+	 */
 	@Bean
 	public LogOperatorAdvisor logOperatorAdvisor(LogOperatorAdvice logOperatorAdvice) {
 		LogOperatorAdvisor advisor = new LogOperatorAdvisor(logOperatorAdvice, BizLog.class);

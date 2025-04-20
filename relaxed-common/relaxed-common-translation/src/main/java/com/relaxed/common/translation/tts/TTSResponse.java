@@ -4,11 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * @author Yakir
- * @Topic TTSResponse
- * @Description
- * @date 2022/1/12 15:32
- * @Version 1.0
+ * @author Yakir TSResponse
  */
 @AllArgsConstructor
 @Data

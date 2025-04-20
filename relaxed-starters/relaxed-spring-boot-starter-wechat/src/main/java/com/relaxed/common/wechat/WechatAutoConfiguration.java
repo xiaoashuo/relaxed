@@ -10,9 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Wechat 自动配置
+ * 微信自动配置类 提供企业微信通知的自动配置功能
  *
  * @author Yakir
+ * @since 1.0
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -23,6 +24,10 @@ public class WechatAutoConfiguration {
 
 	private final WechatProperties wechatProperties;
 
+	/**
+	 * 创建企业微信消息发送器 当配置了企业微信Webhook地址时启用
+	 * @return WechatSender 企业微信消息发送器实例
+	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public WechatSender wechatSender() {

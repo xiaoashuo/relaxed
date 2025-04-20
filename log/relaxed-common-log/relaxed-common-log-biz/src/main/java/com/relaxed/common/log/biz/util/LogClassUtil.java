@@ -35,18 +35,20 @@ import java.util.stream.Collectors;
 import static org.javers.core.diff.ListCompareAlgorithm.LEVENSHTEIN_DISTANCE;
 
 /**
+ * 日志类工具类 该工具类提供了对象比较和方法调用的相关功能 主要功能包括： 1. 使用 Javers 进行对象差异比较 2. 支持方法调用和参数处理 3.
+ * 提供属性变更的格式化输出
+ *
  * @author Yakir
- * @Topic LogClassUtil
- * @Description
- * @date 2023/12/20 9:59
- * @Version 1.0
  */
 public class LogClassUtil {
 
+	/**
+	 * Javers 实例，用于对象差异比较
+	 */
 	private static Javers javers;
 
 	static {
-
+		// 配置日期时间格式
 		String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 		String DEFAULT_TIME_FORMAT = "HH:mm:ss";
 		JaversCoreProperties.PrettyPrintDateFormats prettyPrintDateFormats = new JaversCoreProperties.PrettyPrintDateFormats();
@@ -54,52 +56,33 @@ public class LogClassUtil {
 		prettyPrintDateFormats.setZonedDateTime(DEFAULT_DATE_FORMAT + " " + DEFAULT_TIME_FORMAT + "Z");
 		prettyPrintDateFormats.setLocalDate(DEFAULT_DATE_FORMAT);
 		prettyPrintDateFormats.setLocalTime(DEFAULT_TIME_FORMAT);
+		// 初始化 Javers 实例
 		javers = JaversBuilder.javers().withListCompareAlgorithm(LEVENSHTEIN_DISTANCE)
 				.withPrettyPrintDateFormats(prettyPrintDateFormats)
 				.registerValue(BigDecimal.class, new BigDecimalValueComparator()).build();
-
 	}
 
 	/**
-	 * 执行方法
-	 *
-	 * <p>
-	 * 对于用户传入参数会做必要检查，包括：
-	 *
-	 * <pre>
-	 *     1、忽略多余的参数
-	 *     2、参数不够补齐默认值
-	 *     3、传入参数为null，但是目标参数类型为原始类型，做转换
-	 * </pre>
+	 * 执行方法调用 对用户传入参数进行必要检查，包括： 1. 忽略多余的参数 2. 参数不够时补齐默认值 3. 处理 null 参数 4. 处理参数类型转换
 	 * @param <T> 返回对象类型
-	 * @param obj 对象，如果执行静态方法，此值为{@code null}
-	 * @param method 方法（对象方法或static方法都可）
+	 * @param obj 对象，如果执行静态方法，此值为 null
+	 * @param method 方法（对象方法或静态方法）
 	 * @param args 参数对象
-	 * @return 结果
-	 * @throws InvocationTargetRuntimeException 目标方法执行异常
-	 * @throws UtilException {@link IllegalAccessException}异常的包装
-	 * @since 5.8.1
+	 * @return 方法执行结果
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T invokeRaw(Object obj, Method method, Object... args)
 			throws InvocationTargetException, IllegalAccessException {
 		ClassUtil.setAccessible(method);
 
-		// 检查用户传入参数：
-		// 1、忽略多余的参数
-		// 2、参数不够补齐默认值
-		// 3、通过NullWrapperBean传递的参数,会直接赋值null
-		// 4、传入参数为null，但是目标参数类型为原始类型，做转换
-		// 5、传入参数类型不对应，尝试转换类型
+		// 检查用户传入参数
 		final Class<?>[] parameterTypes = method.getParameterTypes();
 		final Object[] actualArgs = new Object[parameterTypes.length];
 		if (null != args) {
-			// 判断参数类型长度是否为1 且为数组
+			// 处理数组参数
 			if (parameterTypes.length == 1 && parameterTypes[0].isArray()) {
-				// 判断参数是否为1 个 若1个直接赋值 否则 强制转换
 				if (args.length == 1) {
 					if (false == parameterTypes[0].isAssignableFrom(args[0].getClass())) {
-						// 对于类型不同的字段，尝试转换，转换失败则使用原对象类型
 						final Object targetValue = Convert.convert(parameterTypes[0], args[0]);
 						if (null != targetValue) {
 							actualArgs[0] = targetValue;
@@ -108,24 +91,21 @@ public class LogClassUtil {
 					else {
 						actualArgs[0] = args[0];
 					}
-
 				}
 				else {
 					actualArgs[0] = ArrayUtil.addAll(args);
 				}
 			}
 			else {
+				// 处理普通参数
 				for (int i = 0; i < actualArgs.length; i++) {
 					if (i >= args.length || null == args[i]) {
-						// 越界或者空值
 						actualArgs[i] = ClassUtil.getDefaultValue(parameterTypes[i]);
 					}
 					else if (args[i] instanceof NullWrapperBean) {
-						// 如果是通过NullWrapperBean传递的null参数,直接赋值null
 						actualArgs[i] = null;
 					}
 					else if (false == parameterTypes[i].isAssignableFrom(args[i].getClass())) {
-						// 对于类型不同的字段，尝试转换，转换失败则使用原对象类型
 						final Object targetValue = Convert.convert(parameterTypes[i], args[i]);
 						if (null != targetValue) {
 							actualArgs[i] = targetValue;
@@ -136,12 +116,10 @@ public class LogClassUtil {
 					}
 				}
 			}
-
 		}
 
+		// 处理 default 方法
 		if (method.isDefault()) {
-			// 当方法是default方法时，尤其对象是代理对象，需使用句柄方式执行
-			// 代理对象情况下调用method.invoke会导致循环引用执行，最终栈溢出
 			return MethodHandleUtil.invokeSpecial(obj, method, args);
 		}
 
@@ -149,31 +127,31 @@ public class LogClassUtil {
 	}
 
 	/**
-	 * 比较两个对象差异
-	 * @param source
-	 * @param target
-	 * @return
+	 * 比较两个对象的差异
+	 * @param source 源对象
+	 * @param target 目标对象
+	 * @return 差异结果
 	 */
 	public static Diff compare(Object source, Object target) {
 		return javers.compare(source, target);
 	}
 
 	/**
-	 * diff 比较
-	 * @param leftValue
-	 * @param rightValue
-	 * @return
+	 * 比较两个对象的差异，返回属性变更列表
+	 * @param leftValue 原始对象
+	 * @param rightValue 目标对象
+	 * @return 属性变更列表
 	 */
 	public static List<AttributeChange> diff(Object leftValue, Object rightValue) {
 		return diff(leftValue, rightValue, (attributeChange, source, target) -> true);
 	}
 
 	/**
-	 * diff 比较
+	 * 比较两个对象的差异，返回过滤后的属性变更列表
 	 * @param leftValue 原始对象
-	 * @param rightValue 差异对象
-	 * @param propertyFilter 数据集属性过滤器
-	 * @return
+	 * @param rightValue 目标对象
+	 * @param propertyFilter 属性过滤器
+	 * @return 过滤后的属性变更列表
 	 */
 	public static List<AttributeChange> diff(Object leftValue, Object rightValue, PropertyFilter propertyFilter) {
 		Diff diff = compare(leftValue, rightValue);
@@ -211,7 +189,6 @@ public class LogClassUtil {
 				attributeChange.setProperty(propertyName);
 				attributeChange.setLeftValue(printer.format(left));
 				attributeChange.setRightValue(printer.format(right));
-
 			}
 			attributeChanges.add(attributeChange);
 		}

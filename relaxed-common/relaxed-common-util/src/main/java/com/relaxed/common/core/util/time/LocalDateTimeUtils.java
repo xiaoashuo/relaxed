@@ -10,19 +10,22 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 /**
+ * LocalDateTime 工具类，提供日期时间的解析、格式化和转换功能。 主要功能包括： 1. 字符串与 LocalDateTime 的相互转换 2. 时间戳与
+ * LocalDateTime 的相互转换 3. 支持自定义日期时间格式 4. 支持时区转换
+ *
  * @author Yakir
- * @Topic LocalDateTimeUtils
- * @Description
- * @date 2023/6/4 14:35
- * @Version 1.0
+ * @since 1.0
  */
 public class LocalDateTimeUtils {
 
 	/**
-	 * 默认为东八区
+	 * 默认时区偏移量，设置为东八区（UTC+8）
 	 */
 	public static final ZoneOffset DEFAULT_ZONE_OFFSET = ZoneOffset.of("+8");
 
+	/**
+	 * 默认时区ID，基于默认时区偏移量
+	 */
 	public static final ZoneId DEFAULT_ZONE_ID = DEFAULT_ZONE_OFFSET.normalized();
 
 	/**
@@ -31,96 +34,96 @@ public class LocalDateTimeUtils {
 	public static final String NORM_DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
 	/**
-	 * 还原时间字符串 默认时间模式 yyyy-MM-dd HH:mm:ss
+	 * 将时间字符串解析为 LocalDateTime 对象 使用默认时间格式：yyyy-MM-dd HH:mm:ss
 	 * @param dateTimeStr 时间字符串
-	 * @return java.time.LocalDateTime
+	 * @return 解析后的 LocalDateTime 对象
 	 */
 	public static LocalDateTime parse(String dateTimeStr) {
 		return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern(NORM_DATETIME_PATTERN));
 	}
 
 	/**
-	 * 还原时间字符串
+	 * 将时间字符串解析为 LocalDateTime 对象
 	 * @param dateTimeStr 时间字符串
-	 * @param pattern 时间模式
-	 * @return java.time.LocalDateTime
+	 * @param pattern 时间格式模式
+	 * @return 解析后的 LocalDateTime 对象
 	 */
 	public static LocalDateTime parse(String dateTimeStr, String pattern) {
 		return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern(pattern));
 	}
 
 	/**
-	 * 还原时间字符串
+	 * 将时间字符串解析为 LocalDateTime 对象
 	 * @param dateTimeStr 时间字符串
-	 * @param dateTimeFormatter 格式化器
-	 * @return java.time.LocalDateTime
+	 * @param dateTimeFormatter 自定义的日期时间格式化器
+	 * @return 解析后的 LocalDateTime 对象
 	 */
 	public static LocalDateTime parse(String dateTimeStr, DateTimeFormatter dateTimeFormatter) {
 		return LocalDateTime.parse(dateTimeStr, dateTimeFormatter);
 	}
 
 	/**
-	 * 还原时间戳(毫秒级) 默认时区
-	 * @param timestamp
-	 * @return java.time.LocalDateTime
+	 * 将毫秒级时间戳转换为 LocalDateTime 对象 使用默认时区（东八区）
+	 * @param timestamp 毫秒级时间戳
+	 * @return 转换后的 LocalDateTime 对象
 	 */
 	public static LocalDateTime parseMills(Long timestamp) {
 		return parseMills(timestamp, DEFAULT_ZONE_ID);
 	}
 
 	/**
-	 * 还原时间戳(毫秒级)
-	 * @date 2023/6/4 15:43
-	 * @param zoneId 区域id
-	 * @return java.time.LocalDateTime
+	 * 将毫秒级时间戳转换为 LocalDateTime 对象
+	 * @param timestamp 毫秒级时间戳
+	 * @param zoneId 时区ID
+	 * @return 转换后的 LocalDateTime 对象
 	 */
 	public static LocalDateTime parseMills(Long timestamp, ZoneId zoneId) {
 		return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), zoneId);
 	}
 
 	/**
-	 * 格式化时间为字符串 默认时间格式 yyyy-MM-dd HH:mm:ss
-	 * @param datetime 时间
-	 * @return java.lang.String
+	 * 将 LocalDateTime 对象格式化为字符串 使用默认时间格式：yyyy-MM-dd HH:mm:ss
+	 * @param datetime 要格式化的 LocalDateTime 对象
+	 * @return 格式化后的时间字符串
 	 */
 	public static String format(LocalDateTime datetime) {
 		return format(datetime, DateTimeFormatter.ofPattern(NORM_DATETIME_PATTERN));
 	}
 
 	/**
-	 * 格式化时间为字符串
-	 * @param datetime 时间
-	 * @param pattern 模式
-	 * @return java.lang.String
+	 * 将 LocalDateTime 对象格式化为字符串
+	 * @param datetime 要格式化的 LocalDateTime 对象
+	 * @param pattern 时间格式模式
+	 * @return 格式化后的时间字符串
 	 */
 	public static String format(LocalDateTime datetime, String pattern) {
 		return format(datetime, DateTimeFormatter.ofPattern(pattern));
 	}
 
 	/**
-	 * 格式化时间为字符串
-	 * @param datetime 时间
-	 * @param dateTimeFormatter 格式化器
-	 * @return java.lang.String
+	 * 将 LocalDateTime 对象格式化为字符串
+	 * @param datetime 要格式化的 LocalDateTime 对象
+	 * @param dateTimeFormatter 自定义的日期时间格式化器
+	 * @return 格式化后的时间字符串
 	 */
 	public static String format(LocalDateTime datetime, DateTimeFormatter dateTimeFormatter) {
 		return datetime.format(dateTimeFormatter);
 	}
 
 	/**
-	 * 转换为毫秒时间戳 默认时区
-	 * @param datetime 时间
-	 * @return java.lang.Long
+	 * 将 LocalDateTime 对象转换为毫秒级时间戳 使用默认时区（东八区）
+	 * @param datetime 要转换的 LocalDateTime 对象
+	 * @return 毫秒级时间戳
 	 */
 	public static Long toMillsTimestamp(LocalDateTime datetime) {
 		return toMillsTimestamp(datetime, DEFAULT_ZONE_OFFSET);
 	}
 
 	/**
-	 * 转换为毫秒时间戳
-	 * @param datetime 时间
+	 * 将 LocalDateTime 对象转换为毫秒级时间戳
+	 * @param datetime 要转换的 LocalDateTime 对象
 	 * @param offset 时区偏移量
-	 * @return java.lang.Long
+	 * @return 毫秒级时间戳
 	 */
 	public static Long toMillsTimestamp(LocalDateTime datetime, ZoneOffset offset) {
 		return datetime.toInstant(offset).toEpochMilli();

@@ -14,11 +14,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * XSS自动配置类 配置XSS过滤相关的组件，包括过滤器、Jackson序列化器等 支持通过配置文件控制XSS过滤的开启和关闭
+ *
  * @author Yakir
- * @Topic WafConfiguration
- * @Description
- * @date 2021/6/26 14:21
- * @Version 1.0
+ * @since 1.0
  */
 @RequiredArgsConstructor
 @Slf4j
@@ -31,8 +30,8 @@ public class XssAutoConfiguration {
 	private final XssProperties xssProperties;
 
 	/**
-	 * 主要用于过滤 QueryString, Header 以及 form 中的参数
-	 * @return FilterRegistrationBean
+	 * 注册XSS过滤器 主要用于过滤QueryString、Header以及form表单中的参数
+	 * @return XSS过滤器注册Bean
 	 */
 	@Bean
 	public FilterRegistrationBean<XssFilter> xssFilterRegistrationBean() {
@@ -44,14 +43,13 @@ public class XssAutoConfiguration {
 	}
 
 	/**
-	 * 注册 Jackson 的序列化器，用于处理 json 类型参数的 xss 过滤
-	 * @return Jackson2ObjectMapperBuilderCustomizer
+	 * 注册Jackson的XSS序列化器 用于处理JSON类型参数的XSS过滤 在反序列化时进行XSS过滤
+	 * @return Jackson序列化器自定义器
 	 */
 	@Bean
 	@ConditionalOnMissingBean(name = "xssJacksonCustomizer")
 	@ConditionalOnBean(ObjectMapper.class)
 	public Jackson2ObjectMapperBuilderCustomizer xssJacksonCustomizer() {
-		// 在反序列化时进行 xss 过滤，可以替换使用 XssStringJsonSerializer，在序列化时进行处理
 		return builder -> builder.deserializerByType(String.class, new XssStringJsonDeserializer(xssProperties));
 	}
 

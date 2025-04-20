@@ -6,8 +6,10 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
+ * 字符串枚举值校验器，用于验证字段值是否在指定的字符串集合中
+ *
  * @author housl
- * @version 1.0 枚举值 Validator
+ * @since 1.0.0
  */
 public class EnumValueValidatorOfString implements ConstraintValidator<OneOfStrings, String> {
 

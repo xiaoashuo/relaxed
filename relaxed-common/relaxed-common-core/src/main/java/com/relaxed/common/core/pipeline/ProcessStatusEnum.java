@@ -5,11 +5,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
+ * 流程状态枚举，定义了流程处理过程中的各种状态码和消息
+ *
  * @author Yakir
- * @Topic ProcessEnum
- * @Description
- * @date 2022/2/10 9:55
- * @Version 1.0
+ * @since 1.0.0
  */
 @Getter
 @RequiredArgsConstructor

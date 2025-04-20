@@ -14,11 +14,9 @@ import net.sf.jsqlparser.util.deparser.*;
 import java.util.Iterator;
 
 /**
+ * CustomStatementDeParser
+ *
  * @author Yakir
- * @Topic CustomStatementDeParser
- * @Description 片段解析器
- * @date 2021/7/27 12:55
- * @Version 1.0
  */
 public class ExtensionStatementDeParser extends StatementDeParser {
 
@@ -101,17 +99,6 @@ public class ExtensionStatementDeParser extends StatementDeParser {
 
 	}
 
-	/**
-	 * 处理where 表达式
-	 * @author yakir
-	 * @date 2021/7/27 20:06
-	 * @param whereExpression
-	 * @param table
-	 * @param expressionDeParser
-	 * @param builder
-	 * @param tenant
-	 * @return net.sf.jsqlparser.expression.Expression
-	 */
 	protected Expression processWhereExpression(Expression whereExpression, Table table,
 			ExpressionDeParser expressionDeParser, StringBuilder builder, Tenant tenant) {
 

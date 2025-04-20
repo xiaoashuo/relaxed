@@ -9,20 +9,17 @@ import org.springframework.core.task.TaskDecorator;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
+ * 任务执行配置类 用于配置线程池和任务装饰器 支持MDC上下文传递和自定义线程池策略
+ *
  * @author Yakir
- * @Topic TaskExecutionConfiguration
- * @Description
- * @date 2022/2/25 10:34
- * @Version 1.0
+ * @since 1.0
  */
 @Configuration(proxyBeanMethods = false)
 public class TaskExecutionConfiguration {
 
 	/**
-	 * mdc 任务解码器
-	 * @author yakir
-	 * @date 2021/9/18 9:35
-	 * @return org.springframework.core.task.TaskDecorator
+	 * 配置MDC任务装饰器 用于在线程池中传递MDC上下文信息 确保异步任务能够正确获取和传递日志上下文
+	 * @return MDC任务装饰器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -31,10 +28,8 @@ public class TaskExecutionConfiguration {
 	}
 
 	/**
-	 * 线程池自定义
-	 * @author yakir
-	 * @date 2021/9/18 9:35
-	 * @return org.springframework.boot.task.TaskExecutorCustomizer
+	 * 配置线程池自定义器 设置线程池的拒绝策略为CallerRunsPolicy 当线程池无法处理新任务时，由调用者线程执行该任务
+	 * @return 线程池自定义器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean

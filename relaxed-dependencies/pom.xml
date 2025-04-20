@@ -161,12 +161,6 @@
                 <artifactId>relaxed-common-idempotent</artifactId>
                 <version>${revision}</version>
             </dependency>
-            <!--Http模块-->
-            <dependency>
-                <groupId>cn.lovecyy</groupId>
-                <artifactId>relaxed-common-http</artifactId>
-                <version>${revision}</version>
-            </dependency>
             <!--多数据源-->
             <dependency>
                 <groupId>cn.lovecyy</groupId>
@@ -236,12 +230,7 @@
                 <artifactId>relaxed-poi-tl</artifactId>
                 <version>${revision}</version>
             </dependency>
-            <!--扩展mybatis -->
-            <dependency>
-                <groupId>cn.lovecyy</groupId>
-                <artifactId>relaxed-mybatis</artifactId>
-                <version>${revision}</version>
-            </dependency>
+
             <!--扩展mybatis plus-->
             <dependency>
                 <groupId>cn.lovecyy</groupId>

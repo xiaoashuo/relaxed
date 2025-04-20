@@ -19,6 +19,11 @@ public class SftpClient implements ISftpClient {
 
 	private final SftpPool sftpPool;
 
+	/**
+	 * 打开SFTP连接并执行操作
+	 * @param handler 操作处理器
+	 * @throws SftpClientException 执行操作时可能抛出的异常
+	 */
 	@Override
 	public void open(Handler handler) {
 		ISftpExecutor sftp = null;
@@ -37,6 +42,13 @@ public class SftpClient implements ISftpClient {
 		}
 	}
 
+	/**
+	 * 打开SFTP连接并执行操作，返回结果
+	 * @param supplyHandler 操作处理器
+	 * @param <U> 返回类型
+	 * @return 操作结果
+	 * @throws SftpClientException 执行操作时可能抛出的异常
+	 */
 	@Override
 	public <U> U supplyOpen(SupplyHandler<U> supplyHandler) {
 		ISftpExecutor sftp = null;

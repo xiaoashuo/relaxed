@@ -25,11 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 异常自动配置类 提供全局异常处理、通知渠道配置等功能
+ *
  * @author Yakir
- * @Topic ExceptionAutoConfiguration
- * @Description
- * @date 2021/12/21 10:12
- * @Version 1.0
+ * @since 1.0
  */
 @EnableConfigurationProperties(ExceptionHandleProperties.class)
 @Configuration(proxyBeanMethods = false)
@@ -45,10 +44,8 @@ public class ExceptionAutoConfiguration {
 	private String applicationName;
 
 	/**
-	 * 通知结果 决策器 判断是否成功 默认任何一个通知器通知 成功即为本次通知成功
-	 * @author yakir
-	 * @date 2022/1/20 13:38
-	 * @return com.relaxed.common.exception.notifier.NoticeResultDecision
+	 * 创建通知结果决策器 用于判断通知是否成功，默认任何一个通知器通知成功即为本次通知成功
+	 * @return NoticeResultDecision 通知结果决策器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -57,11 +54,10 @@ public class ExceptionAutoConfiguration {
 	}
 
 	/**
-	 * 异常通知者持有器
-	 * @author yakir
-	 * @date 2022/1/20 11:50
-	 * @param exceptionNotifiers
-	 * @return com.relaxed.common.exception.holder.ExceptionNotifierHolder
+	 * 创建异常通知者持有器 用于管理所有异常通知器，如果没有配置任何通知器，则使用默认通知器
+	 * @param exceptionNotifiers 异常通知器提供者
+	 * @param noticeResultDecision 通知结果决策器
+	 * @return ExceptionNotifierHolder 异常通知者持有器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -77,12 +73,10 @@ public class ExceptionAutoConfiguration {
 	}
 
 	/**
-	 * 全局异常处理器
-	 * @author yakir
-	 * @date 2022/1/20 11:53
-	 * @param exceptionHandleProperties
-	 * @param exceptionNotifierHolder
-	 * @return com.relaxed.common.exception.handler.GlobalExceptionHandler
+	 * 创建全局异常处理器 用于处理应用程序中的全局异常
+	 * @param exceptionHandleProperties 异常处理配置属性
+	 * @param exceptionNotifierHolder 异常通知者持有器
+	 * @return GlobalExceptionHandler 全局异常处理器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -94,8 +88,9 @@ public class ExceptionAutoConfiguration {
 	}
 
 	/**
-	 * 微信消息通知的日志处理器
-	 *
+	 * 创建微信消息通知的异常处理器 当配置了微信通知渠道时启用
+	 * @param context Spring应用上下文
+	 * @return ExceptionNotifier 微信异常通知器实例
 	 */
 	@Bean
 	@ConditionalOnProperty(prefix = "relaxed.exception.channels", name = WECHAT, havingValue = "true")
@@ -104,9 +99,9 @@ public class ExceptionAutoConfiguration {
 	}
 
 	/**
-	 * 钉钉消息通知的日志处理器
-	 *
-	 * @author lingting 2020-06-12 00:32:40
+	 * 创建钉钉消息通知的异常处理器 当配置了钉钉通知渠道时启用
+	 * @param context Spring应用上下文
+	 * @return ExceptionNotifier 钉钉异常通知器实例
 	 */
 	@Bean
 	@ConditionalOnProperty(prefix = "relaxed.exception.channels", name = DING_TALK, havingValue = "true")
@@ -115,9 +110,10 @@ public class ExceptionAutoConfiguration {
 	}
 
 	/**
-	 * 邮件消息通知的日志处理器
-	 *
-	 * @author lingting 2020-06-12 00:32:40
+	 * 创建邮件消息通知的异常处理器 当配置了邮件通知渠道时启用
+	 * @param exceptionHandleProperties 异常处理配置属性
+	 * @param context Spring应用上下文
+	 * @return ExceptionNotifier 邮件异常通知器实例
 	 */
 	@Bean
 	@ConditionalOnProperty(prefix = "relaxed.exception.channels", name = MAIL, havingValue = "true")

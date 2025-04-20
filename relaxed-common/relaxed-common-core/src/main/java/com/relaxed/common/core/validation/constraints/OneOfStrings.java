@@ -10,8 +10,10 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * 字符串枚举值校验注解，用于验证字段值是否在指定的字符串集合中
+ *
  * @author housl
- * @version 1.0
+ * @since 1.0.0
  */
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
@@ -24,9 +26,6 @@ public @interface OneOfStrings {
 
 	String[] value();
 
-	/**
-	 * 允许值为 null, 默认不允许
-	 */
 	boolean allowNull() default false;
 
 	Class<?>[] groups() default {};

@@ -7,7 +7,10 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
- * @author lingting 2020/6/10 22:13
+ * 钉钉文本消息实现类。 用于发送纯文本类型的钉钉消息，支持@指定人员或@所有人。
+ *
+ * @author lingting
+ * @since 1.0
  */
 @Getter
 @Setter
@@ -15,7 +18,7 @@ import lombok.experimental.Accessors;
 public class DingTalkTextMessage extends AbstractDingTalkMessage {
 
 	/**
-	 * 消息内容
+	 * 消息文本内容
 	 */
 	private String content;
 

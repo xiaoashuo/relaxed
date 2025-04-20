@@ -33,38 +33,74 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * S3 对象存储客户端。 提供对 S3 兼容的对象存储服务的访问，支持文件上传、下载、删除等操作。 实现了 DisposableBean 接口，确保在应用关闭时正确释放资源。
+ *
  * @author Yakir
- * @Topic OssClient
- * @Description
- * @date 2021/11/25 17:49
- * @Version 1.0
+ * @since 1.0
  */
 @Slf4j
 @Setter
 public class OssClient implements DisposableBean {
 
+	/**
+	 * S3 服务端点地址。
+	 */
 	private final String endpoint;
 
+	/**
+	 * S3 服务区域。
+	 */
 	private final String region;
 
+	/**
+	 * 访问密钥 ID。
+	 */
 	private final String accessKey;
 
+	/**
+	 * 访问密钥密码。
+	 */
 	private final String accessSecret;
 
+	/**
+	 * 存储桶名称。
+	 */
 	private final String bucket;
 
+	/**
+	 * 自定义域名。
+	 */
 	private final String domain;
 
+	/**
+	 * 是否使用路径样式访问。
+	 */
 	private final boolean pathStyleAccess;
 
+	/**
+	 * 下载文件时的前缀 URL。
+	 */
 	private final String downloadPrefix;
 
+	/**
+	 * 对象访问控制列表。
+	 */
 	private final ObjectCannedACL acl;
 
+	/**
+	 * 路径修改器。
+	 */
 	private final PathModifier pathModifier;
 
+	/**
+	 * S3 客户端实例。
+	 */
 	private final S3Client s3Client;
 
+	/**
+	 * 构造 S3 客户端实例。
+	 * @param ossClientBuilder S3 客户端构建器
+	 */
 	public OssClient(OssClientBuilder ossClientBuilder) {
 		// 同步OssClientBuilder信息
 		this.endpoint = ossClientBuilder.getEndpoint();
@@ -80,22 +116,34 @@ public class OssClient implements DisposableBean {
 		this.s3Client = ossClientBuilder.getS3Client();
 	}
 
+	/**
+	 * 上传文件流。 使用默认的 ACL 配置上传文件。
+	 * @param inputStream 文件输入流
+	 * @param size 文件大小
+	 * @param relativePath 相对路径
+	 * @return 文件访问 URL
+	 */
 	public String upload(InputStream inputStream, Long size, String relativePath) {
 		return upload(inputStream, size, relativePath, acl);
 	}
 
+	/**
+	 * 上传本地文件。 使用默认的 ACL 配置上传文件。
+	 * @param file 本地文件
+	 * @param relativePath 相对路径
+	 * @return 文件访问 URL
+	 */
 	public String upload(File file, String relativePath) {
 		return upload(file, relativePath, acl);
 	}
 
 	/**
-	 * 上传文件
-	 * @author yakir
-	 * @date 2021/11/26 15:34
-	 * @param inputStream 输入流
-	 * @param size 流大小
-	 * @param relativePath 文件路径 未关联根路径的
-	 * @return java.lang.String
+	 * 上传文件流。 使用指定的 ACL 配置上传文件。
+	 * @param inputStream 文件输入流
+	 * @param size 文件大小
+	 * @param relativePath 相对路径
+	 * @param acl 对象访问控制列表
+	 * @return 文件访问 URL
 	 */
 	public String upload(InputStream inputStream, Long size, String relativePath, ObjectCannedACL acl) {
 		PutObjectRequest.Builder builder = PutObjectRequest.builder().bucket(bucket).key(relativePath);
@@ -114,13 +162,11 @@ public class OssClient implements DisposableBean {
 	}
 
 	/**
-	 * 上传文件
-	 * @author yakir
-	 * @date 2022/1/19 16:12
-	 * @param file
-	 * @param relativePath
-	 * @param acl
-	 * @return java.lang.String
+	 * 上传本地文件。 使用指定的 ACL 配置上传文件。
+	 * @param file 本地文件
+	 * @param relativePath 相对路径
+	 * @param acl 对象访问控制列表
+	 * @return 文件访问 URL
 	 */
 	public String upload(File file, String relativePath, ObjectCannedACL acl) {
 		PutObjectRequest.Builder builder = PutObjectRequest.builder().bucket(bucket).key(relativePath);
@@ -137,18 +183,22 @@ public class OssClient implements DisposableBean {
 		return getDownloadUrl(relativePath);
 	}
 
+	/**
+	 * 列出指定前缀的所有对象。
+	 * @param prefix 对象前缀
+	 * @return 对象路径列表
+	 */
 	public List<String> list(String prefix) {
 		return list(prefix, null, null);
 
 	}
 
 	/**
-	 * 查询列表
-	 * @author yakir
-	 * @date 2021/12/1 18:19
-	 * @param prefix 前缀匹配 oss 里面 文件物理层路径默认都为字符串 不存在目录
-	 * @param marker
-	 * @param maxKeys
+	 * 列出指定前缀的对象，支持分页。
+	 * @param prefix 对象前缀
+	 * @param marker 起始标记
+	 * @param maxKeys 最大返回数量
+	 * @return 对象路径列表
 	 */
 	public List<String> list(String prefix, String marker, Integer maxKeys) {
 		ListObjectsRequest listObjects = ListObjectsRequest.builder().bucket(bucket).prefix(prefix).marker(marker)
@@ -166,11 +216,9 @@ public class OssClient implements DisposableBean {
 	}
 
 	/**
-	 * 下载字节文件
-	 * @author yakir
-	 * @date 2022/1/14 13:03
-	 * @param relativePath 相对路径 test/img.png
-	 * @return byte[]
+	 * 下载文件到字节数组。
+	 * @param relativePath 文件相对路径
+	 * @return 文件内容字节数组
 	 */
 	public byte[] download(String relativePath) {
 		try {
@@ -185,10 +233,10 @@ public class OssClient implements DisposableBean {
 	}
 
 	/**
-	 * 下载到文件
-	 * @param relativePath
-	 * @param file
-	 * @return 返回源文件引用
+	 * 下载文件到本地。
+	 * @param relativePath 文件相对路径
+	 * @param file 目标文件
+	 * @return 目标文件
 	 */
 	public File download(String relativePath, File file) {
 		try {
@@ -205,9 +253,9 @@ public class OssClient implements DisposableBean {
 	}
 
 	/**
-	 * 下载文件到流
-	 * @param relativePath 相对路径 test/img.png
-	 * @param outputStream 内容流
+	 * 下载文件到输出流。
+	 * @param relativePath 文件相对路径
+	 * @param outputStream 输出流
 	 */
 	public void download(String relativePath, OutputStream outputStream) {
 		try {
@@ -227,10 +275,8 @@ public class OssClient implements DisposableBean {
 	}
 
 	/**
-	 * 删除单个文件
-	 * @author yakir
-	 * @date 2021/12/1 18:19
-	 * @param path
+	 * 删除指定路径的文件。
+	 * @param path 文件路径
 	 */
 	public void delete(String path) {
 		if (!StringUtils.hasText(path)) {
@@ -245,14 +291,8 @@ public class OssClient implements DisposableBean {
 	}
 
 	/**
-	 * 批量删除
-	 * @author yakir
-	 * @date 2021/12/2 13:58
-	 * @param paths 相对于bucket命名空间下的完整路径
-	 * <p>
-	 * eg: bucket test-oss 文件 img/test.jpg path: img/test.jpg
-	 * </p>
-	 * @param paths
+	 * 批量删除文件。
+	 * @param paths 文件路径集合
 	 */
 	public void batchDelete(Set<String> paths) {
 		if (CollectionUtils.isEmpty(paths)) {
@@ -272,6 +312,11 @@ public class OssClient implements DisposableBean {
 		getS3Client().deleteObjects(multiObjectDeleteRequest);
 	}
 
+	/**
+	 * 检查文件是否存在。
+	 * @param path 文件路径
+	 * @return 如果文件存在返回 true，否则返回 false
+	 */
 	public boolean isExist(String path) {
 		try {
 			HeadObjectRequest headObjectRequest = HeadObjectRequest.builder().bucket(bucket).key(path).build();
@@ -290,12 +335,10 @@ public class OssClient implements DisposableBean {
 	}
 
 	/**
-	 * copy 对象
-	 * @author yakir
-	 * @date 2021/12/3 15:53
-	 * @param sourcePath img/6.jpg 相对于bucket下面的路径
-	 * @param toPath img/5.jpg 相对于bucket下面的路径
-	 * @return java.lang.String 目标下载地址
+	 * 复制文件。
+	 * @param sourcePath 源文件路径
+	 * @param toPath 目标文件路径
+	 * @return 目标文件访问 URL
 	 */
 	public String copy(String sourcePath, String toPath) {
 		CopyObjectRequest copyObjRequest = CopyObjectRequest.builder()
@@ -315,17 +358,26 @@ public class OssClient implements DisposableBean {
 	}
 
 	/**
-	 * 获取 绝对路径 的下载url
-	 * @author lingting 2021-05-12 18:50
+	 * 获取文件下载 URL。
+	 * @param relativePath 文件相对路径
+	 * @return 文件下载 URL
 	 */
 	public String getDownloadUrl(String relativePath) {
 		return pathModifier.getDownloadUrl(domain, bucket, downloadPrefix, relativePath);
 	}
 
+	/**
+	 * 获取 S3 客户端实例。
+	 * @return S3 客户端实例
+	 */
 	public S3Client getS3Client() {
 		return s3Client;
 	}
 
+	/**
+	 * 销毁客户端实例。 释放 S3 客户端资源。
+	 * @throws Exception 如果销毁过程中发生错误
+	 */
 	@Override
 	public void destroy() throws Exception {
 		if (s3Client != null) {

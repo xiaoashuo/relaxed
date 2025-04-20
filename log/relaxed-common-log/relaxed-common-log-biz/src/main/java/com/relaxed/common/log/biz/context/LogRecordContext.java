@@ -14,14 +14,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 日志记录上下文，用于在方法执行过程中存储和管理日志相关的上下文信息。 使用 ThreadLocal 和 Deque 实现了一个栈结构，支持多层级的方法调用。 主要功能： 1.
+ * 存储方法执行过程中的临时变量 2. 管理差异比对对象 3. 支持嵌套方法调用的上下文隔离
+ *
  * @author Yakir
- * @Topic LogOperatorContext
- * @Description
- * @date 2023/12/14 11:26
- * @Version 1.0
+ * @since 1.0.0
  */
 public class LogRecordContext {
 
+	/**
+	 * 使用 ThreadLocal 存储上下文栈，每个线程独立维护自己的上下文
+	 */
 	private static final ThreadLocal<Deque<Map<String, Object>>> variableMapStack = new NamedThreadLocal<Deque<Map<String, Object>>>(
 			"log-operator") {
 		@Override
@@ -30,34 +33,48 @@ public class LogRecordContext {
 		}
 	};
 
+	/**
+	 * 获取当前栈顶的上下文信息
+	 * @return 当前栈顶的上下文 Map
+	 */
 	public static Map<String, Object> peek() {
 		return variableMapStack.get().peek();
 	}
 
+	/**
+	 * 压入一个新的空上下文到栈顶 用于开始一个新的方法调用层级
+	 */
 	public static void putEmptySpan() {
 		Deque<Map<String, Object>> deque = variableMapStack.get();
 		deque.push(new HashMap<>(8));
 	}
 
+	/**
+	 * 向当前栈顶的上下文中添加键值对
+	 * @param key 键
+	 * @param val 值
+	 */
 	public static void push(String key, Object val) {
 		Map<String, Object> peek = peek();
 		peek.put(key, val);
 	}
 
+	/**
+	 * 弹出并移除栈顶的上下文 如果栈为空，则清理 ThreadLocal
+	 */
 	public static void poll() {
 		Deque<Map<String, Object>> deque = variableMapStack.get();
 		deque.poll();
 		if (deque.isEmpty()) {
 			variableMapStack.remove();
 		}
-
 	}
 
 	/**
-	 * 放入需要差异比对对象
-	 * @param diffKey
-	 * @param source
-	 * @param target
+	 * 添加需要差异比对的对象
+	 * @param diffKey 差异标识
+	 * @param source 源对象
+	 * @param target 目标对象
 	 */
 	public static void putDiff(String diffKey, Object source, Object target) {
 		Map<String, Object> peek = peek();
@@ -70,17 +87,25 @@ public class LogRecordContext {
 	}
 
 	/**
-	 * @param source
-	 * @param target
+	 * 添加需要差异比对的对象，使用源对象的类名作为差异标识
+	 * @param source 源对象
+	 * @param target 目标对象
 	 */
 	public static void putDiff(Object source, Object target) {
 		putDiff(source.getClass().getSimpleName(), source, target);
 	}
 
+	/**
+	 * 清理当前线程的所有上下文信息
+	 */
 	public static void clear() {
 		variableMapStack.remove();
 	}
 
+	/**
+	 * 测试方法，用于演示上下文栈的使用
+	 * @param args 命令行参数
+	 */
 	public static void main(String[] args) {
 		LogRecordContext.putEmptySpan();
 		LogRecordContext.push("user1", "a");
@@ -119,7 +144,6 @@ public class LogRecordContext {
 		variableMapStack.get().poll();
 		Map<String, Object> peekedMap2 = variableMapStack.get().peek();
 		System.out.println("Peeked Map: " + peekedMap2);
-
 	}
 
 }

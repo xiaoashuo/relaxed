@@ -17,9 +17,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
 
 /**
- * @author Hccake
- * @version 1.0
- * @date 2019/10/15 18:20
+ * 访问日志自动配置类。 用于配置访问日志的过滤器和处理器。 主要功能包括： 1. 根据配置决定是否启用访问日志 2. 注册访问日志过滤器 3. 支持自定义访问日志处理器 4.
+ * 支持默认的日志记录规则
+ *
+ * @author Yakir
+ * @since 1.0
  */
 @Configuration
 @Slf4j
@@ -29,8 +31,16 @@ import org.springframework.lang.Nullable;
 		matchIfMissing = true)
 public class AccessLogAutoConfiguration {
 
+	/**
+	 * 日志配置属性
+	 */
 	private final LogProperties logProperties;
 
+	/**
+	 * 注册访问日志过滤器。 当存在 AccessLogHandler 实例时使用自定义处理器，否则使用默认处理器。 默认记录所有请求的访问日志。
+	 * @param accessLogHandler 访问日志处理器，可以为空
+	 * @return 过滤器注册Bean
+	 */
 	@Bean
 	@ConditionalOnClass(AccessLogHandler.class)
 	public FilterRegistrationBean<AccessLogFilter> accessLogFilterRegistrationBean(

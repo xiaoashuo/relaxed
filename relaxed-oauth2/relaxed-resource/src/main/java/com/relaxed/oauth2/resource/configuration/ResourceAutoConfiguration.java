@@ -24,19 +24,18 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.util.StringUtils;
 
 /**
+ * 资源服务器自动配置类 用于自动配置OAuth2资源服务器的相关组件 包括权限评估器、认证入口点、访问拒绝处理器和Token服务
+ *
  * @author Yakir
- * @Topic ResourceAutoConfiguration
- * @Description
- * @date 2022/7/25 14:55
- * @Version 1.0
+ * @since 1.0
  */
 @Import(CustomResourceServerConfigurer.class)
 @EnableConfigurationProperties({ ExtendResourceServerProperties.class })
 public class ResourceAutoConfiguration {
 
 	/**
-	 * 自定义的权限判断组件
-	 * @return CustomPermissionEvaluator
+	 * 自定义权限评估器 用于评估用户是否具有特定权限 支持通配符匹配权限字符串
+	 * @return 自定义权限评估器实例
 	 */
 	@Bean(name = "per")
 	@ConditionalOnMissingBean(CustomPermissionEvaluator.class)
@@ -45,8 +44,8 @@ public class ResourceAutoConfiguration {
 	}
 
 	/**
-	 * 认证异常处理
-	 * @return
+	 * 认证入口点 用于处理认证失败的情况 返回统一的认证失败响应
+	 * @return 认证入口点实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -55,8 +54,8 @@ public class ResourceAutoConfiguration {
 	}
 
 	/**
-	 * 进入异常处理
-	 * @return
+	 * 访问拒绝处理器 用于处理权限不足的情况 返回统一的访问拒绝响应
+	 * @return 访问拒绝处理器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -65,8 +64,8 @@ public class ResourceAutoConfiguration {
 	}
 
 	/**
-	 * 自定义token services prefer-token-info默认值为true，既优先使用token-info-uri校验token认证信息
-	 * @return
+	 * 远程Token服务提供者 优先使用token-info-uri校验token认证信息 适用于只需要验证token有效性的场景
+	 * @return 远程Token服务提供者实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -79,15 +78,14 @@ public class ResourceAutoConfiguration {
 			services.setClientSecret(resource.getClientSecret());
 			return services;
 		};
-
 	}
 
 	/**
-	 * prefer-token-info设置为false，或不配置token-info-uri则会使用user-info-uri，适用于需要获取userdetails信息的场景
-	 * @param restTemplateFactory
-	 * @param authoritiesExtractorProvider
-	 * @param principalExtractorProvider
-	 * @return
+	 * 用户信息Token服务提供者 当prefer-token-info设置为false或不配置token-info-uri时使用 适用于需要获取用户详细信息的场景
+	 * @param restTemplateFactory REST模板工厂
+	 * @param authoritiesExtractorProvider 权限提取器提供者
+	 * @param principalExtractorProvider 主体提取器提供者
+	 * @return 用户信息Token服务提供者实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -109,13 +107,13 @@ public class ResourceAutoConfiguration {
 			if (principalExtractor != null) {
 				services.setPrincipalExtractor(principalExtractor);
 			}
-
 			return services;
-
 		};
-
 	}
 
+	/**
+	 * 用户信息条件判断类 用于判断是否使用用户信息Token服务
+	 */
 	private static class UserInfoCondition extends SpringBootCondition {
 
 		private UserInfoCondition() {
@@ -142,6 +140,9 @@ public class ResourceAutoConfiguration {
 
 	}
 
+	/**
+	 * Token信息条件判断类 用于判断是否使用Token信息服务
+	 */
 	private static class TokenInfoCondition extends SpringBootCondition {
 
 		private TokenInfoCondition() {

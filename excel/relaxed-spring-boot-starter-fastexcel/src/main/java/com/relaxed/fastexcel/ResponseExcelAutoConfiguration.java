@@ -21,10 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Excel响应自动配置类 负责配置Excel相关的处理器和解析器,包括: 1. Excel名称解析处理器 2. Excel名称解析切面 3. Excel返回值处理器 4.
+ * Excel请求参数解析器
+ *
  * @author lengleng
- * @date 2020/3/29
- * <p>
- * 配置初始化
+ * @since 1.0.0
  */
 @Import(ExcelHandlerConfiguration.class)
 @RequiredArgsConstructor
@@ -32,13 +33,19 @@ import java.util.List;
 @EnableConfigurationProperties(ExcelConfigProperties.class)
 public class ResponseExcelAutoConfiguration {
 
+	/**
+	 * Spring MVC请求映射处理器适配器
+	 */
 	private final RequestMappingHandlerAdapter requestMappingHandlerAdapter;
 
+	/**
+	 * Excel返回值处理器
+	 */
 	private final ResponseExcelReturnValueHandler responseExcelReturnValueHandler;
 
 	/**
-	 * SPEL 解析处理器
-	 * @return NameProcessor excel名称解析器
+	 * 注册SPEL表达式解析处理器 用于解析Excel文件名称中的动态表达式
+	 * @return NameProcessor Excel名称解析器
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -47,9 +54,9 @@ public class ResponseExcelAutoConfiguration {
 	}
 
 	/**
-	 * Excel名称解析处理切面
-	 * @param nameProcessor SPEL 解析处理器
-	 * @return DynamicNameAspect
+	 * 注册Excel名称解析处理切面 用于处理动态Excel文件名称的解析
+	 * @param nameProcessor SPEL表达式解析处理器
+	 * @return DynamicNameAspect 动态名称切面
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -58,7 +65,7 @@ public class ResponseExcelAutoConfiguration {
 	}
 
 	/**
-	 * 追加 Excel返回值处理器 到 springmvc 中
+	 * 注册Excel返回值处理器到Spring MVC 将Excel返回值处理器添加到Spring MVC的返回值处理器列表中
 	 */
 	@PostConstruct
 	public void setReturnValueHandlers() {
@@ -73,7 +80,7 @@ public class ResponseExcelAutoConfiguration {
 	}
 
 	/**
-	 * 追加 Excel 请求处理器 到 springmvc 中
+	 * 注册Excel请求参数解析器到Spring MVC 将Excel请求参数解析器添加到Spring MVC的参数解析器列表中
 	 */
 	@PostConstruct
 	public void setRequestExcelArgumentResolver() {

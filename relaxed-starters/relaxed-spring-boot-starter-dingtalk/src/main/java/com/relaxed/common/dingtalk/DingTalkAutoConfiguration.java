@@ -10,7 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author lingting 2020/6/11 23:14
+ * 钉钉自动配置类 提供钉钉通知的自动配置功能
+ *
+ * @author lingting
+ * @since 1.0
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -21,6 +24,10 @@ public class DingTalkAutoConfiguration {
 
 	private final DingTalkProperties dingTalkProperties;
 
+	/**
+	 * 创建钉钉消息发送器 当配置了钉钉Webhook地址时启用
+	 * @return DingTalkSender 钉钉消息发送器实例
+	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public DingTalkSender dingTalkSender() {

@@ -8,18 +8,21 @@ import com.relaxed.fastexcel.head.HeadGenerator;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author Hccake 2020/12/18
- * @version 1.0
+ * 默认Excel写入构建器增强实现 提供基础的Excel写入构建器增强功能 主要特点: 1. 提供默认的空实现 2. 可作为自定义增强器的基类 3. 保持原有构建器功能不变
+ * 4. 支持按需覆盖增强方法
+ *
+ * @author Hccake
+ * @since 1.0.0
  */
 public class DefaultWriterBuilderEnhancer implements WriterBuilderEnhancer {
 
 	/**
-	 * ExcelWriterBuilder 增强
-	 * @param writerBuilder ExcelWriterBuilder
-	 * @param response HttpServletResponse
-	 * @param responseExcel ResponseExcel
-	 * @param templatePath 模板地址
-	 * @return ExcelWriterBuilder
+	 * 增强Excel写入构建器 默认实现不做任何增强,直接返回原构建器
+	 * @param writerBuilder Excel写入构建器
+	 * @param response HTTP响应对象
+	 * @param responseExcel Excel响应注解
+	 * @param templatePath 模板文件路径
+	 * @return 原Excel写入构建器
 	 */
 	@Override
 	public ExcelWriterBuilder enhanceExcel(ExcelWriterBuilder writerBuilder, HttpServletResponse response,
@@ -29,14 +32,14 @@ public class DefaultWriterBuilderEnhancer implements WriterBuilderEnhancer {
 	}
 
 	/**
-	 * ExcelWriterSheetBuilder 增强
-	 * @param writerSheetBuilder ExcelWriterSheetBuilder
-	 * @param sheetNo sheet角标
-	 * @param sheetName sheet名，有模板时为空
-	 * @param dataClass 当前写入的数据所属类
-	 * @param template 模板文件
-	 * @param headEnhancerClass 当前指定的自定义头处理器
-	 * @return ExcelWriterSheetBuilder
+	 * 增强Sheet写入构建器 默认实现不做任何增强,直接返回原构建器
+	 * @param writerSheetBuilder Sheet写入构建器
+	 * @param sheetNo Sheet序号(从0开始)
+	 * @param sheetName Sheet名称(使用模板时可为空)
+	 * @param dataClass 数据类型Class
+	 * @param template 模板文件路径
+	 * @param headEnhancerClass 自定义表头生成器Class
+	 * @return 原Sheet写入构建器
 	 */
 	@Override
 	public ExcelWriterSheetBuilder enhanceSheet(ExcelWriterSheetBuilder writerSheetBuilder, Integer sheetNo,

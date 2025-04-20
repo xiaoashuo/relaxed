@@ -24,10 +24,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.ValidationException;
 
 /**
- * @author yakir
- * @Topic 全局异常处理
- * @Description 全局异常处理
- * @date 2021/12/22
+ * 全局异常处理器 统一处理应用程序中的各种异常，包括业务异常、参数校验异常、系统异常等 根据不同的异常类型返回相应的错误信息和状态码
+ *
+ * @author Yakir
+ * @since 1.0
  */
 @Slf4j
 @RestControllerAdvice
@@ -37,14 +37,21 @@ public class GlobalExceptionHandlerResolver {
 	@Value("${spring.profiles.active:prod}")
 	private String profile;
 
+	/**
+	 * 生产环境错误提示信息
+	 */
 	public static final String PROD_ERR_MSG = "系统异常，请联系管理员";
 
+	/**
+	 * 空指针异常提示信息
+	 */
 	public static final String NLP_MSG = "空指针异常!";
 
 	/**
-	 * 全局异常捕获
-	 * @param e the e
-	 * @return R
+	 * 处理全局异常 捕获所有未明确处理的异常，根据环境返回不同的错误信息
+	 * @param e 异常对象
+	 * @param request HTTP请求对象
+	 * @return 统一响应结果
 	 */
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -57,9 +64,10 @@ public class GlobalExceptionHandlerResolver {
 	}
 
 	/**
-	 * MethodArgumentTypeMismatchException 参数类型转换异常
-	 * @param e the e
-	 * @return R
+	 * 处理参数类型转换异常 当请求参数类型与目标类型不匹配时触发
+	 * @param e 异常对象
+	 * @param request HTTP请求对象
+	 * @return 统一响应结果
 	 */
 	@ExceptionHandler({ MethodArgumentTypeMismatchException.class })
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -70,33 +78,35 @@ public class GlobalExceptionHandlerResolver {
 	}
 
 	/**
-	 * 请求方式有问题 - MediaType 异常 - Method 异常
-	 * @return R
+	 * 处理请求方式异常 包括不支持的媒体类型和请求方法
+	 * @param e 异常对象
+	 * @param request HTTP请求对象
+	 * @return 统一响应结果
 	 */
 	@ExceptionHandler({ HttpMediaTypeNotSupportedException.class, HttpRequestMethodNotSupportedException.class })
 	public R<String> requestNotSupportedException(Exception e, HttpServletRequest request) {
 		log.error("请求地址:{}, 请求方式异常 ex={}", request.getRequestURI(), e.getMessage(), e);
-
 		return R.failed(SysResultCode.BAD_REQUEST, e.getLocalizedMessage());
 	}
 
 	/**
-	 * IllegalArgumentException 异常捕获，主要用于Assert
-	 * @param e the e
-	 * @return R
+	 * 处理非法参数异常 主要用于处理Assert断言失败的情况
+	 * @param e 异常对象
+	 * @param request HTTP请求对象
+	 * @return 统一响应结果
 	 */
 	@ExceptionHandler(IllegalArgumentException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public R<String> handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
 		log.error("请求地址:{}, 非法数据输入 ex={}", request.getRequestURI(), e.getMessage(), e);
-
 		return R.failed(SysResultCode.BAD_REQUEST, e.getMessage());
 	}
 
 	/**
-	 * validation Exception
-	 * @param exception e
-	 * @return R
+	 * 处理参数校验异常 包括方法参数校验异常和绑定异常
+	 * @param exception 异常对象
+	 * @param request HTTP请求对象
+	 * @return 统一响应结果
 	 */
 	@ExceptionHandler({ MethodArgumentNotValidException.class, BindException.class })
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -118,9 +128,10 @@ public class GlobalExceptionHandlerResolver {
 	}
 
 	/**
-	 * 单体参数校验异常 validation Exception
-	 * @param e the e
-	 * @return R
+	 * 处理单体参数校验异常 处理单个参数的校验异常
+	 * @param e 异常对象
+	 * @param request HTTP请求对象
+	 * @return 统一响应结果
 	 */
 	@ExceptionHandler(ValidationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -130,9 +141,10 @@ public class GlobalExceptionHandlerResolver {
 	}
 
 	/**
-	 * 自定义业务异常捕获 业务异常响应码推荐使用200 用 result 结构中的code做为业务错误码标识
-	 * @param e the e
-	 * @return R
+	 * 处理业务异常 业务异常响应码使用200，通过result结构中的code标识业务错误码
+	 * @param e 业务异常对象
+	 * @param request HTTP请求对象
+	 * @return 统一响应结果
 	 */
 	@ExceptionHandler(BusinessException.class)
 	@ResponseStatus(HttpStatus.OK)

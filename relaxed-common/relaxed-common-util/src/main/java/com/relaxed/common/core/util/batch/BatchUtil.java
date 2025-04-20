@@ -21,54 +21,94 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 
 /**
+ * 批量任务处理工具类
+ *
+ * 提供批量数据处理的功能，支持： 1. 数据分组处理 2. 同步/异步执行 3. 自定义异常处理 4. 任务进度跟踪 5. 调试日志输出
+ *
  * @author Yakir
- * @Topic BatchTask
- * @Description
- * @date 2025/1/2 14:00
- * @Version 1.0
+ * @since 1.0
  */
 @Slf4j
 public class BatchUtil {
 
+	/**
+	 * 批量任务分组信息
+	 */
 	private BatchGroup batchGroup;
 
+	/**
+	 * 批量任务配置属性
+	 */
 	private BatchProps batchProps;
 
+	/**
+	 * 批量任务执行器
+	 */
 	private BatchTask batchTask;
 
 	/**
-	 * 线程池
+	 * 任务执行线程池
 	 */
 	private Executor executor;
 
+	/**
+	 * 创建批量任务工具实例
+	 * @return BatchUtil实例
+	 */
 	public static BatchUtil create() {
 		return new BatchUtil();
 	}
 
+	/**
+	 * 设置任务执行线程池
+	 * @param executor 线程池执行器
+	 * @return 当前BatchUtil实例
+	 */
 	public BatchUtil executor(Executor executor) {
 		this.executor = executor;
 		return this;
 	}
 
+	/**
+	 * 获取任务参数配置器
+	 * @return BatchGroup实例
+	 */
 	public BatchGroup params() {
 		this.batchGroup = new BatchGroup(this);
 		return this.batchGroup;
 	}
 
+	/**
+	 * 获取任务执行器
+	 * @param <T> 任务数据类型
+	 * @return BatchTask实例
+	 */
 	public <T> BatchTask<T> task() {
 		this.batchTask = new BatchTask(this);
 		return this.batchTask;
 	}
 
+	/**
+	 * 获取任务属性配置器
+	 * @return BatchProps实例
+	 */
 	public BatchProps props() {
 		this.batchProps = new BatchProps(this);
 		return this.batchProps;
 	}
 
+	/**
+	 * 获取当前线程池执行器
+	 * @return Executor实例
+	 */
 	public Executor getExecutor() {
 		return executor;
 	}
 
+	/**
+	 * 执行批量任务 根据配置执行同步或异步批量任务处理
+	 * @throws RuntimeException 当线程池执行器为空时抛出
+	 */
 	public void execute() {
 		Executor executor = this.getExecutor();
 		if (executor == null) {
@@ -140,6 +180,14 @@ public class BatchUtil {
 		}
 	}
 
+	/**
+	 * 处理单条数据
+	 * @param data 待处理数据
+	 * @param consumer 数据消费者
+	 * @param batchMeta 批次元数据
+	 * @param rowIndex 数据行索引
+	 * @param expResolver 异常处理器
+	 */
 	private static void process(Object data, DataConsumer consumer, BatchMeta batchMeta, int rowIndex,
 			ExceptionHandler expResolver) {
 		try {
@@ -159,6 +207,13 @@ public class BatchUtil {
 		}
 	}
 
+	/**
+	 * 获取批次元数据
+	 * @param groupNo 组号
+	 * @param startIndex 起始索引
+	 * @param size 批次大小
+	 * @return BatchMeta实例
+	 */
 	private static BatchMeta getBatchMeta(int groupNo, int startIndex, int size) {
 		BatchMeta batchMeta = new BatchMeta();
 		batchMeta.setGroupNo(groupNo);

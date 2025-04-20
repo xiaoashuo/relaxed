@@ -5,7 +5,7 @@ import com.relaxed.common.jsch.sftp.SftpProperties;
 import com.relaxed.common.jsch.sftp.executor.ISftpExecutor;
 
 /**
- * isfp 提供者
+ * SFTP执行器提供者接口
  *
  * @author shuoyu
  */
@@ -13,10 +13,10 @@ import com.relaxed.common.jsch.sftp.executor.ISftpExecutor;
 public interface ISftpProvider {
 
 	/**
-	 * 根据channel sftp 生成Sftp
-	 * @param channelSftp sftp通道
-	 * @param sftpProperties sftp配置属性
-	 * @return sftp执行类
+	 * 根据SFTP通道和配置属性创建SFTP执行器
+	 * @param channelSftp SFTP通道
+	 * @param sftpProperties SFTP配置属性
+	 * @return SFTP执行器实例
 	 */
 	ISftpExecutor provide(ChannelSftp channelSftp, SftpProperties sftpProperties);
 

@@ -37,33 +37,51 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
+ * Redis缓存切面。 处理缓存注解的核心切面，实现缓存的查询、更新和删除操作。 为保证缓存更新无异常，该切面优先级必须高于事务切面。
+ *
  * @author Yakir
- * @Topic CacheAspect
- * @Description 为保证缓存更新无异常，该切面优先级必须高于事务切面
- * @date 2021/7/24 12:28
- * @Version 1.0
+ * @since 1.0
  */
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
 @Slf4j
 @Aspect
 public class CacheStringAspect {
 
+	/**
+	 * Redis字符串操作模板
+	 */
 	private final StringRedisTemplate redisTemplate;
 
+	/**
+	 * Redis序列化器
+	 */
 	private final RelaxedRedisSerializer relaxedRedisSerializer;
 
+	/**
+	 * 构造函数
+	 * @param redisTemplate Redis字符串操作模板
+	 * @param relaxedRedisSerializer Redis序列化器
+	 */
 	public CacheStringAspect(StringRedisTemplate redisTemplate, RelaxedRedisSerializer relaxedRedisSerializer) {
 		this.redisTemplate = redisTemplate;
 		this.relaxedRedisSerializer = relaxedRedisSerializer;
 	}
 
+	/**
+	 * 定义切点，匹配所有带有MetaCacheAnnotation注解的方法
+	 */
 	@Pointcut("execution(@(@com.relaxed.common.redis.core.annotation.MetaCacheAnnotation *) * *(..))")
 	public void pointCut() {
 	}
 
+	/**
+	 * 环绕通知，处理缓存注解
+	 * @param point 连接点
+	 * @return 方法执行结果
+	 * @throws Throwable 执行过程中的异常
+	 */
 	@Around("pointCut()")
 	public Object around(ProceedingJoinPoint point) throws Throwable {
-
 		// 获取目标方法
 		MethodSignature signature = (MethodSignature) point.getSignature();
 		Method method = signature.getMethod();
@@ -92,18 +110,18 @@ public class CacheStringAspect {
 			Consumer<Object> cachePut = prodCachePutFunction(valueOperations, key, cachedAnnotation.ttl(),
 					cachedAnnotation.timeUnit());
 			return cached(new CachedOps(point, lockKey, cacheQuery, cachePut, method.getGenericReturnType()));
-
 		}
+
 		CachePut cachePutAnnotation = AnnotationUtils.getAnnotation(method, CachePut.class);
 		if (cachePutAnnotation != null) {
 			// 缓存key
 			String key = keyGenerator.getKey(cachePutAnnotation.prefix(), cachePutAnnotation.keyJoint());
 			// 失效时间控制
 			Consumer<Object> cachePut = prodCachePutFunction(valueOperations, key, cachePutAnnotation.ttl(),
-					cachedAnnotation.timeUnit());
+					cachePutAnnotation.timeUnit());
 			return cachePut(new CachePutOps(point, cachePut));
-
 		}
+
 		CacheDel cacheDelAnnotation = AnnotationUtils.getAnnotation(method, CacheDel.class);
 		if (cacheDelAnnotation != null) {
 			// 缓存key
@@ -124,6 +142,12 @@ public class CacheStringAspect {
 		return point.proceed();
 	}
 
+	/**
+	 * 判断缓存条件是否通过
+	 * @param condition 条件表达式
+	 * @param keyGenerator 键生成器
+	 * @return 条件是否通过
+	 */
 	protected boolean isConditionPassing(String condition, KeyGenerator keyGenerator) {
 		boolean conditionPassing = true;
 		if (StringUtils.hasText(condition)) {
@@ -133,41 +157,41 @@ public class CacheStringAspect {
 	}
 
 	/**
-	 * 缓存删除的模板方法 在目标方法执行后 执行删除
+	 * 处理缓存删除操作 在目标方法执行后执行删除
+	 * @param ops 缓存删除操作
+	 * @return 方法执行结果
+	 * @throws Throwable 执行过程中的异常
 	 */
 	public Object cacheDel(CacheDelOps ops) throws Throwable {
-
 		// 先执行目标方法 并拿到返回值
 		Object data = ops.joinPoint().proceed();
 		// 将删除缓存
 		ops.cacheDel().run();
-
 		return data;
 	}
 
 	/**
-	 * 缓存操作模板方法
+	 * 处理缓存更新操作
+	 * @param ops 缓存更新操作
+	 * @return 方法执行结果
+	 * @throws Throwable 执行过程中的异常
 	 */
 	public Object cachePut(CachePutOps ops) throws Throwable {
-
 		// 先执行目标方法 并拿到返回值
 		Object data = ops.joinPoint().proceed();
-
 		// 将返回值放置入缓存中
 		String cacheData = data == null ? CachePropertiesHolder.nullValue() : relaxedRedisSerializer.serialize(data);
 		ops.cachePut().accept(cacheData);
-
 		return data;
 	}
 
 	/**
-	 * cached 类型的模板方法 1. 先查缓存 若有数据则直接返回 2. 尝试获取锁 若成功执行目标方法（一般是去查数据库） 3. 将数据库获取到数据同步至缓存
-	 * @param ops 缓存操作类
-	 * @return result
-	 * @throws Throwable IO 异常
+	 * 处理缓存查询操作 1. 先查缓存，若有数据则直接返回 2. 尝试获取锁，若成功执行目标方法（一般是去查数据库） 3. 将数据库获取到数据同步至缓存
+	 * @param ops 缓存查询操作
+	 * @return 方法执行结果
+	 * @throws Throwable 执行过程中的异常
 	 */
 	public Object cached(CachedOps ops) throws Throwable {
-
 		// 缓存查询方法
 		Supplier<String> cacheQuery = ops.cacheQuery();
 		// 返回数据类型
@@ -214,6 +238,14 @@ public class CacheStringAspect {
 		return relaxedRedisSerializer.deserialize(cacheData, dataClazz);
 	}
 
+	/**
+	 * 生成缓存更新函数
+	 * @param valueOperations Redis值操作对象
+	 * @param key 缓存键
+	 * @param ttl 过期时间
+	 * @param unit 时间单位
+	 * @return 缓存更新函数
+	 */
 	private Consumer<Object> prodCachePutFunction(ValueOperations<String, String> valueOperations, String key, long ttl,
 			TimeUnit unit) {
 		Consumer<Object> cachePut;

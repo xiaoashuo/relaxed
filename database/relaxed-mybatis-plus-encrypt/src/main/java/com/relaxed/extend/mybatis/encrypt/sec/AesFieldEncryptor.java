@@ -6,11 +6,9 @@ import com.relaxed.extend.mybatis.encrypt.FieldSecurityProperties;
 import lombok.RequiredArgsConstructor;
 
 /**
+ * AES字段加密器实现类 使用AES算法对字段进行加密和解密操作 支持通过配置文件自定义加密密钥
+ *
  * @author Yakir
- * @Topic AesFieldEncryptor
- * @Description
- * @date 2024/10/18 13:55
- * @Version 1.0
  */
 @RequiredArgsConstructor
 public class AesFieldEncryptor implements FieldEncryptor {

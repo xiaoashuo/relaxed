@@ -8,11 +8,10 @@ import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 缓存更新注解，用于方法级别的缓存更新。 利用AOP在方法执行后执行缓存put操作，将方法的返回值存入缓存中。 若方法返回null，则会默认存入一个nullValue。
+ *
  * @author Yakir
- * @Topic Cached
- * @Description 利用Aop, 在方法执行后执行缓存put操作 将方法的返回值置入缓存中，若方法返回null，则会默认置入一个nullValue
- * @date 2021/7/23 16:22
- * @Version 1.0
+ * @since 1.0
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -21,31 +20,32 @@ import java.util.concurrent.TimeUnit;
 public @interface CachePut {
 
 	/**
-	 * cache key 前缀
-	 * @return
+	 * 缓存key的前缀
+	 * @return 缓存key的前缀
 	 */
 	String prefix() default "";
 
 	/**
-	 * 如果需要在key 后面拼接参数 则传入一个拼接数据的 SpEL 表达式
+	 * 如果需要在key后面拼接参数，则传入一个拼接数据的SpEL表达式
+	 * @return SpEL表达式
 	 */
 	String keyJoint() default "";
 
 	/**
-	 * 条件筛选 符合条件才会缓存
-	 * @return
+	 * 条件筛选，符合条件才会更新缓存
+	 * @return SpEL条件表达式
 	 */
 	String condition() default "";
 
 	/**
-	 * 超时时间(S) ttl = 0 使用全局配置值 ttl < 0 : 不超时 ttl > 0 : 使用此超时间
-	 * @return long
+	 * 超时时间 ttl = 0: 使用全局配置值 ttl &lt; 0: 不超时 ttl &gt; 0: 使用此超时时间
+	 * @return 超时时间
 	 */
 	long ttl() default 0;
 
 	/**
-	 * 控制时长单位，默认为 SECONDS 秒
-	 * @return {@link TimeUnit}
+	 * 控制时长单位，默认为秒
+	 * @return 时间单位
 	 */
 	TimeUnit timeUnit() default TimeUnit.SECONDS;
 

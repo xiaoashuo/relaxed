@@ -25,11 +25,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**
+ * Redis自动配置类，提供Redis相关的自动配置功能。 包括Redis序列化器、缓存注解切面、键前缀处理器、锁续期任务等组件的配置。
+ *
  * @author Yakir
- * @Topic RedisAutoConfiguraion
- * @Description
- * @date 2022/10/12 11:24
- * @Version 1.0
+ * @since 1.0
  */
 @AutoConfiguration
 @RequiredArgsConstructor
@@ -39,8 +38,9 @@ public class RelaxedRedisAutoConfiguration {
 	private final RedisConnectionFactory redisConnectionFactory;
 
 	/**
-	 * 初始化配置类
-	 * @return GlobalCacheProperties
+	 * 初始化缓存配置持有者
+	 * @param cacheProperties 缓存配置属性
+	 * @return 缓存配置持有者实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -51,9 +51,9 @@ public class RelaxedRedisAutoConfiguration {
 	}
 
 	/**
-	 * 默认使用 Jackson 序列化
-	 * @param objectMapper objectMapper
-	 * @return JacksonSerializer
+	 * 配置默认的Redis序列化器，使用Jackson进行序列化
+	 * @param objectMapper Jackson对象映射器
+	 * @return Redis序列化器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -62,11 +62,10 @@ public class RelaxedRedisAutoConfiguration {
 	}
 
 	/**
-	 * 缓存注解操作切面</br>
-	 * 必须在CacheLock初始化之后使用
+	 * 配置缓存注解操作切面 注意：必须在CacheLock初始化之后使用
 	 * @param stringRedisTemplate 字符串存储的Redis操作类
 	 * @param relaxedRedisSerializer 缓存序列化器
-	 * @return CacheStringAspect 缓存注解操作切面
+	 * @return 缓存注解操作切面实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -76,8 +75,8 @@ public class RelaxedRedisAutoConfiguration {
 	}
 
 	/**
-	 * redis key 前缀处理器
-	 * @return IRedisPrefixConverter
+	 * 配置Redis键前缀处理器
+	 * @return Redis键前缀转换器实例
 	 */
 	@Bean
 	@DependsOn("cachePropertiesHolder")
@@ -88,18 +87,21 @@ public class RelaxedRedisAutoConfiguration {
 	}
 
 	/**
-	 * 锁续期
-	 * @date 2022/10/12 19:50
-	 * @return com.relaxed.common.redis.lock.scheduled.LockRenewalScheduledTask
+	 * 配置分布式锁续期任务
+	 * @return 锁续期任务实例
 	 */
 	@Bean
 	@ConditionalOnProperty(prefix = "relaxed.redis", name = "lockRenewal", havingValue = "true")
 	@ConditionalOnMissingBean
 	public LockRenewalScheduledTask lockRenewalScheduledTask() {
-		LockRenewalScheduledTask lockRenewalScheduledTask = new LockRenewalScheduledTask();
-		return lockRenewalScheduledTask;
+		return new LockRenewalScheduledTask();
 	}
 
+	/**
+	 * 配置带前缀的字符串Redis模板
+	 * @param redisPrefixConverter Redis键前缀转换器
+	 * @return 字符串Redis模板实例
+	 */
 	@Bean
 	@ConditionalOnBean(IRedisPrefixConverter.class)
 	@ConditionalOnMissingBean
@@ -110,6 +112,11 @@ public class RelaxedRedisAutoConfiguration {
 		return template;
 	}
 
+	/**
+	 * 配置带前缀的Redis模板
+	 * @param redisPrefixConverter Redis键前缀转换器
+	 * @return Redis模板实例
+	 */
 	@Bean
 	@ConditionalOnBean(IRedisPrefixConverter.class)
 	@ConditionalOnMissingBean(name = "redisTemplate")
@@ -120,6 +127,11 @@ public class RelaxedRedisAutoConfiguration {
 		return template;
 	}
 
+	/**
+	 * 配置Redis操作辅助类
+	 * @param template 字符串Redis模板
+	 * @return Redis操作辅助类实例
+	 */
 	@Bean
 	@ConditionalOnMissingBean(RedisHelper.class)
 	public RedisHelper redisHelper(StringRedisTemplate template) {

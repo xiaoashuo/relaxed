@@ -4,8 +4,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**
- * @author Hccake 2021/1/27
- * @version 1.0
+ * 注解工具类
+ * <p>
+ * 提供注解相关的工具方法，主要用于查找类和方法上的注解。
  */
 public final class AnnotationUtil {
 
@@ -13,9 +14,13 @@ public final class AnnotationUtil {
 	}
 
 	/**
-	 * 获取数据权限注解 优先获取方法上的注解，再获取类上的注解
-	 * @param mappedStatementId 类名.方法名
-	 * @return 数据权限注解
+	 * 查找注解
+	 * <p>
+	 * 根据 Mapper 方法 ID 查找指定的注解，优先查找方法上的注解，如果未找到则查找类上的注解。
+	 * @param mappedStatementId Mapper 方法 ID，格式为"类名.方法名"
+	 * @param aClass 要查找的注解类型
+	 * @param <A> 注解类型
+	 * @return 找到的注解，如果未找到则返回 null
 	 */
 	public static <A extends Annotation> A findAnnotationByMappedStatementId(String mappedStatementId,
 			Class<A> aClass) {

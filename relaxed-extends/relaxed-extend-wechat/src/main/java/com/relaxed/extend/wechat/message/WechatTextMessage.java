@@ -11,23 +11,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * 企业微信文本消息类。 用于发送文本类型的消息，支持@指定成员或所有人。
+ *
  * @author Yakir
- * @Topic WechatTextMessage
- * @Description
- * @date 2022/6/15 11:58
- * @Version 1.0
+ * @since 1.0
  */
 @Getter
 @Accessors(chain = true)
 public class WechatTextMessage extends AbstractWechatMessage {
 
 	/**
-	 * required 文本内容，最长不超过2048个字节，必须是utf8编码
+	 * 文本内容，最长不超过2048个字节，必须是utf8编码
 	 */
 	private String content;
 
 	/**
-	 * userid的列表，提醒群中的指定成员(@某个成员)，@all表示提醒所有人，如果开发者获取不到userid，可以使用mentioned_mobile_list
+	 * userid的列表，提醒群中的指定成员(@某个成员)，@all表示提醒所有人
 	 */
 	private Set<String> mentionedList = new HashSet<>();
 
@@ -41,22 +40,29 @@ public class WechatTextMessage extends AbstractWechatMessage {
 		return MessageTypeEnum.TEXT;
 	}
 
+	/**
+	 * 设置消息内容
+	 * @param content 消息内容
+	 * @return 当前对象
+	 */
 	public WechatTextMessage setContent(String content) {
 		this.content = content;
 		return this;
 	}
 
+	/**
+	 * 设置@所有人
+	 * @return 当前对象
+	 */
 	public WechatTextMessage atAll() {
 		mentionedList.add("@all");
 		return this;
 	}
 
 	/**
-	 * 添加通知人员 根据账号id
-	 * @author yakir
-	 * @date 2022/6/15 13:57
-	 * @param mentioned
-	 * @return com.relaxed.extend.wechat.message.WechatTextMessage
+	 * 添加需要@的用户ID
+	 * @param mentioned 用户ID
+	 * @return 当前对象
 	 */
 	public WechatTextMessage addMentioned(String mentioned) {
 		mentionedList.add(mentioned);
@@ -64,11 +70,9 @@ public class WechatTextMessage extends AbstractWechatMessage {
 	}
 
 	/**
-	 * 添加通知人员根据手机号
-	 * @author yakir
-	 * @date 2022/6/15 13:57
-	 * @param mentionedMobile
-	 * @return com.relaxed.extend.wechat.message.WechatTextMessage
+	 * 添加需要@的手机号
+	 * @param mentionedMobile 手机号
+	 * @return 当前对象
 	 */
 	public WechatTextMessage addMentionedMobile(String mentionedMobile) {
 		mentionedMobileList.add(mentionedMobile);

@@ -6,10 +6,10 @@ import com.relaxed.common.desensitize.handler.RegexDesensitizationHandler;
 import java.lang.annotation.*;
 
 /**
- * Jackson Filed 序列化脱敏注解, 对应使用正则脱敏处理器对值进行脱敏处理
+ * 基于正则表达式的 Jackson 字段序列化脱敏注解。 该注解用于标记需要进行正则脱敏处理的字段，支持预定义和自定义两种脱敏方式。 预定义方式使用
+ * {@link RegexDesensitizationTypeEnum} 中定义的规则， 自定义方式则通过指定正则表达式和替换规则来实现。
+ *
  * @see RegexDesensitizationHandler
- * @author Hccake 2021/1/22
- * @version 1.0
  */
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
@@ -17,19 +17,23 @@ import java.lang.annotation.*;
 public @interface JsonRegexDesensitize {
 
 	/**
-	 * 脱敏类型，用于指定正则处理方式。 只有当值为 CUSTOM 时，以下两个个参数才有效
-	 * @see RegexDesensitizationTypeEnum#CUSTOM
-	 * @return type
+	 * 脱敏类型，用于指定正则处理方式。 当选择 {@link RegexDesensitizationTypeEnum#CUSTOM}
+	 * 时，可以使用自定义的正则表达式和替换规则。 其他预定义类型将使用内置的脱敏规则。
+	 * @return 脱敏类型枚举值
 	 */
 	RegexDesensitizationTypeEnum type();
 
 	/**
-	 * 匹配的正则表达式，只有当type值为 CUSTOM 时，才生效
+	 * 自定义正则表达式，用于匹配需要脱敏的内容。 仅在 {@link #type()} 为
+	 * {@link RegexDesensitizationTypeEnum#CUSTOM} 时生效。 默认匹配任意字符。
+	 * @return 正则表达式
 	 */
 	String regex() default "^[\\s\\S]*$";
 
 	/**
-	 * 替换规则，只有当type值为 CUSTOM 时，才生效
+	 * 替换规则，用于指定如何替换匹配到的内容。 仅在 {@link #type()} 为
+	 * {@link RegexDesensitizationTypeEnum#CUSTOM} 时生效。 默认使用六个星号替换。
+	 * @return 替换字符串
 	 */
 	String replacement() default "******";
 

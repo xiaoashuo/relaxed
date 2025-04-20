@@ -34,33 +34,75 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A render policy implementation for handling table row loops in Word documents. This
+ * policy allows for dynamic row insertion based on data iteration, with support for
+ * custom prefix/suffix and template row configuration.
+ *
+ * @author Yakir
+ * @since 1.0.0
+ */
 public class LoopRowTableRenderByHeaderPolicy implements RenderPolicy {
 
+	/**
+	 * The prefix used for template tags.
+	 */
 	private String prefix;
 
+	/**
+	 * The suffix used for template tags.
+	 */
 	private String suffix;
 
-	// 数据模板行
+	/**
+	 * The row number of the data template.
+	 */
 	private Integer dataTemplateRowNum;
 
+	/**
+	 * Creates a new policy with default settings.
+	 */
 	public LoopRowTableRenderByHeaderPolicy() {
 		this(null);
 	}
 
+	/**
+	 * Creates a new policy with the specified data template row number.
+	 * @param dataTemplateRowNum the row number of the data template
+	 */
 	public LoopRowTableRenderByHeaderPolicy(Integer dataTemplateRowNum) {
 		this("[", "]", dataTemplateRowNum);
 	}
 
+	/**
+	 * Creates a new policy with the specified prefix and suffix.
+	 * @param prefix the prefix for template tags
+	 * @param suffix the suffix for template tags
+	 */
 	public LoopRowTableRenderByHeaderPolicy(String prefix, String suffix) {
 		this(prefix, suffix, null);
 	}
 
+	/**
+	 * Creates a new policy with the specified prefix, suffix, and data template row
+	 * number.
+	 * @param prefix the prefix for template tags
+	 * @param suffix the suffix for template tags
+	 * @param dataTemplateRowNum the row number of the data template
+	 */
 	public LoopRowTableRenderByHeaderPolicy(String prefix, String suffix, Integer dataTemplateRowNum) {
 		this.prefix = prefix;
 		this.suffix = suffix;
 		this.dataTemplateRowNum = dataTemplateRowNum;
 	}
 
+	/**
+	 * Renders the template by processing the data and inserting rows into the table.
+	 * @param eleTemplate the element template to render
+	 * @param data the data to render
+	 * @param template the XWPFTemplate instance
+	 * @throws RenderException if an error occurs during rendering
+	 */
 	@Override
 	public void render(ElementTemplate eleTemplate, Object data, XWPFTemplate template) {
 		RunTemplate runTemplate = (RunTemplate) eleTemplate;
@@ -132,20 +174,43 @@ public class LoopRowTableRenderByHeaderPolicy implements RenderPolicy {
 		}
 	}
 
+	/**
+	 * Gets the template row index based on the tag cell position or configured template
+	 * row number.
+	 * @param tagCell the cell containing the template tag
+	 * @return the template row index
+	 */
 	private int getTemplateRowIndex(XWPFTableCell tagCell) {
 		XWPFTableRow tagRow = tagCell.getTableRow();
 		return Objects.isNull(this.dataTemplateRowNum) ? this.getRowIndex(tagRow) + 1 : this.dataTemplateRowNum;
 	}
 
+	/**
+	 * Hook method called after the loop processing is complete. Subclasses should
+	 * override this method to perform any post-processing.
+	 * @param table the table being processed
+	 * @param data the data that was processed
+	 */
 	protected void afterloop(XWPFTable table, Object data) {
 	}
 
+	/**
+	 * Sets the table row at the specified position.
+	 * @param table the table to modify
+	 * @param templateRow the template row to set
+	 * @param pos the position to set the row at
+	 */
 	private void setTableRow(XWPFTable table, XWPFTableRow templateRow, int pos) {
 		List<XWPFTableRow> rows = (List) ReflectionUtils.getValue("tableRows", table);
 		rows.set(pos, templateRow);
 		table.getCTTbl().setTrArray(pos, templateRow.getCtRow());
 	}
 
+	/**
+	 * Gets the index of the specified row in the table.
+	 * @param row the row to find the index of
+	 * @return the index of the row
+	 */
 	private int getRowIndex(XWPFTableRow row) {
 		List<XWPFTableRow> rows = row.getTable().getRows();
 		return rows.indexOf(row);

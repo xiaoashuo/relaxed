@@ -9,15 +9,19 @@ import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.util.deparser.StatementDeParser;
 
 /**
+ * SQL解析器抽象类 用于解析SQL语句并根据租户信息进行动态修改 支持Schema级别和表级别的租户隔离
+ *
  * @author Yakir
- * @Topic SqlParse
- * @Description
- * @date 2021/7/26 18:02
- * @Version 1.0
  */
 @Slf4j
 public abstract class SqlParser {
 
+	/**
+	 * 处理SQL语句 解析原始SQL并根据租户信息进行修改
+	 * @param originalSql 原始SQL语句
+	 * @param obj 租户信息对象
+	 * @return 处理后的SQL语句
+	 */
 	public String processSql(String originalSql, Object obj) {
 		try {
 			Statement stmt = CCJSqlParserUtil.parse(originalSql);
@@ -29,13 +33,11 @@ public abstract class SqlParser {
 	}
 
 	/**
-	 * 处理sql 映射java片段
-	 * @author yakir
-	 * @date 2021/7/27 17:25
-	 * @param statement
-	 * @param obj tenant 租户信息
-	 * @param sql 原始sql
-	 * @return java.lang.String
+	 * 处理SQL语句对象 将SQL语句对象转换为字符串，并根据租户信息进行修改
+	 * @param statement SQL语句对象
+	 * @param obj 租户信息对象
+	 * @param sql 原始SQL语句
+	 * @return 处理后的SQL语句
 	 */
 	protected String processStatement(Statement statement, Object obj, String sql) {
 		if (log.isDebugEnabled()) {
@@ -53,12 +55,10 @@ public abstract class SqlParser {
 	}
 
 	/**
-	 * 根据builder 创建
-	 * @author yakir
-	 * @date 2021/7/27 17:21
-	 * @param builder
-	 * @param tenant 租户内信息当前状态
-	 * @return net.sf.jsqlparser.util.deparser.StatementDeParser
+	 * 获取SQL语句解析器 子类需要实现此方法，提供具体的SQL解析器实现
+	 * @param builder SQL语句构建器
+	 * @param tenant 租户信息
+	 * @return SQL语句解析器
 	 */
 	protected StatementDeParser getStatementDeParser(StringBuilder builder, Tenant tenant) {
 		throw new TenantException("statementDeParser must be provide");

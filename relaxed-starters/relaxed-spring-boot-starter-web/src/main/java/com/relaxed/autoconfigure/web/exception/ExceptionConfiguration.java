@@ -12,20 +12,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * 异常配置类 配置异常通知相关的切点和切面 支持通过@ExceptionNotice注解标记需要通知的方法
+ *
  * @author Yakir
- * @Topic ExceptionAutoConfiguration
- * @Description
- * @date 2021/12/21 10:12
- * @Version 1.0
+ * @since 1.0
  */
 @Configuration(proxyBeanMethods = false)
 public class ExceptionConfiguration {
 
 	/**
-	 * 异常通知切点
-	 * @author yakir
-	 * @date 2021/12/22 11:24
-	 * @return com.relaxed.common.exception.aop.PointCutRegister
+	 * 创建异常通知切点 支持类级别和方法级别的@ExceptionNotice注解
+	 * @return 异常通知切点构建器
 	 */
 	@Bean
 	@ConditionalOnMissingBean

@@ -20,16 +20,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * MyBatis-Plus 自定义配置类 提供分页插件、自动填充处理器和自定义SQL注入器 支持批量插入、忽略插入和替换插入等扩展功能
+ *
  * @author hccake
- * @date 2020/04/19 默认配置MybatisPlus分页插件，通过conditional注解达到覆盖效用
+ * @since 1.0
  */
 @Configuration
 public class CustomMybatisPlusConfig {
 
 	/**
-	 * MybatisPlusInterceptor 插件，默认提供分页插件</br>
-	 * 如需其他MP内置插件，则需自定义该Bean
-	 * @return MybatisPlusInterceptor
+	 * 配置MyBatis-Plus拦截器 默认提供分页插件，支持MySQL数据库 如需其他内置插件，需要自定义该Bean
+	 * @return MyBatis-Plus拦截器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean(MybatisPlusInterceptor.class)
@@ -40,8 +41,8 @@ public class CustomMybatisPlusConfig {
 	}
 
 	/**
-	 * 自动填充处理类
-	 * @return FillMetaObjectHandle
+	 * 配置自动填充处理器 用于自动填充实体类中的创建时间和更新时间字段
+	 * @return 自动填充处理器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean(MetaObjectHandler.class)
@@ -50,8 +51,8 @@ public class CustomMybatisPlusConfig {
 	}
 
 	/**
-	 * 自定义批量插入方法注入
-	 * @return ISqlInjector
+	 * 配置自定义SQL注入器 注入批量插入、忽略插入和替换插入等扩展方法 对于只在更新时进行填充的字段不做插入处理
+	 * @return SQL注入器实例
 	 */
 	@Bean
 	@ConditionalOnMissingBean(ISqlInjector.class)

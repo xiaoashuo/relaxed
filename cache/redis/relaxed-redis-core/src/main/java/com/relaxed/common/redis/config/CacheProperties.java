@@ -8,65 +8,69 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Redis缓存配置属性类。 用于配置Redis缓存的基本属性，包括键前缀、分隔符、过期时间等。
+ *
  * @author Hccake
- * @version 1.0
- * @date 2020/3/20 16:56
+ * @since 1.0
  */
 @Data
 @ConfigurationProperties(prefix = "relaxed.redis")
 public class CacheProperties {
 
 	/**
-	 * 通用的key前缀
+	 * 通用的key前缀，用于区分不同应用的缓存
 	 */
 	private String keyPrefix = "";
 
 	/**
-	 * redis锁 后缀
+	 * Redis锁的键后缀，用于分布式锁的键名生成
 	 */
 	private String lockKeySuffix = "locked";
 
 	/**
-	 * 默认分隔符
+	 * 键名分隔符，用于连接键名的不同部分
 	 */
 	private String delimiter = ":";
 
 	/**
-	 * 空值标识
+	 * 空值标识，用于缓存空值避免缓存穿透
 	 */
 	private String nullValue = "N_V";
 
 	/**
-	 * 默认超时时间(s)
+	 * 默认缓存过期时间，单位：秒
 	 */
 	private long expireTime = 86400L;
 
 	/**
-	 * 锁续期 默认为false
+	 * 是否启用锁续期功能
 	 */
 	private boolean lockRenewal = false;
 
 	/**
-	 * 监听者
+	 * 锁续期监听配置
 	 */
 	@NestedConfigurationProperty
 	private Watcher watcher;
 
+	/**
+	 * 锁续期监听器配置类
+	 */
 	@Data
 	public static class Watcher {
 
 		/**
-		 * 锁续期次数 默认3次
+		 * 锁续期的最大次数
 		 */
 		private Integer lockRenewalCount = 3;
 
 		/**
-		 * 锁的超时时间(ms)
+		 * 锁的超时时间，单位：毫秒
 		 */
 		private long lockedTimeOut = 1000L;
 
 		/**
-		 * 锁单位
+		 * 锁超时时间的时间单位
 		 */
 		private TimeUnit lockTimeUnit = TimeUnit.SECONDS;
 

@@ -18,9 +18,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Hccake
- * @version 1.0
- * @date 2019/11/1 19:37
+ * OpenAPI配置属性类。 用于配置Swagger/OpenAPI文档的基本信息，包括文档标题、描述、版本、联系人等。
+ *
+ * @author hccake
+ * @since 1.0
  */
 @Data
 @ConfigurationProperties(OpenApiProperties.PREFIX)
@@ -29,7 +30,7 @@ public class OpenApiProperties {
 	public static final String PREFIX = "relaxed.openapi";
 
 	/**
-	 * 是否开启 openApi 文档
+	 * 是否开启OpenAPI文档
 	 */
 	private Boolean enabled = true;
 
@@ -46,7 +47,7 @@ public class OpenApiProperties {
 	private ExternalDocumentation externalDocs;
 
 	/**
-	 * Api 服务
+	 * API服务配置
 	 * @see <a href="https://swagger.io/docs/specification/api-host-and-base-path/">API
 	 * Server and Base URL</a>
 	 */
@@ -54,31 +55,30 @@ public class OpenApiProperties {
 
 	/**
 	 * 安全配置
-	 * @see <a href="https://swagger.io/docs/specification/authentication/">Authentication
+	 * @see <a href=
+	 * "https://swagger.io/docs/specification/authentication/">Authentication</a>
 	 */
 	private List<SecurityRequirement> security = null;
 
 	/**
-	 * 标签
+	 * API标签配置
 	 */
 	private List<Tag> tags = null;
 
 	/**
-	 * 路径
+	 * API路径配置
 	 */
 	@NestedConfigurationProperty
 	private Paths paths = null;
 
 	/**
-	 * 组件
+	 * 组件配置
 	 */
 	@NestedConfigurationProperty
 	private Components components = null;
 
 	/**
 	 * 扩展信息
-	 *
-	 * map 没有提示：https://github.com/spring-projects/spring-boot/issues/9945
 	 */
 	private Map<String, Object> extensions = null;
 
@@ -88,24 +88,18 @@ public class OpenApiProperties {
 	private CorsConfig corsConfig;
 
 	/**
-	 * <p>
-	 * 文档的基础属性信息
-	 * </p>
-	 *
-	 * @see io.swagger.v3.oas.models.info.Info
-	 *
-	 * 为了 springboot 自动生产配置提示信息，所以这里复制一个类出来
+	 * 文档基本信息配置类
 	 */
 	@Data
 	public static class InfoProperties {
 
 		/**
-		 * 标题
+		 * 文档标题
 		 */
 		private String title = null;
 
 		/**
-		 * 描述
+		 * 文档描述
 		 */
 		private String description = null;
 
@@ -121,13 +115,13 @@ public class OpenApiProperties {
 		private Contact contact = null;
 
 		/**
-		 * 许可证
+		 * 许可证信息
 		 */
 		@NestedConfigurationProperty
 		private License license = null;
 
 		/**
-		 * 版本
+		 * API版本
 		 */
 		private String version = null;
 
@@ -139,22 +133,18 @@ public class OpenApiProperties {
 	}
 
 	/**
-	 * <p>
-	 * 跨域配置，用于文档聚合.
-	 * </p>
-	 *
-	 * @see CorsConfiguration
+	 * 跨域配置类
 	 */
 	@Data
 	public static class CorsConfig {
 
 		/**
-		 * 开启 Cors 跨域配置
+		 * 是否开启CORS跨域配置
 		 */
 		private boolean enabled = false;
 
 		/**
-		 * 跨域对应的 url 匹配规则
+		 * 跨域URL匹配规则
 		 */
 		private String urlPattern = "/**";
 
@@ -179,18 +169,17 @@ public class OpenApiProperties {
 		private List<String> allowedHeaders = ListUtil.toList(CorsConfiguration.ALL);
 
 		/**
-		 * 额外允许跨域请求方获取的 response header 信息
+		 * 额外允许跨域请求方获取的response header信息
 		 */
 		private List<String> exposedHeaders = ListUtil.toList("traceId");
 
 		/**
-		 * 是否允许跨域发送 Cookie
+		 * 是否允许跨域发送Cookie
 		 */
 		private Boolean allowCredentials = true;
 
 		/**
-		 * CORS 配置缓存时间，用于控制浏览器端是否发起 Option 预检请求。 若配置此参数，在第一次获取到 CORS
-		 * 的配置信息后，在过期时间内，浏览器将直接发出请求，跳过 option 预检
+		 * CORS配置缓存时间，用于控制浏览器端是否发起Option预检请求
 		 */
 		private Long maxAge;
 

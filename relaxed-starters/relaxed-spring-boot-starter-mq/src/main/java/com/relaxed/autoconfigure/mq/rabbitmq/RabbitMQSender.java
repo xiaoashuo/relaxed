@@ -9,11 +9,13 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
 /**
+ * RabbitMQ消息发送器实现类
+ * <p>
+ * 实现了IMQSender接口，提供RabbitMQ消息发送功能，支持普通队列、广播和延迟消息发送。
+ * </p>
+ *
  * @author Yakir
- * @Topic RabbitMQSender
- * @Description
- * @date 2021/12/23 16:04
- * @Version 1.0
+ * @since 1.0
  */
 @Component
 @RequiredArgsConstructor
@@ -21,16 +23,29 @@ public class RabbitMQSender implements IMQSender {
 
 	private final RabbitTemplate rabbitTemplate;
 
+	/**
+	 * 获取RabbitMQ客户端实例
+	 * @return RabbitTemplate实例
+	 */
 	@Override
 	public <C> C client() {
 		return (C) rabbitTemplate;
 	}
 
+	/**
+	 * 发送消息到RabbitMQ
+	 * @param mqModel 消息模型
+	 */
 	@Override
 	public void send(AbstractMQ mqModel) {
 		send(mqModel, 0);
 	}
 
+	/**
+	 * 发送消息到RabbitMQ，支持延迟发送
+	 * @param mqModel 消息模型
+	 * @param delay 延迟时间（秒）
+	 */
 	@Override
 	public void send(AbstractMQ mqModel, int delay) {
 		MQMeta mqMeta = mqModel.getMQMeta();

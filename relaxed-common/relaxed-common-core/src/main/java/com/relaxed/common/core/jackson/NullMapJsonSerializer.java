@@ -7,9 +7,10 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 
 /**
+ * 空Map序列化器，将null值序列化为空对象{}
+ *
  * @author Hccake
- * @version 1.0
- * @date 2019/10/17 23:17 空 Map 序列化处理器 Map 为 null，则序列化为 {}
+ * @since 1.0.0
  */
 public class NullMapJsonSerializer extends JsonSerializer<Object> {
 

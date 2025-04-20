@@ -7,7 +7,10 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
- * @author lingting 2020/6/10 22:13
+ * 钉钉链接消息实现类。 用于发送带有链接跳转的消息，支持标题、描述文本、图片和跳转链接的设置。 消息会以卡片形式展示在钉钉会话中。
+ *
+ * @author lingting
+ * @since 1.0
  */
 @Getter
 @Setter
@@ -15,22 +18,22 @@ import lombok.experimental.Accessors;
 public class DingTalkLinkMessage extends AbstractDingTalkMessage {
 
 	/**
-	 * 文本
+	 * 消息描述文本 会在卡片消息中显示的描述信息
 	 */
 	private String text;
 
 	/**
-	 * 标题
+	 * 消息标题 会在卡片消息中显示的标题文本
 	 */
 	private String title;
 
 	/**
-	 * 图片url
+	 * 图片URL地址 会在卡片消息中显示的图片，建议使用宽比高大的图片
 	 */
 	private String picUrl;
 
 	/**
-	 * 消息链接
+	 * 点击消息跳转的URL 当点击消息时会跳转到这个链接
 	 */
 	private String messageUrl;
 

@@ -3,22 +3,23 @@ package com.relaxed.extend.mybatis.plus.conditions.query;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 
 /**
- * 连表查询时，从其他表获取的查询条件
- *
- * @author hccake
+ * 其他表列别名函数接口
+ * <p>
+ * 用于处理其他表的列别名，支持自定义列别名的生成逻辑。 通常用于多表关联查询时，为其他表的列生成别名。
  */
 @FunctionalInterface
 public interface OtherTableColumnAliasFunction<T> extends SFunction<T, String> {
 
 	/**
-	 * 联表别名 -> 加入本次查询
-	 * @author yakir
-	 * @date 2022/2/14 15:47
-	 * @param aliasColumn 表 test 别名t 列明 id 则此处传入t.id
-	 * @return com.relaxed.extend.mybatis.plus.conditions.query.OtherTableColumnAliasFunction
+	 * 获取列别名
+	 * <p>
+	 * 根据表别名和列名生成完整的列别名。
+	 * @param tableAlias 表别名
+	 * @param column 列名
+	 * @return 完整的列别名
 	 */
-	static OtherTableColumnAliasFunction joinTableAliasColumn(String aliasColumn) {
-		return o -> aliasColumn;
+	static String alias(String tableAlias, String column) {
+		return tableAlias + "." + column;
 	}
 
 }

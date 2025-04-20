@@ -4,16 +4,33 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
+ * 下载类型枚举，定义了支持的文件下载渠道类型。 包括本地文件系统、SFTP服务器、OSS对象存储和自定义下载渠道。
+ *
  * @author Yakir
- * @Topic DefaultDownTypeEnum
- * @Description
- * @date 2022/2/18 10:07
- * @Version 1.0
+ * @since 1.0
  */
 @RequiredArgsConstructor
 @Getter
 public enum DownTypeEnum {
 
-	LOCAL, SFTP, OSS, OTHER;
+	/**
+	 * 本地文件系统下载
+	 */
+	LOCAL,
+
+	/**
+	 * SFTP服务器下载
+	 */
+	SFTP,
+
+	/**
+	 * OSS对象存储下载
+	 */
+	OSS,
+
+	/**
+	 * 自定义下载渠道
+	 */
+	OTHER;
 
 }

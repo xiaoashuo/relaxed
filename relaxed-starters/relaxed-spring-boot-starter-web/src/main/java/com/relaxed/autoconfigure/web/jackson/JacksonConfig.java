@@ -18,17 +18,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 /**
- * @author Hccake
- * @version 1.0
- * @date 2019/10/17 22:14
+ * Jackson配置类 配置Jackson序列化和反序列化的行为 包括时间格式、空值处理、脱敏等功能
+ *
+ * @author Yakir
+ * @since 1.0
  */
 @Configuration
 @AutoConfigureBefore(JacksonAutoConfiguration.class)
 public class JacksonConfig {
 
 	/**
-	 * 自定义objectMapper
-	 * @return ObjectMapper
+	 * 创建自定义ObjectMapper 配置Jackson的序列化和反序列化行为
+	 * @param builder Jackson对象映射器构建器
+	 * @return 配置好的ObjectMapper
 	 */
 	@Bean
 	@ConditionalOnClass(ObjectMapper.class)
@@ -49,8 +51,8 @@ public class JacksonConfig {
 	}
 
 	/**
-	 * 注册自定义 的 jackson 时间格式，高优先级，用于覆盖默认的时间格式
-	 * @return CustomJavaTimeModule
+	 * 注册自定义的Jackson时间格式模块 用于覆盖默认的时间格式
+	 * @return 自定义时间格式模块
 	 */
 	@Bean
 	@ConditionalOnMissingBean(JavaTimeModule.class)
@@ -59,8 +61,8 @@ public class JacksonConfig {
 	}
 
 	/**
-	 * 注册 Jackson 的脱敏模块
-	 * @return Jackson2ObjectMapperBuilderCustomizer
+	 * 注册Jackson的脱敏模块 用于处理敏感数据的序列化
+	 * @return 脱敏模块
 	 */
 	@Bean
 	@ConditionalOnMissingBean({ JsonDesensitizeModule.class, DesensitizeStrategy.class })
@@ -70,8 +72,9 @@ public class JacksonConfig {
 	}
 
 	/**
-	 * 注册 Jackson 的脱敏模块
-	 * @return Jackson2ObjectMapperBuilderCustomizer
+	 * 注册带策略的Jackson脱敏模块 使用指定的脱敏策略处理敏感数据
+	 * @param desensitizeStrategy 脱敏策略
+	 * @return 带策略的脱敏模块
 	 */
 	@Bean
 	@ConditionalOnMissingBean

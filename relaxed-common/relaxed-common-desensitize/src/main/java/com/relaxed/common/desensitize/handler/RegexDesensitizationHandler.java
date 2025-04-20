@@ -3,10 +3,10 @@ package com.relaxed.common.desensitize.handler;
 import com.relaxed.common.desensitize.enums.RegexDesensitizationTypeEnum;
 
 /**
- * 正则替换脱敏处理器，使用正则匹配替换处理原数据
+ * 正则表达式脱敏处理器接口。 使用正则表达式匹配和替换来实现脱敏处理。 该接口适用于需要根据特定模式进行脱敏的场景，如手机号、身份证号等。
  *
- * @author Hccake 2021/1/23
- * @version 1.0
+ * @author Hccake
+ * @since 1.0
  */
 public class RegexDesensitizationHandler implements DesensitizationHandler {
 

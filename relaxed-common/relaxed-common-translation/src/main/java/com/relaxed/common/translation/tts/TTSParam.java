@@ -7,13 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-/**
- * @author Yakir
- * @Topic GoogleTTSParam
- * @Description
- * @date 2022/1/12 14:59
- * @Version 1.0
- */
 @Accessors(chain = true)
 @Data
 public class TTSParam implements TranslationParam {

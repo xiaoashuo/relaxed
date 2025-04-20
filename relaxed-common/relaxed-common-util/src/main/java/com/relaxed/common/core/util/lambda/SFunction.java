@@ -4,11 +4,15 @@ import java.io.Serializable;
 import java.util.function.Function;
 
 /**
+ * 可序列化的函数式接口，扩展自 {@link Function} 接口。
+ *
+ * 该接口主要用于需要序列化 Lambda 表达式的场景，例如： - 在分布式系统中传输 Lambda 表达式 - 在需要持久化 Lambda 表达式的场景 -
+ * 在反射获取方法引用信息的场景
+ *
+ * @param <T> 输入参数类型
+ * @param <R> 返回值类型
  * @author Yakir
- * @Topic SFunction
- * @Description 支持序列化的 Function
- * @date 2022/6/14 16:43
- * @Version 1.0
+ * @since 1.0
  */
 public interface SFunction<T, R> extends Function<T, R>, Serializable {
 

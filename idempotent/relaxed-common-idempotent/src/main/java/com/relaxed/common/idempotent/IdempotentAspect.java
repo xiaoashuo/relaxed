@@ -20,7 +20,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.lang.reflect.Method;
 
 /**
- * @author hccake
+ * 幂等性切面类。 用于处理带有 {@link Idempotent} 注解的方法的幂等性控制，主要功能包括： 1. 构建幂等键 2. 检查重复请求 3. 执行目标方法 4.
+ * 根据配置清理幂等键
+ *
+ * @author Yakir
+ * @since 1.0
  */
 @Slf4j
 @Aspect
@@ -29,6 +33,13 @@ public class IdempotentAspect {
 
 	private final IdempotentKeyStore idempotentKeyStore;
 
+	/**
+	 * 环绕通知，处理幂等性控制。 1. 构建幂等键 2. 检查是否重复请求 3. 执行目标方法 4. 根据配置清理幂等键
+	 * @param joinPoint 连接点
+	 * @param idempotentAnnotation 幂等注解
+	 * @return 方法执行结果
+	 * @throws Throwable 执行过程中的异常
+	 */
 	@Around("@annotation(idempotentAnnotation)")
 	public Object around(ProceedingJoinPoint joinPoint, Idempotent idempotentAnnotation) throws Throwable {
 		// 获取幂等标识

@@ -8,14 +8,18 @@ import com.relaxed.common.job.properties.XxlLogProperties;
 import org.slf4j.LoggerFactory;
 
 /**
+ * 默认的 Logback 日志追加器提供者实现类。 实现了 LogbackAppenderProvider 接口，提供以下功能： 1. 将日志追加器添加到根日志记录器 2.
+ * 创建并配置 XxlJobLogAppender 3. 支持包过滤和日志级别控制
+ *
  * @author Yakir
- * @Topic DefaultLogBackAppenderProvider
- * @Description
- * @date 2024/12/20 17:47
- * @Version 1.0
+ * @since 1.0
  */
 public class DefaultLogBackAppenderProvider implements LogbackAppenderProvider {
 
+	/**
+	 * 添加日志追加器到日志上下文。 将创建的日志追加器添加到根日志记录器。
+	 * @param logProperties XXL-Job 日志配置属性
+	 */
 	@Override
 	public void addAppender(XxlLogProperties logProperties) {
 		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -36,6 +40,12 @@ public class DefaultLogBackAppenderProvider implements LogbackAppenderProvider {
 		// loggerContext.updateLoggers(configuration);
 	}
 
+	/**
+	 * 提供自定义的日志追加器实现。 创建并配置 XxlJobLogAppender 实例。
+	 * @param loggerContext 日志上下文
+	 * @param xxlLogProperties XXL-Job 日志配置属性
+	 * @return 配置好的日志追加器实例
+	 */
 	@Override
 	public Appender<ILoggingEvent> provider(LoggerContext loggerContext, XxlLogProperties xxlLogProperties) {
 		XxlJobLogAppender xxlJobLogAppender = new XxlJobLogAppender();

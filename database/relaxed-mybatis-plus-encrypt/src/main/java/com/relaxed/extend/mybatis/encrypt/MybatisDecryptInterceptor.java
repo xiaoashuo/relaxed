@@ -14,11 +14,9 @@ import java.sql.Statement;
 import java.util.Collection;
 
 /**
+ * MyBatis 字段解密拦截器 用于拦截查询结果集，对标记了加密注解的字段进行解密处理 支持单个对象和集合类型的解密
+ *
  * @author Yakir
- * @Topic DecryptInterceptor
- * @Description
- * @date 2024/10/9 17:12
- * @Version 1.0
  */
 @RequiredArgsConstructor
 @Slf4j
@@ -26,14 +24,20 @@ import java.util.Collection;
 @Component
 public class MybatisDecryptInterceptor implements Interceptor {
 
+	/**
+	 * 字段加密助手，用于处理字段解密逻辑
+	 */
 	private final FieldEncryptHelper fieldEncryptHelper;
 
+	/**
+	 * 拦截结果集处理过程，对需要解密的字段进行解密处理
+	 * @param invocation 拦截器调用信息
+	 * @return 解密后的结果
+	 * @throws Throwable 处理过程中可能抛出的异常
+	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
-		// MetaObject metaObject = SystemMetaObject.forObject(invocation.getTarget());
-		// MappedStatement mappedStatement = (MappedStatement)
-		// metaObject.getValue("mappedStatement");
 		Object result = invocation.proceed();
 
 		// 解密处理

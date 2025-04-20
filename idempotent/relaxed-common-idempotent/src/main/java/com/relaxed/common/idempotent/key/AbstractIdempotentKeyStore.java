@@ -13,14 +13,20 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.lang.reflect.Method;
 
 /**
+ * 幂等键存储抽象类。 实现了 {@link IdempotentKeyStore} 接口，提供了幂等键构建的通用实现，主要功能包括： 1. 支持 SpEL 表达式构建幂等键
+ * 2. 支持请求上下文信息获取 3. 支持自定义前缀和唯一标识
+ *
  * @author Yakir
- * @Topic AbstractIdempotentKeyStore
- * @Description
- * @date 2021/8/19 13:56
- * @Version 1.0
+ * @since 1.0
  */
 public abstract class AbstractIdempotentKeyStore implements IdempotentKeyStore {
 
+	/**
+	 * 构建幂等键。 根据幂等注解和连接点信息构建唯一的幂等键，支持： 1. 使用 SpEL 表达式提取唯一标识 2. 支持请求上下文信息 3. 支持自定义前缀
+	 * @param joinPoint 连接点
+	 * @param idempotentAnnotation 幂等注解
+	 * @return 完整的幂等键，格式为：{prefix}:{uniqueStr}
+	 */
 	@Override
 	public String buildIdempotentKey(ProceedingJoinPoint joinPoint, Idempotent idempotentAnnotation) {
 		String uniqueExpression = idempotentAnnotation.uniqueExpression();

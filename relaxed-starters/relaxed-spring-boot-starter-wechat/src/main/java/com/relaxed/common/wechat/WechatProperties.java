@@ -4,14 +4,17 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author lingting 2020/6/11 23:19
+ * 微信配置属性类 用于配置微信通知相关的属性
+ *
+ * @author lingting
+ * @since 1.0
  */
 @Data
 @ConfigurationProperties(prefix = "relaxed.wechat")
 public class WechatProperties {
 
 	/**
-	 * Web hook 地址
+	 * 企业微信Webhook地址 用于接收通知消息的URL
 	 */
 	private String url;
 

@@ -19,25 +19,44 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import java.util.List;
 
 /**
+ * 自定义资源服务器配置器 用于配置OAuth2资源服务器的安全设置 支持配置资源ID、认证入口点、访问拒绝处理器和Token服务 支持配置忽略鉴权的URL列表
+ *
  * @author Yakir
- * @Topic CustomResourceServerConfigurer
- * @Description
- * @date 2022/7/25 15:06
- * @Version 1.0
+ * @since 1.0
  */
 @RequiredArgsConstructor
 public class CustomResourceServerConfigurer extends ResourceServerConfigurerAdapter {
 
+	/**
+	 * 认证入口点，用于处理认证失败的情况
+	 */
 	private final AuthenticationEntryPoint authenticationEntryPoint;
 
+	/**
+	 * 访问拒绝处理器，用于处理权限不足的情况
+	 */
 	private final AccessDeniedHandler accessDeniedHandler;
 
+	/**
+	 * 扩展资源服务器配置属性
+	 */
 	private final ExtendResourceServerProperties extendResource;
 
+	/**
+	 * 资源服务器配置属性
+	 */
 	private final ResourceServerProperties resourceServerProperties;
 
+	/**
+	 * 资源服务Token提供者
+	 */
 	private ResourceServiceTokenProvider resourceServiceTokenProvider;
 
+	/**
+	 * 配置资源服务器安全设置 设置资源ID、认证入口点、访问拒绝处理器和Token服务
+	 * @param resources 资源服务器安全配置器
+	 * @throws Exception 配置异常
+	 */
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 		resources.resourceId(extendResource.getResourceId());
@@ -49,6 +68,11 @@ public class CustomResourceServerConfigurer extends ResourceServerConfigurerAdap
 		}
 	}
 
+	/**
+	 * 配置HTTP安全设置 设置忽略鉴权的URL列表和CSRF防护
+	 * @param http HTTP安全配置器
+	 * @throws Exception 配置异常
+	 */
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 		List<String> ignoreUrls = extendResource.getIgnoreUrls();
@@ -59,6 +83,10 @@ public class CustomResourceServerConfigurer extends ResourceServerConfigurerAdap
 				.and().csrf().disable();
 	}
 
+	/**
+	 * 设置资源服务Token提供者 用于提供自定义的Token服务
+	 * @param remoteTokenServiceProvider 资源服务Token提供者
+	 */
 	@Autowired(required = false)
 	public void setRemoteTokenServiceProvider(ResourceServiceTokenProvider remoteTokenServiceProvider) {
 		this.resourceServiceTokenProvider = remoteTokenServiceProvider;

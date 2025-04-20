@@ -7,21 +7,21 @@ import org.javers.core.diff.Diff;
 import java.util.List;
 
 /**
+ * 属性过滤器接口 该接口用于在对象比较时过滤属性变更 主要功能包括： 1. 根据属性变更信息决定是否保留该变更 2. 支持基于源对象和目标对象类型的过滤 3.
+ * 提供自定义的过滤逻辑实现
+ *
  * @author Yakir
- * @Topic PropertyFilter
- * @Description
- * @date 2024/2/29 16:06
- * @Version 1.0
  */
+@FunctionalInterface
 public interface PropertyFilter {
 
 	/**
-	 * 是否 保留当前属性差异提取
-	 * @param attributeChange 属性
-	 * @param source 原字段类
-	 * @param target 目标字段类
-	 * @return true 忽略属性 false 加入差异结果集
+	 * 过滤属性变更 根据属性变更信息和对象类型决定是否保留该变更
+	 * @param attributeChange 属性变更信息
+	 * @param sourceClass 源对象类型
+	 * @param targetClass 目标对象类型
+	 * @return 如果保留该变更返回 true，否则返回 false
 	 */
-	boolean filterProperty(AttributeChange attributeChange, Class source, Class target);
+	boolean filterProperty(AttributeChange attributeChange, Class<?> sourceClass, Class<?> targetClass);
 
 }

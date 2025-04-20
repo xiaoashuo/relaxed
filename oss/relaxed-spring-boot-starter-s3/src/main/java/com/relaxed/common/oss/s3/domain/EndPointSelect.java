@@ -7,29 +7,42 @@ import org.springframework.util.StringUtils;
 
 import java.net.URI;
 
+/**
+ * OSS 端点选择器。 用于管理和选择 OSS 服务的端点，支持： 1. 自定义域名访问 2. 虚拟主机访问 3. 路径样式访问 4. 代理端点配置
+ *
+ * @author Yakir
+ * @since 1.0
+ */
 @Getter
 @RequiredArgsConstructor
 public class EndPointSelect {
 
 	/**
-	 * 代理端点
+	 * 代理端点 URI
 	 */
 	private final URI proxyEndPoint;
 
 	/**
-	 * 代理url
+	 * 代理 URL
 	 */
 	private final String proxyUrl;
 
 	/**
-	 * 用虚拟地址
+	 * 是否使用虚拟主机地址
 	 */
 	private final boolean useVirtualAddress;
 
+	/**
+	 * 创建构建器实例
+	 * @return 构建器实例
+	 */
 	public static Builder toBuilder() {
 		return new Builder();
 	}
 
+	/**
+	 * 端点选择器构建器。 用于构建 EndPointSelect 实例，支持链式调用。
+	 */
 	public static class Builder {
 
 		private String domain;

@@ -16,11 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 响应下载自动配置类 用于配置Spring MVC的返回值处理器，支持文件下载功能
+ *
  * @author Yakir
- * @Topic ResponseDownHandler
- * @Description
- * @date 2022/2/18 17:53
- * @Version 1.0
+ * @since 1.0
  */
 @RequiredArgsConstructor
 @Configuration(proxyBeanMethods = false)
@@ -31,7 +30,7 @@ public class ResponseDownloadAutoConfiguration {
 	private final ResponseDownloadReturnValueHandler responseDownloadReturnValueHandler;
 
 	/**
-	 * 追加 Excel返回值处理器 到 springmvc 中
+	 * 配置Spring MVC的返回值处理器 将文件下载处理器添加到处理器链的最前面
 	 */
 	@PostConstruct
 	public void setReturnValueHandlers() {

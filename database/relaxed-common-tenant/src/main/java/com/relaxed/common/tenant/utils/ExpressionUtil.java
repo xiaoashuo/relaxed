@@ -17,20 +17,16 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * SQL表达式工具类 提供SQL表达式处理相关的工具方法 包括表名Schema填充、条件表达式注入等功能
+ *
  * @author Yakir
- * @Topic ExpressionUtil
- * @Description
- * @date 2021/7/27 16:45
- * @Version 1.0
  */
 public class ExpressionUtil {
 
 	/**
-	 * 填充表名schema
-	 * @author yakir
-	 * @date 2021/7/27 17:46
-	 * @param table
-	 * @param tenant
+	 * 填充表的Schema名称 根据租户信息设置表的Schema名称
+	 * @param table 表对象
+	 * @param tenant 租户信息
 	 */
 	public static void fillTableSchema(Table table, Tenant tenant) {
 		if (tenant.isSchema()) {
@@ -39,12 +35,11 @@ public class ExpressionUtil {
 	}
 
 	/**
-	 * 填充表名schema
-	 * @param statement
-	 * @param tenant
+	 * 填充SQL语句中所有表的Schema名称 支持INSERT、UPDATE、DELETE语句的表名Schema填充
+	 * @param statement SQL语句对象
+	 * @param tenant 租户信息
 	 */
 	public static void fillTableSchema(Statement statement, Tenant tenant) {
-
 		if (statement instanceof Insert) {
 			Insert insert = (Insert) statement;
 			if (tenant.isSchema()) {
@@ -75,17 +70,15 @@ public class ExpressionUtil {
 				table.setSchemaName(tenant.getSchemaName());
 				delete.setTable(table);
 			}
-
 		}
-
 	}
 
 	/**
-	 * 处理无where 表达式
-	 * @param table
-	 * @param tenant
-	 * @param builder
-	 * @return
+	 * 处理无WHERE条件的表达式注入 为表添加WHERE条件和租户数据过滤表达式
+	 * @param table 表对象
+	 * @param tenant 租户信息
+	 * @param builder SQL语句构建器
+	 * @return 数据过滤表达式
 	 */
 	public static Expression injectExpressionNoWhere(Table table, Tenant tenant, StringBuilder builder) {
 		if (tenant.isTable()) {
@@ -96,12 +89,10 @@ public class ExpressionUtil {
 	}
 
 	/**
-	 * 注入 无where 表达式
-	 * @author yakir
-	 * @date 2021/7/27 16:46
-	 * @param table
-	 * @param tenant
-	 * @return net.sf.jsqlparser.expression.Expression
+	 * 注入无WHERE条件的数据过滤表达式 根据表名和租户信息生成数据过滤表达式
+	 * @param table 表对象
+	 * @param tenant 租户信息
+	 * @return 数据过滤表达式
 	 */
 	public static Expression injectExpressionNoWhere(Table table, Tenant tenant) {
 		String tableName = table.getName();
@@ -113,14 +104,14 @@ public class ExpressionUtil {
 	}
 
 	/**
-	 * 根据 DataScope ，将数据过滤的表达式注入原本的 where/or 条件
-	 * @param currentExpression Expression where/or
-	 * @param table 表信息
-	 * @return 修改后的 where/or 条件
+	 * 注入数据过滤表达式到现有WHERE/OR条件 将租户数据过滤表达式与现有条件组合
+	 * @param currentExpression 当前WHERE/OR条件表达式
+	 * @param table 表对象
+	 * @param tenant 租户信息
+	 * @return 组合后的条件表达式
 	 */
 	public static Expression injectExpression(Expression currentExpression, Table table, Tenant tenant) {
 		String tableName = table.getName();
-		// 不开启字段 处理 及直接返回当前表达式
 		if (!tenant.isTable()) {
 			return currentExpression;
 		}

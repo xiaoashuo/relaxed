@@ -7,11 +7,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 缓存元注解，用于标记缓存相关的注解。 提供通用的缓存配置属性，如条件表达式、key前缀和key拼接表达式。
+ *
  * @author Yakir
- * @Topic MetaCacheAnnotation
- * @Description 缓存元注释
- * @date 2021/7/23 16:23
- * @Version 1.0
+ * @since 1.0
  */
 @Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -42,17 +41,19 @@ public @interface MetaCacheAnnotation {
 	 * be accessed via {@code #root.args[1]}, {@code #p1} or {@code #a1}. Arguments can
 	 * also be accessed by name if that information is available.</li>
 	 * </ul>
+	 * @return SpEL条件表达式
 	 */
 	String condition() default "";
 
 	/**
-	 * cache key 前缀
-	 * @return
+	 * 缓存key的前缀
+	 * @return 缓存key的前缀
 	 */
 	String prefix() default "";
 
 	/**
-	 * 如果需要在key 后面拼接参数 则传入一个拼接数据的 SpEL 表达式
+	 * 如果需要在key后面拼接参数，则传入一个拼接数据的SpEL表达式
+	 * @return SpEL表达式
 	 */
 	String keyJoint() default "";
 

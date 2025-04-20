@@ -7,26 +7,23 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * 企业微信消息抽象基类。 提供了消息生成的基本实现，具体的消息类型需要继承此类并实现抽象方法。
+ *
  * @author Yakir
- * @Topic AbstractWechatMessage
- * @Description 消息基础类
- * @date 2022/6/15 11:47
- * @Version 1.0
+ * @since 1.0
  */
 public abstract class AbstractWechatMessage implements WechatMessage {
 
 	/**
 	 * 获取消息类型
-	 * @return 返回消息类型
-	 * @author lingting 2020-06-10 22:12:30
+	 * @return 消息类型枚举
 	 */
 	public abstract MessageTypeEnum getType();
 
 	/**
-	 * 设置非公有属性
-	 * @param params 已设置完公有参数的参数类
-	 * @return 已设置完成的参数类
-	 * @author lingting 2020-06-10 22:11:04
+	 * 设置消息参数
+	 * @param params 已设置完基本参数的参数对象
+	 * @return 设置完成后的参数对象
 	 */
 	public abstract WechatParams put(WechatParams params);
 

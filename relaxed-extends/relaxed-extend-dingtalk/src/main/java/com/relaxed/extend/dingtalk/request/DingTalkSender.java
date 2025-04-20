@@ -14,24 +14,28 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 订单消息发送
+ * 钉钉消息发送器。 提供了钉钉机器人消息发送的核心功能，支持普通发送和加签发送两种方式。
  *
- * @author lingting 2020/6/10 21:25
+ * @author lingting
+ * @since 1.0
  */
 @Getter
 @Accessors(chain = true)
 public class DingTalkSender {
 
 	/**
-	 * 请求路径
+	 * 钉钉机器人 Webhook 地址
 	 */
 	private final String url;
 
 	/**
-	 * 密钥
+	 * 钉钉机器人安全设置的签名密钥
 	 */
 	private String secret;
 
+	/**
+	 * 消息签名工具
+	 */
 	private final Mac mac;
 
 	@SneakyThrows
@@ -41,9 +45,9 @@ public class DingTalkSender {
 	}
 
 	/**
-	 * 发送消息 根据参数值判断使用哪种发送方式
-	 *
-	 * @author lingting 2020-06-11 00:05:51
+	 * 发送消息。 根据是否配置签名密钥，自动选择普通发送或加签发送方式。
+	 * @param message 待发送的消息内容
+	 * @return 钉钉接口响应对象
 	 */
 	@SneakyThrows
 	public DingTalkResponse sendMessage(DingTalkMessage message) {
@@ -56,18 +60,18 @@ public class DingTalkSender {
 	}
 
 	/**
-	 * 未使用 加签 安全设置 直接发送
-	 *
-	 * @author lingting 2020-06-11 00:09:23
+	 * 使用普通方式发送消息。 不使用安全设置的签名机制，直接发送消息。
+	 * @param message 待发送的消息内容
+	 * @return 钉钉接口响应对象
 	 */
 	public DingTalkResponse sendNormalMessage(DingTalkMessage message) {
 		return request(message, false);
 	}
 
 	/**
-	 * 使用 加签 安全设置 发送
-	 *
-	 * @author lingting 2020-06-11 00:10:38
+	 * 使用加签方式发送消息。 使用安全设置的签名机制发送消息，需要先配置签名密钥。
+	 * @param message 待发送的消息内容
+	 * @return 钉钉接口响应对象
 	 */
 	@SneakyThrows
 	public DingTalkResponse sendSecretMessage(DingTalkMessage message) {
@@ -75,8 +79,9 @@ public class DingTalkSender {
 	}
 
 	/**
-	 * 设置密钥
-	 * @author lingting 2020-09-04 14:37
+	 * 设置签名密钥。 设置后将启用加签方式发送消息。
+	 * @param secret 签名密钥
+	 * @return 当前发送器实例
 	 */
 	@SneakyThrows
 	public DingTalkSender setSecret(String secret) {
@@ -88,9 +93,9 @@ public class DingTalkSender {
 	}
 
 	/**
-	 * 获取签名后的请求路径
+	 * 生成加签后的请求地址。
 	 * @param timestamp 当前时间戳
-	 * @author lingting 2020-06-11 00:13:55
+	 * @return 包含签名信息的完整请求地址
 	 */
 	@SneakyThrows
 	public String secret(long timestamp) {
@@ -99,11 +104,10 @@ public class DingTalkSender {
 	}
 
 	/**
-	 * 发起消息请求
+	 * 发起消息请求。
 	 * @param message 消息内容
-	 * @param isSecret 是否签名 true 签名
-	 * @return java.lang.String
-	 * @author lingting 2021-01-22 17:11
+	 * @param isSecret 是否使用加签方式，true 表示使用加签
+	 * @return 钉钉接口响应对象
 	 */
 	public DingTalkResponse request(DingTalkMessage message, boolean isSecret) {
 		if (isSecret) {

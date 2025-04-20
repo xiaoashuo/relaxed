@@ -7,11 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 字段加密注解 用于标记需要加密的字段或类，支持字段级别和类级别的加密 被标记的字段在数据库操作时会自动进行加密和解密处理
  * @author Yakir
- * @Topic FieldEncrypt
- * @Description 标识字段是否需要加解密,加载类和字段上
- * @date 2024/10/9 16:22
- * @Version 1.0
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

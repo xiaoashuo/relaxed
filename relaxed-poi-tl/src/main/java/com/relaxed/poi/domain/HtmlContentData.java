@@ -6,11 +6,10 @@ import lombok.experimental.Accessors;
 import org.ddr.poi.html.HtmlRenderConfig;
 
 /**
+ * HTML内容数据类，用于存储 Word 文档中的 HTML 内容数据。 支持 HTML 文本内容和自定义渲染配置，支持链式调用。
+ *
  * @author Yakir
- * @Topic TextContentData
- * @Description
- * @date 2024/3/25 13:55
- * @Version 1.0
+ * @since 1.0.0
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -18,12 +17,12 @@ import org.ddr.poi.html.HtmlRenderConfig;
 public class HtmlContentData extends LabelData {
 
 	/**
-	 * 纯文本内容
+	 * HTML 文本内容，包含 HTML 标签和文本
 	 */
 	private String content;
 
 	/**
-	 * html渲染config
+	 * HTML 渲染配置，用于自定义 HTML 内容的渲染方式
 	 */
 	private HtmlRenderConfig htmlRenderConfig;
 

@@ -13,11 +13,9 @@ import org.springframework.lang.Nullable;
 import java.util.List;
 
 /**
+ * MyBatis加密配置类 用于配置和初始化字段加密相关的组件 支持自定义加密器和默认AES加密器的配置
+ *
  * @author Yakir
- * @Topic MybatisEncryptConfiguration
- * @Description
- * @date 2024/10/18 13:41
- * @Version 1.0
  */
 @EnableConfigurationProperties(FieldSecurityProperties.class)
 @RequiredArgsConstructor

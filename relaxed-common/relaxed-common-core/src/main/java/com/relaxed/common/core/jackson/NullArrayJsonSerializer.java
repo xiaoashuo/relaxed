@@ -7,9 +7,10 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 
 /**
+ * 空数组序列化器，将null值序列化为空数组[]
+ *
  * @author Hccake
- * @version 1.0
- * @date 2019/10/17 23:17 空数组序列化处理器 如果 Array 为 null，则序列化为 []
+ * @since 1.0.0
  */
 public class NullArrayJsonSerializer extends JsonSerializer<Object> {
 

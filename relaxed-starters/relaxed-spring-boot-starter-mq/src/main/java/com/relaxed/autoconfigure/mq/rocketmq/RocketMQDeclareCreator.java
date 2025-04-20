@@ -10,20 +10,35 @@ import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.core.env.Environment;
 
 /**
+ * RocketMQ声明创建器
+ * <p>
+ * 实现MQDeclareCreator接口，负责创建和初始化RocketMQ的队列和主题。 支持从环境配置中读取RocketMQ服务器配置。
+ * </p>
+ *
  * @author Yakir
- * @Topic RocketMQDeclareCreator
- * @Description
- * @date 2021/12/28 9:15
- * @Version 1.0
+ * @since 1.0
  */
 @Slf4j
 public class RocketMQDeclareCreator implements MQDeclareCreator {
 
 	/**
-	 * brokerConfig
+	 * RocketMQ代理配置
+	 * <p>
+	 * 包含命名服务器地址、代理IP等配置信息
+	 * </p>
 	 */
 	private BrokerConfig brokerConfig;
 
+	/**
+	 * 声明队列和交换器
+	 * <p>
+	 * 根据消息模型中的元数据创建RocketMQ主题。
+	 * </p>
+	 * @param amq 消息模型
+	 * @param beanDefinitionRegistry Bean定义注册表
+	 * @param environment 环境配置
+	 * @param nameGenerator Bean名称生成器
+	 */
 	@Override
 	public void declareQueueExchange(AbstractMQ amq, BeanDefinitionRegistry beanDefinitionRegistry,
 			Environment environment, BeanNameGenerator nameGenerator) {
@@ -36,6 +51,13 @@ public class RocketMQDeclareCreator implements MQDeclareCreator {
 		RocketMQTopicUtil.initTopic(exchangeName, brokerConfig.getNamesrvAddr(), brokerConfig.getBrokerName());
 	}
 
+	/**
+	 * 初始化RocketMQ代理配置
+	 * <p>
+	 * 从环境配置中读取RocketMQ服务器地址等配置信息。
+	 * </p>
+	 * @param environment 环境配置
+	 */
 	void initBrokerConfig(Environment environment) {
 		if (brokerConfig != null) {
 			return;

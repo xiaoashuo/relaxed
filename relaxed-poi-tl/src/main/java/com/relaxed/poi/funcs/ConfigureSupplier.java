@@ -3,15 +3,20 @@ package com.relaxed.poi.funcs;
 import com.deepoove.poi.config.Configure;
 
 /**
+ * A functional interface that supplies a {@link Configure} instance for POI-TL template
+ * rendering. This interface is used to provide custom configuration for Word document
+ * generation.
+ *
  * @author Yakir
- * @Topic ConfigureSupplier
- * @Description
- * @date 2024/3/26 13:49
- * @Version 1.0
+ * @since 1.0
  */
 @FunctionalInterface
 public interface ConfigureSupplier {
 
+	/**
+	 * Applies this supplier to get a {@link Configure} instance.
+	 * @return a {@link Configure} instance for POI-TL template rendering
+	 */
 	Configure apply();
 
 }

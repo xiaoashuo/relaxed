@@ -23,11 +23,9 @@ import org.springframework.util.MultiValueMap;
 import java.util.stream.Collectors;
 
 /**
+ * MyBatis-Plus SQL解析扩展类 用于解析SQL条件语句，提取字段名和参数名的映射关系 支持多种SQL条件表达式的解析，包括等于、大于、小于、IN、BETWEEN等
+ *
  * @author Yakir
- * @Topic MpJsqlParserExt
- * @Description
- * @date 2024/10/12 17:51
- * @Version 1.0
  */
 @Slf4j
 public class MpJsqlParserExt {

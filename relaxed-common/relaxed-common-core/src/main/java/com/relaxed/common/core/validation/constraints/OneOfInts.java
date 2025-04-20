@@ -14,11 +14,10 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * 整数枚举值校验注解，用于验证字段值是否在指定的整数集合中
+ *
  * @author Yakir
- * @Topic OneOfInts
- * @Description
- * @date 2022/8/5 13:37
- * @Version 1.0
+ * @since 1.0.0
  */
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
@@ -31,9 +30,6 @@ public @interface OneOfInts {
 
 	int[] value();
 
-	/**
-	 * 允许值为 null, 默认不允许
-	 */
 	boolean allowNull() default false;
 
 	Class<?>[] groups() default {};

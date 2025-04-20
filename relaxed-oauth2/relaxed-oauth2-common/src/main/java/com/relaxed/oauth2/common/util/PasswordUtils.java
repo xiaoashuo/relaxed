@@ -16,22 +16,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 前后端交互中密码使用 AES 加密，模式: CBC，padding: PKCS5，偏移量暂不定制和密钥相同。 <br/>
- * 服务端OAuth2中，密码使用BCrypt方式加密
+ * 密码工具类 提供密码加密、解密和验证的功能 支持多种加密算法： 1. 前后端交互使用AES加密（CBC模式，PKCS5填充） 2. 服务端OAuth2使用BCrypt加密
+ * 3. 支持多种密码编码器：bcrypt、ldap、MD4、MD5、noop、pbkdf2、scrypt、SHA-1、SHA-256、sha256
  *
  * @author Hccake
- * @version 1.0
- * @date 2019/9/25 15:14
+ * @since 1.0
  */
 public final class PasswordUtils {
 
+	/**
+	 * 私有构造函数，防止实例化
+	 */
 	private PasswordUtils() {
 	}
 
 	/**
-	 * 创建一个密码加密的代理，方便后续切换密码的加密算法
+	 * 创建密码加密代理 支持多种密码加密算法，默认使用bcrypt 用于后续切换密码加密算法
+	 * @return 密码加密代理
 	 * @see PasswordEncoderFactories#createDelegatingPasswordEncoder()
-	 * @return DelegatingPasswordEncoder
 	 */
 	@SuppressWarnings("deprecation")
 	private static PasswordEncoder createDelegatingPasswordEncoder() {
@@ -56,13 +58,16 @@ public final class PasswordUtils {
 		return delegatingPasswordEncoder;
 	}
 
+	/**
+	 * 密码编码器实例 使用默认的bcrypt算法
+	 */
 	public static final PasswordEncoder ENCODER = PasswordUtils.createDelegatingPasswordEncoder();
 
 	/**
-	 * 将前端传递过来的密文解密为明文
+	 * 解密AES加密的密码 使用CBC模式和PKCS5填充
 	 * @param aesPass AES加密后的密文
 	 * @param secretKey 密钥
-	 * @return 明文密码
+	 * @return 解密后的明文密码
 	 */
 	public static String decodeAES(String aesPass, String secretKey) {
 		byte[] secretKeyBytes = secretKey.getBytes();
@@ -72,10 +77,10 @@ public final class PasswordUtils {
 	}
 
 	/**
-	 * 将明文密码加密为密文
+	 * 使用AES加密密码 使用CBC模式和PKCS5填充
 	 * @param password 明文密码
 	 * @param secretKey 密钥
-	 * @return AES加密后的密文
+	 * @return Base64编码的AES加密密文
 	 */
 	public static String encodeAESBase64(String password, String secretKey) {
 		byte[] secretKeyBytes = secretKey.getBytes();
@@ -84,28 +89,28 @@ public final class PasswordUtils {
 	}
 
 	/**
-	 * 加密密码
+	 * 使用默认编码器加密密码
 	 * @param rawPassword 明文密码
-	 * @return 密文密码
+	 * @return 加密后的密文密码
 	 */
 	public static String encode(CharSequence rawPassword) {
 		return ENCODER.encode(rawPassword);
 	}
 
 	/**
-	 * 判断明文密码和密文密码是否匹配
+	 * 验证明文密码和密文密码是否匹配
 	 * @param rawPassword 明文密码
 	 * @param encodedPassword 密文密码
-	 * @return 匹配返回 true
+	 * @return 匹配返回true，否则返回false
 	 */
 	public static boolean matches(CharSequence rawPassword, String encodedPassword) {
 		return ENCODER.matches(rawPassword, encodedPassword);
 	}
 
 	/**
-	 * 判断是否需要升级加密算法
+	 * 判断密码是否需要升级加密算法 用于密码加密算法的平滑升级
 	 * @param encodedPassword 密文密码
-	 * @return 需要返回 true
+	 * @return 需要升级返回true，否则返回false
 	 */
 	public static boolean upgradeEncoding(String encodedPassword) {
 		return ENCODER.upgradeEncoding(encodedPassword);

@@ -19,13 +19,6 @@ import lombok.SneakyThrows;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Yakir
- * @Topic TencentRequest
- * @Description
- * @date 2022/1/11 16:31
- * @Version 1.0
- */
 @Data
 public class TencentRequest extends AbstractTranslationRequest<TransParam> {
 

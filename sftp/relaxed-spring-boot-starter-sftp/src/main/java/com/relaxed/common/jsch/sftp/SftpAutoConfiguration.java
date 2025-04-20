@@ -21,8 +21,9 @@ import org.springframework.context.annotation.Bean;
 public class SftpAutoConfiguration {
 
 	/**
-	 * sftp provider 主要负责提供产出{@link AbstractSql}子实列的动作
-	 * @return sftpExceutor创建者
+	 * sftp provider
+	 * 主要负责提供产出{@link com.relaxed.common.jsch.sftp.executor.ISftpExecutor}子实例的动作
+	 * @return sftp执行器创建者
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -32,7 +33,7 @@ public class SftpAutoConfiguration {
 
 	/**
 	 * sftp 客户端
-	 * @param sftpProperties sftp链接属性
+	 * @param sftpProperties sftp连接属性
 	 * @param iSftpProvider sftp工具类提供者
 	 * @return sftp客户端
 	 */

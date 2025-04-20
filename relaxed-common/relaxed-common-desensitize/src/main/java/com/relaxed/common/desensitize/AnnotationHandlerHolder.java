@@ -17,25 +17,27 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 注解处理方法 脱敏注解->处理逻辑
+ * 注解处理器持有者。 负责管理脱敏注解与处理函数的映射关系，支持以下脱敏类型： 1. 简单脱敏（Simple）：使用预定义的处理器处理 2.
+ * 正则脱敏（Regex）：使用正则表达式匹配替换 3. 滑动脱敏（Slide）：根据左右边界滑动处理
+ *
+ * 提供了注解处理函数的注册、获取和查询功能。
  *
  * @author Yakir
+ * @since 1.0
  */
 public class AnnotationHandlerHolder {
 
 	private AnnotationHandlerHolder() {
-
 	}
 
 	/**
-	 * 注解类型 处理函数映射
+	 * 注解类型与处理函数的映射表
 	 */
 	private static final Map<Class<? extends Annotation>, DesensitizeFunction> ANNOTATION_HANDLER = new HashMap<>();
 
 	static {
-
+		// 注册简单脱敏处理函数
 		ANNOTATION_HANDLER.put(JsonSimpleDesensitize.class, (annotation, value) -> {
-			// Simple 类型处理
 			JsonSimpleDesensitize an = (JsonSimpleDesensitize) annotation;
 			Class<? extends SimpleDesensitizationHandler> handlerClass = an.handler();
 			SimpleDesensitizationHandler desensitizationHandler = DesensitizationHandlerHolder
@@ -44,8 +46,8 @@ public class AnnotationHandlerHolder {
 			return desensitizationHandler.handle(value);
 		});
 
+		// 注册正则脱敏处理函数
 		ANNOTATION_HANDLER.put(JsonRegexDesensitize.class, (annotation, value) -> {
-			// 正则类型脱敏处理
 			JsonRegexDesensitize an = (JsonRegexDesensitize) annotation;
 			RegexDesensitizationTypeEnum type = an.type();
 			RegexDesensitizationHandler regexDesensitizationHandler = DesensitizationHandlerHolder
@@ -54,8 +56,9 @@ public class AnnotationHandlerHolder {
 					? regexDesensitizationHandler.handle(value, an.regex(), an.replacement())
 					: regexDesensitizationHandler.handle(value, type);
 		});
+
+		// 注册滑动脱敏处理函数
 		ANNOTATION_HANDLER.put(JsonSlideDesensitize.class, (annotation, value) -> {
-			// 滑动类型脱敏处理
 			JsonSlideDesensitize an = (JsonSlideDesensitize) annotation;
 			SlideDesensitizationTypeEnum type = an.type();
 			SlideDesensitizationHandler slideDesensitizationHandler = DesensitizationHandlerHolder
@@ -67,31 +70,30 @@ public class AnnotationHandlerHolder {
 	}
 
 	/**
-	 * 得到注解类型处理函数
-	 * @param annotationType {@code annotationType} 注解类型
-	 * @return {@link DesensitizeFunction}脱敏处理函数|null
+	 * 获取指定注解类型的处理函数
+	 * @param annotationType 注解类型
+	 * @return 脱敏处理函数，如果未找到则返回null
 	 */
 	public static DesensitizeFunction getHandleFunction(Class<? extends Annotation> annotationType) {
 		return ANNOTATION_HANDLER.get(annotationType);
 	}
 
 	/**
-	 * 添加注解处理函数
-	 * @param annotationType {@code annotationType}指定注解类型
-	 * @param desensitizeFunction {@link DesensitizeFunction}指定脱敏处理函数
-	 * @return 上一个key 对应的脱敏处理函数 | null
+	 * 注册注解处理函数
+	 * @param annotationType 注解类型
+	 * @param desensitizeFunction 脱敏处理函数
+	 * @return 之前注册的处理函数，如果之前未注册则返回null
 	 */
 	public static DesensitizeFunction addHandleFunction(Class<? extends Annotation> annotationType,
 			DesensitizeFunction desensitizeFunction) {
 		Assert.notNull(annotationType, "annotation cannot be null");
 		Assert.notNull(desensitizeFunction, "desensitization function cannot be null");
-		// 加入注解处理映射
 		return ANNOTATION_HANDLER.put(annotationType, desensitizeFunction);
 	}
 
 	/**
-	 * 得到当前支持的注解处理类
-	 * @return {@code 注解处理类列表}
+	 * 获取所有支持的注解类型
+	 * @return 注解类型集合
 	 */
 	public static Set<Class<? extends Annotation>> getAnnotationClasses() {
 		return ANNOTATION_HANDLER.keySet();

@@ -16,9 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 空值序列化修改器，用于自定义Jackson的空值序列化行为
+ *
  * @author Hccake
- * @version 1.0
- * @date 2019/10/17 23:19
+ * @since 1.0.0
  */
 public class NullSerializerModifier extends BeanSerializerModifier {
 

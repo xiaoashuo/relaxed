@@ -10,9 +10,8 @@ import java.util.stream.Collectors;
 
 /**
  * 默认的数据权限控制处理器
- *
- * @author Hccake 2021/1/27
- * @version 1.0
+ * <p>
+ * 实现了 DataPermissionHandler 接口，提供了默认的数据权限控制逻辑。 支持根据权限规则过滤数据范围，以及忽略特定 Mapper 方法的权限控制。
  */
 @RequiredArgsConstructor
 public class DefaultDataPermissionHandler implements DataPermissionHandler {
@@ -20,7 +19,9 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
 	private final List<DataScope> dataScopes;
 
 	/**
-	 * 系统配置的所有的数据范围
+	 * 获取系统配置的所有数据范围
+	 * <p>
+	 * 返回构造函数中注入的数据范围集合。
 	 * @return 数据范围集合
 	 */
 	@Override
@@ -29,9 +30,11 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
 	}
 
 	/**
-	 * 系统配置的所有的数据范围
-	 * @param mappedStatementId Mapper方法ID
-	 * @return 数据范围集合
+	 * 根据权限规则过滤数据范围
+	 * <p>
+	 * 根据当前线程中的权限规则，过滤出需要应用的数据范围。 如果数据范围集合为空，则返回空列表。
+	 * @param mappedStatementId Mapper 方法 ID
+	 * @return 过滤后的数据范围集合
 	 */
 	@Override
 	public List<DataScope> filterDataScopes(String mappedStatementId) {
@@ -44,14 +47,12 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
 	}
 
 	/**
+	 * 判断是否忽略权限控制
 	 * <p>
-	 * 是否忽略权限控制
-	 * </p>
-	 * 若当前的 mappedStatementId 存在于 <Code>MappedStatementIdsWithoutDataScope<Code/>
-	 * 中，则表示无需处理
-	 * @param dataScopeList 当前需要控制的 dataScope 集合
-	 * @param mappedStatementId Mapper方法ID
-	 * @return always false
+	 * 如果当前 Mapper 方法 ID 存在于 MappedStatementIdsWithoutDataScope 中， 则表示该方法不需要进行数据权限控制。
+	 * @param dataScopeList 当前需要控制的数据范围集合
+	 * @param mappedStatementId Mapper 方法 ID
+	 * @return 是否忽略权限控制
 	 */
 	@Override
 	public boolean ignorePermissionControl(List<DataScope> dataScopeList, String mappedStatementId) {
@@ -59,9 +60,11 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
 	}
 
 	/**
-	 * 使用指定的数据权限执行任务，执行时会忽略方法上的 @DataPermission 注解
+	 * 使用指定的数据权限规则执行任务
+	 * <p>
+	 * 将指定的权限规则压入线程上下文，执行任务后再弹出。 确保任务在指定的权限规则下执行。
 	 * @param dataPermissionRule 当前任务执行时使用的数据权限规则
-	 * @param task 待执行的动作
+	 * @param task 待执行的任务
 	 */
 	@Override
 	public void executeWithDataPermissionRule(DataPermissionRule dataPermissionRule, Task task) {
@@ -75,9 +78,11 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
 	}
 
 	/**
-	 * 根据数据权限规则过滤出 dataScope 列表
+	 * 根据数据权限规则过滤数据范围
+	 * <p>
+	 * 根据权限规则的配置（忽略、包含资源、排除资源）过滤数据范围。 如果规则为空，则返回所有数据范围。
 	 * @param dataPermissionRule 数据权限规则
-	 * @return List<DataScope>
+	 * @return 过滤后的数据范围列表
 	 */
 	protected List<DataScope> filterDataScopes(DataPermissionRule dataPermissionRule) {
 		if (dataPermissionRule == null) {

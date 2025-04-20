@@ -17,9 +17,8 @@ import java.util.List;
 
 /**
  * 数据权限拦截器
- *
- * @author Hccake 2020/9/28
- * @version 1.0
+ * <p>
+ * 拦截 SQL 语句执行，根据配置的数据权限规则对 SQL 进行修改， 实现数据权限控制。支持 SELECT、INSERT、UPDATE、DELETE 操作。
  */
 @RequiredArgsConstructor
 @Intercepts({

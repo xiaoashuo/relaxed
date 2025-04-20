@@ -36,11 +36,9 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * MyBatis 字段加密拦截器 用于拦截 SQL 参数设置过程，对标记了加密注解的字段进行加密处理 支持实体类字段加密、Wrapper 条件加密和参数加密
+ *
  * @author Yakir
- * @Topic ParammeterInterceptor
- * @Description
- * @date 2024/10/10 18:12
- * @Version 1.0
  */
 @RequiredArgsConstructor
 @Intercepts({ @Signature(type = ParameterHandler.class, method = "setParameters", args = PreparedStatement.class), })
@@ -48,8 +46,17 @@ import java.util.Objects;
 @Slf4j
 public class MybatisEncryptInterceptor implements Interceptor {
 
+	/**
+	 * 字段加密助手，用于处理字段加密逻辑
+	 */
 	private final FieldEncryptHelper fieldEncryptHelper;
 
+	/**
+	 * 拦截参数设置过程，对需要加密的字段进行加密处理
+	 * @param invocation 拦截器调用信息
+	 * @return 处理后的结果
+	 * @throws Throwable 处理过程中可能抛出的异常
+	 */
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
 		if (invocation.getTarget() instanceof ParameterHandler) {
@@ -145,6 +152,10 @@ public class MybatisEncryptInterceptor implements Interceptor {
 		return invocation.proceed();
 	}
 
+	/**
+	 * 处理 MyBatis-Plus Wrapper 中的加密字段
+	 * @param wrapper 查询条件包装器
+	 */
 	private void wrapperEwEncrypt(AbstractWrapper<Object, ?, ?> wrapper) {
 		Map<String, Object> paramNameValuePairs = wrapper.getParamNameValuePairs();
 		// 实体类型检测
@@ -178,6 +189,12 @@ public class MybatisEncryptInterceptor implements Interceptor {
 		fieldEncryptHelper.encrypt(entityClass, mpMap, paramNameValuePairs);
 	}
 
+	/**
+	 * 搜索方法参数中的加密注解
+	 * @param parameterHandler 参数处理器
+	 * @return 需要加密的参数名称列表
+	 * @throws ClassNotFoundException 当找不到 Mapper 类时抛出
+	 */
 	private List<String> searchParamAnnotation(ParameterHandler parameterHandler) throws ClassNotFoundException {
 		MetaObject metaObject = SystemMetaObject.forObject(parameterHandler);
 		MappedStatement mappedStatement = (MappedStatement) metaObject.getValue("mappedStatement");

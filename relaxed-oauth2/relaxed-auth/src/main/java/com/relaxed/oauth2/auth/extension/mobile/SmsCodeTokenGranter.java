@@ -16,26 +16,36 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 手机验证码授权者
+ * 手机验证码授权者 实现基于手机验证码的OAuth2授权流程 支持通过手机号和验证码进行用户认证并获取访问令牌
  *
  * @author <a href="mailto:xianrui0365@163.com">haoxr</a>
- * @date 2021/9/25
+ * @since 1.0
  */
 public class SmsCodeTokenGranter extends AbstractTokenGranter {
 
 	/**
-	 * 声明授权者 SmsCodeTokenGranter 支持授权模式 sms_code 根据接口传值 grant_type = sms_code 的值匹配到此授权者
-	 * 匹配逻辑详见下面的两个方法
-	 *
-	 * @see CompositeTokenGranter#grant(String, TokenRequest)
-	 * @see AbstractTokenGranter#grant(String, TokenRequest)
+	 * 授权类型标识 用于标识手机验证码授权方式 当请求中的grant_type参数值为sms_code时，将使用此授权者处理请求
 	 */
 	public static final String GRANT_TYPE = "sms_code";
 
+	/**
+	 * 认证管理器 用于处理用户认证逻辑
+	 */
 	private final AuthenticationManager authenticationManager;
 
+	/**
+	 * 预验证器 用于在认证前进行额外的验证操作
+	 */
 	private final PreValidator preValidator;
 
+	/**
+	 * 构造函数
+	 * @param tokenServices Token服务
+	 * @param clientDetailsService 客户端详情服务
+	 * @param requestFactory 请求工厂
+	 * @param authenticationManager 认证管理器
+	 * @param preValidator 预验证器
+	 */
 	public SmsCodeTokenGranter(AuthorizationServerTokenServices tokenServices,
 			ClientDetailsService clientDetailsService, OAuth2RequestFactory requestFactory,
 			AuthenticationManager authenticationManager, PreValidator preValidator) {
@@ -45,6 +55,13 @@ public class SmsCodeTokenGranter extends AbstractTokenGranter {
 		this.preValidator = preValidator;
 	}
 
+	/**
+	 * 获取OAuth2认证信息 处理手机验证码认证流程，包括： 1. 验证请求参数 2. 执行预验证 3. 创建并验证认证令牌 4. 返回OAuth2认证信息
+	 * @param client 客户端详情
+	 * @param tokenRequest Token请求
+	 * @return OAuth2认证信息
+	 * @throws InvalidGrantException 当认证失败时抛出
+	 */
 	@Override
 	protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) {
 

@@ -9,27 +9,32 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 /**
+ * 请求参数数据源处理器 用于从HTTP请求参数中获取数据源名称 支持通过@DS("#request.paramName")注解指定请求参数作为数据源名称
+ *
  * @author Hccake
- * @version 1.0
- * @date 2020/6/17 16:40
  */
 public class DsRequestProcessor extends DsProcessor {
 
 	/**
-	 * request prefix
+	 * 请求参数前缀 用于标识从请求参数中获取数据源名称 格式：#request.paramName
 	 */
 	private static final String REQUEST_PREFIX = "#request";
 
+	/**
+	 * 判断是否匹配当前处理器 检查数据源名称是否以#request开头
+	 * @param key 数据源名称
+	 * @return 是否匹配
+	 */
 	@Override
 	public boolean matches(String key) {
 		return key.startsWith(REQUEST_PREFIX);
 	}
 
 	/**
-	 * 如果没传参数，默认返回master
-	 * @param invocation 拦截方法
-	 * @param key 注解属性
-	 * @return dsName
+	 * 从请求参数中获取数据源名称 如果请求参数不存在，则返回默认的master数据源
+	 * @param invocation 方法调用信息
+	 * @param key 数据源名称，格式：#request.paramName
+	 * @return 数据源名称
 	 */
 	@Override
 	public String doDetermineDatasource(MethodInvocation invocation, String key) {

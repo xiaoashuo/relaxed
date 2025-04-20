@@ -10,11 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 聚合多个翻译器
+ *
  * @author Yakir
- * @Topic Querier
- * @Description 聚合多个翻译器
- * @date 2022/1/11 16:17
- * @Version 1.0
  */
 public class Querier<T extends AbstractTranslationRequest> {
 
@@ -28,9 +26,8 @@ public class Querier<T extends AbstractTranslationRequest> {
 
 	/**
 	 * 构建文字翻译服务
-	 * @author yakir
-	 * @date 2022/1/12 15:55
-	 * @return com.relaxed.common.translation.querier.Querier<T>
+	 * @param <T> 翻译对象执行器
+	 * @return {@link com.relaxed.common.translation.querier.Querier}
 	 */
 	public static <T extends AbstractTranslationRequest> Querier<T> trans() {
 		Querier querier = new Querier();
@@ -41,9 +38,8 @@ public class Querier<T extends AbstractTranslationRequest> {
 
 	/**
 	 * 构建文字转语音查询器
-	 * @author yakir
-	 * @date 2022/1/12 15:55
-	 * @return com.relaxed.common.translation.querier.Querier<T>
+	 * @param <T> 翻译器对象
+	 * @return com.relaxed.common.translation.querier.Querier
 	 */
 	public static <T extends AbstractTranslationRequest> Querier<T> tts() {
 		Querier querier = new Querier();
@@ -53,10 +49,10 @@ public class Querier<T extends AbstractTranslationRequest> {
 
 	/**
 	 * 执行翻译命令
-	 * @author yakir
-	 * @date 2022/1/12 15:55
-	 * @param param
-	 * @return com.relaxed.common.translation.core.TranslationResponse<R>
+	 * @param <P> 泛型参数
+	 * @param param 实体对象
+	 * @param <R> 响应
+	 * @return {@link com.relaxed.common.translation.core.TranslationResponse}
 	 */
 	public <P extends TranslationParam, R> TranslationResponse<R> execute(P param) {
 		for (T command : collection) {
@@ -71,9 +67,7 @@ public class Querier<T extends AbstractTranslationRequest> {
 
 	/**
 	 * 添加请求客户端
-	 * @author yakir
-	 * @date 2022/1/12 15:56
-	 * @param command
+	 * @param command 客户端端对象
 	 */
 	public void attach(T command) {
 		collection.add(command);

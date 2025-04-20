@@ -13,11 +13,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
+ * AnnotationMethodPoint
+ *
  * @author Yakir
- * @Topic AnnotationMethodPoint
- * @Description
- * @date 2021/12/21 10:34
- * @Version 1.0
  */
 public class AnnotationMethodPoint implements Pointcut {
 

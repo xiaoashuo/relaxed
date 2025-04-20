@@ -37,11 +37,11 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
+ * 线程池监控增强器，用于自动增强被 @ThreadPoolMonitor 注解标记的线程池。 实现了 BeanPostProcessor 接口，在 Spring Bean
+ * 初始化后对线程池进行代理增强， 添加监控和动态调整能力。
+ *
  * @author Yakir
- * @Topic ThreadPoolMonitorPostProcessor
- * @Description
- * @date 2025/4/4 10:12
- * @Version 1.0
+ * @since 1.0.0
  */
 @Slf4j
 public class ThreadPoolMonitorEnhancer implements BeanPostProcessor, ApplicationContextAware {
@@ -60,6 +60,14 @@ public class ThreadPoolMonitorEnhancer implements BeanPostProcessor, Application
 		return monitor;
 	}
 
+	/**
+	 * Bean 初始化后的处理方法，用于增强线程池。 对于 ThreadPoolExecutor 和 ThreadPoolTaskExecutor 类型的 Bean，
+	 * 如果它们被 @ThreadPoolMonitor 注解标记，则进行监控增强处理。
+	 * @param bean 待处理的 Bean 实例
+	 * @param beanName Bean 的名称
+	 * @return 处理后的 Bean 实例，可能是原实例或代理后的实例
+	 * @throws BeansException 处理过程中可能抛出的异常
+	 */
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		// 1. 检查是否是ThreadPoolExecutor实例
@@ -117,6 +125,11 @@ public class ThreadPoolMonitorEnhancer implements BeanPostProcessor, Application
 		return bean;
 	}
 
+	/**
+	 * 从方法元数据中提取 ThreadPoolMonitor 注解。 支持标准的方法元数据和自定义的注解属性提取。
+	 * @param methodMetadata 方法元数据
+	 * @return ThreadPoolMonitor 注解实例
+	 */
 	private static ThreadPoolMonitor extractAnnotation(MethodMetadata methodMetadata) {
 		ThreadPoolMonitor annotation;
 		if (methodMetadata instanceof StandardMethodMetadata) {
@@ -142,20 +155,22 @@ public class ThreadPoolMonitorEnhancer implements BeanPostProcessor, Application
 		return annotation;
 	}
 
+	/**
+	 * 获取 Bean 定义中的工厂方法元数据。
+	 * @param beanDefinition 带注解的 Bean 定义
+	 * @return 工厂方法元数据
+	 */
 	private MethodMetadata getFactoryMethodMetaData(AnnotatedBeanDefinition beanDefinition) {
-
-		MethodMetadata factoryMethodMetadata = beanDefinition.getFactoryMethodMetadata();
-		return factoryMethodMetadata;
+		return beanDefinition.getFactoryMethodMetadata();
 	}
 
-	// private Method getFactoryMethod(BeanDefinition beanDefinition) {
-	// StandardMethodMetadata standardMethodMetadata = (StandardMethodMetadata)
-	// ReflectUtil
-	// .getFieldValue(beanDefinition, "factoryMethodMetadata");
-	// Method factoryMethod = standardMethodMetadata.getIntrospectedMethod();
-	// return factoryMethod;
-	// }
-
+	/**
+	 * 创建被监控的线程池执行器。 将原始的线程池执行器包装为可监控的实例。
+	 * @param beanName Bean 的名称
+	 * @param original 原始线程池执行器
+	 * @param annotation ThreadPoolMonitor 注解实例
+	 * @return 增强后的线程池执行器
+	 */
 	private <T extends ThreadPoolExecutor> ThreadPoolExecutor createProxiedExecutor(String beanName, T original,
 			ThreadPoolMonitor annotation) {
 		// 实现代理逻辑，例如监控线程池状态
@@ -163,6 +178,13 @@ public class ThreadPoolMonitorEnhancer implements BeanPostProcessor, Application
 		return getMonitor().register(poolKey, original);
 	}
 
+	/**
+	 * 创建被监控的 ThreadPoolTaskExecutor。 将原始的 ThreadPoolTaskExecutor 包装为可监控的实例， 保留原有的任务装饰器功能。
+	 * @param beanName Bean 的名称
+	 * @param threadPoolTaskExecutor 原始线程池任务执行器
+	 * @param annotation ThreadPoolMonitor 注解实例
+	 * @return 增强后的线程池执行器
+	 */
 	private ThreadPoolExecutor createProxiedExecutor(String beanName, ThreadPoolTaskExecutor threadPoolTaskExecutor,
 			ThreadPoolMonitor annotation) {
 		String poolKey = StrUtil.isBlank(annotation.name()) ? beanName : annotation.name();

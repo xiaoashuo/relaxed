@@ -13,11 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * ExceptionNotifierHolder
+ *
  * @author Yakir
- * @Topic ExceptionNotifierHolder
- * @Description
- * @date 2022/1/20 10:45
- * @Version 1.0
  */
 @Slf4j
 public class ExceptionNotifierHolder {
@@ -38,8 +36,7 @@ public class ExceptionNotifierHolder {
 	/**
 	 * 执行异常通知
 	 * @author yakir
-	 * @date 2022/1/20 10:59
-	 * @param exceptionMessage
+	 * @param exceptionMessage 异常消息
 	 * @return com.relaxed.common.exception.domain.ExceptionNoticeResponse
 	 */
 	public ExceptionNoticeResponse notice(ExceptionMessage exceptionMessage) {

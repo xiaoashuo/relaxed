@@ -7,30 +7,31 @@ import org.slf4j.LoggerFactory;
 import java.nio.charset.StandardCharsets;
 
 /**
- * redis key前缀生成器
+ * Redis key前缀转换器接口。 提供Redis key前缀的生成、匹配、添加和移除功能。
  *
  * @author huyuanzhi
+ * @since 1.0
  */
 public interface IRedisPrefixConverter {
 
 	Logger LOGGER = LoggerFactory.getLogger(IRedisPrefixConverter.class);
 
 	/**
-	 * 生成前缀
-	 * @return 前缀
+	 * 获取Redis key的前缀
+	 * @return Redis key的前缀
 	 */
 	String getPrefix();
 
 	/**
-	 * 前置匹配，是否走添加前缀规则
-	 * @return 是否匹配
+	 * 判断是否需要进行前缀转换
+	 * @return 如果需要添加前缀返回true，否则返回false
 	 */
 	boolean match();
 
 	/**
-	 * 去除key前缀
-	 * @param bytes key字节数组
-	 * @return 原始key
+	 * 移除key的前缀
+	 * @param bytes 带有前缀的key字节数组
+	 * @return 移除前缀后的原始key字节数组
 	 */
 	default byte[] unwrap(byte[] bytes) {
 		int wrapLen;
@@ -51,9 +52,9 @@ public interface IRedisPrefixConverter {
 	}
 
 	/**
-	 * 给key加上固定前缀
+	 * 给key添加前缀
 	 * @param bytes 原始key字节数组
-	 * @return 加前缀之后的key
+	 * @return 添加前缀后的key字节数组
 	 */
 	default byte[] wrap(byte[] bytes) {
 		int originLen;

@@ -8,11 +8,10 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import java.lang.annotation.*;
 
 /**
+ * 启用OAuth2资源服务器注解 用于启用OAuth2资源服务器的自动配置 包括资源服务器配置、方法级安全配置等
+ *
  * @author Yakir
- * @Topic EnableOauth2AuthorizationServer
- * @Description
- * @date 2022/7/24 11:36
- * @Version 1.0
+ * @since 1.0
  */
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)

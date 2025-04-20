@@ -17,19 +17,26 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import java.io.IOException;
 
 /**
+ * 自定义Web响应异常转换器 用于统一处理OAuth2认证过程中的异常 将不同类型的异常转换为统一的OAuth2异常格式
+ *
  * @author Yakir
- * @Topic CustomWebResponseExceptionTranslator
- * @Description 覆盖默认的DefaultWebResponseExceptionTranslator的方法
- * @date 2022/7/22 14:55
- * @Version 1.0
+ * @since 1.0
  */
 public class CustomWebResponseExceptionTranslator implements WebResponseExceptionTranslator<OAuth2Exception> {
 
+	/**
+	 * 异常分析器 用于分析异常链，提取特定类型的异常
+	 */
 	private ThrowableAnalyzer throwableAnalyzer = new DefaultThrowableAnalyzer();
 
+	/**
+	 * 转换异常为OAuth2异常响应 根据异常类型转换为对应的OAuth2异常
+	 * @param e 原始异常
+	 * @return OAuth2异常响应实体
+	 * @throws Exception 当转换过程中发生错误时抛出
+	 */
 	@Override
 	public ResponseEntity<OAuth2Exception> translate(Exception e) throws Exception {
-
 		// Try to extract a SpringSecurityException from the stacktrace
 		Throwable[] causeChain = throwableAnalyzer.determineCauseChain(e);
 		Exception ase = (OAuth2Exception) throwableAnalyzer.getFirstThrowableOfType(OAuth2Exception.class, causeChain);
@@ -66,11 +73,15 @@ public class CustomWebResponseExceptionTranslator implements WebResponseExceptio
 		String reasonPhrase = StringUtils.hasText(e.getMessage()) ? e.getMessage()
 				: HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase();
 		return handleOAuth2Exception(new ServerErrorException(reasonPhrase, e));
-
 	}
 
+	/**
+	 * 处理OAuth2异常 设置响应头和状态码，并返回异常响应实体
+	 * @param e OAuth2异常
+	 * @return 异常响应实体
+	 * @throws IOException 当处理过程中发生IO错误时抛出
+	 */
 	private ResponseEntity<OAuth2Exception> handleOAuth2Exception(OAuth2Exception e) throws IOException {
-
 		int status = e.getHttpErrorCode();
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Cache-Control", "no-store");
@@ -79,16 +90,27 @@ public class CustomWebResponseExceptionTranslator implements WebResponseExceptio
 			headers.set("WWW-Authenticate", String.format("%s %s", OAuth2AccessToken.BEARER_TYPE, e.getSummary()));
 		}
 		return new ResponseEntity<>(new CustomOAuth2Exception(e.getMessage(), e), headers, HttpStatus.valueOf(status));
-
 	}
 
+	/**
+	 * 设置异常分析器
+	 * @param throwableAnalyzer 异常分析器
+	 */
 	public void setThrowableAnalyzer(ThrowableAnalyzer throwableAnalyzer) {
 		this.throwableAnalyzer = throwableAnalyzer;
 	}
 
+	/**
+	 * 禁止访问异常 表示用户没有足够的权限访问资源
+	 */
 	@SuppressWarnings("serial")
 	private static class ForbiddenException extends OAuth2Exception {
 
+		/**
+		 * 构造函数
+		 * @param msg 异常消息
+		 * @param t 原始异常
+		 */
 		public ForbiddenException(String msg, Throwable t) {
 			super(msg, t);
 		}
@@ -105,9 +127,17 @@ public class CustomWebResponseExceptionTranslator implements WebResponseExceptio
 
 	}
 
+	/**
+	 * 服务器错误异常 表示服务器内部发生错误
+	 */
 	@SuppressWarnings("serial")
 	private static class ServerErrorException extends OAuth2Exception {
 
+		/**
+		 * 构造函数
+		 * @param msg 异常消息
+		 * @param t 原始异常
+		 */
 		public ServerErrorException(String msg, Throwable t) {
 			super(msg, t);
 		}
@@ -124,9 +154,17 @@ public class CustomWebResponseExceptionTranslator implements WebResponseExceptio
 
 	}
 
+	/**
+	 * 未授权异常 表示用户未通过认证
+	 */
 	@SuppressWarnings("serial")
 	private static class UnauthorizedException extends OAuth2Exception {
 
+		/**
+		 * 构造函数
+		 * @param msg 异常消息
+		 * @param t 原始异常
+		 */
 		public UnauthorizedException(String msg, Throwable t) {
 			super(msg, t);
 		}
@@ -143,9 +181,17 @@ public class CustomWebResponseExceptionTranslator implements WebResponseExceptio
 
 	}
 
+	/**
+	 * 方法不允许异常 表示请求的HTTP方法不被允许
+	 */
 	@SuppressWarnings("serial")
 	private static class MethodNotAllowed extends OAuth2Exception {
 
+		/**
+		 * 构造函数
+		 * @param msg 异常消息
+		 * @param t 原始异常
+		 */
 		public MethodNotAllowed(String msg, Throwable t) {
 			super(msg, t);
 		}

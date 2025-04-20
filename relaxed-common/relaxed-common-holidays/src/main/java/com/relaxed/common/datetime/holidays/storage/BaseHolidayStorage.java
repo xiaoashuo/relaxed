@@ -6,13 +6,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-/**
- * @author Yakir
- * @Topic BaseHolidayStorage
- * @Description
- * @date 2023/8/14 10:22
- * @Version 1.0
- */
 public abstract class BaseHolidayStorage implements HolidayStorage {
 
 	@Override

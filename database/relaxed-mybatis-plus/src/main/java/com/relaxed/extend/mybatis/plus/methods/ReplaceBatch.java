@@ -1,11 +1,9 @@
 package com.relaxed.extend.mybatis.plus.methods;
 
 /**
+ * ReplaceBatch
+ *
  * @author Yakir
- * @Topic ReplaceBatch
- * @Description
- * @date 2021/7/11 10:50
- * @Version 1.0
  */
 public class ReplaceBatch extends AbstractInsertBatch {
 

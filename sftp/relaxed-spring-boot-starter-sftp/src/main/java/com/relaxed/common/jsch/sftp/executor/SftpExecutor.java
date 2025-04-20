@@ -16,7 +16,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * 默认实现
+ * SFTP执行器默认实现
  *
  * @author shuoyu
  */
@@ -25,6 +25,11 @@ public class SftpExecutor extends AbstractSftpExecutor {
 
 	private static final String NO_SUCH_FILE = "No such file";
 
+	/**
+	 * 创建SFTP执行器实例
+	 * @param channelSftp SFTP通道
+	 * @param sftpProperties SFTP配置属性
+	 */
 	public SftpExecutor(ChannelSftp channelSftp, SftpProperties sftpProperties) {
 		super(channelSftp, sftpProperties);
 		String workdir = sftpProperties.getWorkdir();
@@ -40,6 +45,12 @@ public class SftpExecutor extends AbstractSftpExecutor {
 
 	}
 
+	/**
+	 * 检查文件或目录是否存在
+	 * @param path 文件或目录路径
+	 * @return 如果存在返回true，否则返回false
+	 * @throws SftpClientException 检查过程中可能抛出的异常
+	 */
 	@Override
 	public boolean isExist(String path) {
 		try {
@@ -55,6 +66,12 @@ public class SftpExecutor extends AbstractSftpExecutor {
 		}
 	}
 
+	/**
+	 * 获取远程文件的输入流
+	 * @param absoluteFilePath 绝对文件路径
+	 * @return 远程文件输入流
+	 * @throws SftpClientException 获取输入流时可能抛出的异常
+	 */
 	@Override
 	public InputStream getInputStream(String absoluteFilePath) {
 		if (!isExist(absoluteFilePath)) {
@@ -69,6 +86,13 @@ public class SftpExecutor extends AbstractSftpExecutor {
 		}
 	}
 
+	/**
+	 * 获取远程文件的输入流
+	 * @param dir 文件目录
+	 * @param name 文件名
+	 * @return 远程文件输入流
+	 * @throws SftpClientException 获取输入流时可能抛出的异常
+	 */
 	@Override
 	public InputStream getInputStream(String dir, String name) {
 		if (!isExist(dir)) {
@@ -91,6 +115,14 @@ public class SftpExecutor extends AbstractSftpExecutor {
 		}
 	}
 
+	/**
+	 * 下载远程文件到指定文件
+	 * @param dir 远程目录
+	 * @param name 远程文件名
+	 * @param file 本地文件
+	 * @return 下载后的本地文件
+	 * @throws SftpClientException 下载过程中可能抛出的异常
+	 */
 	@Override
 	public File download(String dir, String name, File file) {
 		if (!isExist(dir)) {
@@ -101,6 +133,13 @@ public class SftpExecutor extends AbstractSftpExecutor {
 
 	}
 
+	/**
+	 * 下载远程文件到指定文件
+	 * @param absoluteFilePath 远程文件绝对路径
+	 * @param file 本地文件
+	 * @return 下载后的本地文件
+	 * @throws SftpClientException 下载过程中可能抛出的异常
+	 */
 	@Override
 	public File download(String absoluteFilePath, File file) {
 		try (FileOutputStream fos = new FileOutputStream(file)) {
@@ -116,18 +155,38 @@ public class SftpExecutor extends AbstractSftpExecutor {
 		}
 	}
 
+	/**
+	 * 下载远程文件到字节数组
+	 * @param dir 远程目录
+	 * @param name 远程文件名
+	 * @return 文件内容字节数组
+	 * @throws SftpClientException 下载过程中可能抛出的异常
+	 */
 	@Override
 	public byte[] download(String dir, String name) {
 		InputStream in = getInputStream(dir, name);
 		return ByteUtil.inputStreamToByteArray(in);
 	}
 
+	/**
+	 * 下载远程文件到字节数组
+	 * @param absoluteFilePath 远程文件绝对路径
+	 * @return 文件内容字节数组
+	 * @throws SftpClientException 下载过程中可能抛出的异常
+	 */
 	@Override
 	public byte[] download(String absoluteFilePath) {
 		InputStream in = getInputStream(absoluteFilePath);
 		return ByteUtil.inputStreamToByteArray(in);
 	}
 
+	/**
+	 * 上传文件到远程服务器
+	 * @param dir 远程目录
+	 * @param name 远程文件名
+	 * @param in 文件输入流
+	 * @throws SftpClientException 上传过程中可能抛出的异常
+	 */
 	@Override
 	public void upload(String dir, String name, InputStream in) {
 		try {
@@ -143,6 +202,13 @@ public class SftpExecutor extends AbstractSftpExecutor {
 		}
 	}
 
+	/**
+	 * 上传文件到远程服务器
+	 * @param dir 远程目录
+	 * @param name 远程文件名
+	 * @param file 本地文件
+	 * @throws SftpClientException 上传过程中可能抛出的异常
+	 */
 	@Override
 	public void upload(String dir, String name, File file) {
 		try (FileInputStream fis = new FileInputStream(file)) {
@@ -153,6 +219,13 @@ public class SftpExecutor extends AbstractSftpExecutor {
 		}
 	}
 
+	/**
+	 * 上传文件到远程服务器
+	 * @param dir 远程目录
+	 * @param name 远程文件名
+	 * @param src 本地文件路径
+	 * @throws SftpClientException 上传过程中可能抛出的异常
+	 */
 	@Override
 	public void upload(String dir, String name, String src) {
 		try {
@@ -168,6 +241,11 @@ public class SftpExecutor extends AbstractSftpExecutor {
 		}
 	}
 
+	/**
+	 * 删除远程文件或目录
+	 * @param path 远程文件或目录路径
+	 * @throws SftpClientException 删除过程中可能抛出的异常
+	 */
 	@Override
 	public void delete(String path) {
 		if (!isExist(path)) {
@@ -187,6 +265,12 @@ public class SftpExecutor extends AbstractSftpExecutor {
 		}
 	}
 
+	/**
+	 * 删除远程文件
+	 * @param dir 远程目录
+	 * @param name 远程文件名
+	 * @throws SftpClientException 删除过程中可能抛出的异常
+	 */
 	@Override
 	public void delete(String dir, String name) {
 		if (!isDir(dir)) {
@@ -257,7 +341,7 @@ public class SftpExecutor extends AbstractSftpExecutor {
 			if (!".".equals(filename) && !"..".equals(filename)) {
 				SftpATTRS attrs = lsEntry.getAttrs();
 				boolean isDir = attrs.isDir();
-				// “atime”和“mtime”分别包含文件的访问和修改时间,它们表示为UTC 1970年1月1日起的秒数。
+				// "atime"和"mtime"分别包含文件的访问和修改时间,它们表示为UTC 1970年1月1日起的秒数。
 				long modifyTime = attrs.getMTime() * 1000L;
 				FileAttr fileAttr = new FileAttr(isDir, filename, modifyTime);
 				Boolean isNeedStorage = filterFunction.apply(fileAttr);

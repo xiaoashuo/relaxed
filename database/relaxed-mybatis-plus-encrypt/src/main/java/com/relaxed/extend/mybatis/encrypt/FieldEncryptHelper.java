@@ -22,21 +22,29 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * 字段加密助手类 提供字段加密和解密的核心功能，支持对象和集合类型的加解密处理 支持通过注解标记需要加密的字段，自动进行加解密操作
+ *
  * @author Yakir
- * @Topic FieldEncryptUtil
- * @Description
- * @date 2024/10/9 17:08
- * @Version 1.0
  */
 @RequiredArgsConstructor
 @Component
 @Slf4j
 public class FieldEncryptHelper {
 
+	/**
+	 * 字段安全持有者，用于管理不同类型的加密器
+	 */
 	private static FieldSecurityHolder FILED_SEC_HOLDER = FieldSecurityHolder.INSTANCE;
 
+	/**
+	 * 字段安全配置属性
+	 */
 	private final FieldSecurityProperties fieldSecurityProperties;
 
+	/**
+	 * 获取默认的字段加密器
+	 * @return 字段加密器实例
+	 */
 	public FieldEncryptor getFieldEncryptor() {
 		String defSec = fieldSecurityProperties.getDefSec();
 		FieldEncryptor encryptor = FILED_SEC_HOLDER.getByType(defSec);
@@ -44,7 +52,10 @@ public class FieldEncryptHelper {
 		return encryptor;
 	}
 
-	/** 对EncryptField注解进行加密处理 */
+	/**
+	 * 对对象中标记了加密注解的字段进行加密处理
+	 * @param obj 需要加密的对象
+	 */
 	public void encrypt(Object obj) {
 		if (ClassUtil.isPrimitiveWrapper(obj.getClass())) {
 			return;
@@ -52,12 +63,18 @@ public class FieldEncryptHelper {
 		encryptOrDecrypt(obj, true);
 	}
 
-	/** 对EncryptField注解进行解密处理 */
+	/**
+	 * 对对象中标记了加密注解的字段进行解密处理
+	 * @param obj 需要解密的对象
+	 */
 	public void decrypt(Object obj) {
 		encryptOrDecrypt(obj, false);
 	}
 
-	/** 对EncryptField注解进行解密处理 */
+	/**
+	 * 对集合中所有对象进行解密处理
+	 * @param list 需要解密的集合
+	 */
 	public void decrypt(Collection list) {
 		if (CollectionUtils.isEmpty(list)) {
 			return;
@@ -65,7 +82,11 @@ public class FieldEncryptHelper {
 		list.forEach(this::decrypt);
 	}
 
-	/** 对EncryptField注解进行加解密处理 */
+	/**
+	 * 对对象进行加密或解密处理
+	 * @param obj 需要处理的对象
+	 * @param encrypt true表示加密，false表示解密
+	 */
 	private void encryptOrDecrypt(Object obj, boolean encrypt) {
 		if (Objects.isNull(obj)) {
 			return;
@@ -73,12 +94,22 @@ public class FieldEncryptHelper {
 		handleObject(obj, encrypt);
 	}
 
+	/**
+	 * 克隆对象
+	 * @param source 源对象
+	 * @return 克隆后的新对象
+	 */
 	public static Object clone(Object source) {
 		Object result = BeanUtils.instantiateClass(source.getClass());
 		BeanUtils.copyProperties(source, result);
 		return result;
 	}
 
+	/**
+	 * 处理对象的加密或解密
+	 * @param obj 需要处理的对象
+	 * @param encrypt true表示加密，false表示解密
+	 */
 	private void handleObject(Object obj, boolean encrypt) {
 		// 判断类上面是否有加密注解
 		FieldEncrypt fieldEncrypt = AnnotationUtils.findAnnotation(obj.getClass(), FieldEncrypt.class);
@@ -120,10 +151,10 @@ public class FieldEncryptHelper {
 	}
 
 	/**
-	 * 编码加密字段查询
-	 * @param entityClass 实体类
-	 * @param mpMap 字段->MPGENVALX 映射 多值MAP
-	 * @param paramNameValuePairs MPGENVALX->值映射
+	 * 对查询条件中的加密字段进行加密处理
+	 * @param entityClass 实体类类型
+	 * @param mpMap 字段名到MPGENVALX的映射关系
+	 * @param paramNameValuePairs MPGENVALX到实际值的映射关系
 	 */
 	public void encrypt(Class<?> entityClass, MultiValueMap<String, String> mpMap,
 			Map<String, Object> paramNameValuePairs) {

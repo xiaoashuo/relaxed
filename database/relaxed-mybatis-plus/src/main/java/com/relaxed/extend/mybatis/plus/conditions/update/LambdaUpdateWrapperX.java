@@ -22,11 +22,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * LambdaUpdateWrapperX
+ *
  * @author Yakir
- * @Topic LambdaUpdateWrapperX
- * @Description
- * @date 2021/12/29 17:07
- * @Version 1.0
  */
 public class LambdaUpdateWrapperX<T> extends AbstractLambdaWrapper<T, LambdaUpdateWrapperX<T>>
 		implements Update<LambdaUpdateWrapperX<T>, SFunction<T, ?>> {

@@ -20,11 +20,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 /**
+ * LambdaQueryWrapperX
+ *
  * @author Yakir
- * @Topic LambdaQueryWrapperX
- * @Description
- * @date 2021/12/29 16:47
- * @Version 1.0
  */
 public class LambdaAliasQueryWrapperX<T> extends LambdaQueryWrapperX<T> {
 
@@ -33,8 +31,7 @@ public class LambdaAliasQueryWrapperX<T> extends LambdaQueryWrapperX<T> {
 	private TableAliasFunction tableAliasFunction;
 
 	/**
-	 * 带别名的查询列 sql 片段，默认为null，第一次使用时加载<br/>
-	 * eg. t.id,t.name
+	 * 带别名的查询列 sql 片段，默认为null，第一次使用时加载 eg. t.id,t.name
 	 */
 	private String allAliasSqlSelect = null;
 

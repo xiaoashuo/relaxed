@@ -4,11 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * 钉钉消息类型枚举。 定义了钉钉机器人支持的所有消息类型。
+ *
  * @author Yakir
- * @Topic MessageTypeEnum
- * @Description 按钮排列样式值
- * @date 2021/6/19
- * @Version 1.0
+ * @since 1.0
  */
 @Getter
 @AllArgsConstructor
@@ -23,11 +22,11 @@ public enum MessageTypeEnum {
 	 */
 	LINK("link", "链接"),
 	/**
-	 * markdown 消息
+	 * Markdown格式消息
 	 */
 	MARKDOWN("markdown", "markdown"),
 	/**
-	 * ActionCard消息
+	 * 动作卡片消息
 	 */
 	ACTION_CARD("actionCard", "跳转 actionCard 类型"),;
 

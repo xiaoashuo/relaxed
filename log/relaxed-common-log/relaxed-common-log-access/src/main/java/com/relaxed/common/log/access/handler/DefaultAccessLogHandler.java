@@ -19,17 +19,26 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
+ * 默认访问日志处理器实现类。 提供了访问日志的默认实现。 主要功能包括： 1. 记录请求基本信息（URI、方法、IP等） 2. 记录请求参数和请求体 3. 记录响应结果 4.
+ * 记录执行时间和异常信息 5. 支持字段过滤和替换
+ *
  * @author Yakir
- * @Topic DefaultAccessLogHandler
- * @Description
- * @date 2024/12/24 9:23
- * @Version 1.0
+ * @since 1.0
  */
 @Slf4j
 public class DefaultAccessLogHandler extends AbstractAccessLogHandler<Map<String, String>> {
 
+	/**
+	 * 跟踪ID的MDC键名
+	 */
 	public static final String TRACE_ID = "traceId";
 
+	/**
+	 * 请求前处理，构建请求基本信息
+	 * @param request HTTP请求
+	 * @param logAccessRule 访问日志规则
+	 * @return 请求基本信息Map
+	 */
 	@Override
 	public Map<String, String> beforeRequest(HttpServletRequest request, LogAccessRule logAccessRule) {
 		Map<String, String> paramMap = new HashMap<>();
@@ -48,6 +57,15 @@ public class DefaultAccessLogHandler extends AbstractAccessLogHandler<Map<String
 		return paramMap;
 	}
 
+	/**
+	 * 请求后处理，记录完整的访问日志
+	 * @param buildParam 请求前构建的参数
+	 * @param request HTTP请求
+	 * @param response HTTP响应
+	 * @param executionTime 请求执行时间（毫秒）
+	 * @param myThrowable 请求处理过程中的异常
+	 * @param logAccessRule 访问日志规则
+	 */
 	@Override
 	public void afterRequest(Map<String, String> buildParam, HttpServletRequest request, HttpServletResponse response,
 			Long executionTime, Throwable myThrowable, LogAccessRule logAccessRule) {
@@ -83,14 +101,19 @@ public class DefaultAccessLogHandler extends AbstractAccessLogHandler<Map<String
 		this.handleLog(header, buildParam);
 	}
 
+	/**
+	 * 处理日志记录
+	 * @param header 请求头信息
+	 * @param buildParam 构建的参数
+	 */
 	protected void handleLog(String header, Map<String, String> buildParam) {
 		log.info("\n请求头:\n{}\n请求记录:\n{}", header, convertToAccessLogStr(buildParam));
 	}
 
 	/**
 	 * 判断是否是multipart/form-data请求
-	 * @param request 请求信息
-	 * @return 是否是multipart/form-data请求
+	 * @param request HTTP请求
+	 * @return true 表示是multipart/form-data请求，false 表示不是
 	 */
 	public boolean isMultipartContent(HttpServletRequest request) {
 		// 获取Content-Type
@@ -98,6 +121,11 @@ public class DefaultAccessLogHandler extends AbstractAccessLogHandler<Map<String
 		return (contentType != null) && (contentType.toLowerCase().startsWith("multipart/"));
 	}
 
+	/**
+	 * 将参数Map转换为访问日志字符串
+	 * @param params 参数Map
+	 * @return 格式化后的访问日志字符串
+	 */
 	public String convertToAccessLogStr(Map<String, String> params) {
 		String LINE_SEPARATOR = System.lineSeparator();
 		StringBuilder reqInfo = new StringBuilder().append("traceId:").append(params.get("traceId"))

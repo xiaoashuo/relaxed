@@ -33,35 +33,43 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * 访问日志处理器抽象类。 提供了访问日志处理的基础实现。 主要功能包括： 1. 获取请求头信息 2. 获取请求参数 3. 获取请求体 4. 获取响应体 5. 支持字段过滤和替换
+ *
+ * @param <T> 请求实体类型
  * @author Yakir
- * @Topic AbstractAccessLogHandler
- * @Description
- * @date 2024/12/24 9:22
- * @Version 1.0
+ * @since 1.0
  */
 @Slf4j
 public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T> {
 
+	/**
+	 * 获取所有请求头信息
+	 * @param request HTTP请求
+	 * @return 请求头信息JSON字符串
+	 */
 	protected String getHeader(HttpServletRequest request) {
 		return getHeader(request, headerName -> true);
 	}
 
+	/**
+	 * 请求头过滤器接口
+	 */
 	protected interface ReqHeaderFilter {
 
 		/**
 		 * 过滤请求头
-		 * @param headerName
-		 * @return true 提取 false 跳过
+		 * @param headerName 请求头名称
+		 * @return true 表示需要提取，false 表示跳过
 		 */
 		boolean filter(String headerName);
 
 	}
 
 	/**
-	 * 根据过滤器提取请求头
-	 * @param request
-	 * @param reqHeaderFilter
-	 * @return
+	 * 根据过滤器提取请求头信息
+	 * @param request HTTP请求
+	 * @param reqHeaderFilter 请求头过滤器
+	 * @return 过滤后的请求头信息JSON字符串
 	 */
 	protected String getHeader(HttpServletRequest request, ReqHeaderFilter reqHeaderFilter) {
 		StringBuilder header = new StringBuilder();
@@ -83,10 +91,10 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 	}
 
 	/**
-	 * 获取指定范围内请求头
-	 * @param request
-	 * @param headerNames
-	 * @return
+	 * 获取指定请求头信息
+	 * @param request HTTP请求
+	 * @param headerNames 需要获取的请求头名称数组
+	 * @return 指定请求头信息JSON字符串
 	 */
 	protected String getHeader(HttpServletRequest request, String... headerNames) {
 		Map<String, Integer> headMap = new HashMap<>();
@@ -101,19 +109,25 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 		});
 	}
 
+	/**
+	 * 获取响应体信息
+	 * @param request HTTP请求
+	 * @param response HTTP响应
+	 * @param matchResponseKey 需要过滤的响应字段
+	 * @return 响应体信息
+	 */
 	protected String getResponseBody(HttpServletRequest request, HttpServletResponse response,
 			String matchResponseKey) {
-
 		return getResponseBody(request, response, matchResponseKey, "");
 	}
 
 	/**
-	 * 获取响应体 防止在 {@link RequestContextHolder} 设置内容之前或清空内容之后使用，从而导致获取不到响应体的问题
-	 * @param request 请求信息
-	 * @param response 响应信息
-	 * @param matchResponseKey 匹配key
+	 * 获取响应体信息 防止在 {@link RequestContextHolder} 设置内容之前或清空内容之后使用，从而导致获取不到响应体的问题
+	 * @param request HTTP请求
+	 * @param response HTTP响应
+	 * @param matchResponseKey 需要过滤的响应字段
 	 * @param replaceText 替换文本
-	 * @return responseBody 响应体
+	 * @return 响应体信息
 	 */
 	protected String getResponseBody(HttpServletRequest request, HttpServletResponse response, String matchResponseKey,
 			String replaceText) {
@@ -145,16 +159,22 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 		return "";
 	}
 
+	/**
+	 * 获取请求参数
+	 * @param request HTTP请求
+	 * @param matchKey 需要过滤的参数字段
+	 * @return 请求参数JSON字符串
+	 */
 	protected String getParams(HttpServletRequest request, String matchKey) {
 		return getParams(request, matchKey, "");
 	}
 
 	/**
-	 * 获取参数信息
-	 * @param request 请求信息
-	 * @param matchFieldKey 匹配key
+	 * 获取请求参数
+	 * @param request HTTP请求
+	 * @param matchFieldKey 需要过滤的参数字段
 	 * @param replaceText 替换文本
-	 * @return 请求参数
+	 * @return 请求参数JSON字符串
 	 */
 	protected String getParams(HttpServletRequest request, String matchFieldKey, String replaceText) {
 		String params;
@@ -180,16 +200,22 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 		return params;
 	}
 
+	/**
+	 * 获取请求体
+	 * @param request HTTP请求
+	 * @param matchingPattern 需要过滤的字段
+	 * @return 请求体内容
+	 */
 	protected String getRequestBody(HttpServletRequest request, String matchingPattern) {
 		return getRequestBody(request, matchingPattern, "");
 	}
 
 	/**
 	 * 获取请求体
-	 * @param request
-	 * @param matchingFieldKey
-	 * @param replaceText
-	 * @return
+	 * @param request HTTP请求
+	 * @param matchingFieldKey 需要过滤的字段
+	 * @param replaceText 替换文本
+	 * @return 请求体内容
 	 */
 	protected String getRequestBody(HttpServletRequest request, String matchingFieldKey, String replaceText) {
 		RepeatBodyRequestWrapper wrapperRequest = WebUtils.getNativeRequest(request, RepeatBodyRequestWrapper.class);
@@ -216,6 +242,11 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 		return body;
 	}
 
+	/**
+	 * 获取请求体文本
+	 * @param wrapperRequest 包装后的请求
+	 * @return 请求体文本
+	 */
 	protected String getRequestBodyText(RepeatBodyRequestWrapper wrapperRequest) {
 		String body;
 
@@ -228,6 +259,13 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 		return body;
 	}
 
+	/**
+	 * 获取消息负载
+	 * @param buf 字节数组
+	 * @param maxLength 最大长度
+	 * @param characterEncoding 字符编码
+	 * @return 消息文本
+	 */
 	protected String getMessagePayload(byte[] buf, int maxLength, String characterEncoding) {
 		if (buf.length > 0) {
 			try {

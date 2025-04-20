@@ -5,13 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 
-/**
- * @author Yakir
- * @Topic DefaultWorkDayCalculator
- * @Description
- * @date 2023/8/10 9:50
- * @Version 1.0
- */
 @RequiredArgsConstructor
 public class DefaultWorkDayCalculator implements WorkdayCalculator {
 

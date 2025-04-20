@@ -20,11 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 默认数据处理器实现类 该实现类提供了对象差异比较的基本实现 通过反射获取对象的字段，并使用字段处理器进行差异比较
+ *
  * @author Yakir
- * @Topic DefaultDataHandler
- * @Description 数据处理器 提取数据
- * @date 2021/12/14 14:13
- * @Version 1.0
  */
 @RequiredArgsConstructor
 public class DefaultDataHandler implements IDataHandler {

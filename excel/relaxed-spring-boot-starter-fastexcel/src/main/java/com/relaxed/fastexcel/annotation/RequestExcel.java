@@ -7,11 +7,11 @@ import com.relaxed.fastexcel.handler.ListAnalysisEventListener;
 import java.lang.annotation.*;
 
 /**
- * 导入excel
+ * Excel导入注解 用于标记Controller方法参数,表示该参数接收Excel文件上传 支持配置文件名、读取监听器、是否跳过空行等属性
  *
  * @author lengleng
  * @author L.cm
- * @date 2021/4/16
+ * @since 1.0.0
  */
 @Documented
 @Target({ ElementType.PARAMETER })
@@ -19,40 +19,40 @@ import java.lang.annotation.*;
 public @interface RequestExcel {
 
 	/**
-	 * 前端上传字段名称 file
+	 * 前端上传Excel文件的字段名称 默认为空字符串,表示使用默认字段名
+	 * @return 字段名称
 	 */
 	String fileName() default "";
 
 	/**
-	 * 读取的监听器类
-	 * @return readListener
+	 * Excel读取监听器类 用于自定义Excel数据的读取和处理逻辑
+	 * @return 监听器类
 	 */
 	Class<? extends ListAnalysisEventListener<?>> readListener() default DefaultAnalysisEventListener.class;
 
 	/**
-	 * 是否跳过空行
-	 * @return 默认跳过
+	 * 是否跳过空行 设置为true时,将跳过Excel中的空行
+	 * @return 是否跳过空行,默认为false
 	 */
 	boolean ignoreEmptyRow() default false;
 
 	/**
-	 * 工作表名称
-	 * @return sheetName
+	 * 要读取的工作表名称 如果为空字符串,则读取第一个工作表
+	 * @return 工作表名称
 	 */
 	String sheetName() default "";
 
 	/**
-	 * Count the number of added heads when read sheet. 0 - This Sheet has no head ,since
-	 * the first row are the data 1 - This Sheet has one row head , this is the default 2
-	 * - This Sheet has two row head ,since the third row is the data
+	 * 表头行数 0 - 表示没有表头,第一行即为数据 1 - 表示有一行表头(默认值) 2 - 表示有两行表头,第三行开始为数据
+	 *
 	 * @see AbstractExcelReaderParameterBuilder#headRowNumber
-	 * @return headRowNumber
+	 * @return 表头行数
 	 */
 	int headRowNumber() default 1;
 
 	/**
-	 * The number of rows to read, the default is all, start with 0. include table header
-	 * row
+	 * 要读取的数据行数 -1 - 表示读取所有行(默认值) 0或正整数 - 表示读取指定行数 注意:行数包含表头行
+	 * @return 要读取的行数
 	 */
 	int numRows() default -1;
 

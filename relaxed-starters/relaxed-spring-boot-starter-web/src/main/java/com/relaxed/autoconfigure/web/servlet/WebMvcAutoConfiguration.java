@@ -14,10 +14,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 /**
- * web mvc config
+ * Web MVC自动配置类 配置Web MVC相关的组件，包括分页参数解析器和TraceId过滤器
  *
  * @author Yakir
- * @since 2021/3/19
+ * @since 1.0
  */
 @Configuration
 public class WebMvcAutoConfiguration {
@@ -25,12 +25,19 @@ public class WebMvcAutoConfiguration {
 	@Value("${relaxed.web.page-size-limit:100}")
 	private int pageSizeLimit;
 
+	/**
+	 * 创建分页参数解析器 用于解析Controller方法中的分页参数
+	 * @return 分页参数解析器
+	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public PageParamArgumentResolver pageParamArgumentResolver() {
 		return new PageParamArgumentResolver(pageSizeLimit);
 	}
 
+	/**
+	 * 自定义Web MVC配置 配置方法参数解析器
+	 */
 	@RequiredArgsConstructor
 	@Configuration(proxyBeanMethods = false)
 	static class CustomWebMvcConfigurer implements WebMvcConfigurer {
@@ -38,7 +45,7 @@ public class WebMvcAutoConfiguration {
 		private final PageParamArgumentResolver pageParamArgumentResolver;
 
 		/**
-		 * Page Sql注入过滤
+		 * 添加分页参数解析器 用于解析分页查询参数，防止SQL注入
 		 * @param argumentResolvers 方法参数解析器集合
 		 */
 		@Override
@@ -49,8 +56,8 @@ public class WebMvcAutoConfiguration {
 	}
 
 	/**
-	 * trace id 过滤器
-	 * @return
+	 * 创建TraceId过滤器 用于在请求中添加TraceId，方便日志追踪
+	 * @return TraceId过滤器注册Bean
 	 */
 	@Bean
 	public FilterRegistrationBean<TraceIdFilter> traceIdFilterRegistrationBean() {

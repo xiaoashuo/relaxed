@@ -1,24 +1,22 @@
 package com.relaxed.extend.mybatis.plus.alias;
 
-import com.relaxed.extend.mybatis.plus.conditions.query.LambdaAliasQueryWrapperX;
-
 import java.lang.annotation.*;
 
 /**
- * 表别名注解，注解在 entity 上，便于构建带别名的查询条件或者查询列
- * @see LambdaAliasQueryWrapperX
- * @see TableAliasHelper
- * @author Hccake 2021/1/14
- * @version 1.0
+ * 表别名注解
+ * <p>
+ * 用于标记实体类对应的数据库表别名。 在 SQL 查询中可以使用该别名来引用表。
  */
-@Target({ ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface TableAlias {
 
 	/**
-	 * 当前实体对应的表别名
-	 * @return String 表别名
+	 * 表别名
+	 * <p>
+	 * 在 SQL 查询中使用的表别名。
+	 * @return 表别名
 	 */
 	String value();
 

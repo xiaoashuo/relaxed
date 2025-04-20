@@ -9,11 +9,10 @@ import lombok.experimental.Accessors;
 import java.util.List;
 
 /**
+ * 列表内容数据类，用于存储 Word 文档中的列表数据。 支持自定义列表样式和内容，支持链式调用。
+ *
  * @author Yakir
- * @Topic ListContentData
- * @Description
- * @date 2024/3/25 17:53
- * @Version 1.0
+ * @since 1.0.0
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -21,12 +20,12 @@ import java.util.List;
 public class ListContentData extends LabelData {
 
 	/**
-	 * 列表数据集
+	 * 列表项数据集合，每个列表项可以包含文本和样式信息
 	 */
 	private List<TextRenderData> list;
 
 	/**
-	 * 列表样式,支持罗马字符、有序无序等,默认为点
+	 * 列表样式格式，支持罗马字符、有序列表、无序列表等 默认为点状列表样式
 	 */
 	private NumberingFormat numberingFormat = NumberingFormat.BULLET;
 

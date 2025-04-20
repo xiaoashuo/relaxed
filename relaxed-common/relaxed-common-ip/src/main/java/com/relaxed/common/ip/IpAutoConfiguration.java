@@ -15,11 +15,9 @@ import org.springframework.context.annotation.Configuration;
 import java.io.InputStream;
 
 /**
+ * Ip2RegionAutoConfiguration
+ *
  * @author Yakir
- * @Topic Ip2RegionAutoConfiguration
- * @Description
- * @date 2021/9/1 11:07
- * @Version 1.0
  */
 @Slf4j
 @Configuration
@@ -29,9 +27,7 @@ public class IpAutoConfiguration {
 
 	/**
 	 * ip 初始化
-	 * @author yakir
-	 * @date 2021/9/1 11:21
-	 * @param properties
+	 * @param properties ip属性
 	 * @return com.relaxed.common.ip.Ip2RegionSearcher
 	 */
 	@Bean

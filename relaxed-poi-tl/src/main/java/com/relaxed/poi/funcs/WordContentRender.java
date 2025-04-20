@@ -4,25 +4,27 @@ import com.deepoove.poi.config.Configure;
 import com.relaxed.poi.domain.LabelData;
 
 /**
+ * Interface for rendering content in Word documents. This interface defines the contract
+ * for content renderers that process different types of data for Word document
+ * generation.
+ *
+ * @param <T> the type of label data this renderer can process
  * @author Yakir
- * @Topic WordContentRender
- * @Description word 内容渲染接口
- * @date 2024/3/25 14:16
- * @Version 1.0
+ * @since 1.0.0
  */
 public interface WordContentRender<T extends LabelData> {
 
 	/**
-	 * 数据类型
-	 * @return 当前处理器支持类型
+	 * Returns the content type that this renderer supports.
+	 * @return the content type identifier
 	 */
 	String contentType();
 
 	/**
-	 * 渲染填充数据值
-	 * @param configure 当前使用配置对象
-	 * @param data
-	 * @return 值对象
+	 * Renders the given data into a format suitable for Word document generation.
+	 * @param configure the configuration object for rendering
+	 * @param data the data to be rendered
+	 * @return the rendered value object
 	 */
 	Object render(Configure configure, T data);
 

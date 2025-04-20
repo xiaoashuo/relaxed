@@ -16,63 +16,82 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author Yakir
- * @Topic JsonUtil
- * @Description JSON 差异方案
- * <p>
- * https://blog.csdn.net/liuxiao723846/article/details/108508200 1.JSON patch json-patch
- * 不支持关闭move、copy operations<br/>
- * https://blog.csdn.net/liuxiao723846/article/details/108547980 <br/>
- * https://github.com/java-json-tools/json-patch/releases
+ * JSON 工具类 该工具类提供了 JSON 差异比较和转换的相关功能 主要功能包括： 1. 比较两个 JSON 字符串的差异 2. 将 JSON 差异转换为属性变更列表 3.
+ * 支持多种差异比较策略 4. 处理 JSON 节点的值提取
  *
- * 2. zjsonpatch 支持关闭move、copy operations <br/>
- * https://github.com/flipkart-incubator/zjsonpatch <br/>
- * 3.铺平json 然后用google的guava 的map Diffenrents <br/>
- * https://blog.csdn.net/Revivedsun/article/details/118463049 <br/>
- * 4.json diff <br/>
- * https://github.com/algesten/jsondiff
- * </p>
- * @date 2021/12/15 13:41
- * @Version 1.0
+ * 参考实现： 1. JSON Patch (json-patch) - 不支持关闭 move、copy 操作 2. zjsonpatch - 支持关闭 move、copy 操作
+ * 3. 扁平化 JSON 后使用 Guava 的 Map Differences 4. json-diff
+ *
+ * @author Yakir
  */
 public class JsonUtil {
 
+	/**
+	 * 操作类型字段名
+	 */
 	public static final String OP = "op";
 
+	/**
+	 * 值字段名
+	 */
 	public static final String VALUE = "value";
 
+	/**
+	 * 路径字段名
+	 */
 	public static final String PATH = "path";
 
+	/**
+	 * 来源字段名
+	 */
 	public static final String FROM = "from";
 
+	/**
+	 * 来源值字段名
+	 */
 	public static final String FROM_VALUE = "fromValue";
 
+	/**
+	 * Jackson 对象映射器
+	 */
 	private static ObjectMapper MAPPER = new ObjectMapper();
 
+	/**
+	 * 差异比较标志 配置为忽略移动和复制操作，并在替换操作中包含原始值
+	 */
 	private static EnumSet<DiffFlags> flags = EnumSet
 			.of(DiffFlags.OMIT_MOVE_OPERATION, DiffFlags.OMIT_COPY_OPERATION, DiffFlags.ADD_ORIGINAL_VALUE_ON_REPLACE)
 			.clone();
 
 	/**
-	 * 提取 json差异
-	 * @author yakir
-	 * @date 2021/12/15 15:15
-	 * @param expected 支持 json对象 json数组
-	 * @param actual 支持 json对象 json数组
-	 * @return java.lang.String 返回差异json数组
+	 * 比较两个 JSON 字符串的差异 返回格式化的差异结果
+	 * @param expected 原始 JSON 字符串
+	 * @param actual 目标 JSON 字符串
+	 * @return 格式化的差异结果
 	 */
 	public static String jsonDiff(String expected, String actual) {
 		return jsonPatchDiff(expected, actual).toPrettyString();
 	}
 
+	/**
+	 * 比较两个 JSON 字符串的差异 返回差异的 JsonNode 对象
+	 * @param expected 原始 JSON 字符串
+	 * @param actual 目标 JSON 字符串
+	 * @return 差异的 JsonNode 对象
+	 */
 	@SneakyThrows
 	public static JsonNode jsonPatchDiff(String expected, String actual) {
 		JsonNode source = MAPPER.readTree(expected);
 		JsonNode target = MAPPER.readTree(actual);
-		JsonNode jsonpPatch = jsonDiff(source, target);
-		return jsonpPatch;
+		return jsonDiff(source, target);
 	}
 
+	/**
+	 * 将 JSON 差异转换为属性变更列表
+	 * @param expected 原始 JSON 字符串
+	 * @param actual 目标 JSON 字符串
+	 * @return 属性变更列表
+	 */
 	public static List<AttributeChange> diffJson(String expected, String actual) {
 		JsonNode jsonNode = jsonPatchDiff(expected, actual);
 		Iterator<JsonNode> elements = jsonNode.elements();
@@ -108,17 +127,35 @@ public class JsonUtil {
 		return attributeChangeList;
 	}
 
+	/**
+	 * 获取 JsonNode 的文本值 如果节点为 null，返回默认值
+	 * @param jsonNode JSON 节点
+	 * @param defaultValue 默认值
+	 * @return 节点的文本值或默认值
+	 */
 	public static String nodeValue(JsonNode jsonNode, String defaultValue) {
 		return jsonNode == null ? defaultValue : jsonNode.asText();
 	}
 
+	/**
+	 * 比较两个 JsonNode 的差异 使用默认的比较标志
+	 * @param expected 原始 JsonNode
+	 * @param actual 目标 JsonNode
+	 * @return 差异的 JsonNode
+	 */
 	public static JsonNode jsonDiff(JsonNode expected, JsonNode actual) {
 		return jsonDiff(expected, actual, flags);
 	}
 
+	/**
+	 * 比较两个 JsonNode 的差异 使用指定的比较标志
+	 * @param expected 原始 JsonNode
+	 * @param actual 目标 JsonNode
+	 * @param enumSet 比较标志集合
+	 * @return 差异的 JsonNode
+	 */
 	public static JsonNode jsonDiff(JsonNode expected, JsonNode actual, EnumSet<DiffFlags> enumSet) {
-		JsonNode jsonpPatch = JsonDiff.asJson(expected, actual, enumSet);
-		return jsonpPatch;
+		return JsonDiff.asJson(expected, actual, enumSet);
 	}
 
 	public static void main(String[] args) throws JsonProcessingException {

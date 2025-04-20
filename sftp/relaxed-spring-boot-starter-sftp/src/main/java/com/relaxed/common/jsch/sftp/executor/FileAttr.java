@@ -5,10 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * 文件属性
+ *
  * @author Yakir
- * @Description FileAttr
- * @date 2024/11/19 16:30
- * @Version 1.0
  */
 @AllArgsConstructor
 @NoArgsConstructor

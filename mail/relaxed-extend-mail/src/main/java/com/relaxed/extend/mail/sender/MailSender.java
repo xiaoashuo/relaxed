@@ -7,11 +7,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-/**
- * @author Hccake
- * @version 1.0
- * @date 2020/2/27 17:05
- */
 public interface MailSender {
 
 	/**

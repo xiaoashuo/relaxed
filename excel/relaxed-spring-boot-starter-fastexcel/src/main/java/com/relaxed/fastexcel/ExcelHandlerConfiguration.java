@@ -17,20 +17,29 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 /**
- * @author Hccake 2020/10/28
- * @version 1.0
+ * Excel处理器配置类 负责配置Excel相关的处理器,包括: 1. Excel构建增强器 2. 单Sheet写入处理器 3. 多Sheet写入处理器 4.
+ * Excel返回值处理器
+ *
+ * @author Hccake
+ * @since 1.0.0
  */
 @RequiredArgsConstructor
 @Configuration
 public class ExcelHandlerConfiguration {
 
+	/**
+	 * Excel配置属性
+	 */
 	private final ExcelConfigProperties configProperties;
 
+	/**
+	 * 类型转换器提供者
+	 */
 	private final ObjectProvider<List<Converter<?>>> converterProvider;
 
 	/**
-	 * ExcelBuild增强
-	 * @return DefaultWriterBuilderEnhancer 默认什么也不做的增强器
+	 * 注册Excel构建增强器 用于增强Excel构建过程,默认实现不进行任何增强
+	 * @return DefaultWriterBuilderEnhancer 默认增强器
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -39,7 +48,8 @@ public class ExcelHandlerConfiguration {
 	}
 
 	/**
-	 * 单sheet 写入处理器
+	 * 注册单Sheet写入处理器 用于处理单个Sheet的Excel写入
+	 * @return SingleSheetWriteHandler 单Sheet写入处理器
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -48,7 +58,8 @@ public class ExcelHandlerConfiguration {
 	}
 
 	/**
-	 * 多sheet 写入处理器
+	 * 注册多Sheet写入处理器 用于处理多个Sheet的Excel写入
+	 * @return ManySheetWriteHandler 多Sheet写入处理器
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -57,9 +68,9 @@ public class ExcelHandlerConfiguration {
 	}
 
 	/**
-	 * 返回Excel文件的 response 处理器
-	 * @param sheetWriteHandlerList 页签写入处理器集合
-	 * @return ResponseExcelReturnValueHandler
+	 * 注册Excel返回值处理器 用于处理Controller方法返回Excel的响应
+	 * @param sheetWriteHandlerList Sheet写入处理器列表
+	 * @return ResponseExcelReturnValueHandler Excel返回值处理器
 	 */
 	@Bean
 	@ConditionalOnMissingBean

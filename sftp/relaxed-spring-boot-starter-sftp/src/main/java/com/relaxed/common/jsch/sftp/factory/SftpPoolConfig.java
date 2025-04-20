@@ -17,8 +17,8 @@ public class SftpPoolConfig extends GenericObjectPoolConfig<ISftpExecutor> {
 
 	/**
 	 * 根据配置获得池配置
-	 * @param sftpProperties
-	 * @return
+	 * @param sftpProperties SFTP连接池配置属性
+	 * @return 配置好的SFTP连接池配置对象
 	 */
 	public static SftpPoolConfig of(SftpProperties sftpProperties) {
 		SftpProperties.Pool pool = sftpProperties.getPool();

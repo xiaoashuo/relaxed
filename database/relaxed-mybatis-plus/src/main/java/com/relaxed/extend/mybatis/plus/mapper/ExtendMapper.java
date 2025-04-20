@@ -1,46 +1,47 @@
 package com.relaxed.extend.mybatis.plus.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.injector.methods.InsertBatchSomeColumn;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.relaxed.common.model.domain.PageParam;
-import com.relaxed.extend.mybatis.plus.toolkit.ExtendConstants;
-import com.relaxed.extend.mybatis.plus.toolkit.PageUtil;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
 
 /**
- * 所有的 Mapper接口 都需要继承当前接口 如果想自己定义其他的全局方法， 您的全局 BaseMapper 需要继承当前接口
+ * 扩展的 Mapper 接口
+ * <p>
+ * 继承自 MyBatis-Plus 的 BaseMapper 接口，提供分页和批量插入功能。 所有 Mapper 接口都应该继承此接口以使用这些扩展功能。
  *
- * @author lingting 2020/5/27 11:39
+ * @param <T> 实体类型
  */
 public interface ExtendMapper<T> extends BaseMapper<T> {
 
 	/**
-	 * 根据 PageParam 生成一个 IPage 实例
+	 * 根据分页参数生成 MyBatis-Plus 分页对象
+	 * <p>
+	 * 支持动态排序，可以根据分页参数中的排序信息进行排序。
 	 * @param pageParam 分页参数
-	 * @param <V> 返回的 Record 对象
-	 * @return IPage<V>
+	 * @return MyBatis-Plus 分页对象
 	 */
-	default <V> IPage<V> prodPage(PageParam pageParam) {
-		return PageUtil.prodPage(pageParam);
-	}
+	IPage<T> prodPage(PageParam pageParam);
 
 	/**
-	 * 批量插入数据 实现类 {@link InsertBatchSomeColumn}
-	 * @param list 数据列表
-	 * @return int 改动行
-	 * @author lingting 2020-08-26 22:11
+	 * 批量插入指定字段
+	 * <p>
+	 * 将集合中的数据批量插入到数据库中，只插入指定的字段。 具体实现参考 InsertBatchSomeColumn。
+	 * @param list 实体集合
+	 * @return 影响行数
 	 */
-	int insertBatchSomeColumn(@Param(ExtendConstants.COLLECTION) Collection<T> list);
+	int insertBatchSomeColumn(Collection<T> list);
 
 	/**
-	 * list insert
-	 * @param list
-	 * @return
+	 * 批量插入所有数据
+	 * <p>
+	 * 将集合中的所有数据批量插入到数据库中。
+	 * @param list 实体集合
+	 * @return 影响行数
 	 */
-	int insertBatch(@Param(ExtendConstants.COLLECTION) Collection<T> list);
+	int insertBatch(Collection<T> list);
 
 }

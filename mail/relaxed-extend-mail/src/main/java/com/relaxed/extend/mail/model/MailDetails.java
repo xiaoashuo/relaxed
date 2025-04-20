@@ -5,20 +5,21 @@ import lombok.Data;
 import java.io.File;
 
 /**
+ * 邮件详细信息类，包含邮件的所有必要信息。 包括发件人、收件人、主题、内容、附件等。
+ *
  * @author Hccake
- * @version 1.0
- * @date 2020/2/27 17:06
+ * @since 1.0
  */
 @Data
 public class MailDetails {
 
 	/**
-	 * 发件人
+	 * 发件人邮箱地址
 	 */
 	private String from;
 
 	/**
-	 * 收件人
+	 * 收件人邮箱地址数组
 	 */
 	private String[] to;
 
@@ -28,27 +29,27 @@ public class MailDetails {
 	private String subject;
 
 	/**
-	 * 是否渲染html
+	 * 是否将内容渲染为HTML格式
 	 */
 	private Boolean showHtml;
 
 	/**
-	 * 邮件内容
+	 * 邮件正文内容
 	 */
 	private String content;
 
 	/**
-	 * 抄送
+	 * 抄送人邮箱地址数组
 	 */
 	private String[] cc;
 
 	/**
-	 * 密送
+	 * 密送人邮箱地址数组
 	 */
 	private String[] bcc;
 
 	/**
-	 * 附件
+	 * 邮件附件文件数组
 	 */
 	private File[] files;
 

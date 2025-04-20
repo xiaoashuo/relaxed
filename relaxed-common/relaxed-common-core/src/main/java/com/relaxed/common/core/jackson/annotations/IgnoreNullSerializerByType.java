@@ -3,13 +3,10 @@ package com.relaxed.common.core.jackson.annotations;
 import java.lang.annotation.*;
 
 /**
+ * 忽略空值序列化注解，用于指定类型级别的空值序列化处理策略 主要用于解决 {@code @JsonInclude} 注解在某些情况下不生效的问题
+ *
  * @author Yakir
- * @Topic IgnoreNullSerializer
- * @Description 忽略空序列化处理器 主要为解决引入@JsonInclude(value =
- * JsonInclude.Include.NON_EMPTY||JsonInclude.Include.NON_NULL) 部分不生效问题 因为 会被自定义空序列化器处理
- * @See BeanPropertyWriter#serializeAsField 方法 693行
- * @date 2021/8/4 20:44
- * @Version 1.0
+ * @since 1.0.0
  */
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
@@ -17,9 +14,6 @@ import java.lang.annotation.*;
 @Inherited
 public @interface IgnoreNullSerializerByType {
 
-	/**
-	 * 默认忽略全部
-	 */
 	IgnoreNullSerializerByType.Include value() default IgnoreNullSerializerByType.Include.ALL;
 
 	public static enum Include {

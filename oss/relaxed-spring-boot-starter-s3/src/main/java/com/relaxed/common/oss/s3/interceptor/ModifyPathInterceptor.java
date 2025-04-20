@@ -9,14 +9,11 @@ import software.amazon.awssdk.core.interceptor.SdkExecutionAttribute;
 import software.amazon.awssdk.http.SdkHttpRequest;
 
 /**
- * <p>
- * oss 拦截器
- * </p>
- * <p>
- * 修改发出请求的路径, 如果路径前携带了 bucket , 则移除
- * </p>
+ * OSS 请求路径修改拦截器。 用于修改 S3 请求的路径，主要功能包括： 1. 在虚拟主机模式下，保持源路径不变 2. 在路径模式下，移除路径前的 bucket 声明 3.
+ * 支持自定义路径修改逻辑
  *
- * @author lingting 2021/5/12 18:46
+ * @author Yakir
+ * @since 1.0
  */
 @RequiredArgsConstructor
 public class ModifyPathInterceptor implements ExecutionInterceptor {
@@ -27,6 +24,12 @@ public class ModifyPathInterceptor implements ExecutionInterceptor {
 
 	private final PathModifier pathModifier;
 
+	/**
+	 * 修改 HTTP 请求路径。 根据虚拟主机模式设置，决定是否修改请求路径。
+	 * @param context 请求上下文
+	 * @param executionAttributes 执行属性
+	 * @return 修改后的 HTTP 请求
+	 */
 	@Override
 	public SdkHttpRequest modifyHttpRequest(Context.ModifyHttpRequest context,
 			ExecutionAttributes executionAttributes) {

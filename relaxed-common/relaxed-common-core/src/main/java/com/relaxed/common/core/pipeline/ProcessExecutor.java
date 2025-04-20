@@ -9,11 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 流程执行器类，负责执行和管理流程处理过程。 该类实现了责任链模式，用于处理业务流程中的多个处理节点。 支持流程模板配置、前置检查、节点处理和全局后置处理等功能。
+ *
  * @author Yakir
- * @Topic ProcessExecutor
- * @Description
- * @date 2022/2/10 9:50
- * @Version 1.0
+ * @since 1.0
  */
 
 public class ProcessExecutor {
@@ -37,9 +36,9 @@ public class ProcessExecutor {
 	}
 
 	/**
-	 * 执行责任链
-	 * @param context
-	 * @return 返回上下文内容
+	 * 执行责任链处理流程
+	 * @param context 流程上下文对象，包含处理所需的数据和状态
+	 * @return 处理完成后的流程上下文对象
 	 */
 	public ProcessContext process(ProcessContext context) {
 

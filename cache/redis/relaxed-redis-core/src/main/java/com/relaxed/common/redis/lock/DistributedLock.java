@@ -10,30 +10,64 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 /**
+ * 分布式锁实现类。 提供基于Redis的分布式锁功能，支持锁超时、异常处理和回调。 实现了Action和StateHandler接口，支持链式调用。
+ *
+ * @param <T> 操作返回值的类型
  * @author huyuanzhi
- * @version 1.0
- * @date 2021/11/16 分布式锁操作类
+ * @since 1.0
  */
 public final class DistributedLock<T> implements Action<T>, StateHandler<T> {
 
-	T result;
+	/**
+	 * 操作执行结果
+	 */
+	private T result;
 
-	String key;
+	/**
+	 * 锁的键名
+	 */
+	private String key;
 
-	ThrowingExecutor<T> executeAction;
+	/**
+	 * 需要执行的操作
+	 */
+	private ThrowingExecutor<T> executeAction;
 
-	UnaryOperator<T> successAction;
+	/**
+	 * 成功回调
+	 */
+	private UnaryOperator<T> successAction;
 
-	Supplier<T> lockFailAction;
+	/**
+	 * 获取锁失败回调
+	 */
+	private Supplier<T> lockFailAction;
 
-	LockManage lockManage;
+	/**
+	 * 锁管理器
+	 */
+	private LockManage lockManage;
 
-	Long lockTimeOut = 86400L;
+	/**
+	 * 锁的超时时间，默认24小时
+	 */
+	private Long lockTimeOut = 86400L;
 
-	TimeUnit timeUnit = TimeUnit.SECONDS;
+	/**
+	 * 时间单位，默认秒
+	 */
+	private TimeUnit timeUnit = TimeUnit.SECONDS;
 
-	ExceptionHandler exceptionHandler = DistributedLock::throwException;
+	/**
+	 * 异常处理器，默认抛出异常
+	 */
+	private ExceptionHandler exceptionHandler = DistributedLock::throwException;
 
+	/**
+	 * 获取分布式锁实例
+	 * @param <T> 操作返回值的类型
+	 * @return 分布式锁实例
+	 */
 	public static <T> Action<T> instance() {
 		return new DistributedLock<>();
 	}
@@ -110,6 +144,12 @@ public final class DistributedLock<T> implements Action<T>, StateHandler<T> {
 		return this.result;
 	}
 
+	/**
+	 * 抛出异常
+	 * @param t 异常对象
+	 * @param <E> 异常类型
+	 * @throws E 抛出指定类型的异常
+	 */
 	@SuppressWarnings("unchecked")
 	private static <E extends Throwable> void throwException(Throwable t) throws E {
 		throw (E) t;

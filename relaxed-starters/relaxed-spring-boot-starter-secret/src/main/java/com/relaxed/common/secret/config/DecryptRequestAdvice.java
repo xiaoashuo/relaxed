@@ -19,12 +19,11 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 /**
+ * 请求解密处理器 用于处理带有@RequestDecrypt注解的请求，支持请求体解密
+ * 实现了RequestBodyAdviceAdapter接口，支持在消息转换器前后进行解密处理
+ *
  * @author Yakir
- * @Topic DecryptRequestAdvice
- * @Description 参考AbstractMessageConverterMethodArgumentResolver#readWithMessageConverters
- * Line 185
- * @date 2021/11/15 10:17
- * @Version 1.0
+ * @since 1.0
  */
 @RequiredArgsConstructor
 @RestControllerAdvice
@@ -32,6 +31,13 @@ public class DecryptRequestAdvice extends RequestBodyAdviceAdapter {
 
 	private final SecretHandler secretHandler;
 
+	/**
+	 * 判断是否支持对当前请求进行解密处理 检查方法或类是否带有@RequestDecrypt注解，且请求类型是否支持解密
+	 * @param methodParameter 方法参数
+	 * @param targetType 目标类型
+	 * @param converterType 消息转换器类型
+	 * @return 如果支持解密处理返回true，否则返回false
+	 */
 	@Override
 	public boolean supports(MethodParameter methodParameter, Type targetType,
 			Class<? extends HttpMessageConverter<?>> converterType) {
@@ -44,15 +50,13 @@ public class DecryptRequestAdvice extends RequestBodyAdviceAdapter {
 	}
 
 	/**
-	 * 在请求体 已经被转换过后 进行参数的二次处理
-	 * @author yakir
-	 * @date 2021/11/15 15:48
-	 * @param body
-	 * @param inputMessage
-	 * @param methodParameter
-	 * @param targetType
-	 * @param converterType
-	 * @return java.lang.Object
+	 * 在请求体被转换后处理参数 如果配置了post=true，则对已转换的请求体进行解密处理
+	 * @param body 请求体对象
+	 * @param inputMessage 输入消息
+	 * @param methodParameter 方法参数
+	 * @param targetType 目标类型
+	 * @param converterType 转换器类型
+	 * @return 处理后的请求体对象
 	 */
 	@Override
 	public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter methodParameter,
@@ -69,14 +73,13 @@ public class DecryptRequestAdvice extends RequestBodyAdviceAdapter {
 	}
 
 	/**
-	 * 在请求体 未被转换前 把流字节进行处理
-	 * @author yakir
-	 * @date 2021/11/15 15:48
-	 * @param inputMessage
-	 * @param methodParameter
-	 * @param targetType
-	 * @param converterType
-	 * @return org.springframework.http.HttpInputMessage
+	 * 在请求体被转换前处理输入流 如果配置了pre=true，则对原始请求流进行解密处理
+	 * @param inputMessage 输入消息
+	 * @param methodParameter 方法参数
+	 * @param targetType 目标类型
+	 * @param converterType 转换器类型
+	 * @return 处理后的输入消息
+	 * @throws IOException 如果处理输入流时发生IO异常
 	 */
 	@Override
 	public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter methodParameter,

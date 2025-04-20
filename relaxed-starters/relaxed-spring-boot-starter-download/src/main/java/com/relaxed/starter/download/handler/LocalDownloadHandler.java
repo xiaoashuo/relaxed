@@ -12,20 +12,31 @@ import java.io.File;
 import java.io.FileInputStream;
 
 /**
+ * 本地文件下载处理器，用于处理本地文件系统的文件下载。 继承自 {@link AbstractDownloadHandler}，实现了本地文件的读取和下载功能。
+ *
  * @author Yakir
- * @Topic SftpDownloadHandler
- * @Description
- * @date 2022/2/18 14:34
- * @Version 1.0
+ * @since 1.0
  */
 @Slf4j
 public class LocalDownloadHandler extends AbstractDownloadHandler {
 
+	/**
+	 * 判断是否支持本地文件下载
+	 * @param downloadModel 下载模型
+	 * @param responseDownload 下载注解配置
+	 * @return true 如果下载渠道是本地文件，false 否则
+	 */
 	@Override
 	public boolean support(DownloadModel downloadModel, ResponseDownload responseDownload) {
 		return DownTypeEnum.LOCAL.equals(responseDownload.channel());
 	}
 
+	/**
+	 * 将本地文件写入HTTP响应 从本地文件系统读取文件内容并写入响应流
+	 * @param downloadModel 下载模型
+	 * @param response HTTP响应对象
+	 * @param responseDownload 下载注解配置
+	 */
 	@SneakyThrows
 	@Override
 	protected void write(DownloadModel downloadModel, HttpServletResponse response, ResponseDownload responseDownload) {

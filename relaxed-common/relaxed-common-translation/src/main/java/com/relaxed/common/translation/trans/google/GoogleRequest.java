@@ -20,11 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * GoogleRequest
+ *
  * @author Yakir
- * @Topic GoogleRequest
- * @Description
- * @date 2022/1/11 16:31
- * @Version 1.0
  */
 @Data
 public class GoogleRequest extends AbstractTranslationRequest<TransParam> {

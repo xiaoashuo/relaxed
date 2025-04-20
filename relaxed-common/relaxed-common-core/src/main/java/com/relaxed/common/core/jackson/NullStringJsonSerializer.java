@@ -7,9 +7,10 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 
 /**
+ * 空字符串序列化器，将null值序列化为空字符串
+ *
  * @author Hccake
- * @version 1.0
- * @date 2019/10/17 22:19 jackson NULL值序列化为 ""
+ * @since 1.0.0
  */
 public class NullStringJsonSerializer extends JsonSerializer<Object> {
 

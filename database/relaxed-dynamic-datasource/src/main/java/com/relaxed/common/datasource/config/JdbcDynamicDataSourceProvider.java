@@ -28,24 +28,38 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * JDBC动态数据源提供者 继承自AbstractJdbcDataSourceProvider，实现从数据库查询数据源配置 支持加密密码的解密和数据源属性的自定义处理
+ *
  * @author lengleng
- * @date 2020/2/6
- * <p>
- * 从数据源中获取 配置信息
  */
 public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvider {
 
 	/**
-	 * 默认数据源（master）
+	 * 默认主数据源名称 用于标识系统默认的数据源
 	 */
 	private final static String DS_MASTER = "master";
 
+	/**
+	 * 数据源配置属性 包含数据源的基本配置信息
+	 */
 	private final DataSourceProperties properties;
 
+	/**
+	 * 字符串加密器 用于解密数据库中的加密密码
+	 */
 	private final StringEncryptor stringEncryptor;
 
+	/**
+	 * 数据源属性提供者 用于自定义数据源属性的创建逻辑
+	 */
 	private final PropertyProvider propertyProvider;
 
+	/**
+	 * 构造函数
+	 * @param stringEncryptor 字符串加密器
+	 * @param properties 数据源配置属性
+	 * @param propertyProvider 数据源属性提供者
+	 */
 	public JdbcDynamicDataSourceProvider(StringEncryptor stringEncryptor, DataSourceProperties properties,
 			PropertyProvider propertyProvider) {
 		super(properties.getDriverClassName(), properties.getUrl(), properties.getUsername(), properties.getPassword());
@@ -55,10 +69,10 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
 	}
 
 	/**
-	 * 执行语句获得数据源参数
-	 * @param statement 语句
-	 * @return 数据源参数
-	 * @throws SQLException sql异常
+	 * 执行SQL语句获取数据源配置 从数据库查询数据源配置信息，并转换为DataSourceProperty对象 同时添加默认的主数据源配置
+	 * @param statement SQL语句执行器
+	 * @return 数据源配置映射，key为数据源名称，value为数据源属性
+	 * @throws SQLException 数据库操作异常
 	 */
 	@Override
 	protected Map<String, DataSourceProperty> executeStmt(Statement statement) throws SQLException {

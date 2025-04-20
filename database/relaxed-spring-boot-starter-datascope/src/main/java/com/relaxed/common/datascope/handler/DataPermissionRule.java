@@ -3,7 +3,9 @@ package com.relaxed.common.datascope.handler;
 import com.relaxed.common.datascope.annotation.DataPermission;
 
 /**
- * @author hccake
+ * 数据权限规则类
+ * <p>
+ * 用于封装数据权限的配置规则，包括是否忽略权限控制、包含和排除的资源类型等。 可以通过 DataPermission 注解或直接设置属性来配置规则。
  */
 public class DataPermissionRule {
 
@@ -23,16 +25,19 @@ public class DataPermissionRule {
 	}
 
 	/**
-	 * 当前类或方法是否忽略数据权限
-	 * @return boolean 默认返回 false
+	 * 判断是否忽略数据权限控制
+	 * <p>
+	 * 返回当前规则是否忽略数据权限控制。
+	 * @return 是否忽略数据权限，默认为 false
 	 */
 	public boolean ignore() {
 		return ignore;
 	}
 
 	/**
-	 * 仅对指定资源类型进行数据权限控制，只在开启情况下有效，当该数组有值时，exclude不生效
-	 * @see DataPermission#excludeResources
+	 * 获取需要控制数据权限的资源类型
+	 * <p>
+	 * 返回需要进行数据权限控制的资源类型数组。 如果设置了该属性，则 excludeResources 属性将失效。
 	 * @return 资源类型数组
 	 */
 	public String[] includeResources() {
@@ -40,8 +45,9 @@ public class DataPermissionRule {
 	}
 
 	/**
-	 * 对指定资源类型跳过数据权限控制，只在开启情况下有效，当该includeResources有值时，exclude不生效
-	 * @see DataPermission#includeResources
+	 * 获取需要跳过数据权限控制的资源类型
+	 * <p>
+	 * 返回需要跳过数据权限控制的资源类型数组。 如果 includeResources 属性不为空，则该属性将失效。
 	 * @return 资源类型数组
 	 */
 	public String[] excludeResources() {

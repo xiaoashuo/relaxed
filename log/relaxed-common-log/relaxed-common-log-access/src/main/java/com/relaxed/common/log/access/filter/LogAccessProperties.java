@@ -7,29 +7,31 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * 访问日志配置属性类。 用于配置访问日志过滤器的相关属性。 主要功能包括： 1. 控制访问日志的启用状态 2. 配置过滤器的执行顺序 3. 配置URL匹配规则
+ *
  * @author Yakir
- * @Topic LogAccessProperties
- * @Description
- * @date 2024/12/23 17:58
- * @Version 1.0
+ * @since 1.0
  */
 @Data
 public class LogAccessProperties {
 
+	/**
+	 * 访问日志配置前缀
+	 */
 	public static final String PREFIX = "relaxed.log.access";
 
 	/**
-	 * 是否启用
+	 * 是否启用访问日志功能 默认为 false
 	 */
 	private boolean enabled;
 
 	/**
-	 * 过滤器顺序
+	 * 访问日志过滤器的执行顺序 值越小优先级越高 默认为 -10
 	 */
 	private int order = -10;
 
 	/**
-	 * URL规则
+	 * URL匹配规则列表 用于配置需要记录访问日志的URL模式 默认为空列表
 	 */
 	private List<LogAccessRule> urlRules = new ArrayList<>();
 

@@ -1,19 +1,15 @@
 package com.relaxed.common.log.biz.service;
 
-import org.springframework.expression.spel.ast.Operator;
-
 /**
+ * 操作者获取服务接口，用于获取当前操作的用户信息 该接口定义了获取操作者信息的基本规范，实现类需要提供具体的获取逻辑 支持从当前会话、安全上下文或其他来源获取操作者信息
+ *
  * @author Yakir
- * @Topic IOperatorGetService
- * @Description
- * @date 2023/12/14 11:29
- * @Version 1.0
  */
 public interface IOperatorGetService {
 
 	/**
-	 * 获取操作者信息
-	 * @return
+	 * 获取当前操作者的标识信息 该方法用于在记录业务操作日志时获取执行操作的用户信息
+	 * @return 操作者标识，通常是用户ID、用户名或其他唯一标识
 	 */
 	String getOperator();
 

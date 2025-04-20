@@ -20,25 +20,37 @@ import org.slf4j.MDC;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * 可追踪的 MethodJobHandler.
+ * 可追踪的 MethodJobHandler 实现类。 继承自 IJobHandler，为 XXL-Job 任务执行添加追踪功能。 主要功能包括： 1.
+ * 为每个任务执行生成唯一的 traceId 2. 通过 MDC 上下文传递 traceId 3. 支持任务执行链路追踪
  *
  * @author Yakir
+ * @since 1.0
  * @see MethodJobHandler
  */
 @Slf4j
 public class TraceMethodJobHandler extends IJobHandler {
 
+	/**
+	 * MDC 上下文中的 traceId 键名
+	 */
 	private final static String TRACE_ID = "traceId";
 
+	/**
+	 * 被包装的 MethodJobHandler 实例
+	 */
 	private final MethodJobHandler methodJobHandler;
 
+	/**
+	 * 构造函数
+	 * @param target 被包装的 MethodJobHandler 实例
+	 */
 	public TraceMethodJobHandler(MethodJobHandler target) {
 		this.methodJobHandler = target;
 	}
 
 	/**
-	 * 生成 traceId, 默认使用 jobId 拼接无下划线的 UUID
-	 * @return traceId
+	 * 生成 traceId。 默认使用 jobId 拼接无下划线的 UUID 作为 traceId。 如果无法获取 jobId，则使用 "unknown" 作为前缀。
+	 * @return 生成的 traceId
 	 */
 	protected String generateTraceId() {
 		Thread thread = Thread.currentThread();
@@ -64,6 +76,12 @@ public class TraceMethodJobHandler extends IJobHandler {
 		return jobId + "-" + simpleUUID;
 	}
 
+	/**
+	 * 执行任务。 在执行前设置 traceId，执行完成后清理 traceId。
+	 * @param param 任务参数
+	 * @return 任务执行结果
+	 * @throws Exception 执行过程中可能抛出的异常
+	 */
 	@Override
 	public ReturnT<String> execute(String param) throws Exception {
 		MDC.put(TRACE_ID, generateTraceId());

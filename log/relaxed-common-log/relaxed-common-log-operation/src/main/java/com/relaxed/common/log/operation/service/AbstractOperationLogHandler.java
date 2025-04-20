@@ -16,26 +16,33 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 操作日志处理器抽象类 提供了操作日志处理的基础实现,包括: 1. 忽略特定类型的参数记录 2. 获取方法参数的JSON字符串表示 子类可以继承此类并实现具体的日志处理逻辑
+ *
  * @author hccake
+ * @since 1.0.0
  */
 @Slf4j
 public abstract class AbstractOperationLogHandler<T> implements OperationLogHandler<T> {
 
+	/**
+	 * 需要忽略的参数类型列表 默认包含: - ServletRequest: HTTP请求对象 - ServletResponse: HTTP响应对象 -
+	 * MultipartFile: 文件上传对象
+	 */
 	private final List<Class<?>> ignoredParamClasses = ListUtil.toList(ServletRequest.class, ServletResponse.class,
 			MultipartFile.class);
 
 	/**
-	 * 添加忽略记录的参数类型
-	 * @param clazz 参数类型
+	 * 添加需要忽略的参数类型 当方法参数类型在忽略列表中时,将不会记录该参数的具体内容
+	 * @param clazz 需要忽略的参数类型
 	 */
 	public void addIgnoredParamClass(Class<?> clazz) {
 		ignoredParamClasses.add(clazz);
 	}
 
 	/**
-	 * 获取方法参数
-	 * @param joinPoint 切点
-	 * @return 当前方法入参的Json Str
+	 * 获取方法参数的JSON字符串表示 将方法的参数名和参数值转换为JSON格式的字符串 对于忽略类型的参数,将只记录其类型信息
+	 * @param joinPoint 切点对象,包含方法调用的上下文信息
+	 * @return 方法参数的JSON字符串,如果参数为空则返回null
 	 */
 	public String getParams(ProceedingJoinPoint joinPoint) {
 		// 获取方法签名

@@ -4,11 +4,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
+ * ActionBtnOrientationEnum
  * @author Yakir
- * @Topic ActionBtnOrientationEnum
- * @Description 按钮排列样式值
- * @date 2021/6/19
- * @Version 1.0
  */
 @Getter
 @RequiredArgsConstructor

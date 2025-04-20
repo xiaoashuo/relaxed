@@ -18,8 +18,22 @@
         <maven.install.skip>true</maven.install.skip>
         <!--   跳过不需要deploy的模块-->
         <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <maven.source.skip>true</maven.source.skip>
+        <maven.gpg.skip>true</maven.gpg.skip>
     </properties>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
 
@@ -130,10 +144,7 @@
             <groupId>cn.lovecyy</groupId>
             <artifactId>pool-monitor-starter</artifactId>
         </dependency>
-        <dependency>
-            <groupId>cn.lovecyy</groupId>
-            <artifactId>relaxed-common-http</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>cn.lovecyy</groupId>
             <artifactId>relaxed-common-desensitize</artifactId>

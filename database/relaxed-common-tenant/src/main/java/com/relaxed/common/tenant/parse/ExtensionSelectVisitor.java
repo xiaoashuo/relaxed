@@ -13,28 +13,47 @@ import net.sf.jsqlparser.util.deparser.SelectDeParser;
 import java.util.Iterator;
 
 /**
+ * 扩展的SQL查询访问器 继承自SelectDeParser，用于解析和处理SELECT语句 支持租户信息的注入和表名Schema的填充
+ *
  * @author Yakir
- * @Topic CustomSelectVisitor
- * @Description 查询访问器
- * @date 2021/7/27 13:10
- * @Version 1.0
  */
 public class ExtensionSelectVisitor extends SelectDeParser {
 
+	/**
+	 * 租户信息对象
+	 */
 	private Tenant tenant;
 
+	/**
+	 * 构造函数
+	 * @param expressionVisitor 表达式访问器
+	 * @param buffer SQL语句构建器
+	 */
 	public ExtensionSelectVisitor(ExpressionVisitor expressionVisitor, StringBuilder buffer) {
 		super(expressionVisitor, buffer);
 	}
 
+	/**
+	 * 获取租户信息
+	 * @return 租户信息对象
+	 */
 	public Tenant getTenant() {
 		return tenant;
 	}
 
+	/**
+	 * 设置租户信息
+	 * @param tenant 租户信息对象
+	 */
 	public void setTenant(Tenant tenant) {
 		this.tenant = tenant;
 	}
 
+	/**
+	 * 访问普通SELECT语句 处理SELECT语句的各个部分，包括： 1. 选择列 2. FROM子句 3. WHERE条件 4. GROUP BY 5. ORDER
+	 * BY 6. LIMIT等
+	 * @param plainSelect 普通SELECT语句对象
+	 */
 	@Override
 	public void visit(PlainSelect plainSelect) {
 		if (plainSelect.isUseBrackets()) {
@@ -217,10 +236,8 @@ public class ExtensionSelectVisitor extends SelectDeParser {
 	}
 
 	/**
-	 * 解析优化
-	 * @author yakir
-	 * @date 2021/7/27 17:45
-	 * @param optimizeFor
+	 * 解析优化FOR子句
+	 * @param optimizeFor 优化FOR子句对象
 	 */
 	private void deparseOptimizeFor(OptimizeFor optimizeFor) {
 		getBuffer().append(" OPTIMIZE FOR ");
@@ -228,11 +245,14 @@ public class ExtensionSelectVisitor extends SelectDeParser {
 		getBuffer().append(" ROWS");
 	}
 
+	/**
+	 * 访问表对象 填充表的Schema名称
+	 * @param table 表对象
+	 */
 	@Override
 	public void visit(Table table) {
 		ExpressionUtil.fillTableSchema(table, getTenant());
 		super.visit(table);
-
 	}
 
 }
