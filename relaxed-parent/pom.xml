@@ -90,6 +90,8 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
+                            <!--遇到 Javadoc 错误时使构建失败-->
+                            <failOnError>true</failOnError>
                             <additionalJOption>-J-Dfile.encoding=UTF-8</additionalJOption>
                             <doclint>none</doclint>
                             <tags>
