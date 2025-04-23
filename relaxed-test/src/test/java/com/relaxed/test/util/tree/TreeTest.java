@@ -4,6 +4,9 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.relaxed.common.core.util.tree.Menu;
+import com.relaxed.common.core.util.tree.MenuTree;
+import com.relaxed.common.core.util.tree.TreeUtils;
 
 import java.util.List;
 import java.util.function.Function;

@@ -1,4 +1,4 @@
-package com.relaxed.test.util.file;
+package com.relaxed.common.core.util.file;
 
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;

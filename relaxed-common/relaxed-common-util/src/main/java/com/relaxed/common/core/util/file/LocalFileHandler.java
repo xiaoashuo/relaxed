@@ -1,10 +1,8 @@
-package com.relaxed.test.util.file;
+package com.relaxed.common.core.util.file;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.IdUtil;
-import com.relaxed.common.core.util.file.FileConstants;
-import com.relaxed.common.core.util.file.FileHandler;
 import lombok.SneakyThrows;
 import org.springframework.web.multipart.MultipartFile;
 

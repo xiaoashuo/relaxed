@@ -1,4 +1,4 @@
-package com.relaxed.test.util.file;
+package com.relaxed.common.core.util.file;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.io.FileUtil;
@@ -7,16 +7,15 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.IdUtil;
 
-import com.relaxed.test.util.file.exception.FileNameLengthLimitExceededException;
-import com.relaxed.test.util.file.exception.FileResultCode;
-import com.relaxed.test.util.file.exception.FileSizeLimitExceededException;
-import com.relaxed.test.util.file.exception.InvalidExtensionException;
+import com.relaxed.common.core.util.file.exception.FileNameLengthLimitExceededException;
+import com.relaxed.common.core.util.file.exception.FileResultCode;
+import com.relaxed.common.core.util.file.exception.FileSizeLimitExceededException;
+import com.relaxed.common.core.util.file.exception.InvalidExtensionException;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

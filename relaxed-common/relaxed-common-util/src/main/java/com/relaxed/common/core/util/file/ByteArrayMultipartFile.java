@@ -1,4 +1,4 @@
-package com.relaxed.test.util.file;
+package com.relaxed.common.core.util.file;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;

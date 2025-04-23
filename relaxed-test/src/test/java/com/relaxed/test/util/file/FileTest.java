@@ -1,6 +1,13 @@
 package com.relaxed.test.util.file;
 
 import cn.hutool.json.JSONUtil;
+import com.relaxed.common.core.util.file.FileConfig;
+import com.relaxed.common.core.util.file.FileConstants;
+import com.relaxed.common.core.util.file.FileHandler;
+import com.relaxed.common.core.util.file.FileHandlerLoader;
+import com.relaxed.common.core.util.file.FileMeta;
+import com.relaxed.common.core.util.file.FileMultipartFile;
+import com.relaxed.common.core.util.file.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 

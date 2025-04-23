@@ -159,6 +159,10 @@
             <artifactId>relaxed-common-holidays</artifactId>
         </dependency>
         <dependency>
+            <groupId>cn.lovecyy</groupId>
+            <artifactId>relaxed-common-util</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>

@@ -1,19 +1,14 @@
-package com.relaxed.test.util.tree;
+package com.relaxed.common.core.util.tree;
 
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * @author Yakir
- * @Topic MenuTree
- * @Description
- * @date 2022/8/10 10:55
- * @Version 1.0
- */
+@Getter
 @Data
-public class MenuTree implements TreeNode<Integer> {
+public class Menu {
 
 	/**
 	 * 主键
@@ -68,26 +63,6 @@ public class MenuTree implements TreeNode<Integer> {
 	/**
 	 * 子列表
 	 */
-	private List<MenuTree> children;
-
-	@Override
-	public Integer getKey() {
-		return id;
-	}
-
-	@Override
-	public Integer getParentKey() {
-		return parentId;
-	}
-
-	@Override
-	public <T extends TreeNode<Integer>> void setChildren(List<T> children) {
-		this.children = (List<MenuTree>) children;
-	}
-
-	@Override
-	public <T extends TreeNode<Integer>> List<T> getChildren() {
-		return (List<T>) children;
-	}
+	private List<Menu> children;
 
 }

@@ -1,4 +1,4 @@
-package com.relaxed.test.util.file;
+package com.relaxed.common.core.util.file;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.relaxed.test.util.file.exception;
+package com.relaxed.common.core.util.file.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

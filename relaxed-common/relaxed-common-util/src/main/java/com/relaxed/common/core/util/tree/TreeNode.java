@@ -1,12 +1,7 @@
-package com.relaxed.test.util.tree;
+package com.relaxed.common.core.util.tree;
 
 import java.util.List;
 
-/**
- * @author Hccake
- * @version 1.0
- * @date 2020/6/21 17:05
- */
 public interface TreeNode<I> {
 
 	/**
