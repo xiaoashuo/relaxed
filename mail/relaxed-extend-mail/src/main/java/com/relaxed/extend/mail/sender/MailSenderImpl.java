@@ -48,6 +48,7 @@ public class MailSenderImpl implements MailSender {
 		catch (Exception e) {
 			mailSendInfo.setSuccess(false);
 			mailSendInfo.setErrorMsg(e.getMessage());
+			mailSendInfo.setThrowable(e);
 			log.error("发送邮件失败: [{}]", mailDetails, e);
 		}
 		finally {

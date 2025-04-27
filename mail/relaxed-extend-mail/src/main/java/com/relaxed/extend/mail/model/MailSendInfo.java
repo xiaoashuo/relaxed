@@ -31,6 +31,11 @@ public class MailSendInfo {
 	private String errorMsg;
 
 	/**
+	 * 将原始异常抛出
+	 */
+	private Throwable throwable;
+
+	/**
 	 * 创建邮件发送结果信息
 	 * @param mailDetails 邮件详细信息
 	 */
@@ -92,6 +97,22 @@ public class MailSendInfo {
 	 */
 	public void setErrorMsg(String errorMsg) {
 		this.errorMsg = errorMsg;
+	}
+
+	/**
+	 * 获取异常堆栈
+	 * @return 异常堆栈
+	 */
+	public Throwable getThrowable() {
+		return throwable;
+	}
+
+	/**
+	 * 设置异常堆栈
+	 * @param throwable 原始异常
+	 */
+	public void setThrowable(Throwable throwable) {
+		this.throwable = throwable;
 	}
 
 }
