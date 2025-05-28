@@ -11,7 +11,7 @@
     <url>https://github.com/xiaoashuo/relaxed</url>
     <description>Relaxed Dependencies</description>
     <properties>
-        <revision>1.6.0</revision>
+        <revision>1.6.1</revision>
         <!--插件部分-->
         <maven-compiler-plugin.verison>3.8.0</maven-compiler-plugin.verison>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>

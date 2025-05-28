@@ -1,7 +1,11 @@
 package com.relaxed.common.core.util.batch.core;
 
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * 批量处理的元数据类。 包含批量处理过程中的基本信息，如批次号、起始位置和批次大小等。 用于在批量处理的各个组件之间传递批次信息。
@@ -9,8 +13,9 @@ import lombok.Setter;
  * @author Yakir
  * @since 1.0
  */
-@Getter
-@Setter
+
+@Accessors(chain = true)
+@Data
 public class BatchMeta {
 
 	/**
