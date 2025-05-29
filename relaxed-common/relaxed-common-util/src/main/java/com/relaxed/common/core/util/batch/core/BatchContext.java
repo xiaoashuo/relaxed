@@ -16,7 +16,7 @@ public class BatchContext<T> {
 	/**
 	 * 分批元数据
 	 */
-	private final BatchMeta batchMeta;
+	private final BatchParam batchParam;
 
 	/**
 	 * 行内索引

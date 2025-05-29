@@ -1,10 +1,6 @@
 package com.relaxed.common.core.util.batch.core;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -16,7 +12,7 @@ import lombok.experimental.Accessors;
 
 @Accessors(chain = true)
 @Data
-public class BatchMeta {
+public class BatchParam {
 
 	/**
 	 * 当前批次的组号 从1开始递增，用于标识不同的批次

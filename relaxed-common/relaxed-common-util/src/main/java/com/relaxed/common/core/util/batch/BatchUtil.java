@@ -8,7 +8,7 @@ import cn.hutool.json.JSONUtil;
 import com.relaxed.common.core.util.batch.core.BatchConfig;
 import com.relaxed.common.core.util.batch.core.BatchContext;
 import com.relaxed.common.core.util.batch.core.BatchExceptionStats;
-import com.relaxed.common.core.util.batch.core.BatchMeta;
+import com.relaxed.common.core.util.batch.core.BatchParam;
 import com.relaxed.common.core.util.batch.core.BatchMetrics;
 import com.relaxed.common.core.util.batch.core.BatchProgress;
 import lombok.AllArgsConstructor;
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.BiConsumer;
 
 /**
  * BatchKit
@@ -38,7 +39,7 @@ public class BatchUtil {
 		validateConfig(config);
 		// 2. 初始化指标
 		BatchMetrics metrics = new BatchMetrics();
-		BatchExceptionStats exceptionStats = new BatchExceptionStats(100);
+		BatchExceptionStats exceptionStats = new BatchExceptionStats(config.getMaxExceptions());
 		long startTime = System.currentTimeMillis();
 		// 3. 计算分组数
 		int groupNum = computeGroupNum(config.getTotalCount(), config.getBatchSize());
@@ -49,18 +50,18 @@ public class BatchUtil {
 						: config.getLocationComputer().compute(groupNo, config.getBatchSize());
 				int size = Math.min(config.getBatchSize(), config.getTotalCount() - startIndex);
 				// 4.1 准备批次元数据
-				BatchMeta batchMeta = new BatchMeta().setGroupNo(groupNo).setStartIndex(startIndex).setSize(size);
+				BatchParam batchParam = new BatchParam().setGroupNo(groupNo).setStartIndex(startIndex).setSize(size);
 				// 4.2 获取批次数据
-				List<T> dataList = config.getProvider().apply(batchMeta);
+				List<T> dataList = config.getProvider().apply(batchParam);
 				if (CollectionUtil.isEmpty(dataList)) {
 					continue;
 				}
 				// 4.3 处理批次数据
 				if (config.isAsync()) {
-					processBatchAsync(config, batchMeta, dataList, exceptionStats, metrics);
+					processBatchAsync(config, batchParam, dataList, exceptionStats, metrics);
 				}
 				else {
-					processBatchSync(config, batchMeta, dataList, exceptionStats, metrics);
+					processBatchSync(config, batchParam, dataList, exceptionStats, metrics);
 				}
 				// 检查是否需要停止
 				if (exceptionStats.shouldStop()) {
@@ -88,7 +89,7 @@ public class BatchUtil {
 	/**
 	 * 异步处理批次数据
 	 */
-	private static <T> void processBatchAsync(BatchConfig<T> config, BatchMeta batchMeta, List<T> dataList,
+	private static <T> void processBatchAsync(BatchConfig<T> config, BatchParam batchParam, List<T> dataList,
 			BatchExceptionStats exceptionStats, BatchMetrics metrics) {
 		List<CompletableFuture<Void>> futures = new ArrayList<>();
 
@@ -97,19 +98,21 @@ public class BatchUtil {
 			final T data = dataList.get(i);
 
 			CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+				BatchContext<T> context = BatchContext.<T>builder().batchParam(batchParam).rowIndex(rowIndex).data(data)
+						.build();
 				try {
-					BatchContext<T> context = BatchContext.<T>builder().batchMeta(batchMeta).rowIndex(rowIndex)
-							.data(data).build();
+
 					config.getConsumer().accept(context);
 					metrics.getSuccessCount().incrementAndGet();
 				}
 				catch (Throwable e) {
 					metrics.getFailureCount().incrementAndGet();
+					recordException(config.getExceptionRecordHandler(), context, e);
 					// 不在这里记录异常，而是在外层统一处理
 					throw e;
 				}
 				finally {
-					updateProgress(config, metrics, batchMeta.getGroupNo());
+					updateProgress(config, metrics, batchParam.getGroupNo());
 				}
 			}, config.getExecutor());
 
@@ -139,30 +142,37 @@ public class BatchUtil {
 
 	}
 
+	private static <T> void recordException(BiConsumer<BatchContext<T>, Throwable> exceptionRecordHandler,
+			BatchContext<T> context, Throwable e) {
+		if (exceptionRecordHandler != null) {
+			exceptionRecordHandler.accept(context, e);
+		}
+	}
+
 	/**
 	 * 同步处理批次数据
 	 */
-	private static <T> void processBatchSync(BatchConfig<T> config, BatchMeta batchMeta, List<T> dataList,
+	private static <T> void processBatchSync(BatchConfig<T> config, BatchParam batchParam, List<T> dataList,
 			BatchExceptionStats exceptionStats, BatchMetrics metrics) {
 		for (int i = 0; i < dataList.size() && !exceptionStats.shouldStop(); i++) {
 			final int rowIndex = i + 1;
 			final T data = dataList.get(i);
-
+			BatchContext<T> context = BatchContext.<T>builder().batchParam(batchParam).rowIndex(rowIndex).data(data)
+					.build();
 			try {
-				BatchContext<T> context = BatchContext.<T>builder().batchMeta(batchMeta).rowIndex(rowIndex).data(data)
-						.build();
 				config.getConsumer().accept(context);
 				metrics.getSuccessCount().incrementAndGet();
 			}
 			catch (Throwable e) {
 				metrics.getFailureCount().incrementAndGet();
+				recordException(config.getExceptionRecordHandler(), context, e);
 				exceptionStats.addException(e);
 				if (config.isFailFast()) {
 					exceptionStats.markShouldStop();
 				}
 			}
 			finally {
-				updateProgress(config, metrics, batchMeta.getGroupNo());
+				updateProgress(config, metrics, batchParam.getGroupNo());
 			}
 		}
 	}
@@ -250,14 +260,14 @@ public class BatchUtil {
 		}
 
 		BatchConfig<UserData> config = BatchConfig.<UserData>builder().totalCount(userDataList.size()).batchSize(20)
-				.async(false).executor(null).taskName("CSV用户数据处理").provider(batchMeta -> {
-					Integer startIndex = batchMeta.getStartIndex();
-					return ListUtil.sub(userDataList, startIndex, startIndex + batchMeta.getSize());
+				.async(false).executor(null).taskName("CSV用户数据处理").provider(batchParam -> {
+					Integer startIndex = batchParam.getStartIndex();
+					return ListUtil.sub(userDataList, startIndex, startIndex + batchParam.getSize());
 				}).consumer(context -> {
 					UserData data = context.getData();
 					System.out.println(StrUtil.format("当前数据:{}", JSONUtil.toJsonStr(data)));
 					ThreadUtil.sleep(1000);
-					Integer groupNo = context.getBatchMeta().getGroupNo();
+					Integer groupNo = context.getBatchParam().getGroupNo();
 					if (groupNo == 2) {
 						throw new RuntimeException("moc异常");
 					}

@@ -1,10 +1,10 @@
 package com.relaxed.common.core.util.batch.core;
 
-import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -49,7 +49,7 @@ public class BatchConfig<T> {
 	/**
 	 * 数据提供者
 	 */
-	private final Function<BatchMeta, List<T>> provider;
+	private final Function<BatchParam, List<T>> provider;
 
 	/**
 	 * 消费者
@@ -57,9 +57,19 @@ public class BatchConfig<T> {
 	private final Consumer<BatchContext<T>> consumer;
 
 	/**
+	 * 最大异常数
+	 */
+	private final int maxExceptions;
+
+	/**
 	 * 异常处理
 	 */
 	private final Consumer<List<Throwable>> exceptionHandler;
+
+	/**
+	 * 异常记录器
+	 */
+	private BiConsumer<BatchContext<T>, Throwable> exceptionRecordHandler;
 
 	/**
 	 * 进度监听
@@ -72,9 +82,10 @@ public class BatchConfig<T> {
 	private boolean failFast;
 
 	BatchConfig(String taskName, int totalCount, int batchSize, boolean async, Executor executor,
-			LocationComputer locationComputer, Function<BatchMeta, List<T>> provider,
-			Consumer<BatchContext<T>> consumer, Consumer<List<Throwable>> exceptionHandler,
-			Consumer<BatchProgress> progressListener, boolean failFast) {
+			LocationComputer locationComputer, Function<BatchParam, List<T>> provider,
+			Consumer<BatchContext<T>> consumer, int maxExceptions, Consumer<List<Throwable>> exceptionHandler,
+			BiConsumer<BatchContext<T>, Throwable> exceptionRecordHandler, Consumer<BatchProgress> progressListener,
+			boolean failFast) {
 		this.taskName = taskName;
 		this.totalCount = totalCount;
 		this.batchSize = batchSize;
@@ -83,7 +94,9 @@ public class BatchConfig<T> {
 		this.locationComputer = locationComputer;
 		this.provider = provider;
 		this.consumer = consumer;
+		this.maxExceptions = maxExceptions;
 		this.exceptionHandler = exceptionHandler;
+		this.exceptionRecordHandler = exceptionRecordHandler;
 		this.progressListener = progressListener;
 		this.failFast = failFast;
 	}
@@ -110,13 +123,17 @@ public class BatchConfig<T> {
 
 		private LocationComputer locationComputer;
 
-		private Function<BatchMeta, List<T>> provider;
+		private Function<BatchParam, List<T>> provider;
 
 		private Consumer<BatchContext<T>> consumer;
+
+		private int maxExceptions;
 
 		private Consumer<List<Throwable>> exceptionHandler;
 
 		private Consumer<BatchProgress> progressListener;
+
+		private BiConsumer<BatchContext<T>, Throwable> exceptionRecordHandler;
 
 		private boolean failFast;
 
@@ -156,7 +173,7 @@ public class BatchConfig<T> {
 			return this;
 		}
 
-		public BatchConfigBuilder<T> provider(Function<BatchMeta, List<T>> provider) {
+		public BatchConfigBuilder<T> provider(Function<BatchParam, List<T>> provider) {
 			this.provider = provider;
 			return this;
 		}
@@ -166,8 +183,19 @@ public class BatchConfig<T> {
 			return this;
 		}
 
+		public BatchConfigBuilder<T> maxExceptions(int maxExceptions) {
+			this.maxExceptions = maxExceptions;
+			return this;
+		}
+
 		public BatchConfigBuilder<T> exceptionHandler(Consumer<List<Throwable>> exceptionHandler) {
 			this.exceptionHandler = exceptionHandler;
+			return this;
+		}
+
+		public BatchConfigBuilder<T> exceptionRecordHandler(
+				BiConsumer<BatchContext<T>, Throwable> exceptionRecordHandler) {
+			this.exceptionRecordHandler = exceptionRecordHandler;
 			return this;
 		}
 
@@ -183,16 +211,8 @@ public class BatchConfig<T> {
 
 		public BatchConfig<T> build() {
 			return new BatchConfig(this.taskName, this.totalCount, this.batchSize, this.async, this.executor,
-					this.locationComputer, this.provider, this.consumer, this.exceptionHandler, this.progressListener,
-					this.failFast);
-		}
-
-		public String toString() {
-			return "BatchConfig.BatchConfigBuilder(taskName=" + this.taskName + ", totalCount=" + this.totalCount
-					+ ", batchSize=" + this.batchSize + ", async=" + this.async + ", executor=" + this.executor
-					+ ", locationComputer=" + this.locationComputer + ", provider=" + this.provider + ", consumer="
-					+ this.consumer + ", exceptionHandler=" + this.exceptionHandler + ", progressListener="
-					+ this.progressListener + ", failFast=" + this.failFast + ")";
+					this.locationComputer, this.provider, this.consumer, this.maxExceptions, this.exceptionHandler,
+					this.exceptionRecordHandler, this.progressListener, this.failFast);
 		}
 
 	}

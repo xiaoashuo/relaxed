@@ -3,7 +3,7 @@ package com.relaxed.test.utils.batch;
 import com.relaxed.common.core.util.batch.BatchUtil;
 import com.relaxed.common.core.util.batch.core.BatchConfig;
 import com.relaxed.common.core.util.batch.core.BatchContext;
-import com.relaxed.common.core.util.batch.core.BatchMeta;
+import com.relaxed.common.core.util.batch.core.BatchParam;
 import com.relaxed.common.core.util.batch.core.BatchProgress;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.function.BiConsumer;
 
 /**
  * BatchBak 使用示例
@@ -49,10 +50,15 @@ public class BatchExample {
 				.async(true) // 异步处理
 				.executor(executor) // 线程池
 				.failFast(false) // 启用快速失败
-				.provider(batchMeta -> generateUserData(batchMeta)) // 数据提供者
+				.provider(batchParam -> generateUserData(batchParam)) // 数据提供者
 				.consumer(context -> processUserData(context)) // 数据处理者
-				.exceptionHandler(exceptions -> handleExceptions(exceptions)) // 异常处理器
-				.progressListener(progress -> logProgress(progress)) // 进度监听器
+				.maxExceptions(5).exceptionHandler(exceptions -> handleExceptions(exceptions)) // 异常处理器
+				.exceptionRecordHandler(new BiConsumer<BatchContext<UserData>, Throwable>() {
+					@Override
+					public void accept(BatchContext<UserData> userDataBatchContext, Throwable throwable) {
+						log.error("当前异常可以兜底:{}", throwable.getMessage(), throwable);
+					}
+				}).progressListener(progress -> logProgress(progress)) // 进度监听器
 				.build();
 
 		try {
@@ -77,10 +83,10 @@ public class BatchExample {
 	/**
 	 * 生成测试数据
 	 */
-	private static List<UserData> generateUserData(BatchMeta batchMeta) {
+	private static List<UserData> generateUserData(BatchParam batchParam) {
 		List<UserData> dataList = new ArrayList<>();
-		int startIndex = batchMeta.getStartIndex();
-		int size = batchMeta.getSize();
+		int startIndex = batchParam.getStartIndex();
+		int size = batchParam.getSize();
 
 		for (int i = 0; i < size; i++) {
 			UserData user = new UserData();
