@@ -11,7 +11,7 @@
     <url>https://github.com/xiaoashuo/relaxed</url>
     <description>Relaxed Dependencies</description>
     <properties>
-        <revision>1.6.1</revision>
+        <revision>1.0.0-SNAPSHOT</revision>
         <!--插件部分-->
         <maven-compiler-plugin.verison>3.8.0</maven-compiler-plugin.verison>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
@@ -611,8 +611,8 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <id>release-snapshot-id</id>
+            <url>http://49.234.128.78/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
