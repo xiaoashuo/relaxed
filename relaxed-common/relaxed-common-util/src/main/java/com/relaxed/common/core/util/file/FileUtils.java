@@ -195,15 +195,17 @@ public class FileUtils {
 	/**
 	 * 下载文件名重新编码
 	 * @param response 响应对象
+	 * @param isPreview 是否预览模式 true 预览 false 下载
 	 * @param realFileName 真实文件名
 	 */
-	public static void setAttachmentResponseHeader(HttpServletResponse response, String realFileName)
+	public static void setAttachmentResponseHeader(HttpServletResponse response, boolean isPreview, String realFileName)
 			throws UnsupportedEncodingException {
 		String percentEncodedFileName = percentEncode(realFileName);
 
 		StringBuilder contentDispositionValue = new StringBuilder();
-		contentDispositionValue.append("attachment; filename=").append(percentEncodedFileName).append(";")
-				.append("filename*=").append("utf-8''").append(percentEncodedFileName);
+		contentDispositionValue.append(isPreview ? "inline" : "attachment").append("; filename=")
+				.append(percentEncodedFileName).append(";").append("filename*=").append("utf-8''")
+				.append(percentEncodedFileName);
 
 		response.addHeader("Access-Control-Expose-Headers", "Content-Disposition,download-filename");
 		response.setHeader("Content-disposition", contentDispositionValue.toString());
