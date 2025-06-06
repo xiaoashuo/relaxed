@@ -30,7 +30,7 @@ public class LocalFileHandler implements FileHandler {
 	public String upload(String dirPath, String filename, String separator, MultipartFile file) {
 		File desc = getAbsoluteFile(separator, dirPath, filename);
 		file.transferTo(desc);
-		String fileId = IdUtil.getSnowflakeNextId() + "";
+		String fileId = IdUtil.getSnowflakeNextIdStr();
 		return fileId;
 	}
 

@@ -9,28 +9,22 @@ import lombok.RequiredArgsConstructor;
  * @author Yakir
  * @since 1.0
  */
-@RequiredArgsConstructor
-@Getter
-public enum DownTypeEnum {
+
+public interface DownTypeEnum {
 
 	/**
 	 * 本地文件系统下载
 	 */
-	LOCAL,
+	String LOCAL = "local";
 
 	/**
 	 * SFTP服务器下载
 	 */
-	SFTP,
+	String SFTP = "sftp";
 
 	/**
 	 * OSS对象存储下载
 	 */
-	OSS,
-
-	/**
-	 * 自定义下载渠道
-	 */
-	OTHER;
+	String OSS = "oss";
 
 }

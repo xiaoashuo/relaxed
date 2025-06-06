@@ -48,6 +48,7 @@ public class FileHandlerLoader {
 	 */
 	public static FileHandler register(FileHandler fileHandler) {
 		Assert.notNull(fileHandler, "文件处理器不能为空");
+		log.info("文件处理器已加载类型{},全路径名称{}", fileHandler.supportType(), fileHandler.getClass());
 		return FILE_HANDLER_HOLDER.put(fileHandler.supportType(), fileHandler);
 	}
 

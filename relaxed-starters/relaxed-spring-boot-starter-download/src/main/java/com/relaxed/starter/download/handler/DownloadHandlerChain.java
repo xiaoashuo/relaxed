@@ -1,7 +1,11 @@
 package com.relaxed.starter.download.handler;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import com.relaxed.common.core.util.file.FileHandler;
+import com.relaxed.common.core.util.file.FileHandlerLoader;
+import com.relaxed.common.core.util.file.FileUtils;
 import com.relaxed.starter.download.annotation.ResponseDownload;
 import com.relaxed.starter.download.domain.DownloadModel;
 import com.relaxed.starter.download.enums.DownTypeEnum;
@@ -26,7 +30,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DownloadHandlerChain implements ApplicationContextAware {
 
-	private final List<DownloadHandler> downloadHandlerList;
+	private final DownloadHandler downloadHandler;
 
 	protected ApplicationContext applicationContext;
 
@@ -62,8 +66,9 @@ public class DownloadHandlerChain implements ApplicationContextAware {
 		if (ArrayUtil.isNotEmpty(headers) && headers.length % 2 != 0) {
 			throw new DownloadException("@ResponseDownload headers 必须为2的倍数");
 		}
-		if (DownTypeEnum.OTHER.equals(responseDownload.channel()) && isInterface(responseDownload.customHandler())) {
-			throw new DownloadException("@ResponseDownload customHandler 必须为自定义实列bean");
+		FileHandler fileHandler = FileHandlerLoader.load(responseDownload.channel());
+		if (fileHandler == null) {
+			throw new DownloadException("@ResponseDownload " + responseDownload.channel() + " 对应处理器不存在");
 		}
 	}
 
@@ -76,27 +81,14 @@ public class DownloadHandlerChain implements ApplicationContextAware {
 	public void process(Object returnValue, HttpServletResponse response, ResponseDownload responseDownload) {
 		check(returnValue, responseDownload);
 		DownloadModel downloadModel = (DownloadModel) returnValue;
-		if (DownTypeEnum.OTHER.equals(responseDownload.channel())) {
-			applicationContext.getBean(responseDownload.customHandler()).download(downloadModel, response,
-					responseDownload);
-			return;
-		}
 		try {
-			downloadHandlerList.stream().filter(handler -> handler.support(downloadModel, responseDownload)).findFirst()
-					.ifPresent(handler -> handler.download(downloadModel, response, responseDownload));
+			boolean isSupport = downloadHandler.support(downloadModel, responseDownload);
+			Assert.isTrue(isSupport, "渠道:{},对应处理器不存在");
+			downloadHandler.download(downloadModel, response, responseDownload);
 		}
 		finally {
 			Optional.ofNullable(downloadModel.getDownloadCallback()).ifPresent(DownloadCallback::postProcess);
 		}
-	}
-
-	/**
-	 * 判断是否为自定义下载处理器接口
-	 * @param downloadHandlerClass 下载处理器类
-	 * @return true 如果是接口，false 如果是实现类
-	 */
-	private boolean isInterface(Class<? extends DownloadHandler> downloadHandlerClass) {
-		return Modifier.isInterface(downloadHandlerClass.getModifiers());
 	}
 
 }

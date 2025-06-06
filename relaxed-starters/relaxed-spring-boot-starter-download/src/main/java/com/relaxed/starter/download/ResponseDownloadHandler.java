@@ -1,11 +1,18 @@
 package com.relaxed.starter.download;
 
+import cn.hutool.core.util.ClassUtil;
+import com.relaxed.common.core.util.file.FileHandlerLoader;
+import com.relaxed.common.core.util.file.FileUtils;
 import com.relaxed.common.jsch.sftp.SftpAutoConfiguration;
 import com.relaxed.common.jsch.sftp.client.ISftpClient;
 import com.relaxed.common.oss.s3.OssClient;
 import com.relaxed.starter.download.aop.ResponseDownloadReturnValueHandler;
+import com.relaxed.starter.download.enums.DownTypeEnum;
 import com.relaxed.starter.download.handler.*;
+import com.relaxed.starter.download.handler.ext.OssFileHandler;
+import com.relaxed.starter.download.handler.ext.SftpFileHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -13,7 +20,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.util.ClassUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
@@ -26,58 +35,52 @@ import java.util.List;
 @Configuration
 public class ResponseDownloadHandler {
 
-	/**
-	 * 创建本地文件下载处理器
-	 * @return LocalDownloadHandler 本地文件下载处理器实例
-	 */
-	@Bean
-	@ConditionalOnMissingBean(LocalDownloadHandler.class)
-	public LocalDownloadHandler localDownloadHandler() {
-		return new LocalDownloadHandler();
-	}
-
+	@RequiredArgsConstructor
 	@Configuration
-	@ConditionalOnClass(ISftpClient.class)
+	@ConditionalOnBean(ISftpClient.class)
 	public static class ISftpRegister {
 
-		/**
-		 * 创建SFTP文件下载处理器
-		 * @param iSftpClient SFTP客户端
-		 * @return SftpDownloadHandler SFTP文件下载处理器实例
-		 */
-		@Bean
-		@ConditionalOnMissingBean(SftpDownloadHandler.class)
-		public SftpDownloadHandler sftpDownloadHandler(ISftpClient iSftpClient) {
-			return new SftpDownloadHandler(iSftpClient);
+		private final ISftpClient sftpClient;
+
+		@PostConstruct
+		public void registerFileHandler() {
+			FileHandlerLoader.register(new SftpFileHandler(sftpClient));
 		}
 
 	}
 
+	@RequiredArgsConstructor
 	@Configuration
-	@ConditionalOnClass(OssClient.class)
+	@ConditionalOnBean(OssClient.class)
 	public static class OssRegister {
 
-		/**
-		 * 创建OSS文件下载处理器
-		 * @param ossClient OSS客户端
-		 * @return OssDownloadHandler OSS文件下载处理器实例
-		 */
-		@Bean
-		@ConditionalOnMissingBean(OssDownloadHandler.class)
-		public OssDownloadHandler ossDownloadHandler(OssClient ossClient) {
-			return new OssDownloadHandler(ossClient);
+		private final OssClient ossClient;
+
+		@PostConstruct
+		public void registerFileHandler() {
+			FileHandlerLoader.register(new OssFileHandler(ossClient));
 		}
 
+	}
+
+	/**
+	 * 默认下载处理器注册
+	 * @return 默认下载处理器实现
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public DownloadHandler defaultDownloadHandler() {
+		return new DefaultDownloadHandler();
 	}
 
 	/**
 	 * 创建下载处理器链
-	 * @param downloadHandlerList 所有可用的下载处理器
+	 * @param downloadHandler 下载处理器
 	 * @return DownloadHandlerChain 下载处理器链实例
 	 */
 	@Bean
-	public DownloadHandlerChain downloadHandlerChain(List<DownloadHandler> downloadHandlerList) {
-		return new DownloadHandlerChain(downloadHandlerList);
+	public DownloadHandlerChain downloadHandlerChain(DownloadHandler downloadHandler) {
+		return new DownloadHandlerChain(downloadHandler);
 	}
 
 	/**

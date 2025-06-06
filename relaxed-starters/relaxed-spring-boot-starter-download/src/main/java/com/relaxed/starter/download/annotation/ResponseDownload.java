@@ -21,13 +21,7 @@ public @interface ResponseDownload {
 	 * 下载渠道类型 支持本地文件系统、SFTP服务器和OSS对象存储
 	 * @return 下载渠道类型，默认为本地文件系统
 	 */
-	DownTypeEnum channel() default DownTypeEnum.LOCAL;
-
-	/**
-	 * 自定义下载处理器 当下载渠道为OTHER时，需要指定自定义处理器
-	 * @return 自定义下载处理器类，默认为DownloadHandler接口
-	 */
-	Class<? extends DownloadHandler> customHandler() default DownloadHandler.class;
+	String channel() default DownTypeEnum.LOCAL;
 
 	/**
 	 * 是否内联显示 如果为true，文件可以在浏览器中直接预览，如图片或视频 需要配合contentType使用

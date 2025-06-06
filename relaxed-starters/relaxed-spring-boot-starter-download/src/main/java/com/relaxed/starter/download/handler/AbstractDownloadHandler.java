@@ -2,6 +2,7 @@ package com.relaxed.starter.download.handler;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import com.relaxed.common.core.util.file.FileUtils;
 import com.relaxed.starter.download.annotation.ResponseDownload;
 import com.relaxed.starter.download.domain.DownloadModel;
 import lombok.SneakyThrows;
@@ -72,6 +73,8 @@ public abstract class AbstractDownloadHandler implements DownloadHandler, Applic
 		boolean inline = responseDownload.inline();
 		String contentDisplay = inline ? "inline" : "attachment";
 		response.setHeader(HttpHeaders.CONTENT_DISPOSITION, contentDisplay + ";filename=" + fileName);
+		response.addHeader("Access-Control-Expose-Headers", "Content-Disposition,download-filename");
+		response.setHeader("download-filename", fileName);
 		// 注解上指定的响应头
 		String[] headers = responseDownload.headers();
 		if (headers.length % 2 == 0) {
