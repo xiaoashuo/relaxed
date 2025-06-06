@@ -12,11 +12,15 @@
     <artifactId>relaxed-admin-core</artifactId>
 
     <dependencies>
-
+        <!--web模块-->
 		<dependency>
 			<groupId>cn.lovecyy</groupId>
 			<artifactId>relaxed-spring-boot-starter-web</artifactId>
 		</dependency>
-
+        <!--下载模块-->
+        <dependency>
+            <groupId>cn.lovecyy</groupId>
+            <artifactId>relaxed-spring-boot-starter-download</artifactId>
+        </dependency>
     </dependencies>
 </project>

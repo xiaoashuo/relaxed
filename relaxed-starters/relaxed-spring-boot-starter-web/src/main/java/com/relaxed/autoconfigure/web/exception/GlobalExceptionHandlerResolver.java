@@ -1,9 +1,9 @@
 package com.relaxed.autoconfigure.web.exception;
 
+import com.relaxed.autoconfigure.web.config.RelaxedWebProperties;
 import com.relaxed.common.core.constants.GlobalConstants;
 import com.relaxed.common.core.exception.BusinessException;
 
-import com.relaxed.common.exception.handler.GlobalExceptionHandler;
 import com.relaxed.common.model.result.R;
 import com.relaxed.common.model.result.SysResultCode;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +34,7 @@ import javax.xml.bind.ValidationException;
 @RequiredArgsConstructor
 public class GlobalExceptionHandlerResolver {
 
-	@Value("${spring.profiles.active:prod}")
-	private String profile;
+	private final RelaxedWebProperties webProperties;
 
 	/**
 	 * 生产环境错误提示信息
@@ -58,7 +57,7 @@ public class GlobalExceptionHandlerResolver {
 	public R<String> handleGlobalException(Exception e, HttpServletRequest request) {
 		log.error("请求地址:{}, 全局异常信息 ex={}", request.getRequestURI(), e.getMessage(), e);
 		// 当为生产环境, 不适合把具体的异常信息展示给用户, 比如数据库异常信息.
-		String errorMsg = GlobalConstants.ENV_PROD.equals(profile) ? PROD_ERR_MSG
+		String errorMsg = webProperties.isMaskError() ? PROD_ERR_MSG
 				: (e instanceof NullPointerException ? NLP_MSG : e.getLocalizedMessage());
 		return R.failed(SysResultCode.SERVER_ERROR, errorMsg);
 	}
@@ -73,8 +72,7 @@ public class GlobalExceptionHandlerResolver {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public R<String> handleMethodArgumentTypeMismatchException(Exception e, HttpServletRequest request) {
 		log.error("请求地址:{}, 参数类型转换异常 ex={}", request.getRequestURI(), e.getMessage(), e);
-		return R.failed(SysResultCode.BAD_REQUEST,
-				GlobalConstants.ENV_PROD.equals(profile) ? PROD_ERR_MSG : e.getMessage());
+		return R.failed(SysResultCode.BAD_REQUEST, e.getMessage());
 	}
 
 	/**

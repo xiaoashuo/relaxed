@@ -1,9 +1,11 @@
 package com.relaxed.autoconfigure.web.servlet;
 
+import com.relaxed.autoconfigure.web.config.RelaxedWebProperties;
 import com.relaxed.autoconfigure.web.filter.TraceIdFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,11 +21,12 @@ import java.util.List;
  * @author Yakir
  * @since 1.0
  */
+@RequiredArgsConstructor
+@EnableConfigurationProperties(RelaxedWebProperties.class)
 @Configuration
 public class WebMvcAutoConfiguration {
 
-	@Value("${relaxed.web.page-size-limit:100}")
-	private int pageSizeLimit;
+	private final RelaxedWebProperties webProperties;
 
 	/**
 	 * 创建分页参数解析器 用于解析Controller方法中的分页参数
@@ -32,7 +35,7 @@ public class WebMvcAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public PageParamArgumentResolver pageParamArgumentResolver() {
-		return new PageParamArgumentResolver(pageSizeLimit);
+		return new PageParamArgumentResolver(webProperties.getPageSizeLimit());
 	}
 
 	/**
