@@ -32,7 +32,7 @@ import java.util.Optional;
  * @Version 1.0
  */
 @UtilityClass
-public class FileStorageUtils {
+public class FileStoreUtils {
 
 	/**
 	 * 文件上传
@@ -71,7 +71,7 @@ public class FileStorageUtils {
 		assertAllowed(file, fileConfig);
 		// 转换后 文件名称
 		FileNameConverter fileNameConverter = Optional.ofNullable(fileConfig.getFileNameConverter())
-				.orElse(FileStorageUtils::extractFileName);
+				.orElse(FileStoreUtils::extractFileName);
 		String fileName = fileNameConverter.extractFileName(originalFilename);
 		boolean splitDate = fileConfig.isSplitDate();
 		String separator = fileConfig.getSeparator();

@@ -1,7 +1,7 @@
 package com.relaxed.starter.download.handler;
 
 import com.relaxed.common.core.util.file.FileHandlerLoader;
-import com.relaxed.common.core.util.file.FileStorageUtils;
+import com.relaxed.common.core.util.file.FileStoreUtils;
 import com.relaxed.starter.download.annotation.ResponseDownload;
 import com.relaxed.starter.download.domain.DownloadModel;
 import lombok.SneakyThrows;
@@ -42,7 +42,7 @@ public class DefaultDownloadHandler extends AbstractDownloadHandler {
 		String fileName = downloadModel.getFileName();
 		String channel = responseDownload.channel();
 		try {
-			FileStorageUtils.writeToStream(channel, parentPath, fileName, response.getOutputStream());
+			FileStoreUtils.writeToStream(channel, parentPath, fileName, response.getOutputStream());
 		}
 		catch (Exception e) {
 			log.error("下载文件,渠道{} 路径{}，名称{}异常", responseDownload.channel(), parentPath, fileName, e);
