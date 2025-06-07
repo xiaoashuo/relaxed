@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>relaxed-resource</artifactId>
-
+    <name>oauth2 鉴权模块</name>
     <description>oauth2 鉴权模块</description>
 
 

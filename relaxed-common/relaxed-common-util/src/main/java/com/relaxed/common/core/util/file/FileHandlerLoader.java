@@ -41,6 +41,8 @@ public class FileHandlerLoader {
 		return FILE_HANDLER_HOLDER.get(supportType);
 	}
 
+
+
 	/**
 	 * 注册文件处理器
 	 * @param fileHandler

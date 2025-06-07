@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>relaxed-common-idempotent</artifactId>
-
+    <name>幂等模块</name>
     <description>幂等模块</description>
 
 

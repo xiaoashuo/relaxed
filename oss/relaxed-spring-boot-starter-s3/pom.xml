@@ -12,11 +12,8 @@
     </parent>
 
     <artifactId>relaxed-spring-boot-starter-s3</artifactId>
+    <name>S3亚马逊模块</name>
 
-    <properties>
-
-
-    </properties>
     <dependencies>
 
         <dependency>

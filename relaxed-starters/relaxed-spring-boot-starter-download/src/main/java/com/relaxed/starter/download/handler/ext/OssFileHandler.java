@@ -25,11 +25,13 @@ import java.io.OutputStream;
 @RequiredArgsConstructor
 public class OssFileHandler implements FileHandler {
 
+	private final String supportType;
+
 	private final OssClient ossClient;
 
 	@Override
 	public String supportType() {
-		return DownTypeEnum.OSS;
+		return supportType;
 	}
 
 	@SneakyThrows

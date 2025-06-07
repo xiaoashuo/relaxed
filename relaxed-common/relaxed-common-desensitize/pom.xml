@@ -11,7 +11,7 @@
 
     <artifactId>relaxed-common-desensitize</artifactId>
 
-
+    <name>脱敏模块</name>
 
 
     <dependencies>

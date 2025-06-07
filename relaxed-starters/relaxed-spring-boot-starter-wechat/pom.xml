@@ -11,6 +11,7 @@
 
     <artifactId>relaxed-spring-boot-starter-wechat</artifactId>
 
+    <name>企业微信通知模块</name>
 
 
 

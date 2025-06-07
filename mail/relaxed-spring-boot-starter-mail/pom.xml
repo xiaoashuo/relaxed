@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>relaxed-spring-boot-starter-mail</artifactId>
-
+    <name>邮件模块自动配置</name>
     <dependencies>
 
         <dependency>

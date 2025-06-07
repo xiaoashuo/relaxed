@@ -10,7 +10,7 @@
         <version>${revision}</version>
     </parent>
     <artifactId>relaxed-extend-dingtalk</artifactId>
-
+    <name>钉钉通知核心模块</name>
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>

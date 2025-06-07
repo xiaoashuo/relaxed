@@ -22,11 +22,13 @@ import java.io.OutputStream;
 @Slf4j
 public class SftpFileHandler implements FileHandler {
 
+	private final String supportType;
+
 	private final ISftpClient sftpClient;
 
 	@Override
 	public String supportType() {
-		return DownTypeEnum.SFTP;
+		return supportType;
 	}
 
 	@SneakyThrows

@@ -31,8 +31,7 @@ import java.util.concurrent.CountDownLatch;
 				ErrorMvcAutoConfiguration.class, MultipartAutoConfiguration.class, JacksonAutoConfiguration.class,
 				WebMvcAutoConfiguration.class, HttpEncodingAutoConfiguration.class,
 				ResponseDownloadAutoConfiguration.class, ResponseDownloadHandler.class, DownloadController.class,
-				SftpAutoConfiguration.class, OssClientAutoConfiguration.class,
-				ResponseDownloadHandler.ISftpRegister.class, ResponseDownloadHandler.OssRegister.class },
+				SftpAutoConfiguration.class, OssClientAutoConfiguration.class, },
 		properties = { "spring.config.location=classpath:/sftp/application-sftp.yml",
 				"spring.config.location=classpath:/oss/application-oss.yml" },
 		webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)

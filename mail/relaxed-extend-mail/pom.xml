@@ -11,7 +11,7 @@
         <relativePath>../../relaxed-parent/pom.xml</relativePath>
     </parent>
     <artifactId>relaxed-extend-mail</artifactId>
-
+    <name>邮件模块</name>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

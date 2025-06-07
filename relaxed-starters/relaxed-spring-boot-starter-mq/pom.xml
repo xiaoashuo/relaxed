@@ -10,6 +10,7 @@
         <version>${revision}</version>
     </parent>
     <artifactId>relaxed-spring-boot-starter-mq</artifactId>
+    <name>MQ模块自动配置</name>
 
     <dependencies>
         <dependency>

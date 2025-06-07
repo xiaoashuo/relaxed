@@ -1,4 +1,4 @@
-package com.relaxed.admin.core.thread;
+package com.relaxed.autoconfigure.web.config.thread;
 
 import cn.hutool.core.map.MapUtil;
 import org.slf4j.MDC;

@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>relaxed-common-holidays</artifactId>
-
+    <name>工作日模块</name>
     <description>工作日计算</description>
 
 

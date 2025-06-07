@@ -37,6 +37,13 @@ public interface FileHandler {
 	String upload(String dirPath, String filename, String separator, MultipartFile file);
 
 	/**
+	 * 判断文件是否存在
+	 * @param rootPath
+	 * @param relativePath
+	 * @return 存在true 否则false
+	 */
+	boolean isExist(String rootPath,String relativePath);
+	/**
 	 * 文件删除
 	 * @date 2023/5/17 11:52
 	 * @param rootPath 根目录路径 /mnt

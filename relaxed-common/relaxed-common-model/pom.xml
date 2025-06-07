@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>relaxed-common-model</artifactId>
-
+    <name>通用实体</name>
     <description>公用model层</description>
 
 

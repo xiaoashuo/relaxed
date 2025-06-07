@@ -1,4 +1,4 @@
-package com.relaxed.admin.core.thread;
+package com.relaxed.autoconfigure.web.config.thread;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.task.TaskExecutorCustomizer;

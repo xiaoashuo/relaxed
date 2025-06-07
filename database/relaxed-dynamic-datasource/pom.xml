@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>relaxed-dynamic-datasource</artifactId>
-
+    <name>多数据源模块</name>
     <description>动态数据源</description>
 
 

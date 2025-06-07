@@ -14,6 +14,7 @@
 
      <packaging>pom</packaging>
 
+    <name>日志模块包管理</name>
     <modules>
        <module>relaxed-common-log-access</module>
        <module>relaxed-common-log-operation</module>

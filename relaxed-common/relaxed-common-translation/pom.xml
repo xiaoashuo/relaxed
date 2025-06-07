@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>relaxed-common-translation</artifactId>
-
+    <name>翻译模块</name>
     <description>通用翻译服务</description>
 
 

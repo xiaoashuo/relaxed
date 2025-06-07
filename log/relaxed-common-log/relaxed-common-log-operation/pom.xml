@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>relaxed-common-log-operation</artifactId>
-
+    <name>操作日志模块</name>
     <description>操作日志模块</description>
 
 

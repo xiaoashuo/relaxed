@@ -11,7 +11,7 @@
 
     <artifactId>relaxed-common</artifactId>
     <packaging>pom</packaging>
-
+    <name>核心模块包管理</name>
     <modules>
         <module>relaxed-common-model</module>
         <module>relaxed-common-core</module>

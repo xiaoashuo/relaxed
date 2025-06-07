@@ -10,6 +10,7 @@
         <version>${revision}</version>
     </parent>
     <artifactId>relaxed-spring-boot-starter-exception</artifactId>
+    <name>异常模块自动配置</name>
 
     <dependencies>
 

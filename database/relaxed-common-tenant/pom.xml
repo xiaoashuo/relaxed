@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>relaxed-common-tenant</artifactId>
-
+    <name>多租户</name>
     <description>多租户实现</description>
 
 

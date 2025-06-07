@@ -11,7 +11,7 @@
         <relativePath>../../relaxed-parent/pom.xml</relativePath>
     </parent>
     <artifactId>relaxed-spring-boot-starter-log</artifactId>
-
+    <name>日志模块自动配置</name>
     <dependencies>
 
 

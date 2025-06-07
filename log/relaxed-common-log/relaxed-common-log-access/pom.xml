@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>relaxed-common-log-access</artifactId>
-
+    <name>访问日志</name>
     <description>访问日志模块</description>
 
 

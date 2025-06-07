@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>relaxed-common-util</artifactId>
-
+    <name>核心工具包</name>
     <description>通用工具类</description>
 
 

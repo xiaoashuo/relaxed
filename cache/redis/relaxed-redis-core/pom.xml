@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>relaxed-redis-core</artifactId>
-
+<name>redis-core模块</name>
 <dependencies>
     <dependency>
         <groupId>cn.lovecyy</groupId>

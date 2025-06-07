@@ -11,7 +11,7 @@
         <relativePath>../../relaxed-parent/pom.xml</relativePath>
     </parent>
     <artifactId>relaxed-spring-boot-starter-fastexcel</artifactId>
-
+    <name>excel模块</name>
     <dependencies>
         <dependency>
             <groupId>javax.servlet</groupId>

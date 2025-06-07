@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>relaxed-common-ip</artifactId>
-
+    <name>IP模块</name>
     <description>IP库</description>
 
 

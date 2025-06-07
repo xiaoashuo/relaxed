@@ -10,8 +10,8 @@
     </parent>
 
     <artifactId>relaxed-common-log-biz</artifactId>
-
-    <description>操作业务日志模块</description>
+    <name>业务日志</name>
+    <description>业务日志模块,支持记录日志变动</description>
 
 
 

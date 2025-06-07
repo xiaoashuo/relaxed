@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>relaxed-poi-tl</artifactId>
+    <name>Poi-tl扩展库</name>
 
     <description>Poi-tl扩展库</description>
 

@@ -12,7 +12,7 @@
 
     <artifactId>pool-monitor-starter</artifactId>
 
-
+    <name>线程池监控模块</name>
 
 
     <dependencies>

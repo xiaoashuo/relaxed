@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>relaxed-spring-boot-starter-sftp</artifactId>
-
+    <name>SFTP模块自动配置</name>
 
 
 

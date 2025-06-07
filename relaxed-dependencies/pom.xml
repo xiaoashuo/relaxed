@@ -8,6 +8,7 @@
     <version>${revision}</version>
 
     <packaging>pom</packaging>
+    <name>统一依赖版本管理</name>
     <url>https://github.com/xiaoashuo/relaxed</url>
     <description>Relaxed Dependencies</description>
     <properties>
@@ -104,12 +105,7 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- admin core-->
-            <dependency>
-                <groupId>cn.lovecyy</groupId>
-                <artifactId>relaxed-admin-core</artifactId>
-                <version>${revision}</version>
-            </dependency>
+
             <!--鉴权模块-->
             <dependency>
                 <groupId>cn.lovecyy</groupId>
@@ -615,8 +611,8 @@
             <url>http://49.234.128.78/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
         <repository>
-            <id>ossrh</id>
-            <url>https://central.sonatype.com</url>
+            <id>release-id</id>
+            <url>http://49.234.128.78/nexus/content/repositories/releases/</url>
         </repository>
     </distributionManagement>
     <build>

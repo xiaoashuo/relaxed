@@ -51,7 +51,13 @@ public abstract class AbstractDownloadHandler implements DownloadHandler, Applic
 		response.setContentType(contentType);
 		response.setCharacterEncoding(responseDownload.charset());
 		buildHeaders(response, responseDownload, fileName);
-		write(downloadModel, response, responseDownload);
+		try {
+			write(downloadModel, response, responseDownload);
+		}
+		catch (Exception e) {
+			response.setContentType("application/json");
+			throw e;
+		}
 	}
 
 	/**

@@ -5,6 +5,7 @@ import com.relaxed.common.core.util.file.FileHandlerLoader;
 import com.relaxed.common.core.util.file.FileUtils;
 import com.relaxed.common.jsch.sftp.SftpAutoConfiguration;
 import com.relaxed.common.jsch.sftp.client.ISftpClient;
+import com.relaxed.common.jsch.sftp.client.SftpClient;
 import com.relaxed.common.oss.s3.OssClient;
 import com.relaxed.starter.download.aop.ResponseDownloadReturnValueHandler;
 import com.relaxed.starter.download.enums.DownTypeEnum;
@@ -12,14 +13,21 @@ import com.relaxed.starter.download.handler.*;
 import com.relaxed.starter.download.handler.ext.OssFileHandler;
 import com.relaxed.starter.download.handler.ext.SftpFileHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.Order;
 import org.springframework.util.ClassUtils;
 
 import javax.annotation.PostConstruct;
@@ -34,34 +42,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Configuration
 public class ResponseDownloadHandler {
-
-	@RequiredArgsConstructor
-	@Configuration
-	@ConditionalOnBean(ISftpClient.class)
-	public static class ISftpRegister {
-
-		private final ISftpClient sftpClient;
-
-		@PostConstruct
-		public void registerFileHandler() {
-			FileHandlerLoader.register(new SftpFileHandler(sftpClient));
-		}
-
-	}
-
-	@RequiredArgsConstructor
-	@Configuration
-	@ConditionalOnBean(OssClient.class)
-	public static class OssRegister {
-
-		private final OssClient ossClient;
-
-		@PostConstruct
-		public void registerFileHandler() {
-			FileHandlerLoader.register(new OssFileHandler(ossClient));
-		}
-
-	}
 
 	/**
 	 * 默认下载处理器注册

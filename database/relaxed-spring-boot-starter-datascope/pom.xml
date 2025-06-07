@@ -11,7 +11,7 @@
         <relativePath>../../relaxed-parent/pom.xml</relativePath>
     </parent>
     <artifactId>relaxed-spring-boot-starter-datascope</artifactId>
-
+    <name>数据权限模块</name>
     <dependencies>
 
 

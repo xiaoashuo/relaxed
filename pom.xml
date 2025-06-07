@@ -23,7 +23,6 @@
         <module>relaxed-dependencies</module>
         <module>relaxed-parent</module>
 
-        <module>relaxed-admin</module>
         <module>relaxed-oauth2</module>
         <module>relaxed-common</module>
         <module>relaxed-extends</module>

@@ -12,6 +12,7 @@
 
     <artifactId>relaxed-oauth2</artifactId>
     <packaging>pom</packaging>
+    <name>oauth2模块管理</name>
 
     <modules>
         <module>relaxed-oauth2-common</module>

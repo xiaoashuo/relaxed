@@ -10,7 +10,7 @@
         <version>${revision}</version>
     </parent>
     <artifactId>relaxed-extend-openapi</artifactId>
-
+    <name>openapi模块</name>
     <dependencies>
         <dependency>
             <groupId>io.swagger.core.v3</groupId>

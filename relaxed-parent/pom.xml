@@ -5,7 +5,7 @@
         <groupId>cn.lovecyy</groupId>
         <artifactId>relaxed-dependencies</artifactId>
         <version>${revision}</version>
-        <relativePath>../relaxed-dependencies/pom.xml</relativePath>
+        <relativePath>../relaxed-dependencies</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>relaxed-parent</artifactId>

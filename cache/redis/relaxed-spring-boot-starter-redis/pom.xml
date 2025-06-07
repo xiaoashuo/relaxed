@@ -11,7 +11,7 @@
         <relativePath>../../../relaxed-parent/pom.xml</relativePath>
     </parent>
     <artifactId>relaxed-spring-boot-starter-redis</artifactId>
-
+    <name>redis-starter</name>
     <dependencies>
         <dependency>
             <groupId>cn.lovecyy</groupId>

@@ -10,7 +10,7 @@
         <version>${revision}</version>
     </parent>
     <artifactId>relaxed-spring-boot-starter-xss</artifactId>
-
+    <name>Xss过滤starter</name>
     <dependencies>
         <dependency>
             <groupId>cn.lovecyy</groupId>

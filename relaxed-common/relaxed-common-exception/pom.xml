@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>relaxed-common-exception</artifactId>
-
+    <name>通用异常模块</name>
     <description>通用异常类</description>
 
 

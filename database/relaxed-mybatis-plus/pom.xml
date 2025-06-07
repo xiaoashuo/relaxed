@@ -11,7 +11,7 @@
         <relativePath>../../relaxed-parent/pom.xml</relativePath>
     </parent>
     <artifactId>relaxed-mybatis-plus</artifactId>
-
+    <name>mybatis-plus扩展模块</name>
     <dependencies>
         <dependency>
             <groupId>cn.lovecyy</groupId>
