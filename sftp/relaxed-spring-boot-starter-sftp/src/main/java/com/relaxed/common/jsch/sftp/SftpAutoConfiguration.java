@@ -1,11 +1,13 @@
 package com.relaxed.common.jsch.sftp;
 
+import com.relaxed.common.core.util.file.FileHandlerLoader;
 import com.relaxed.common.jsch.sftp.client.ISftpClient;
 import com.relaxed.common.jsch.sftp.client.SftpClient;
 import com.relaxed.common.jsch.sftp.executor.ISftpProvider;
 import com.relaxed.common.jsch.sftp.executor.SftpExecutor;
 import com.relaxed.common.jsch.sftp.factory.*;
 
+import com.relaxed.common.jsch.sftp.handler.SftpFileHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -42,7 +44,10 @@ public class SftpAutoConfiguration {
 	public ISftpClient sftpClient(SftpProperties sftpProperties, ISftpProvider iSftpProvider) {
 		SftpPool sftpPool = new SftpPool(SftpFactory.of(sftpProperties, iSftpProvider),
 				SftpPoolConfig.of(sftpProperties), SftpAbandonedConfig.of(sftpProperties));
-		return new SftpClient(sftpPool);
+		SftpClient sftpClient = new SftpClient(sftpPool);
+		// 注册sftp文件处理器
+		FileHandlerLoader.register(new SftpFileHandler("sftp", sftpClient));
+		return sftpClient;
 	}
 
 }

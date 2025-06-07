@@ -68,6 +68,11 @@ public class LocalFileHandler implements FileHandler {
 		return outputStream.toByteArray();
 	}
 
+	@Override
+	public Object getTargetObject() {
+		return null;
+	}
+
 	private File getAbsoluteFile(String separator, String dirPath, String fileName) {
 		File desc = new File(dirPath + separator + fileName);
 
@@ -77,6 +82,12 @@ public class LocalFileHandler implements FileHandler {
 			}
 		}
 		return desc;
+	}
+
+	@Override
+	public boolean isExist(String rootPath, String relativePath) {
+		File desc = new File(rootPath, relativePath);
+		return desc.exists();
 	}
 
 }

@@ -38,11 +38,12 @@ public interface FileHandler {
 
 	/**
 	 * 判断文件是否存在
-	 * @param rootPath
-	 * @param relativePath
+	 * @param rootPath 根路径/mnt
+	 * @param relativePath 文件全相对路径/child/test.pdf
 	 * @return 存在true 否则false
 	 */
-	boolean isExist(String rootPath,String relativePath);
+	boolean isExist(String rootPath, String relativePath);
+
 	/**
 	 * 文件删除
 	 * @date 2023/5/17 11:52
@@ -67,5 +68,11 @@ public interface FileHandler {
 	 * @return
 	 */
 	byte[] downloadByte(String rootPath, String relativePath);
+
+	/**
+	 * 获取目标对象
+	 * @return 获取代理真实对象
+	 */
+	Object getTargetObject();
 
 }

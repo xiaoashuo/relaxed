@@ -32,7 +32,7 @@ import java.util.Optional;
  * @Version 1.0
  */
 @UtilityClass
-public class FileUtils {
+public class FileStorageUtils {
 
 	/**
 	 * 文件上传
@@ -71,7 +71,7 @@ public class FileUtils {
 		assertAllowed(file, fileConfig);
 		// 转换后 文件名称
 		FileNameConverter fileNameConverter = Optional.ofNullable(fileConfig.getFileNameConverter())
-				.orElse(FileUtils::extractFileName);
+				.orElse(FileStorageUtils::extractFileName);
 		String fileName = fileNameConverter.extractFileName(originalFilename);
 		boolean splitDate = fileConfig.isSplitDate();
 		String separator = fileConfig.getSeparator();
@@ -88,6 +88,27 @@ public class FileUtils {
 		FileMeta fileMeta = new FileMeta().setOriginalFilename(originalFilename).setFilename(fileName)
 				.setSeperator(separator).setFileId(fileId).setBasePath(basePath).setRelativePath(relativeFilePath);
 		return fileMeta;
+	}
+
+	/**
+	 * 文件是否存在 本地处理器
+	 * @param rootPath 根路径 /mnt
+	 * @param relativePath 相对路径 /test.pdf
+	 * @return 存在true 否则false
+	 */
+	public static boolean isExist(String rootPath, String relativePath) {
+		return getFileHandler(FileConstants.DEFAULT_HANDLE_TYPE).isExist(rootPath, relativePath);
+	}
+
+	/**
+	 * 文件是否存在
+	 * @param handleType 处理类型
+	 * @param rootPath 根路径 /mnt
+	 * @param relativePath 相对路径 /test.pdf
+	 * @return 存在true 否则false
+	 */
+	public static boolean isExist(String handleType, String rootPath, String relativePath) {
+		return getFileHandler(handleType).isExist(rootPath, relativePath);
 	}
 
 	/**
@@ -220,6 +241,23 @@ public class FileUtils {
 	public static String percentEncode(String s) throws UnsupportedEncodingException {
 		String encode = URLEncoder.encode(s, StandardCharsets.UTF_8.toString());
 		return encode.replaceAll("\\+", "%20");
+	}
+
+	/**
+	 * 获取目标对象
+	 * @param handleType 处理类型
+	 * @param <T> 真实对象类型
+	 * @param returnType 期望获取类型
+	 * @return 获取代理真实对象
+	 */
+	public static <T> T getTargetObject(String handleType, Class<T> returnType) {
+		FileHandler fileHandler = getFileHandler(handleType);
+		Object targetObject = fileHandler.getTargetObject();
+
+		Class<?> targetObjectClass = targetObject.getClass();
+		Assert.isTrue(returnType.isAssignableFrom(targetObjectClass), "对象类型不匹配,期望:{},实际:{}", returnType.getName(),
+				targetObjectClass.getName());
+		return (T) targetObject;
 	}
 
 }

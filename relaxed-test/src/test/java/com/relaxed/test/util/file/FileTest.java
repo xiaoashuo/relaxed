@@ -7,7 +7,8 @@ import com.relaxed.common.core.util.file.FileHandler;
 import com.relaxed.common.core.util.file.FileHandlerLoader;
 import com.relaxed.common.core.util.file.FileMeta;
 import com.relaxed.common.core.util.file.FileMultipartFile;
-import com.relaxed.common.core.util.file.FileUtils;
+import com.relaxed.common.core.util.file.FileStorageUtils;
+import com.relaxed.common.core.util.file.LocalFileHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,7 @@ public class FileTest {
 		String relativePath = "file";
 		String uploadFilePath = "D:\\other\\100000\\jieqingzhengming_131331131313.pdf";
 		FileMultipartFile fileMultipartFile = new FileMultipartFile("file", new File(uploadFilePath));
-		FileMeta fileMeta = FileUtils.upload(rootPath, relativePath, fileMultipartFile,
+		FileMeta fileMeta = FileStorageUtils.upload(rootPath, relativePath, fileMultipartFile,
 				FileConfig.create().splitDate(true));
 		log.info("upload  successfully,result:[{}] ,相对路径[{}],完整路径[{}]", JSONUtil.toJsonStr(fileMeta),
 				fileMeta.getRelativeFilePath(), fileMeta.getFullFilePath());
@@ -39,8 +40,25 @@ public class FileTest {
 	void fileDelete() {
 		String rootPath = "D:\\other\\100000";
 		String relativePath = "\\file\\20230517\\J2GyZCZfUXf1cnt3uXGuS.pdf";
-		boolean deleted = FileUtils.delete(rootPath, relativePath);
+		boolean deleted = FileStorageUtils.delete(rootPath, relativePath);
 		log.info("deleted  successfully,result:[{}]", deleted);
+	}
+
+	@Test
+	void fileIsExist() {
+		String rootPath = "D:\\other";
+		String relativePath = "PJ3030230475525459968_REPAY_DETAI9L.xlsx";
+		boolean exist = FileStorageUtils.isExist("local", rootPath, relativePath);
+		log.info("file is exist check  successfully,result:[{}]", exist);
+	}
+
+	@Test
+	void fileRealObjGet() {
+		// 本地客户端默认没有任何方法
+		LocalFileHandler.LocalFileClient localClient = FileStorageUtils.getTargetObject("local",
+				LocalFileHandler.LocalFileClient.class);
+
+		log.info("file is exist check  successfully,result:[{}]", localClient);
 	}
 
 	@Test

@@ -1,8 +1,6 @@
 package com.relaxed.starter.download.handler;
 
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-import com.relaxed.common.core.util.file.FileUtils;
 import com.relaxed.starter.download.annotation.ResponseDownload;
 import com.relaxed.starter.download.domain.DownloadModel;
 import lombok.SneakyThrows;

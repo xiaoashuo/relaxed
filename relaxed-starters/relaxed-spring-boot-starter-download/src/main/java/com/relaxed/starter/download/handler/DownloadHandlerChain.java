@@ -5,10 +5,8 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.core.util.file.FileHandler;
 import com.relaxed.common.core.util.file.FileHandlerLoader;
-import com.relaxed.common.core.util.file.FileUtils;
 import com.relaxed.starter.download.annotation.ResponseDownload;
 import com.relaxed.starter.download.domain.DownloadModel;
-import com.relaxed.starter.download.enums.DownTypeEnum;
 import com.relaxed.starter.download.exception.DownloadException;
 import com.relaxed.starter.download.functions.DownloadCallback;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +15,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Modifier;
-import java.util.List;
 import java.util.Optional;
 
 /**

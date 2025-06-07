@@ -1,16 +1,13 @@
 package com.relaxed.starter.download.handler;
 
-import cn.hutool.extra.servlet.ServletUtil;
 import com.relaxed.common.core.util.file.FileHandlerLoader;
-import com.relaxed.common.core.util.file.FileUtils;
+import com.relaxed.common.core.util.file.FileStorageUtils;
 import com.relaxed.starter.download.annotation.ResponseDownload;
 import com.relaxed.starter.download.domain.DownloadModel;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
 
 /**
  * DefaultDownloadHandler 文件下载处理器，用于处理文件系统的文件下载。 继承自
@@ -45,7 +42,7 @@ public class DefaultDownloadHandler extends AbstractDownloadHandler {
 		String fileName = downloadModel.getFileName();
 		String channel = responseDownload.channel();
 		try {
-			FileUtils.writeToStream(channel, parentPath, fileName, response.getOutputStream());
+			FileStorageUtils.writeToStream(channel, parentPath, fileName, response.getOutputStream());
 		}
 		catch (Exception e) {
 			log.error("下载文件,渠道{} 路径{}，名称{}异常", responseDownload.channel(), parentPath, fileName, e);

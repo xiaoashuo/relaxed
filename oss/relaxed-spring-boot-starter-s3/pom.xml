@@ -34,8 +34,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>cn.lovecyy</groupId>
+            <artifactId>relaxed-common-util</artifactId>
         </dependency>
 
 

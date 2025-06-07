@@ -26,6 +26,11 @@ public class OssFileHandler implements FileHandler {
 	}
 
 	@Override
+	public boolean isExist(String rootPath, String relativePath) {
+		return false;
+	}
+
+	@Override
 	public boolean delete(String rootPath, String relativePath) {
 		return false;
 	}
@@ -38,6 +43,11 @@ public class OssFileHandler implements FileHandler {
 	@Override
 	public byte[] downloadByte(String rootPath, String relativePath) {
 		return new byte[0];
+	}
+
+	@Override
+	public Object getTargetObject() {
+		return null;
 	}
 
 }

@@ -1,10 +1,9 @@
-package com.relaxed.starter.download.handler.ext;
+package com.relaxed.common.jsch.sftp.handler;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.IdUtil;
 import com.relaxed.common.core.util.file.FileHandler;
 import com.relaxed.common.jsch.sftp.client.ISftpClient;
-import com.relaxed.starter.download.enums.DownTypeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +57,16 @@ public class SftpFileHandler implements FileHandler {
 	@Override
 	public byte[] downloadByte(String rootPath, String relativePath) {
 		return sftpClient.supplyOpen(sftp -> sftp.download(rootPath, relativePath));
+	}
+
+	@Override
+	public boolean isExist(String rootPath, String relativePath) {
+		return sftpClient.supplyOpen(sftp -> sftp.isExist(rootPath + relativePath));
+	}
+
+	@Override
+	public Object getTargetObject() {
+		return sftpClient;
 	}
 
 }

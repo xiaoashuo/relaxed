@@ -20,6 +20,9 @@ import java.io.OutputStream;
  */
 public class LocalFileHandler implements FileHandler {
 
+	private static final LocalFileClient localClient = new LocalFileClient() {
+	};
+
 	@Override
 	public String supportType() {
 		return FileConstants.DEFAULT_HANDLE_TYPE;
@@ -40,7 +43,7 @@ public class LocalFileHandler implements FileHandler {
 		boolean result = FileUtil.del(file);
 		if (result) {
 			File parentFile = file.getParentFile();
-			if (parentFile.listFiles().length == 0) {
+			if (parentFile.listFiles() != null && parentFile.listFiles().length == 0) {
 				FileUtil.del(parentFile);
 			}
 		}
@@ -76,5 +79,20 @@ public class LocalFileHandler implements FileHandler {
 		}
 		return desc;
 	}
+
+	@Override
+	public boolean isExist(String rootPath, String relativePath) {
+		File desc = new File(rootPath, relativePath);
+		return desc.exists();
+	}
+
+	@Override
+	public Object getTargetObject() {
+		return localClient;
+	}
+
+	public interface LocalFileClient {
+
+	};
 
 }
