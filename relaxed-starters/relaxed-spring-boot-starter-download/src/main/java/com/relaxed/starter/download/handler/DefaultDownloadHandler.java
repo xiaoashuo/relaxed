@@ -41,14 +41,7 @@ public class DefaultDownloadHandler extends AbstractDownloadHandler {
 		String parentPath = downloadModel.getParentPath();
 		String fileName = downloadModel.getFileName();
 		String channel = responseDownload.channel();
-		try {
-			FileStoreUtils.writeToStream(channel, parentPath, fileName, response.getOutputStream());
-		}
-		catch (Exception e) {
-			log.error("下载文件,渠道{} 路径{}，名称{}异常", responseDownload.channel(), parentPath, fileName, e);
-			throw e;
-		}
-
+		FileStoreUtils.writeToStream(channel, parentPath, fileName, response.getOutputStream());
 	}
 
 }
