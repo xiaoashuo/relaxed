@@ -39,12 +39,34 @@ public class FileStoreUtils {
 	 * @param basePath
 	 * @param relativePath
 	 * @param file
+	 * @return
+	 */
+	public FileMeta upload(String basePath, String relativePath, MultipartFile file) {
+		return upload(FileConstants.DEFAULT_HANDLE_TYPE, basePath, relativePath, file);
+	}
+
+	/**
+	 * 文件上传
+	 * @param basePath
+	 * @param relativePath
+	 * @param file
 	 * @param fileConfig
 	 * @return
 	 */
-	@SneakyThrows
 	public FileMeta upload(String basePath, String relativePath, MultipartFile file, FileConfig fileConfig) {
 		return upload(FileConstants.DEFAULT_HANDLE_TYPE, basePath, relativePath, file, fileConfig);
+	}
+
+	/**
+	 * 文件上传
+	 * @param handleType
+	 * @param basePath
+	 * @param relativePath
+	 * @param file
+	 * @return
+	 */
+	public FileMeta upload(String handleType, String basePath, String relativePath, MultipartFile file) {
+		return upload(handleType, basePath, relativePath, file, FileConfig.create());
 	}
 
 	/**
