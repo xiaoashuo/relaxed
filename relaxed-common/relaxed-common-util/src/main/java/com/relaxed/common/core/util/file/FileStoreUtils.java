@@ -7,6 +7,8 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.IdUtil;
 
+import cn.hutool.core.util.StrUtil;
+import com.relaxed.common.core.util.PathHelper;
 import com.relaxed.common.core.util.file.exception.FileNameLengthLimitExceededException;
 import com.relaxed.common.core.util.file.exception.FileResultCode;
 import com.relaxed.common.core.util.file.exception.FileSizeLimitExceededException;
@@ -100,12 +102,18 @@ public class FileStoreUtils {
 		String relativeFilePath;
 		if (splitDate) {
 			String dateStr = LocalDate.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATE_PATTERN));
-			relativeFilePath = relativePath + separator + dateStr;
+			if (StrUtil.isBlank(relativePath)) {
+				relativeFilePath = dateStr;
+			}
+			else {
+				relativeFilePath = relativePath + separator + dateStr;
+			}
 		}
 		else {
 			relativeFilePath = relativePath;
 		}
-		String absolutePath = basePath + separator + relativeFilePath;
+
+		String absolutePath = StrUtil.isBlank(relativeFilePath) ? basePath : basePath + separator + relativeFilePath;
 		String fileId = getFileHandler(handleType).upload(absolutePath, fileName, separator, file);
 		FileMeta fileMeta = new FileMeta().setOriginalFilename(originalFilename).setFilename(fileName)
 				.setSeperator(separator).setFileId(fileId).setBasePath(basePath).setRelativePath(relativeFilePath);
@@ -222,7 +230,7 @@ public class FileStoreUtils {
 		String extension = FileUtil.getSuffix(fileName);
 		String[] allowedExtension = fileConfig.getAllowedExtension();
 		Assert.isTrue(ArrayUtil.contains(allowedExtension, extension),
-				() -> new InvalidExtensionException(FileResultCode.FILE_PARAM_ERROR.getCode(), extension));
+				() -> new InvalidExtensionException(FileResultCode.FILE_PARAM_ERROR.getCode(), "不支持的扩展名:" + extension));
 	}
 
 	private FileHandler getDefaultFileHandler() {
