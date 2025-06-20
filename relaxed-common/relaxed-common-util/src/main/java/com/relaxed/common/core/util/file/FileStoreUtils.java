@@ -92,7 +92,9 @@ public class FileStoreUtils {
 					fileConfig.getMaxFilenameLength());
 		}
 
-		assertAllowed(file, fileConfig);
+		if (fileConfig.isFileCheck()) {
+			assertAllowed(file, fileConfig);
+		}
 		// 转换后 文件名称
 		FileNameConverter fileNameConverter = Optional.ofNullable(fileConfig.getFileNameConverter())
 				.orElse(FileStoreUtils::extractFileName);

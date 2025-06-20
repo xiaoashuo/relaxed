@@ -47,6 +47,11 @@ public class FileConfig {
 	private boolean splitDate = false;
 
 	/**
+	 * 检查文件 默认为true 主要检查文件大小、扩展名
+	 */
+	private boolean fileCheck = true;
+
+	/**
 	 * 路径分隔符
 	 */
 	private String separator = File.separator;
@@ -67,6 +72,11 @@ public class FileConfig {
 
 	public FileConfig separator(String separator) {
 		this.separator = separator;
+		return this;
+	}
+
+	public FileConfig fileCheck(boolean fileCheck) {
+		this.fileCheck = fileCheck;
 		return this;
 	}
 
