@@ -40,34 +40,38 @@ public interface FileHandler {
 	 * 判断文件是否存在
 	 * @param rootPath 根路径/mnt
 	 * @param relativePath 文件全相对路径/child/test.pdf
+	 * @param separator 路径分隔符
 	 * @return 存在true 否则false
 	 */
-	boolean isExist(String rootPath, String relativePath);
+	boolean isExist(String rootPath, String relativePath, String separator);
 
 	/**
 	 * 文件删除
-	 * @date 2023/5/17 11:52
 	 * @param rootPath 根目录路径 /mnt
 	 * @param relativePath 文件全相对路径 /child/test.pdf
+	 * @param separator
 	 * @return boolean 是否成功true|false
+	 * @date 2023/5/17 11:52
 	 */
-	boolean delete(String rootPath, String relativePath);
+	boolean delete(String rootPath, String relativePath, String separator);
 
 	/**
 	 * 写入到流
 	 * @param rootPath 根目录路径 /mnt
 	 * @param relativePath 文件全相对路径 /child/test.pdf
 	 * @param outputStream
+	 * @param separator
 	 */
-	void writeToStream(String rootPath, String relativePath, OutputStream outputStream);
+	void writeToStream(String rootPath, String relativePath, OutputStream outputStream, String separator);
 
 	/**
 	 * 写入到字节
 	 * @param rootPath
 	 * @param relativePath
+	 * @param separator
 	 * @return
 	 */
-	byte[] downloadByte(String rootPath, String relativePath);
+	byte[] downloadByte(String rootPath, String relativePath, String separator);
 
 	/**
 	 * 获取目标对象

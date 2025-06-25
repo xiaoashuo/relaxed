@@ -1,18 +1,18 @@
 package com.relaxed.common.oss.s3.handler;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.core.util.StrUtil;
 import com.relaxed.common.core.util.file.FileHandler;
 import com.relaxed.common.oss.s3.OssClient;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -45,30 +45,67 @@ public class OssFileHandler implements FileHandler {
 	}
 
 	@Override
-	public boolean delete(String rootPath, String relativePath) {
-		ossClient.delete(rootPath + relativePath);
+	public boolean delete(String rootPath, String relativePath, String separator) {
+		PathInfo pathInfo = new PathInfo(rootPath, relativePath, separator);
+		ossClient.delete(pathInfo.getFullPath());
 		return true;
 	}
 
 	@Override
-	public void writeToStream(String rootPath, String relativePath, OutputStream outputStream) {
-		byte[] content = ossClient.download(rootPath + relativePath);
+	public void writeToStream(String rootPath, String relativePath, OutputStream outputStream, String separator) {
+		PathInfo pathInfo = new PathInfo(rootPath, relativePath, separator);
+		byte[] content = ossClient.download(pathInfo.getFullPath());
 		IoUtil.write(outputStream, true, content);
 	}
 
 	@Override
-	public byte[] downloadByte(String rootPath, String relativePath) {
-		return ossClient.download(rootPath + relativePath);
+	public byte[] downloadByte(String rootPath, String relativePath, String separator) {
+		PathInfo pathInfo = new PathInfo(rootPath, relativePath, separator);
+		return ossClient.download(pathInfo.getFullPath());
 	}
 
 	@Override
-	public boolean isExist(String rootPath, String relativePath) {
-		return ossClient.isExist(rootPath + relativePath);
+	public boolean isExist(String rootPath, String relativePath, String separator) {
+		PathInfo pathInfo = new PathInfo(rootPath, relativePath, separator);
+		return ossClient.isExist(pathInfo.getFullPath());
+	}
+
+	@Getter
+	public static class PathInfo {
+
+		private String rootPath;
+
+		private String relativePath;
+
+		private String separator;
+
+		private String fullPath;
+
+		public PathInfo(String rootPath, String relativePath, String separator) {
+			Assert.notBlank(relativePath, "relativePath不能为空");
+			this.separator = separator;
+			this.rootPath = StrUtil.removeSuffix(rootPath, separator);
+			this.relativePath = StrUtil.removePrefix(relativePath, separator);
+			String targetPath;
+			if (StrUtil.isBlank(this.rootPath)) {
+				targetPath = this.relativePath;
+			}
+			else {
+				targetPath = this.rootPath + separator + this.relativePath;
+			}
+			this.fullPath = targetPath;
+		}
+
+		public String getFullPath() {
+			return this.fullPath;
+		}
+
 	}
 
 	@Override
 	public Object getTargetObject() {
 		return ossClient;
 	}
+
 
 }

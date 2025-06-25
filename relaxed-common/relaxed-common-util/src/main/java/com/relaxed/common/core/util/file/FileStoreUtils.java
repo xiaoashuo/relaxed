@@ -18,6 +18,7 @@ import lombok.experimental.UtilityClass;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -124,12 +125,13 @@ public class FileStoreUtils {
 
 	/**
 	 * 文件是否存在 本地处理器
+	 * @param handleType 处理类型
 	 * @param rootPath 根路径 /mnt
 	 * @param relativePath 相对路径 /test.pdf
 	 * @return 存在true 否则false
 	 */
-	public static boolean isExist(String rootPath, String relativePath) {
-		return getFileHandler(FileConstants.DEFAULT_HANDLE_TYPE).isExist(rootPath, relativePath);
+	public static boolean isExist(String handleType, String rootPath, String relativePath) {
+		return isExist(handleType, rootPath, relativePath, File.separator);
 	}
 
 	/**
@@ -139,18 +141,19 @@ public class FileStoreUtils {
 	 * @param relativePath 相对路径 /test.pdf
 	 * @return 存在true 否则false
 	 */
-	public static boolean isExist(String handleType, String rootPath, String relativePath) {
-		return getFileHandler(handleType).isExist(rootPath, relativePath);
+	public static boolean isExist(String handleType, String rootPath, String relativePath, String separator) {
+		return getFileHandler(handleType).isExist(rootPath, relativePath, separator);
 	}
 
 	/**
 	 * 文件删除
+	 * @param handleType 文件处理类型 默认local 支持扩展
 	 * @param basePath
 	 * @param relativePath
 	 * @return
 	 */
-	public static boolean delete(String basePath, String relativePath) {
-		return delete(FileConstants.DEFAULT_HANDLE_TYPE, basePath, relativePath);
+	public static boolean delete(String handleType, String basePath, String relativePath) {
+		return delete(handleType, basePath, relativePath, File.separator);
 	}
 
 	/**
@@ -158,20 +161,24 @@ public class FileStoreUtils {
 	 * @param handleType 文件处理类型 默认local 支持扩展
 	 * @param basePath 基础路径 /mnt
 	 * @param relativePath 相对文件路径 /child/123.pdf
+	 * @param separator 路径分隔符
 	 * @return
 	 */
-	public static boolean delete(String handleType, String basePath, String relativePath) {
-		return getFileHandler(handleType).delete(basePath, relativePath);
+	public static boolean delete(String handleType, String basePath, String relativePath, String separator) {
+		return getFileHandler(handleType).delete(basePath, relativePath, separator);
 	}
 
 	/**
 	 * 下载文件
+	 * @param handleType 文件类型处理器
 	 * @param basePath
 	 * @param relativePath
+	 * @param outputStream 输出流
 	 * @return
 	 */
-	public static void writeToStream(String basePath, String relativePath, OutputStream outputStream) {
-		writeToStream(FileConstants.DEFAULT_HANDLE_TYPE, basePath, relativePath, outputStream);
+	public static void writeToStream(String handleType, String basePath, String relativePath,
+			OutputStream outputStream) {
+		writeToStream(handleType, basePath, relativePath, outputStream, File.separator);
 	}
 
 	/**
@@ -179,20 +186,23 @@ public class FileStoreUtils {
 	 * @param handleType 文件类型处理器
 	 * @param basePath 基础路径
 	 * @param relativePath 相对文件路径
+	 * @param outputStream 输入流
+	 * @param separator 路径分隔符
 	 */
-	public static void writeToStream(String handleType, String basePath, String relativePath,
-			OutputStream outputStream) {
-		getFileHandler(handleType).writeToStream(basePath, relativePath, outputStream);
+	public static void writeToStream(String handleType, String basePath, String relativePath, OutputStream outputStream,
+			String separator) {
+		getFileHandler(handleType).writeToStream(basePath, relativePath, outputStream, separator);
 	}
 
 	/**
 	 * 下载字节
+	 * @param handleType 文件类型处理器
 	 * @param basePath
 	 * @param relativePath
 	 * @return
 	 */
-	public static byte[] downloadByte(String basePath, String relativePath) {
-		return downloadByte(FileConstants.DEFAULT_HANDLE_TYPE, basePath, relativePath);
+	public static byte[] downloadByte(String handleType, String basePath, String relativePath) {
+		return downloadByte(handleType, basePath, relativePath, File.separator);
 	}
 
 	/**
@@ -202,8 +212,8 @@ public class FileStoreUtils {
 	 * @param relativePath 相对文件路径
 	 * @return 字节数组
 	 */
-	public static byte[] downloadByte(String handleType, String basePath, String relativePath) {
-		return getFileHandler(handleType).downloadByte(basePath, relativePath);
+	public static byte[] downloadByte(String handleType, String basePath, String relativePath, String separator) {
+		return getFileHandler(handleType).downloadByte(basePath, relativePath, separator);
 	}
 
 	/**

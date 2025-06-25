@@ -3,7 +3,6 @@ package com.relaxed.test.util.file;
 import com.relaxed.common.core.util.file.FileHandler;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.OutputStream;
 
 /**
@@ -26,22 +25,22 @@ public class OssFileHandler implements FileHandler {
 	}
 
 	@Override
-	public boolean isExist(String rootPath, String relativePath) {
+	public boolean isExist(String rootPath, String relativePath, String separator) {
 		return false;
 	}
 
 	@Override
-	public boolean delete(String rootPath, String relativePath) {
+	public boolean delete(String rootPath, String relativePath, String separator) {
 		return false;
 	}
 
 	@Override
-	public void writeToStream(String rootPath, String relativePath, OutputStream outputStream) {
+	public void writeToStream(String rootPath, String relativePath, OutputStream outputStream, String separator) {
 
 	}
 
 	@Override
-	public byte[] downloadByte(String rootPath, String relativePath) {
+	public byte[] downloadByte(String rootPath, String relativePath, String separator) {
 		return new byte[0];
 	}
 

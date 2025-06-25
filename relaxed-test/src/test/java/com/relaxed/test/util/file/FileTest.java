@@ -38,9 +38,9 @@ public class FileTest {
 
 	@Test
 	void fileDelete() {
-		String rootPath = "D:\\other\\100000";
-		String relativePath = "\\file\\20230517\\J2GyZCZfUXf1cnt3uXGuS.pdf";
-		boolean deleted = FileStoreUtils.delete(rootPath, relativePath);
+		String rootPath = "D:\\other\\100000\\file\\";
+		String relativePath = "20250623";
+		boolean deleted = FileStoreUtils.delete("local", rootPath, relativePath);
 		log.info("deleted  successfully,result:[{}]", deleted);
 	}
 

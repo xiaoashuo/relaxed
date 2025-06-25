@@ -2,7 +2,10 @@ package com.relaxed.common.core.util.file;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,8 +41,9 @@ public class LocalFileHandler implements FileHandler {
 	}
 
 	@Override
-	public boolean delete(String rootPath, String relativePath) {
-		File file = FileUtil.file(rootPath + relativePath);
+	public boolean delete(String rootPath, String relativePath, String separator) {
+		PathInfo pathInfo = new PathInfo(rootPath, relativePath, separator);
+		File file = new File(pathInfo.getFullPath());
 		boolean result = FileUtil.del(file);
 		if (result) {
 			File parentFile = file.getParentFile();
@@ -52,8 +56,9 @@ public class LocalFileHandler implements FileHandler {
 
 	@SneakyThrows
 	@Override
-	public void writeToStream(String rootPath, String relativePath, OutputStream outputStream) {
-		File file = new File(rootPath, relativePath);
+	public void writeToStream(String rootPath, String relativePath, OutputStream outputStream, String separator) {
+		PathInfo pathInfo = new PathInfo(rootPath, relativePath, separator);
+		File file = new File(pathInfo.getFullPath());
 		try (FileInputStream inputStream = new FileInputStream(file); OutputStream tmp = outputStream) {
 			IoUtil.copy(inputStream, tmp);
 		}
@@ -63,26 +68,28 @@ public class LocalFileHandler implements FileHandler {
 	}
 
 	@Override
-	public byte[] downloadByte(String rootPath, String relativePath) {
+	public byte[] downloadByte(String rootPath, String relativePath, String separator) {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		writeToStream(rootPath, relativePath, outputStream);
+		writeToStream(rootPath, relativePath, outputStream, separator);
 		return outputStream.toByteArray();
 	}
 
 	private File getAbsoluteFile(String separator, String dirPath, String fileName) {
-		File desc = new File(dirPath + separator + fileName);
+		PathInfo pathInfo = new PathInfo(dirPath, fileName, separator);
+		File file = new File(pathInfo.getFullPath());
 
-		if (!desc.exists()) {
-			if (!desc.getParentFile().exists()) {
-				desc.getParentFile().mkdirs();
+		if (!file.exists()) {
+			if (!file.getParentFile().exists()) {
+				file.getParentFile().mkdirs();
 			}
 		}
-		return desc;
+		return file;
 	}
 
 	@Override
-	public boolean isExist(String rootPath, String relativePath) {
-		File desc = new File(rootPath, relativePath);
+	public boolean isExist(String rootPath, String relativePath, String separator) {
+		PathInfo pathInfo = new PathInfo(rootPath, relativePath, separator);
+		File desc = new File(pathInfo.getFullPath());
 		return desc.exists();
 	}
 
@@ -94,5 +101,37 @@ public class LocalFileHandler implements FileHandler {
 	public interface LocalFileClient {
 
 	};
+
+	@Getter
+	public static class PathInfo {
+
+		private String rootPath;
+
+		private String relativePath;
+
+		private String separator;
+
+		private String fullPath;
+
+		public PathInfo(String rootPath, String relativePath, String separator) {
+			Assert.notBlank(relativePath, "relativePath不能为空");
+			this.separator = separator;
+			this.rootPath = rootPath;
+			this.relativePath = relativePath;
+			String targetPath;
+			if (StrUtil.isBlank(this.rootPath)) {
+				targetPath = this.relativePath;
+			}
+			else {
+				targetPath = this.rootPath + separator + StrUtil.removePrefix(this.relativePath, separator);
+			}
+			this.fullPath = targetPath;
+		}
+
+		public String getFullPath() {
+			return this.fullPath;
+		}
+
+	}
 
 }
