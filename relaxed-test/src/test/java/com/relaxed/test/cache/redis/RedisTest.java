@@ -1,10 +1,14 @@
 package com.relaxed.test.cache.redis;
 
+import cn.hutool.core.thread.ThreadUtil;
 import com.relaxed.common.cache.RelaxedRedisAutoConfiguration;
 import com.relaxed.common.redis.RedisHelper;
+import com.relaxed.common.redis.distributor.EventDistributor;
 import com.relaxed.common.redis.lock.DistributedLock;
+import com.relaxed.test.cache.redis.subscribe.SubscribeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,6 +40,16 @@ public class RedisTest {
 		String value = DistributedLock.<String>instance().action(this.lockKey, () -> "value")
 				.onSuccess(ret -> ret + "success").lock();
 		log.info("获取到结果值:{}", value);
+
+	}
+
+	@Autowired
+	EventDistributor eventDistributor;
+
+	@Test
+	public void testDistributor() {
+		eventDistributor.distribute(SubscribeEnum.PUB_SUB_TRADE_FILL.getChannel(), "testMessage");
+		ThreadUtil.sleep(30000);
 
 	}
 

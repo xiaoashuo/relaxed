@@ -5,6 +5,9 @@ import com.relaxed.common.redis.RedisHelper;
 import com.relaxed.common.redis.config.CacheProperties;
 import com.relaxed.common.redis.config.CachePropertiesHolder;
 import com.relaxed.common.redis.core.CacheStringAspect;
+import com.relaxed.common.redis.distributor.EventDistributor;
+import com.relaxed.common.redis.distributor.RedisDistributor;
+import com.relaxed.common.redis.distributor.subscribe.SubscribeHolder;
 import com.relaxed.common.redis.lock.scheduled.LockRenewalScheduledTask;
 import com.relaxed.common.redis.prefix.DefaultRedisPrefixConverter;
 import com.relaxed.common.redis.prefix.IRedisPrefixConverter;
@@ -137,6 +140,26 @@ public class RelaxedRedisAutoConfiguration {
 	public RedisHelper redisHelper(StringRedisTemplate template) {
 		RedisHelper.setRedisTemplate(template);
 		return RedisHelper.INSTANCE;
+	}
+
+	/**
+	 * 事件分发者
+	 * @param stringRedisTemplate
+	 * @return EventDistributor
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public EventDistributor eventDistributor(StringRedisTemplate stringRedisTemplate) {
+		return new RedisDistributor(stringRedisTemplate);
+	}
+
+	/**
+	 * 订阅者 holder 容器
+	 * @return SubscribeHolder
+	 */
+	@Bean
+	public SubscribeHolder subscribeHolder() {
+		return new SubscribeHolder();
 	}
 
 }
