@@ -245,9 +245,7 @@ public class FileStoreUtils {
 				() -> new InvalidExtensionException(FileResultCode.FILE_PARAM_ERROR.getCode(), "不支持的扩展名:" + extension));
 	}
 
-	private FileHandler getDefaultFileHandler() {
-		return getFileHandler(FileConstants.DEFAULT_HANDLE_TYPE);
-	}
+ 
 
 	private FileHandler getFileHandler(String supportType) {
 		FileHandler load = FileHandlerLoader.load(supportType);
