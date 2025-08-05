@@ -107,5 +107,4 @@ public class OssFileHandler implements FileHandler {
 		return ossClient;
 	}
 
-
 }
