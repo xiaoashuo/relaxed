@@ -77,14 +77,16 @@ public abstract class AbstractAccessLogHandler<T> implements AccessLogHandler<T>
 		Enumeration<String> e = request.getHeaderNames();
 		if (e != null) {
 			while (e.hasMoreElements()) {
-				String name = (String) e.nextElement();
+				String name = e.nextElement();
 				if (!reqHeaderFilter.filter(name)) {
 					continue;
 				}
 				String value = request.getHeader(name);
 				header.append(name).append("=").append("[").append(value).append("]").append(", ");
 			}
-			header = new StringBuilder(header.substring(0, header.length() - 2));
+			if (header.length() > 1) {
+				header = new StringBuilder(header.substring(0, header.length() - 2));
+			}
 		}
 		header.append("}");
 		return header.toString();
