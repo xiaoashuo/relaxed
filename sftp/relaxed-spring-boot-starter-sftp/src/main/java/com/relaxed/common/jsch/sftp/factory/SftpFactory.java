@@ -122,8 +122,6 @@ public class SftpFactory extends BasePooledObjectFactory<ISftpExecutor> {
 							&& channelSftp.getSession().isConnected();
 				}
 				catch (SftpException | JSchException e) {
-					log.error("validate sftp error, host {},port:{} ,username {}", sftpProperties.getHost(),
-							sftpProperties.getPort(), sftpProperties.getUsername(), e);
 					return false;
 				}
 			}
