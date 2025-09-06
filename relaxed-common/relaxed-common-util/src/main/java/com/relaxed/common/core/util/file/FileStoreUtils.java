@@ -241,7 +241,8 @@ public class FileStoreUtils {
 		// 扩展名效验
 		String extension = FileUtil.getSuffix(fileName);
 		String[] allowedExtension = fileConfig.getAllowedExtension();
-		Assert.isTrue(ArrayUtil.contains(allowedExtension, extension),
+		// 扩展名 包含当前的扩展名或者* 则算通过
+		Assert.isTrue(ArrayUtil.containsAny(allowedExtension, extension, "*"),
 				() -> new InvalidExtensionException(FileResultCode.FILE_PARAM_ERROR.getCode(), "不支持的扩展名:" + extension));
 	}
 
