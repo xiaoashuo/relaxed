@@ -32,7 +32,7 @@
         <jsqlparse.version>4.3</jsqlparse.version>
         <dynamic-datasource.version>3.5.0</dynamic-datasource.version>
         <jasypt.version>2.1.0</jasypt.version>
-        <jsch.version>0.1.54</jsch.version>
+        <jsch.version>0.1.55</jsch.version>
         <easyexcel.version>3.3.3</easyexcel.version>
         <fastexcel.version>1.0.0</fastexcel.version>
         <poi.version>5.2.2</poi.version>
